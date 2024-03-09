@@ -1,0 +1,15 @@
+{
+	"name": "filter-duplicates",
+	"tags": [],
+	"preview": "./assets/PREVIEW.png",
+	"version": "prototype",
+	"authors": ["Delusoire"],
+	"description": "",
+	"readme": "./assets/README.md",
+	"entries": {
+		"js": false,
+		"css": false,
+		"mixin": false
+	},
+	"dependencies": []
+}

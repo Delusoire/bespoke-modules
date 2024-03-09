@@ -1,0 +1,15 @@
+{
+	"name": "std",
+	"tags": ["lib"],
+	"preview": "./assets/PREVIEW.png",
+	"version": "beta",
+	"authors": ["Delusoire"],
+	"description": "The standard library",
+	"readme": "./assets/README.md",
+	"entries": {
+		"js": "index.js",
+		"css": false,
+		"mixin": "mixin.js"
+	},
+	"dependencies": []
+}
