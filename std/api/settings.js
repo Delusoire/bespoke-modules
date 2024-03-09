@@ -79,9 +79,9 @@ export class Settings {
             get: (target, prop) => Settings.getFieldValue(this.getId(prop.toString())),
             set: (target, prop, newValue) => {
                 const id = this.getId(prop.toString());
-                if (Settings.getFieldValue(id) === newValue)
-                    return false;
-                Settings.setFieldValue(id, newValue);
+                if (Settings.getFieldValue(id) !== newValue) {
+                    Settings.setFieldValue(id, newValue);
+                }
                 return true;
             },
         });
