@@ -5,24 +5,40 @@ import { createIconComponent } from "../api/createIconComponent.js";
 import { registerTransform } from "../mixin.js";
 const registry = new Registry();
 export default registry;
-globalThis.__renderNavLinks = () => registry.getItems().map(Item => S.React.createElement(Item, null));
+globalThis.__renderNavLinks = ()=>registry.getItems().map((Item)=>/*#__PURE__*/ S.React.createElement(Item, null));
 registerTransform({
-    transform: emit => str => {
-        const j = str.search(/\("li",\{[^\{]*\{[^\{]*\{to:"\/search/);
-        const i = findMatchingPos(str, j, 1, ["(", ")"], 1);
-        emit();
-        return `${str.slice(0, i)},...__renderNavLinks()${str.slice(i)}`;
-    },
-    glob: /^\/xpui\.js/,
+    transform: (emit)=>(str)=>{
+            const j = str.search(/\("li",\{[^\{]*\{[^\{]*\{to:"\/search/);
+            const i = findMatchingPos(str, j, 1, [
+                "(",
+                ")"
+            ], 1);
+            emit();
+            return `${str.slice(0, i)},...__renderNavLinks()${str.slice(i)}`;
+        },
+    glob: /^\/xpui\.js/
 });
-export const NavLink = ({ localizedApp, appRoutePath, icon, activeIcon }) => {
+export const NavLink = ({ localizedApp, appRoutePath, icon, activeIcon })=>{
     const isSidebarCollapsed = S.Platform.getLocalStorageAPI().getItem("ylx-sidebar-state") === 1;
     const isActive = S.Platform.getHistory().location.pathanme?.startsWith(appRoutePath);
-    return (S.React.createElement("li", { className: "LU0q0itTx2613uiATSig InvalidDropTarget" },
-        S.React.createElement(S.ReactComponents.Tooltip, { label: isSidebarCollapsed ? localizedApp : null, disabled: !isSidebarCollapsed, placement: "right" },
-            S.React.createElement(S.ReactComponents.Nav, { to: appRoutePath, referrer: "other", className: S.classnames("link-subtle", "UYeKN11KAw61rZoyjcgZ", {
-                    "DzWw3g4E_66wu9ktqn36": isActive,
-                }), onClick: () => undefined, "aria-label": localizedApp },
-                createIconComponent({ icon: isActive ? activeIcon : icon, iconSize: 24 }),
-                !isSidebarCollapsed && S.React.createElement(S.ReactComponents.Text, { variant: "bodyMediumBold" }, localizedApp)))));
+    return /*#__PURE__*/ S.React.createElement("li", {
+        className: "LU0q0itTx2613uiATSig InvalidDropTarget"
+    }, /*#__PURE__*/ S.React.createElement(S.ReactComponents.Tooltip, {
+        label: isSidebarCollapsed ? localizedApp : null,
+        disabled: !isSidebarCollapsed,
+        placement: "right"
+    }, /*#__PURE__*/ S.React.createElement(S.ReactComponents.Nav, {
+        to: appRoutePath,
+        referrer: "other",
+        className: S.classnames("link-subtle", "UYeKN11KAw61rZoyjcgZ", {
+            "DzWw3g4E_66wu9ktqn36": isActive
+        }),
+        onClick: ()=>undefined,
+        "aria-label": localizedApp
+    }, createIconComponent({
+        icon: isActive ? activeIcon : icon,
+        iconSize: 24
+    }), !isSidebarCollapsed && /*#__PURE__*/ S.React.createElement(S.ReactComponents.Text, {
+        variant: "bodyMediumBold"
+    }, localizedApp))));
 };

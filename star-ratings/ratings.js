@@ -1,4 +1,4 @@
-import { addPlaylistTracks, createPlaylist, removePlaylistTracks, setPlaylistVisibility, setInLibrary, } from "/modules/Delusoire/delulib/platformApi.js";
+import { addPlaylistTracks, createPlaylist, removePlaylistTracks, setPlaylistVisibility, setInLibrary } from "/modules/Delusoire/delulib/platformApi.js";
 import { SpotifyLoc } from "/modules/Delusoire/delulib/util.js";
 import { updateCollectionControls, updateNowPlayingControls, updateTrackListControls } from "./controls.js";
 import { CONFIG } from "./settings.js";
@@ -8,27 +8,35 @@ import { S } from "/modules/Delusoire/std/index.js";
 const { URI } = S;
 const History = S.Platform.getHistory();
 const PlayerAPI = S.Platform.getPlayerAPI();
-export const toggleRating = async (uri, rating) => {
+export const toggleRating = async (uri, rating)=>{
     const currentRating = globalThis.tracksRatings[uri];
-    if (currentRating === rating)
-        rating = 0;
+    if (currentRating === rating) rating = 0;
     if (currentRating) {
-        const playlistIds = _.compact(playlistUris.slice(0, currentRating + 1)).map(playlistUri => URI.fromString(playlistUri).id);
-        for (const playlistId of playlistIds) {
-            removePlaylistTracks(playlistId, [{ uri, uid: "" }]);
+        const playlistIds = _.compact(playlistUris.slice(0, currentRating + 1)).map((playlistUri)=>URI.fromString(playlistUri).id);
+        for (const playlistId of playlistIds){
+            removePlaylistTracks(playlistId, [
+                {
+                    uri,
+                    uid: ""
+                }
+            ]);
         }
     }
     globalThis.tracksRatings[uri] = rating;
     if (rating > 0) {
         let playlistUri = playlistUris[rating];
         if (!playlistUri) {
-            playlistUri = (await createPlaylist(rating.toFixed(0), SpotifyLoc.after.fromUri(CONFIG.ratingsFolderUri)));
+            playlistUri = await createPlaylist(rating.toFixed(0), SpotifyLoc.after.fromUri(CONFIG.ratingsFolderUri));
             setPlaylistVisibility(playlistUri, false);
             playlistUris[rating] = playlistUri;
         }
-        addPlaylistTracks(playlistUri, [uri]);
+        addPlaylistTracks(playlistUri, [
+            uri
+        ]);
         if (rating >= Number(CONFIG.heartThreshold)) {
-            setInLibrary([uri], true);
+            setInLibrary([
+                uri
+            ], true);
         }
     }
     const npTrack = PlayerAPI.getState().item?.uri;
@@ -36,13 +44,12 @@ export const toggleRating = async (uri, rating) => {
         updateNowPlayingControls(npTrack, false);
         //TODO: clean this
         {
-            new MutationObserver((_, observer) => {
+            new MutationObserver((_, observer)=>{
                 observer.disconnect();
-                if (npTrack !== uri)
-                    return;
+                if (npTrack !== uri) return;
                 updateNowPlayingControls(npTrack, false);
             }).observe(getNowPlayingBar(), {
-                subtree: true,
+                subtree: true
             });
         }
     }

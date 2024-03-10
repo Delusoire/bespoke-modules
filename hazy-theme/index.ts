@@ -14,7 +14,7 @@ function fetchValues() {
 	const satuValue = parseIntFromStorage("satuAmount");
 	const brightValue = parseIntFromStorage("brightAmount");
 
-	const numOrDef = (num: number, def: default) => (Number.isNaN(num) ? def : num);
+	const numOrDef = (num: number, def: number) => (Number.isNaN(num) ? def : num);
 
 	style.setProperty("--blur", `${numOrDef(blurValue, 15)}px`);
 	style.setProperty("--cont", `${numOrDef(contValue, 50)}%`);

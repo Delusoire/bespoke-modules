@@ -1,4 +1,4 @@
-@import url(./components/shared/shared.css);
+@import "./components/shared/shared.scss";
 
 .encore-dark-theme {
     --spice-text: var(--text-base);
@@ -16,7 +16,7 @@
     --spice-button-active: var(--essential-bright-accent);
     --spice-button-disabled: var(--essential-subdued);
     --spice-tab-active: var(--background-elevated-highlight);
-    --spice-notification: var(--text-announcement); // var(--essential-announcement);
+    --spice-notification: var(--text-announcement);
     --spice-notification-error: var(--essential-negative);
     --spice-misc: var(--essential-subdued);
 }

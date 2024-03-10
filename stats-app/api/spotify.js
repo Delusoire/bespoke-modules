@@ -1,7 +1,7 @@
 export const SpotifyTimeRange = {
     Short: "short_term",
     Medium: "medium_term",
-    Long: "long_term",
+    Long: "long_term"
 };
 const WEB_API_URL = "https://api.spotify.com";
 const SPCLIENT_WG_URL = "https://spclient.wg.spotify.com";
@@ -13,12 +13,11 @@ export const Hosts = {
     SPCLIENT_WG_URL,
     EXP_WG_ENDPOINT,
     ACCOUNTS_HOST,
-    PARTNER_API_ENDPOINT,
+    PARTNER_API_ENDPOINT
 };
 export const Endpoints = {
     /**
-     * @deprecated Use spotifyApi from delulib instead
-     */
-    web: `${WEB_API_URL}/v1`,
-    pathfinder: `${PARTNER_API_ENDPOINT}/pathfinder/v1`,
+	 * @deprecated Use spotifyApi from delulib instead
+	 */ web: `${WEB_API_URL}/v1`,
+    pathfinder: `${PARTNER_API_ENDPOINT}/pathfinder/v1`
 };

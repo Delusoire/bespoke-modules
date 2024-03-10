@@ -1,13 +1,9 @@
 export class Registry {
-    constructor() {
-        this._A = undefined;
-        this._B = undefined;
-        this.registered = new Map();
-    }
+    _A = undefined;
+    _B = undefined;
+    registered = new Map();
     getItems(input, reverse = false) {
-        const items = Array.from(this.registered.entries())
-            .map(([i, p]) => p(input) && i)
-            .filter(Boolean);
+        const items = Array.from(this.registered.entries()).map(([i, p])=>p(input) && i).filter(Boolean);
         reverse && items.reverse();
         return items;
     }

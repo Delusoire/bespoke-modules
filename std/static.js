@@ -1,8 +1,11 @@
 // TODO: does anybody use this anymore?
 export const TippyProps = {
-    delay: [200, 0],
+    delay: [
+        200,
+        0
+    ],
     animation: true,
-    render(instance) {
+    render (instance) {
         const popper = document.createElement("div");
         const box = document.createElement("div");
         popper.id = "context-menu";
@@ -11,31 +14,29 @@ export const TippyProps = {
         box[instance.props.allowHTML ? "innerHTML" : "textContent"] = instance.props.content;
         return {
             popper,
-            onUpdate(prevProps, nextProps) {
+            onUpdate (prevProps, nextProps) {
                 if (prevProps.content !== nextProps.content) {
-                    if (nextProps.allowHTML)
-                        box.innerHTML = nextProps.content;
-                    else
-                        box.textContent = nextProps.content;
+                    if (nextProps.allowHTML) box.innerHTML = nextProps.content;
+                    else box.textContent = nextProps.content;
                 }
-            },
+            }
         };
     },
-    onShow(instance) {
+    onShow (instance) {
         instance.popper.firstElementChild?.classList.add("mph1R_QkS44EPi4lrhxd");
     },
-    onMount(instance) {
-        requestAnimationFrame(() => {
+    onMount (instance) {
+        requestAnimationFrame(()=>{
             instance.popper.firstElementChild?.classList.remove("mph1R_QkS44EPi4lrhxd");
             instance.popper.firstElementChild?.classList.add("v5IUMJNPJgol0273zQXD");
         });
     },
-    onHide(instance) {
-        requestAnimationFrame(() => {
+    onHide (instance) {
+        requestAnimationFrame(()=>{
             instance.popper.firstElementChild?.classList.remove("v5IUMJNPJgol0273zQXD");
             instance.unmount();
         });
-    },
+    }
 };
 // TODO: outdated af
 export const SVGIcons = {
@@ -115,5 +116,5 @@ export const SVGIcons = {
     "volume-one-wave": '<path d="M10.04 5.984l.658-.77q.548.548.858 1.278.31.73.31 1.54 0 .54-.144 1.055-.143.516-.4.957-.259.44-.624.805l-.658-.77q.825-.865.825-2.047 0-1.183-.825-2.048zM0 11.032v-6h2.802l5.198-3v12l-5.198-3H0zm7 1.27v-8.54l-3.929 2.27H1v4h2.071L7 12.302z"/>',
     "volume-two-wave": '<path d="M0 11.032v-6h2.802l5.198-3v12l-5.198-3H0zm7 1.27v-8.54l-3.929 2.27H1v4h2.071L7 12.302zm4.464-2.314q.401-.925.401-1.956 0-1.032-.4-1.957-.402-.924-1.124-1.623L11 3.69q.873.834 1.369 1.957.496 1.123.496 2.385 0 1.262-.496 2.385-.496 1.123-1.369 1.956l-.659-.762q.722-.698 1.123-1.623z"/>',
     watch: '<path d="M4.347 1.122l-.403 1.899A2.25 2.25 0 002 5.25v5.5a2.25 2.25 0 001.944 2.23l.403 1.898c.14.654.717 1.122 1.386 1.122h4.535c.668 0 1.246-.468 1.385-1.122l.404-1.899A2.25 2.25 0 0014 10.75v-5.5a2.25 2.25 0 00-1.943-2.23l-.404-1.898A1.417 1.417 0 0010.267 0H5.734c-.67 0-1.247.468-1.386 1.122zM5.8 1.5h4.4l.319 1.5H5.48l.32-1.5zM10.52 13l-.319 1.5H5.8L5.481 13h5.038zM4.25 4.5h7.5a.75.75 0 01.75.75v5.5a.75.75 0 01-.75.75h-7.5a.75.75 0 01-.75-.75v-5.5a.75.75 0 01.75-.75z"/>',
-    x: '<path d="M14.354 2.353l-.708-.707L8 7.293 2.353 1.646l-.707.707L7.293 8l-5.647 5.646.707.708L8 8.707l5.646 5.647.708-.708L8.707 8z"/>',
+    x: '<path d="M14.354 2.353l-.708-.707L8 7.293 2.353 1.646l-.707.707L7.293 8l-5.647 5.646.707.708L8 8.707l5.646 5.647.708-.708L8.707 8z"/>'
 };

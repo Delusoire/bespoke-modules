@@ -1,6 +1,14 @@
 import { findLyrics } from "./LyricsProvider.js";
 export class Song {
-    constructor(opts) {
+    uri;
+    name;
+    artist;
+    album;
+    duration;
+    isLocal;
+    lyrics;
+    isPaused;
+    constructor(opts){
         this.uri = opts.uri;
         this.name = opts.name;
         this.artist = opts.artist;
@@ -13,7 +21,7 @@ export class Song {
             title: this.name,
             artist: this.artist,
             album: this.album,
-            durationS: this.duration / 1000,
+            durationS: this.duration / 1000
         });
     }
 }

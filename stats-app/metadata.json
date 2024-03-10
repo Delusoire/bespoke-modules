@@ -2,7 +2,7 @@
 	"name": "stats-app",
 	"tags": ["stats"],
 	"preview": "./assets/PREVIEW.png",
-	"version": "",
+	"version": "https://github.com/harbassan/spicetify-apps/commit/a8bf02cafb661b5d9504084cdef73a1ee2572d43",
 	"authors": ["Delusoire", "harbassan"],
 	"description": "See your top artists, tracks, genres and an analysis of your music library.",
 	"readme": "./assets/README.md",

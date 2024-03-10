@@ -11,14 +11,14 @@ const Sa = {
             kind: "FragmentDefinition",
             name: {
                 kind: "Name",
-                value: "searchImageURLAndSize",
+                value: "searchImageURLAndSize"
             },
             typeCondition: {
                 kind: "NamedType",
                 name: {
                     kind: "Name",
-                    value: "ImageSource",
-                },
+                    value: "ImageSource"
+                }
             },
             selectionSet: {
                 kind: "SelectionSet",
@@ -27,27 +27,27 @@ const Sa = {
                         kind: "Field",
                         name: {
                             kind: "Name",
-                            value: "url",
-                        },
+                            value: "url"
+                        }
                     },
                     {
                         kind: "Field",
                         name: {
                             kind: "Name",
-                            value: "width",
-                        },
+                            value: "width"
+                        }
                     },
                     {
                         kind: "Field",
                         name: {
                             kind: "Name",
-                            value: "height",
-                        },
-                    },
-                ],
-            },
-        },
-    ],
+                            value: "height"
+                        }
+                    }
+                ]
+            }
+        }
+    ]
 };
 const Na = {
     kind: "Document",
@@ -56,14 +56,14 @@ const Na = {
             kind: "FragmentDefinition",
             name: {
                 kind: "Name",
-                value: "searchImageSources",
+                value: "searchImageSources"
             },
             typeCondition: {
                 kind: "NamedType",
                 name: {
                     kind: "Name",
-                    value: "Image",
-                },
+                    value: "Image"
+                }
             },
             selectionSet: {
                 kind: "SelectionSet",
@@ -72,7 +72,7 @@ const Na = {
                         kind: "Field",
                         name: {
                             kind: "Name",
-                            value: "sources",
+                            value: "sources"
                         },
                         selectionSet: {
                             kind: "SelectionSet",
@@ -81,17 +81,17 @@ const Na = {
                                     kind: "FragmentSpread",
                                     name: {
                                         kind: "Name",
-                                        value: "searchImageURLAndSize",
-                                    },
-                                },
-                            ],
-                        },
+                                        value: "searchImageURLAndSize"
+                                    }
+                                }
+                            ]
+                        }
                     },
                     {
                         kind: "Field",
                         name: {
                             kind: "Name",
-                            value: "extractedColors",
+                            value: "extractedColors"
                         },
                         selectionSet: {
                             kind: "SelectionSet",
@@ -100,7 +100,7 @@ const Na = {
                                     kind: "Field",
                                     name: {
                                         kind: "Name",
-                                        value: "colorDark",
+                                        value: "colorDark"
                                     },
                                     selectionSet: {
                                         kind: "SelectionSet",
@@ -109,26 +109,26 @@ const Na = {
                                                 kind: "Field",
                                                 name: {
                                                     kind: "Name",
-                                                    value: "hex",
-                                                },
+                                                    value: "hex"
+                                                }
                                             },
                                             {
                                                 kind: "Field",
                                                 name: {
                                                     kind: "Name",
-                                                    value: "isFallback",
-                                                },
-                                            },
-                                        ],
-                                    },
-                                },
-                            ],
-                        },
-                    },
-                ],
-            },
-        },
-    ],
+                                                    value: "isFallback"
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    ]
 };
 const ja = {
     kind: "Document",
@@ -137,14 +137,14 @@ const ja = {
             kind: "FragmentDefinition",
             name: {
                 kind: "Name",
-                value: "searchTrackDesktop",
+                value: "searchTrackDesktop"
             },
             typeCondition: {
                 kind: "NamedType",
                 name: {
                     kind: "Name",
-                    value: "TrackResponseWrapper",
-                },
+                    value: "TrackResponseWrapper"
+                }
             },
             selectionSet: {
                 kind: "SelectionSet",
@@ -153,7 +153,7 @@ const ja = {
                         kind: "Field",
                         name: {
                             kind: "Name",
-                            value: "data",
+                            value: "data"
                         },
                         selectionSet: {
                             kind: "SelectionSet",
@@ -162,8 +162,8 @@ const ja = {
                                     kind: "Field",
                                     name: {
                                         kind: "Name",
-                                        value: "__typename",
-                                    },
+                                        value: "__typename"
+                                    }
                                 },
                                 {
                                     kind: "InlineFragment",
@@ -171,8 +171,8 @@ const ja = {
                                         kind: "NamedType",
                                         name: {
                                             kind: "Name",
-                                            value: "Track",
-                                        },
+                                            value: "Track"
+                                        }
                                     },
                                     selectionSet: {
                                         kind: "SelectionSet",
@@ -181,28 +181,28 @@ const ja = {
                                                 kind: "Field",
                                                 name: {
                                                     kind: "Name",
-                                                    value: "uri",
-                                                },
+                                                    value: "uri"
+                                                }
                                             },
                                             {
                                                 kind: "Field",
                                                 name: {
                                                     kind: "Name",
-                                                    value: "id",
-                                                },
+                                                    value: "id"
+                                                }
                                             },
                                             {
                                                 kind: "Field",
                                                 name: {
                                                     kind: "Name",
-                                                    value: "name",
-                                                },
+                                                    value: "name"
+                                                }
                                             },
                                             {
                                                 kind: "Field",
                                                 name: {
                                                     kind: "Name",
-                                                    value: "albumOfTrack",
+                                                    value: "albumOfTrack"
                                                 },
                                                 selectionSet: {
                                                     kind: "SelectionSet",
@@ -211,21 +211,21 @@ const ja = {
                                                             kind: "Field",
                                                             name: {
                                                                 kind: "Name",
-                                                                value: "uri",
-                                                            },
+                                                                value: "uri"
+                                                            }
                                                         },
                                                         {
                                                             kind: "Field",
                                                             name: {
                                                                 kind: "Name",
-                                                                value: "name",
-                                                            },
+                                                                value: "name"
+                                                            }
                                                         },
                                                         {
                                                             kind: "Field",
                                                             name: {
                                                                 kind: "Name",
-                                                                value: "coverArt",
+                                                                value: "coverArt"
                                                             },
                                                             selectionSet: {
                                                                 kind: "SelectionSet",
@@ -234,27 +234,27 @@ const ja = {
                                                                         kind: "FragmentSpread",
                                                                         name: {
                                                                             kind: "Name",
-                                                                            value: "searchImageSources",
-                                                                        },
-                                                                    },
-                                                                ],
-                                                            },
+                                                                            value: "searchImageSources"
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            }
                                                         },
                                                         {
                                                             kind: "Field",
                                                             name: {
                                                                 kind: "Name",
-                                                                value: "id",
-                                                            },
-                                                        },
-                                                    ],
-                                                },
+                                                                value: "id"
+                                                            }
+                                                        }
+                                                    ]
+                                                }
                                             },
                                             {
                                                 kind: "Field",
                                                 name: {
                                                     kind: "Name",
-                                                    value: "artists",
+                                                    value: "artists"
                                                 },
                                                 selectionSet: {
                                                     kind: "SelectionSet",
@@ -263,7 +263,7 @@ const ja = {
                                                             kind: "Field",
                                                             name: {
                                                                 kind: "Name",
-                                                                value: "items",
+                                                                value: "items"
                                                             },
                                                             selectionSet: {
                                                                 kind: "SelectionSet",
@@ -272,14 +272,14 @@ const ja = {
                                                                         kind: "Field",
                                                                         name: {
                                                                             kind: "Name",
-                                                                            value: "uri",
-                                                                        },
+                                                                            value: "uri"
+                                                                        }
                                                                     },
                                                                     {
                                                                         kind: "Field",
                                                                         name: {
                                                                             kind: "Name",
-                                                                            value: "profile",
+                                                                            value: "profile"
                                                                         },
                                                                         selectionSet: {
                                                                             kind: "SelectionSet",
@@ -288,23 +288,23 @@ const ja = {
                                                                                     kind: "Field",
                                                                                     name: {
                                                                                         kind: "Name",
-                                                                                        value: "name",
-                                                                                    },
-                                                                                },
-                                                                            ],
-                                                                        },
-                                                                    },
-                                                                ],
-                                                            },
-                                                        },
-                                                    ],
-                                                },
+                                                                                        value: "name"
+                                                                                    }
+                                                                                }
+                                                                            ]
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    ]
+                                                }
                                             },
                                             {
                                                 kind: "Field",
                                                 name: {
                                                     kind: "Name",
-                                                    value: "contentRating",
+                                                    value: "contentRating"
                                                 },
                                                 selectionSet: {
                                                     kind: "SelectionSet",
@@ -313,17 +313,17 @@ const ja = {
                                                             kind: "Field",
                                                             name: {
                                                                 kind: "Name",
-                                                                value: "label",
-                                                            },
-                                                        },
-                                                    ],
-                                                },
+                                                                value: "label"
+                                                            }
+                                                        }
+                                                    ]
+                                                }
                                             },
                                             {
                                                 kind: "Field",
                                                 name: {
                                                     kind: "Name",
-                                                    value: "duration",
+                                                    value: "duration"
                                                 },
                                                 selectionSet: {
                                                     kind: "SelectionSet",
@@ -332,17 +332,17 @@ const ja = {
                                                             kind: "Field",
                                                             name: {
                                                                 kind: "Name",
-                                                                value: "totalMilliseconds",
-                                                            },
-                                                        },
-                                                    ],
-                                                },
+                                                                value: "totalMilliseconds"
+                                                            }
+                                                        }
+                                                    ]
+                                                }
                                             },
                                             {
                                                 kind: "Field",
                                                 name: {
                                                     kind: "Name",
-                                                    value: "playability",
+                                                    value: "playability"
                                                 },
                                                 selectionSet: {
                                                     kind: "SelectionSet",
@@ -351,17 +351,17 @@ const ja = {
                                                             kind: "Field",
                                                             name: {
                                                                 kind: "Name",
-                                                                value: "playable",
-                                                            },
-                                                        },
-                                                    ],
-                                                },
+                                                                value: "playable"
+                                                            }
+                                                        }
+                                                    ]
+                                                }
                                             },
                                             {
                                                 kind: "Field",
                                                 name: {
                                                     kind: "Name",
-                                                    value: "associations",
+                                                    value: "associations"
                                                 },
                                                 selectionSet: {
                                                     kind: "SelectionSet",
@@ -370,7 +370,7 @@ const ja = {
                                                             kind: "Field",
                                                             name: {
                                                                 kind: "Name",
-                                                                value: "associatedVideos",
+                                                                value: "associatedVideos"
                                                             },
                                                             selectionSet: {
                                                                 kind: "SelectionSet",
@@ -379,25 +379,25 @@ const ja = {
                                                                         kind: "Field",
                                                                         name: {
                                                                             kind: "Name",
-                                                                            value: "totalCount",
-                                                                        },
-                                                                    },
-                                                                ],
-                                                            },
-                                                        },
-                                                    ],
-                                                },
-                                            },
-                                        ],
-                                    },
-                                },
-                            ],
-                        },
-                    },
-                ],
-            },
-        },
-    ],
+                                                                            value: "totalCount"
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
+        }
+    ]
 };
 export const searchTracksDefinition = {
     kind: "Document",
@@ -407,7 +407,7 @@ export const searchTracksDefinition = {
             operation: "query",
             name: {
                 kind: "Name",
-                value: "searchTracks",
+                value: "searchTracks"
             },
             variableDefinitions: [
                 {
@@ -416,8 +416,8 @@ export const searchTracksDefinition = {
                         kind: "Variable",
                         name: {
                             kind: "Name",
-                            value: "searchTerm",
-                        },
+                            value: "searchTerm"
+                        }
                     },
                     type: {
                         kind: "NonNullType",
@@ -425,10 +425,10 @@ export const searchTracksDefinition = {
                             kind: "NamedType",
                             name: {
                                 kind: "Name",
-                                value: "String",
-                            },
-                        },
-                    },
+                                value: "String"
+                            }
+                        }
+                    }
                 },
                 {
                     kind: "VariableDefinition",
@@ -436,16 +436,16 @@ export const searchTracksDefinition = {
                         kind: "Variable",
                         name: {
                             kind: "Name",
-                            value: "limit",
-                        },
+                            value: "limit"
+                        }
                     },
                     type: {
                         kind: "NamedType",
                         name: {
                             kind: "Name",
-                            value: "Int",
-                        },
-                    },
+                            value: "Int"
+                        }
+                    }
                 },
                 {
                     kind: "VariableDefinition",
@@ -453,17 +453,17 @@ export const searchTracksDefinition = {
                         kind: "Variable",
                         name: {
                             kind: "Name",
-                            value: "offset",
-                        },
+                            value: "offset"
+                        }
                     },
                     type: {
                         kind: "NamedType",
                         name: {
                             kind: "Name",
-                            value: "Int",
-                        },
-                    },
-                },
+                            value: "Int"
+                        }
+                    }
+                }
             ],
             selectionSet: {
                 kind: "SelectionSet",
@@ -472,51 +472,51 @@ export const searchTracksDefinition = {
                         kind: "Field",
                         name: {
                             kind: "Name",
-                            value: "searchV2",
+                            value: "searchV2"
                         },
                         arguments: [
                             {
                                 kind: "Argument",
                                 name: {
                                     kind: "Name",
-                                    value: "query",
+                                    value: "query"
                                 },
                                 value: {
                                     kind: "Variable",
                                     name: {
                                         kind: "Name",
-                                        value: "searchTerm",
-                                    },
-                                },
+                                        value: "searchTerm"
+                                    }
+                                }
                             },
                             {
                                 kind: "Argument",
                                 name: {
                                     kind: "Name",
-                                    value: "limit",
+                                    value: "limit"
                                 },
                                 value: {
                                     kind: "Variable",
                                     name: {
                                         kind: "Name",
-                                        value: "limit",
-                                    },
-                                },
+                                        value: "limit"
+                                    }
+                                }
                             },
                             {
                                 kind: "Argument",
                                 name: {
                                     kind: "Name",
-                                    value: "offset",
+                                    value: "offset"
                                 },
                                 value: {
                                     kind: "Variable",
                                     name: {
                                         kind: "Name",
-                                        value: "offset",
-                                    },
-                                },
-                            },
+                                        value: "offset"
+                                    }
+                                }
+                            }
                         ],
                         selectionSet: {
                             kind: "SelectionSet",
@@ -525,14 +525,14 @@ export const searchTracksDefinition = {
                                     kind: "Field",
                                     name: {
                                         kind: "Name",
-                                        value: "query",
-                                    },
+                                        value: "query"
+                                    }
                                 },
                                 {
                                     kind: "Field",
                                     name: {
                                         kind: "Name",
-                                        value: "tracksV2",
+                                        value: "tracksV2"
                                     },
                                     selectionSet: {
                                         kind: "SelectionSet",
@@ -541,14 +541,14 @@ export const searchTracksDefinition = {
                                                 kind: "Field",
                                                 name: {
                                                     kind: "Name",
-                                                    value: "totalCount",
-                                                },
+                                                    value: "totalCount"
+                                                }
                                             },
                                             {
                                                 kind: "Field",
                                                 name: {
                                                     kind: "Name",
-                                                    value: "items",
+                                                    value: "items"
                                                 },
                                                 selectionSet: {
                                                     kind: "SelectionSet",
@@ -557,14 +557,14 @@ export const searchTracksDefinition = {
                                                             kind: "Field",
                                                             name: {
                                                                 kind: "Name",
-                                                                value: "matchedFields",
-                                                            },
+                                                                value: "matchedFields"
+                                                            }
                                                         },
                                                         {
                                                             kind: "Field",
                                                             name: {
                                                                 kind: "Name",
-                                                                value: "item",
+                                                                value: "item"
                                                             },
                                                             selectionSet: {
                                                                 kind: "SelectionSet",
@@ -573,20 +573,20 @@ export const searchTracksDefinition = {
                                                                         kind: "FragmentSpread",
                                                                         name: {
                                                                             kind: "Name",
-                                                                            value: "searchTrackDesktop",
-                                                                        },
-                                                                    },
-                                                                ],
-                                                            },
-                                                        },
-                                                    ],
-                                                },
+                                                                            value: "searchTrackDesktop"
+                                                                        }
+                                                                    }
+                                                                ]
+                                                            }
+                                                        }
+                                                    ]
+                                                }
                                             },
                                             {
                                                 kind: "Field",
                                                 name: {
                                                     kind: "Name",
-                                                    value: "pagingInfo",
+                                                    value: "pagingInfo"
                                                 },
                                                 selectionSet: {
                                                     kind: "SelectionSet",
@@ -595,30 +595,30 @@ export const searchTracksDefinition = {
                                                             kind: "Field",
                                                             name: {
                                                                 kind: "Name",
-                                                                value: "nextOffset",
-                                                            },
+                                                                value: "nextOffset"
+                                                            }
                                                         },
                                                         {
                                                             kind: "Field",
                                                             name: {
                                                                 kind: "Name",
-                                                                value: "limit",
-                                                            },
-                                                        },
-                                                    ],
-                                                },
-                                            },
-                                        ],
-                                    },
-                                },
-                            ],
-                        },
-                    },
-                ],
-            },
+                                                                value: "limit"
+                                                            }
+                                                        }
+                                                    ]
+                                                }
+                                            }
+                                        ]
+                                    }
+                                }
+                            ]
+                        }
+                    }
+                ]
+            }
         },
         ...ja.definitions,
         ...Na.definitions,
-        ...Sa.definitions,
-    ],
+        ...Sa.definitions
+    ]
 };
