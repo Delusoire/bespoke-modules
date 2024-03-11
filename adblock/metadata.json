@@ -1,0 +1,15 @@
+{
+	"name": "adblock",
+	"tags": ["ads", "premium"],
+	"preview": "./assets/PREVIEW.png",
+	"version": "beta",
+	"authors": ["Delusoire"],
+	"description": "Block ads.",
+	"readme": "./assets/README.md",
+	"entries": {
+		"js": "index.js",
+		"css": false,
+		"mixin": false
+	},
+	"dependencies": ["Delusoire/std", "Delusoire/delulib"]
+}

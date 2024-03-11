@@ -92,3 +92,11 @@ export const setPlayingContext = (uri)=>{
         url: `context://${uri}`
     });
 };
+export const getSongPositionMs = (item = PlayerAPI.getState()?.item)=>{
+    if (!item) return null;
+    const { positionAsOfTimestamp, timestamp, duration, speed, hasContext, isPaused, isBuffering } = item;
+    if (!positionAsOfTimestamp || !duration) return null;
+    if (!hasContext || isPaused || isBuffering) return positionAsOfTimestamp;
+    const scaledTimeSinceTimestamp = (Date.now() - timestamp) * (speed ?? 0);
+    return Math.min(positionAsOfTimestamp + scaledTimeSinceTimestamp, duration);
+};
