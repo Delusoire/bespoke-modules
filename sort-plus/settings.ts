@@ -1,4 +1,4 @@
-import { createFolder } from "/modules/Delusoire/delulib/platformApi.js";
+import { createFolder } from "/modules/Delusoire/delulib/lib/platform.js";
 import { settings } from "./index.js";
 
 const SORTED_PLAYLISTS_FOLDER_NAME = "📀 Sorted Playlists";

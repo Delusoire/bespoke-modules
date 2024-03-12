@@ -1,5 +1,5 @@
-import { searchYoutube, spotifyApi } from "/modules/Delusoire/delulib/api.js";
-import { normalizeStr } from "/modules/Delusoire/delulib/util.js";
+import { searchYoutube, spotifyApi } from "/modules/Delusoire/delulib/lib/api.js";
+import { normalizeStr } from "/modules/Delusoire/delulib/lib/util.js";
 // import { Innertube, UniversalCache } from "https://esm.sh/youtubei.js/web.bundle.min";
 // const yt = await Innertube.create({
 // 	cache: new UniversalCache(false),

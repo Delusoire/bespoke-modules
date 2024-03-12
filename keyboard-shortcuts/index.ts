@@ -1,7 +1,7 @@
-import { toggleInLibrary } from "/modules/Delusoire/delulib/platformApi.js";
+import { toggleInLibrary } from "/modules/Delusoire/delulib/lib/platform.js";
 import { S } from "/modules/Delusoire/std/index.js";
 
-import { KEY_LIST, _SneakOverlay, mousetrapInst } from "./sneak.js";
+import { KEY_LIST, type _SneakOverlay, mousetrapInst } from "./sneak.js";
 import { Bind, appScroll, appScrollY, openPage, rotateSidebar } from "./util.js";
 
 const UserAPI = S.Platform.getUserAPI();

@@ -8,7 +8,7 @@ import { when } from "https://esm.sh/lit/directives/when.js";
 // import { hermite } from "https://esm.sh/@thi.ng/ramp"
 
 import { _ } from "/modules/Delusoire/std/deps.js";
-import { remapScalar, vectorLerp } from "/modules/Delusoire/delulib/math.js";
+import { remapScalar, vectorLerp } from "/modules/Delusoire/delulib/lib/math.js";
 import { MonotoneNormalSpline } from "../splines/monotoneNormalSpline.js";
 import { LyricsType } from "../utils/LyricsProvider.js";
 import { PlayerW } from "../utils/PlayerW.js";

@@ -1,6 +1,6 @@
 import { _, fp } from "/modules/Delusoire/std/deps.js";
 import { S } from "/modules/Delusoire/std/index.js";
-import { spotifyApi } from "/modules/Delusoire/delulib/api.js";
+import { spotifyApi } from "/modules/Delusoire/delulib/lib/api.js";
 const { URI } = S;
 export const SEPARATOR_URI = "spotify:separator";
 export var ERROR;

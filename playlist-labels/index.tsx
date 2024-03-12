@@ -1,10 +1,10 @@
 import { S } from "/modules/Delusoire/std/index.js";
 import { _ } from "/modules/Delusoire/std/deps.js";
-import { onTrackListMutationListeners } from "/modules/Delusoire/delulib/listeners.js";
-import { useLivePlaylistItems } from "../library-db/listeners.js";
-import { createIconComponent } from "/modules/Delusoire/std/api/createIconComponent.js";
+import { onTrackListMutationListeners } from "/modules/Delusoire/delulib/lib/listeners.js";
+import { useLivePlaylistItems } from "/modules/Delusoire/library-db/index.js";
+import { createIconComponent } from "/modules/Delusoire/std/lib/createIconComponent.js";
 import { useLiveQuery } from "/modules/Delusoire/dexie-react-hooks/index.js";
-import { db } from "../library-db/db.js";
+import { db } from "/modules/Delusoire/library-db/lib/db.js";
 
 const { ReactDOM, URI } = S;
 
@@ -94,7 +94,7 @@ const PlaylistLabel = ({ uri, playlistUri }) => {
 
 /*
 import { _ } from "/hooks/deps.js";
-import { onTrackListMutationListeners } from "/modules/Delusoire/delulib/listeners.js";
+import { onTrackListMutationListeners } from "/modules/Delusoire/delulib/lib/listeners.js";
 import { db, getTracksFromURIs } from "./db.js";
 import { PlaylistItems } from "./listeners.js";
 

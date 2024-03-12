@@ -1,9 +1,9 @@
 import { createRegistrar } from "/modules/Delusoire/std/index.js";
-import { createSettings } from "/modules/Delusoire/std/api/settings.js";
+import { createSettings } from "/modules/Delusoire/std/lib/settings.js";
 
 import type { Module } from "/hooks/module.js";
 import { S } from "/modules/Delusoire/std/index.js";
-import type { Settings } from "/modules/Delusoire/std/api/settings.js";
+import type { Settings } from "/modules/Delusoire/std/lib/settings.js";
 
 const { URI } = S;
 

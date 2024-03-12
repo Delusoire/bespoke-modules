@@ -1,5 +1,5 @@
 import { settings } from "./index.js";
-import { createFolder } from "/modules/Delusoire/delulib/platformApi.js";
+import { createFolder } from "/modules/Delusoire/delulib/lib/platform.js";
 const ANONIMYZED_RADIOS_FOLDER_NAME = "🎭 Anonymized Radios";
 export const CONFIG = settings.addInput({
     id: "anonymizedRadiosFolderUri",

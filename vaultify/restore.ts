@@ -1,8 +1,8 @@
-import { addPlaylist, createFolder, createPlaylistFromTracks } from "/modules/Delusoire/delulib/platformApi.js";
-import { SpotifyLoc } from "/modules/Delusoire/delulib/util.js";
+import { addPlaylist, createFolder, createPlaylistFromTracks } from "/modules/Delusoire/delulib/lib/platform.js";
+import { SpotifyLoc } from "/modules/Delusoire/delulib/lib/util.js";
 
-import { LibraryBackup, LocalStorageBackup, SettingBackup } from "./backup.js";
-import { LikedPlaylist, PersonalFolder, PersonalPlaylist, isContentOfPersonalPlaylist } from "./util.js";
+import type { LibraryBackup, LocalStorageBackup, SettingBackup } from "./backup.js";
+import { type LikedPlaylist, type PersonalFolder, type PersonalPlaylist, isContentOfPersonalPlaylist } from "./util.js";
 
 import { S } from "/modules/Delusoire/std/index.js";
 import { _ } from "/modules/Delusoire/std/deps.js";

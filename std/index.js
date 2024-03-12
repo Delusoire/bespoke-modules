@@ -1,7 +1,7 @@
-export * from "./static.js";
-import { S as _S } from "./expose/index.js";
+export * from "./src/static.js";
+import { S as _S } from "./src/expose/index.js";
 export const S = _S;
-import { Registrar } from "./registers/registers.js";
+import { Registrar } from "./src/registers/registers.js";
 export const createRegistrar = (mod)=>{
     if (!mod.registrar) {
         mod.registrar = new Registrar(mod.getIdentifier());

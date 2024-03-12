@@ -1,6 +1,6 @@
 import { _ } from "/modules/Delusoire/std/deps.js";
-import { zip_n_uplets } from "/modules/Delusoire/delulib/fp.js";
-import { matrixMultMatrix, remapScalar, scalarAddVector, scalarMultVector, vectorAddVector, vectorDist, vectorDivScalar, vectorMultVector, vectorSubVector } from "/modules/Delusoire/delulib/math.js";
+import { zip_n_uplets } from "/modules/Delusoire/delulib/lib/fp.js";
+import { matrixMultMatrix, remapScalar, scalarAddVector, scalarMultVector, vectorAddVector, vectorDist, vectorDivScalar, vectorMultVector, vectorSubVector } from "/modules/Delusoire/delulib/lib/math.js";
 var EndCondition;
 (function(EndCondition) {
     EndCondition[EndCondition["NATURAL"] = 0] = "NATURAL";

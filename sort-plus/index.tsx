@@ -1,11 +1,11 @@
 import { S, createRegistrar } from "/modules/Delusoire/std/index.js";
-import { createSettings } from "/modules/Delusoire/std/api/settings.js";
+import { createSettings } from "/modules/Delusoire/std/lib/settings.js";
 
-import { Button } from "/modules/Delusoire/std/registers/topbarLeftButton.js";
+import { Button } from "/modules/Delusoire/std/src/registers/topbarLeftButton.js";
 
 import { URI_is_LikedTracks } from "./util.js";
 import { SVGIcons } from "/modules/Delusoire/std/index.js";
-import type { Settings } from "/modules/Delusoire/std/api/settings.js";
+import type { Settings } from "/modules/Delusoire/std/lib/settings.js";
 import type { Module } from "/hooks/module.js";
 
 const { URI } = S;

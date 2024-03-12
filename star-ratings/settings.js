@@ -1,4 +1,4 @@
-import { createFolder } from "/modules/Delusoire/delulib/platformApi.js";
+import { createFolder } from "/modules/Delusoire/delulib/lib/platform.js";
 import { settings } from "./index.js";
 import { loadRatings } from "./util.js";
 const RATINGS_FOLDER_NAME = "®️ Ratings";

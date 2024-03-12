@@ -1,5 +1,5 @@
-import { addPlaylistTracks, createPlaylist, removePlaylistTracks, setPlaylistVisibility, setInLibrary } from "/modules/Delusoire/delulib/platformApi.js";
-import { SpotifyLoc } from "/modules/Delusoire/delulib/util.js";
+import { addPlaylistTracks, createPlaylist, removePlaylistTracks, setPlaylistVisibility, setInLibrary } from "/modules/Delusoire/delulib/lib/platform.js";
+import { SpotifyLoc } from "/modules/Delusoire/delulib/lib/util.js";
 import { updateCollectionControls, updateNowPlayingControls, updateTrackListControls } from "./controls.js";
 import { CONFIG } from "./settings.js";
 import { getNowPlayingBar } from "./util.js";

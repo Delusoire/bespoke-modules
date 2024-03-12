@@ -1,7 +1,7 @@
 import { _, fp } from "/modules/Delusoire/std/deps.js";
 import { S } from "/modules/Delusoire/std/index.js";
-import { spotifyApi } from "/modules/Delusoire/delulib/api.js";
-import type { TrackData } from "/modules/Delusoire/delulib/parse.js";
+import { spotifyApi } from "/modules/Delusoire/delulib/lib/api.js";
+import type { TrackData } from "/modules/Delusoire/delulib/lib/parse.js";
 
 import type { URIClass } from "/modules/Delusoire/std/expose/webpack.js";
 

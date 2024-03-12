@@ -1,4 +1,4 @@
-import { createIconComponent } from "/modules/Delusoire/std/api/createIconComponent.js";
+import { createIconComponent } from "/modules/Delusoire/std/lib/createIconComponent.js";
 import { S } from "/modules/Delusoire/std/index.js";
 
 interface RefreshButtonProps {

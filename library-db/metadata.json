@@ -7,7 +7,7 @@
 	"description": "Provides metadata about your Spotify library to other modules.",
 	"readme": "./assets/README.md",
 	"entries": {
-		"js": false,
+		"js": "index.js",
 		"css": false,
 		"mixin": false
 	},

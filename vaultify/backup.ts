@@ -1,7 +1,7 @@
 import { _ } from "/modules/Delusoire/std/deps.js";
-import { fetchPlaylistContents, fetchRootFolder } from "/modules/Delusoire/delulib/platformApi.js";
+import { fetchPlaylistContents, fetchRootFolder } from "/modules/Delusoire/delulib/lib/platform.js";
 
-import { LikedPlaylist, PersonalFolder, PersonalPlaylist, PoF } from "./util.js";
+import type { LikedPlaylist, PersonalFolder, PersonalPlaylist, PoF } from "./util.js";
 
 import { S } from "/modules/Delusoire/std/index.js";
 

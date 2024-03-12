@@ -1,11 +1,11 @@
-export * from "./static.js";
+export * from "./src/static.js";
 
-import { S as _S } from "./expose/index.js";
+import { S as _S } from "./src/expose/index.js";
 export const S = _S;
 
 import type { Module } from "/hooks/module.js";
 
-import { Registrar } from "./registers/registers.js";
+import { Registrar } from "./src/registers/registers.js";
 
 export const createRegistrar = (mod: Module & { registrar?: Registrar }) => {
 	if (!mod.registrar) {

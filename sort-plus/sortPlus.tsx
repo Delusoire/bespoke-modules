@@ -1,5 +1,5 @@
-import type { TrackData } from "/modules/Delusoire/delulib/parse.js";
-import { setQueue as _setQueue, createQueueItem } from "/modules/Delusoire/delulib/util.js";
+import type { TrackData } from "/modules/Delusoire/delulib/lib/parse.js";
+import { setQueue as _setQueue, createQueueItem } from "/modules/Delusoire/delulib/lib/util.js";
 import { _, fp } from "/modules/Delusoire/std/deps.js";
 import { S } from "/modules/Delusoire/std/index.js";
 
@@ -88,8 +88,8 @@ const SubMenuItems = Object.values(SortAction).map(
 		}),
 );
 
-import { createIconComponent } from "/modules/Delusoire/std/api/createIconComponent.js";
-import { useMenuItem } from "/modules/Delusoire/std/registers/menu.js";
+import { createIconComponent } from "/modules/Delusoire/std/lib/createIconComponent.js";
+import { useMenuItem } from "/modules/Delusoire/std/src/registers/menu.js";
 
 const SortByShuffleSubMenuItem = ({ descending }: SortBySubMenuItemProps) => {
 	const { props } = useMenuItem();

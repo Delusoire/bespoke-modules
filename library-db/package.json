@@ -1,0 +1,7 @@
+{
+  "name": "library-db",
+  "dependencies": {},
+  "devDependencies": { "dexie": "^3.2.6" },
+  "peerDependencies": {},
+  "private": true
+}

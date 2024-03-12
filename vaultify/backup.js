@@ -1,5 +1,5 @@
 import { _ } from "/modules/Delusoire/std/deps.js";
-import { fetchPlaylistContents, fetchRootFolder } from "/modules/Delusoire/delulib/platformApi.js";
+import { fetchPlaylistContents, fetchRootFolder } from "/modules/Delusoire/delulib/lib/platform.js";
 import { S } from "/modules/Delusoire/std/index.js";
 const LibraryAPI = S.Platform.getLibraryAPI();
 const LocalStorageAPI = S.Platform.getLocalStorageAPI();

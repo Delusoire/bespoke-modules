@@ -1,5 +1,5 @@
-import { addPlaylist, createFolder, createPlaylistFromTracks } from "/modules/Delusoire/delulib/platformApi.js";
-import { SpotifyLoc } from "/modules/Delusoire/delulib/util.js";
+import { addPlaylist, createFolder, createPlaylistFromTracks } from "/modules/Delusoire/delulib/lib/platform.js";
+import { SpotifyLoc } from "/modules/Delusoire/delulib/lib/util.js";
 import { isContentOfPersonalPlaylist } from "./util.js";
 import { S } from "/modules/Delusoire/std/index.js";
 import { _ } from "/modules/Delusoire/std/deps.js";

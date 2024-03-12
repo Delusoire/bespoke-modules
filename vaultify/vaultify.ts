@@ -1,4 +1,12 @@
-import { LibraryBackup, LocalStorageBackup, SettingBackup, getLibrary, getLocalStorage, getLocalStoreAPI, getSettings } from "./backup.js";
+import {
+	type LibraryBackup,
+	type LocalStorageBackup,
+	type SettingBackup,
+	getLibrary,
+	getLocalStorage,
+	getLocalStoreAPI,
+	getSettings,
+} from "./backup.js";
 import { restoreLocalStorage, restoreLibrary, restoreSettings } from "./restore.js";
 import { S } from "/modules/Delusoire/std/index.js";
 

@@ -2,11 +2,11 @@ import { updateCollectionControls, updateNowPlayingControls, updateTrackControls
 import { loadRatings } from "./util.js";
 import { CONFIG } from "./settings.js";
 import { _ } from "/modules/Delusoire/std/deps.js";
-import { onHistoryChanged, onTrackListMutationListeners } from "/modules/Delusoire/delulib/listeners.js";
+import { onHistoryChanged, onTrackListMutationListeners } from "/modules/Delusoire/delulib/lib/listeners.js";
 import { Events, SVGIcons } from "/modules/Delusoire/std/index.js";
 import { S } from "/modules/Delusoire/std/index.js";
-import { useMenuItem } from "/modules/Delusoire/std/registers/menu.js";
-import { createIconComponent } from "/modules/Delusoire/std/api/createIconComponent.js";
+import { useMenuItem } from "/modules/Delusoire/std/src/registers/menu.js";
+import { createIconComponent } from "/modules/Delusoire/std/lib/createIconComponent.js";
 const { URI } = S;
 globalThis.tracksRatings || (globalThis.tracksRatings = {});
 globalThis.playlistUris || (globalThis.playlistUris = []);

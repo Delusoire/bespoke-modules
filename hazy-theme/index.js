@@ -1,5 +1,6 @@
 // @ts-nocheck
 import { S, Events } from "/modules/Delusoire/std/index.js";
+const BACKGROUND_URL = "";
 const PlayerAPI = S.Platform.getPlayerAPI();
 const History = S.Platform.getHistory();
 const style = document.documentElement.style;
@@ -30,8 +31,8 @@ async function fetchFadeTime() {
 }
 async function onSongChange() {
     fetchFadeTime();
-    const { image_url } = PlayerAPI.getState().item.metadata;
-    style.setProperty("--image_url", `url("${image_url}")`);
+    const { image_url } = PlayerAPI.getState().item?.metadata ?? {};
+    style.setProperty("--image_url", `url("${image_url ?? BACKGROUND_URL}")`);
     updateLyricsPageProperties();
 }
 Events.Player.songchanged.on(onSongChange);
