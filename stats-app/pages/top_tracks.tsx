@@ -4,12 +4,12 @@ const { React } = S;
 import PageContainer from "../components/shared/page_container.js";
 import { DEFAULT_TRACK_IMG } from "../static.js";
 import RefreshButton from "../components/buttons/refresh_button.js";
-import { spotifyApi } from "../../delulib/api.js";
+import { spotifyApi } from "/modules/Delusoire/delulib/lib/api.js";
 import type { Track } from "@fostertheweb/spotify-web-api-ts-sdk";
 import { SpotifyTimeRange } from "../api/spotify.js";
 import { useStatus } from "../components/status/useStatus.js";
 import { logger, settingsButton, storage } from "../index.js";
-import { useDropdown } from "../../std/api/components/index.js";
+import { useDropdown } from "/modules/Delusoire/stdlib/lib/components/index.js";
 
 const DropdownOptions = { "Past Month": "Past Month", "Past 6 Months": "Past 6 Months", "All Time": "All Time" } as const;
 const OptionToTimeRange = {

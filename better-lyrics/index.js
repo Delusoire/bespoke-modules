@@ -1,7 +1,7 @@
 import { render } from "https://esm.sh/lit";
 import { PermanentMutationObserver } from "/modules/Delusoire/delulib/lib/util.js";
-import { PlayerW } from "./utils/PlayerW.js";
-import { LyricsWrapper } from "./components/components.js";
+import { PlayerW } from "./src/utils/PlayerW.js";
+import { LyricsWrapper } from "./src/components/components.js";
 const injectLyrics = (insertSelector, scrollSelector)=>()=>{
         const lyricsContainer = document.querySelector(insertSelector);
         if (!lyricsContainer || lyricsContainer.classList.contains("injected")) return;
