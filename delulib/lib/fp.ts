@@ -1,5 +1,5 @@
-import { _ } from "/modules/Delusoire/std/deps.js";
-import { S } from "/modules/Delusoire/std/index.js";
+import { _ } from "/modules/Delusoire/stdlib/deps.js";
+import { S } from "/modules/Delusoire/stdlib/index.js";
 
 const { Snackbar } = S;
 

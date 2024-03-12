@@ -1,8 +1,10 @@
 function _ts_decorate(decorators, target, key, desc) {
-    var c = arguments.length, r = c < 3 ? target : desc === null ? desc = Object.getOwnPropertyDescriptor(target, key) : desc, d;
-    if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
-    else for(var i = decorators.length - 1; i >= 0; i--)if (d = decorators[i]) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
-    return c > 3 && r && Object.defineProperty(target, key, r), r;
+	var c = arguments.length,
+		r = c < 3 ? target : desc === null ? (desc = Object.getOwnPropertyDescriptor(target, key)) : desc,
+		d;
+	if (typeof Reflect === "object" && typeof Reflect.decorate === "function") r = Reflect.decorate(decorators, target, key, desc);
+	else for (var i = decorators.length - 1; i >= 0; i--) if ((d = decorators[i])) r = (c < 3 ? d(r) : c > 3 ? d(target, key, r) : d(target, key)) || r;
+	return c > 3 && r && Object.defineProperty(target, key, r), r;
 }
 import { provide } from "https://esm.sh/@lit/context";
 import { Task } from "https://esm.sh/@lit/task";
@@ -12,7 +14,7 @@ import { map } from "https://esm.sh/lit/directives/map.js";
 import { when } from "https://esm.sh/lit/directives/when.js";
 // import { PropertyValueMap } from "https://esm.sh/v133/@lit/reactive-element/development/reactive-element.js";
 // import { hermite } from "https://esm.sh/@thi.ng/ramp"
-import { _ } from "/modules/Delusoire/std/deps.js";
+import { _ } from "/modules/Delusoire/stdlib/deps.js";
 import { remapScalar, vectorLerp } from "/modules/Delusoire/delulib/lib/math.js";
 import { MonotoneNormalSpline } from "../splines/monotoneNormalSpline.js";
 import { LyricsType } from "../utils/LyricsProvider.js";
@@ -20,165 +22,54 @@ import { PlayerW } from "../utils/PlayerW.js";
 import { loadedLyricsTypeCtx, scrollTimeoutCtx, scrollContainerCtx } from "./contexts.js";
 import { AnimatedMixin, ScrolledMixin, SyncedContainerMixin, SyncedMixin } from "./mixins.js";
 const opacityInterpolator = new MonotoneNormalSpline([
-    [
-        0,
-        0
-    ],
-    [
-        0.1,
-        0.1
-    ],
-    [
-        0.2,
-        0.3
-    ],
-    [
-        0.5,
-        0.55
-    ],
-    [
-        0.7,
-        0.8
-    ],
-    [
-        1,
-        1
-    ],
-    [
-        1.2,
-        0.8
-    ],
-    [
-        1.5,
-        0.7
-    ]
+	[0, 0],
+	[0.1, 0.1],
+	[0.2, 0.3],
+	[0.5, 0.55],
+	[0.7, 0.8],
+	[1, 1],
+	[1.2, 0.8],
+	[1.5, 0.7],
 ]);
 const glowRadiusInterpolator = new MonotoneNormalSpline([
-    [
-        0,
-        100
-    ],
-    [
-        0.2,
-        7
-    ],
-    [
-        0.4,
-        5
-    ],
-    [
-        0.6,
-        3
-    ],
-    [
-        0.7,
-        2
-    ],
-    [
-        0.9,
-        1
-    ],
-    [
-        1,
-        3
-    ],
-    [
-        1.1,
-        7
-    ],
-    [
-        1.25,
-        100
-    ]
+	[0, 100],
+	[0.2, 7],
+	[0.4, 5],
+	[0.6, 3],
+	[0.7, 2],
+	[0.9, 1],
+	[1, 3],
+	[1.1, 7],
+	[1.25, 100],
 ]);
 const glowAlphaInterpolator = new MonotoneNormalSpline([
-    [
-        0,
-        0
-    ],
-    [
-        0.1,
-        0.2
-    ],
-    [
-        0.2,
-        0.35
-    ],
-    [
-        0.5,
-        0.65
-    ],
-    [
-        0.7,
-        0.9
-    ],
-    [
-        1,
-        1
-    ],
-    [
-        1.2,
-        0.6
-    ],
-    [
-        1.5,
-        0
-    ]
+	[0, 0],
+	[0.1, 0.2],
+	[0.2, 0.35],
+	[0.5, 0.65],
+	[0.7, 0.9],
+	[1, 1],
+	[1.2, 0.6],
+	[1.5, 0],
 ]);
 const scaleInterpolator = new MonotoneNormalSpline([
-    [
-        -0.5,
-        1
-    ],
-    [
-        -0.2,
-        0.99
-    ],
-    [
-        -0.1,
-        0.98
-    ],
-    [
-        0,
-        0.94
-    ],
-    [
-        0.1,
-        0.99
-    ],
-    [
-        0.2,
-        1
-    ],
-    [
-        0.5,
-        1.02
-    ],
-    [
-        0.7,
-        1.06
-    ],
-    [
-        0.9,
-        1.04
-    ],
-    [
-        1,
-        1.02
-    ],
-    [
-        1.2,
-        1.01
-    ],
-    [
-        1.5,
-        1
-    ]
+	[-0.5, 1],
+	[-0.2, 0.99],
+	[-0.1, 0.98],
+	[0, 0.94],
+	[0.1, 0.99],
+	[0.2, 1],
+	[0.5, 1.02],
+	[0.7, 1.06],
+	[0.9, 1.04],
+	[1, 1.02],
+	[1.2, 1.01],
+	[1.5, 1],
 ]);
 export class AnimatedText extends AnimatedMixin(SyncedMixin(LitElement)) {
-    static NAME = "animated-text";
-    split;
-    static styles = css`
+	static NAME = "animated-text";
+	split;
+	static styles = css`
         :host {
             cursor: pointer;
             background-color: black;
@@ -193,222 +84,245 @@ export class AnimatedText extends AnimatedMixin(SyncedMixin(LitElement)) {
             );
         }
     `;
-    animateContent() {
-        const nextGradientAlpha = opacityInterpolator.at(this.csp).toFixed(5);
-        const nextGlowRadius = `${glowRadiusInterpolator.at(this.csp)}px`;
-        const nextGlowAlpha = glowAlphaInterpolator.at(this.csp).toFixed(5);
-        const nextYOffset = `-${this.offsetHeight * 0.1 * this.csp}px`;
-        const nextGradientStart = `${this.csp * 95}%`;
-        const nextGradientEnd = `${this.csp * 105}%`;
-        const nextScale = scaleInterpolator.at(this.csp).toFixed(5);
-        this.style.setProperty("--gradient-alpha", nextGradientAlpha);
-        this.style.setProperty("--glow-radius", nextGlowRadius);
-        this.style.setProperty("--glow-alpha", nextGlowAlpha);
-        this.style.setProperty("--gradient-start", nextGradientStart);
-        this.style.setProperty("--gradient-end", nextGradientEnd);
-        this.style.setProperty("--y-offset", nextYOffset);
-        this.style.scale = nextScale;
-    }
-    onClick() {
-        PlayerW.setTimestamp(this.tsp);
-    }
-    render() {
-        return html`<span role="button" @click=${this.onClick}>${this.content}</span>`;
-    }
+	animateContent() {
+		const nextGradientAlpha = opacityInterpolator.at(this.csp).toFixed(5);
+		const nextGlowRadius = `${glowRadiusInterpolator.at(this.csp)}px`;
+		const nextGlowAlpha = glowAlphaInterpolator.at(this.csp).toFixed(5);
+		const nextYOffset = `-${this.offsetHeight * 0.1 * this.csp}px`;
+		const nextGradientStart = `${this.csp * 95}%`;
+		const nextGradientEnd = `${this.csp * 105}%`;
+		const nextScale = scaleInterpolator.at(this.csp).toFixed(5);
+		this.style.setProperty("--gradient-alpha", nextGradientAlpha);
+		this.style.setProperty("--glow-radius", nextGlowRadius);
+		this.style.setProperty("--glow-alpha", nextGlowAlpha);
+		this.style.setProperty("--gradient-start", nextGradientStart);
+		this.style.setProperty("--gradient-end", nextGradientEnd);
+		this.style.setProperty("--y-offset", nextYOffset);
+		this.style.scale = nextScale;
+	}
+	onClick() {
+		PlayerW.setTimestamp(this.tsp);
+	}
+	render() {
+		return html`<span role="button" @click=${this.onClick}>${this.content}</span>`;
+	}
 }
-_ts_decorate([
-    property()
-], AnimatedText.prototype, "split", void 0);
-AnimatedText = _ts_decorate([
-    customElement(AnimatedText.NAME)
-], AnimatedText);
+_ts_decorate([property()], AnimatedText.prototype, "split", void 0);
+AnimatedText = _ts_decorate([customElement(AnimatedText.NAME)], AnimatedText);
 export class DetailTimelineProvider extends SyncedContainerMixin(SyncedMixin(LitElement)) {
-    static NAME = "detail-timeline-provider";
-    static styles = css`
+	static NAME = "detail-timeline-provider";
+	static styles = css`
         :host {
             display: flex;
             flex-wrap: wrap;
         }
     `;
-    intermediatePositions;
-    lastPosition;
-    computeChildProgress(rp, child) {
-        if (!this.intermediatePositions) {
-            const childs = Array.from(this.childs);
-            const partialWidths = childs.reduce((partialWidths, child)=>(partialWidths.push(partialWidths.at(-1) + child.offsetWidth), partialWidths), [
-                0
-            ]);
-            this.lastPosition = partialWidths.at(-1);
-            this.intermediatePositions = partialWidths.map((pw)=>pw / this.lastPosition);
-        }
-        return remapScalar(this.intermediatePositions[child], this.intermediatePositions[child + 1], rp);
-    }
+	intermediatePositions;
+	lastPosition;
+	computeChildProgress(rp, child) {
+		if (!this.intermediatePositions) {
+			const childs = Array.from(this.childs);
+			const partialWidths = childs.reduce(
+				(partialWidths, child) => (partialWidths.push(partialWidths.at(-1) + child.offsetWidth), partialWidths),
+				[0],
+			);
+			this.lastPosition = partialWidths.at(-1);
+			this.intermediatePositions = partialWidths.map(pw => pw / this.lastPosition);
+		}
+		return remapScalar(this.intermediatePositions[child], this.intermediatePositions[child + 1], rp);
+	}
 }
-DetailTimelineProvider = _ts_decorate([
-    customElement(DetailTimelineProvider.NAME)
-], DetailTimelineProvider);
+DetailTimelineProvider = _ts_decorate([customElement(DetailTimelineProvider.NAME)], DetailTimelineProvider);
 export class TimelineProvider extends ScrolledMixin(SyncedContainerMixin(SyncedMixin(LitElement))) {
-    static NAME = "timeline-provider";
-    static styles = css`
+	static NAME = "timeline-provider";
+	static styles = css`
         :host {
             display: flex;
             flex-wrap: wrap;
         }
     `;
-    intermediatePositions;
-    lastPosition;
-    timelineSpline;
-    computeIntermediatePosition(rsp) {
-        if (!this.timelineSpline) {
-            const childs = Array.from(this.childs);
-            const partialWidths = childs.reduce((partialWidths, child)=>(partialWidths.push(partialWidths.at(-1) + child.offsetWidth), partialWidths), [
-                0
-            ]);
-            this.lastPosition = partialWidths.at(-1);
-            this.intermediatePositions = partialWidths.map((pw)=>pw / this.lastPosition);
-            const pairs = _.zip(childs.map((child)=>child.tsp).concat(childs.at(-1).tep), this.intermediatePositions);
-            const first = vectorLerp(pairs[0], pairs[1], -1);
-            const last = vectorLerp(pairs.at(-2), pairs.at(-1), 2);
-            this.timelineSpline = new MonotoneNormalSpline([
-                first,
-                ...pairs,
-                last
-            ]);
-        }
-        return this.timelineSpline.at(rsp);
-    }
-    computeChildProgress(rp, child) {
-        const sip = this.computeIntermediatePosition(rp);
-        return remapScalar(this.intermediatePositions[child], this.intermediatePositions[child + 1], sip);
-    }
+	intermediatePositions;
+	lastPosition;
+	timelineSpline;
+	computeIntermediatePosition(rsp) {
+		if (!this.timelineSpline) {
+			const childs = Array.from(this.childs);
+			const partialWidths = childs.reduce(
+				(partialWidths, child) => (partialWidths.push(partialWidths.at(-1) + child.offsetWidth), partialWidths),
+				[0],
+			);
+			this.lastPosition = partialWidths.at(-1);
+			this.intermediatePositions = partialWidths.map(pw => pw / this.lastPosition);
+			const pairs = _.zip(childs.map(child => child.tsp).concat(childs.at(-1).tep), this.intermediatePositions);
+			const first = vectorLerp(pairs[0], pairs[1], -1);
+			const last = vectorLerp(pairs.at(-2), pairs.at(-1), 2);
+			this.timelineSpline = new MonotoneNormalSpline([first, ...pairs, last]);
+		}
+		return this.timelineSpline.at(rsp);
+	}
+	computeChildProgress(rp, child) {
+		const sip = this.computeIntermediatePosition(rp);
+		return remapScalar(this.intermediatePositions[child], this.intermediatePositions[child + 1], sip);
+	}
 }
-TimelineProvider = _ts_decorate([
-    customElement(TimelineProvider.NAME)
-], TimelineProvider);
+TimelineProvider = _ts_decorate([customElement(TimelineProvider.NAME)], TimelineProvider);
 export class LyricsContainer extends SyncedContainerMixin(SyncedMixin(LitElement)) {
-    static NAME = "lyrics-container";
-    render() {
-        return html`<slot></slot>`;
-    }
+	static NAME = "lyrics-container";
+	render() {
+		return html`<slot></slot>`;
+	}
 }
-LyricsContainer = _ts_decorate([
-    customElement(LyricsContainer.NAME)
-], LyricsContainer);
+LyricsContainer = _ts_decorate([customElement(LyricsContainer.NAME)], LyricsContainer);
 export class LyricsWrapper extends LitElement {
-    static NAME = "lyrics-wrapper";
-    static SCROLL_TIMEOUT_MS = 500;
-    constructor(query){
-        super();
-        this.scrollContainer = document.querySelector(query) ?? undefined;
-    }
-    static styles = css`
+	static NAME = "lyrics-wrapper";
+	static SCROLL_TIMEOUT_MS = 500;
+	constructor(query) {
+		super();
+		this.scrollContainer = document.querySelector(query) ?? undefined;
+	}
+	static styles = css`
         :host > animated-content-container {
             display: unset;
         }
     `;
-    song = null;
-    loadedLyricsType;
-    updateSong = (song)=>{
-        this.song = song;
-        this.loadedLyricsType = undefined;
-    };
-    lyricsTask = new Task(this, {
-        task: async ([song])=>{
-            const availableLyrics = await song?.lyrics;
-            const lyrics = Object.values(availableLyrics)[0];
-            this.loadedLyricsType = lyrics?.__type;
-            return lyrics;
-        },
-        args: ()=>[
-                this.song
-            ]
-    });
-    container;
-    updateProgress(progress) {
-        if (this.loadedLyricsType === undefined || this.loadedLyricsType === LyricsType.NOT_SYNCED) return;
-        this.container?.updateProgress(progress, 0);
-    }
-    scrollTimeout = 0;
-    scrollContainer;
-    onExternalScroll(e) {
-        this.scrollTimeout = Date.now() + LyricsWrapper.SCROLL_TIMEOUT_MS;
-    }
-    connectedCallback() {
-        super.connectedCallback();
-        this.scrollContainer?.addEventListener("scroll", this.onExternalScroll);
-    }
-    disconnectedCallback() {
-        super.disconnectedCallback();
-        this.scrollContainer?.removeEventListener("scroll", this.onExternalScroll);
-    }
-    render() {
-        if (!this.song) {
-            return html`<div class="info">No Song Loaded</div>`;
-        }
-        return this.lyricsTask.render({
-            pending: ()=>{
-                return html`<div class="loading">Fetching Lyrics...</div>`;
-            },
-            complete: (lyrics)=>{
-                if (!lyrics || lyrics.__type === LyricsType.NOT_SYNCED) {
-                    return html`<div class="error">No Lyrics Found</div>`;
-                }
-                const isWordSync = this.loadedLyricsType === LyricsType.WORD_SYNCED;
-                return html`
+	song = null;
+	loadedLyricsType;
+	updateSong = song => {
+		this.song = song;
+		this.loadedLyricsType = undefined;
+	};
+	lyricsTask = new Task(this, {
+		task: async ([song]) => {
+			const availableLyrics = await song?.lyrics;
+			const lyrics = Object.values(availableLyrics)[0];
+			this.loadedLyricsType = lyrics?.__type;
+			return lyrics;
+		},
+		args: () => [this.song],
+	});
+	container;
+	updateProgress(progress) {
+		if (this.loadedLyricsType === undefined || this.loadedLyricsType === LyricsType.NOT_SYNCED) return;
+		this.container?.updateProgress(progress, 0);
+	}
+	scrollTimeout = 0;
+	scrollContainer;
+	onExternalScroll(e) {
+		this.scrollTimeout = Date.now() + LyricsWrapper.SCROLL_TIMEOUT_MS;
+	}
+	connectedCallback() {
+		super.connectedCallback();
+		this.scrollContainer?.addEventListener("scroll", this.onExternalScroll);
+	}
+	disconnectedCallback() {
+		super.disconnectedCallback();
+		this.scrollContainer?.removeEventListener("scroll", this.onExternalScroll);
+	}
+	render() {
+		if (!this.song) {
+			return html`<div class="info">No Song Loaded</div>`;
+		}
+		return this.lyricsTask.render({
+			pending: () => {
+				return html`<div class="loading">Fetching Lyrics...</div>`;
+			},
+			complete: lyrics => {
+				if (!lyrics || lyrics.__type === LyricsType.NOT_SYNCED) {
+					return html`<div class="error">No Lyrics Found</div>`;
+				}
+				const isWordSync = this.loadedLyricsType === LyricsType.WORD_SYNCED;
+				return html`
                     <style>
                         * {
                             --gradient-angle: ${this.loadedLyricsType === LyricsType.WORD_SYNCED ? 90 : 180}deg;
                         }
                     </style>
                     <lyrics-container>
-                        ${when(isWordSync, ()=>html`${map(lyrics.content, (l)=>html`<timeline-provider tsp=${l.tsp} tep=${l.tep}
-                                            >${map(l.content, (w)=>html`<detail-timeline-provider tsp=${w.tsp} tep=${w.tep}
-                                                        >${map(w.content.split(""), (c)=>html`<animated-text
+                        ${when(
+													isWordSync,
+													() =>
+														html`${map(
+															lyrics.content,
+															l => html`<timeline-provider tsp=${l.tsp} tep=${l.tep}
+                                            >${map(
+																							l.content,
+																							w => html`<detail-timeline-provider tsp=${w.tsp} tep=${w.tep}
+                                                        >${map(
+																													w.content.split(""),
+																													c => html`<animated-text
                                                                     tsp=${w.tsp}
                                                                     content=${c === " " ? " " : c}
-                                                                ></animated-text>`)}</detail-timeline-provider
-                                                    >`)}</timeline-provider
-                                        >`)}`, ()=>html`${map(lyrics.content, (l)=>html`<timeline-provider tsp=${l.tsp} tep=${l.tep}
-                                            >${map(l.content, (wl)=>html`<animated-text
+                                                                ></animated-text>`,
+																												)}</detail-timeline-provider
+                                                    >`,
+																						)}</timeline-provider
+                                        >`,
+														)}`,
+													() =>
+														html`${map(
+															lyrics.content,
+															l => html`<timeline-provider tsp=${l.tsp} tep=${l.tep}
+                                            >${map(
+																							l.content,
+																							wl => html`<animated-text
                                                         tsp=${wl.tsp}
                                                         tep=${wl.tep}
                                                         content=${wl.content}
-                                                    ></animated-text>`)}</timeline-provider
-                                        >`)}`)}</lyrics-container
+                                                    ></animated-text>`,
+																						)}</timeline-provider
+                                        >`,
+														)}`,
+												)}</lyrics-container
                     >,
                 `;
-            },
-            error: (e)=>{
-                console.error(e);
-                return html`<div class="error">Error</div>`;
-            }
-        });
-    }
+			},
+			error: e => {
+				console.error(e);
+				return html`<div class="error">Error</div>`;
+			},
+		});
+	}
 }
-_ts_decorate([
-    property({
-        attribute: false
-    })
-], LyricsWrapper.prototype, "song", void 0);
-_ts_decorate([
-    provide({
-        context: loadedLyricsTypeCtx
-    }),
-    state()
-], LyricsWrapper.prototype, "loadedLyricsType", void 0);
-_ts_decorate([
-    query(LyricsContainer.NAME)
-], LyricsWrapper.prototype, "container", void 0);
-_ts_decorate([
-    provide({
-        context: scrollTimeoutCtx
-    })
-], LyricsWrapper.prototype, "scrollTimeout", void 0);
-_ts_decorate([
-    provide({
-        context: scrollContainerCtx
-    })
-], LyricsWrapper.prototype, "scrollContainer", void 0);
-LyricsWrapper = _ts_decorate([
-    customElement(LyricsWrapper.NAME)
-], LyricsWrapper);
+_ts_decorate(
+	[
+		property({
+			attribute: false,
+		}),
+	],
+	LyricsWrapper.prototype,
+	"song",
+	void 0,
+);
+_ts_decorate(
+	[
+		provide({
+			context: loadedLyricsTypeCtx,
+		}),
+		state(),
+	],
+	LyricsWrapper.prototype,
+	"loadedLyricsType",
+	void 0,
+);
+_ts_decorate([query(LyricsContainer.NAME)], LyricsWrapper.prototype, "container", void 0);
+_ts_decorate(
+	[
+		provide({
+			context: scrollTimeoutCtx,
+		}),
+	],
+	LyricsWrapper.prototype,
+	"scrollTimeout",
+	void 0,
+);
+_ts_decorate(
+	[
+		provide({
+			context: scrollContainerCtx,
+		}),
+	],
+	LyricsWrapper.prototype,
+	"scrollContainer",
+	void 0,
+);
+LyricsWrapper = _ts_decorate([customElement(LyricsWrapper.NAME)], LyricsWrapper);

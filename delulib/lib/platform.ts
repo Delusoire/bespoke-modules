@@ -1,5 +1,5 @@
 import { SpotifyLoc } from "./util.js";
-import { S } from "/modules/Delusoire/std/index.js";
+import { S } from "/modules/Delusoire/stdlib/index.js";
 
 const { Cosmos } = S;
 const LibraryAPI = S.Platform.getLibraryAPI();

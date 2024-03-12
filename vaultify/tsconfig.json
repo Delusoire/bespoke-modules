@@ -5,14 +5,14 @@
         "paths": {
             "/*": ["./*"],
             "https://esm.sh/v135/*": [
-                "modules/Delusoire/std/node_modules/@types/*",
-                "modules/Delusoire/std/node_modules/*",
+                "modules/Delusoire/stdlib/node_modules/@types/*",
+                "modules/Delusoire/stdlib/node_modules/*",
                 "node_modules/@types/*",
                 "node_modules/*"
             ],
             "https://esm.sh/*": [
-                "modules/Delusoire/std/node_modules/@types/*",
-                "modules/Delusoire/std/node_modules/*",
+                "modules/Delusoire/stdlib/node_modules/@types/*",
+                "modules/Delusoire/stdlib/node_modules/*",
                 "node_modules/@types/*",
                 "node_modules/*"
             ]

@@ -1,15 +1,15 @@
-import { S, SVGIcons, createStorage, createRegistrar, createLogger } from "/modules/Delusoire/std/index.js";
-import { createSettings } from "/modules/Delusoire/std/lib/settings.js";
+import { S, SVGIcons, createStorage, createRegistrar, createLogger } from "/modules/Delusoire/stdlib/index.js";
+import { createSettings } from "/modules/Delusoire/stdlib/lib/settings.js";
 
-import { NavLink } from "/modules/Delusoire/std/src/registers/navlink.js";
+import { NavLink } from "/modules/Delusoire/stdlib/src/registers/navlink.js";
 import { ACTIVE_ICON, ICON } from "./static.js";
 import type { Module } from "/hooks/module.js";
 
 import PlaylistPage from "./pages/playlist.js";
 import { onHistoryChanged } from "/modules/Delusoire/delulib/lib/listeners.js";
-import { display } from "/modules/Delusoire/std/lib/modal.js";
-import { Button } from "/modules/Delusoire/std/src/registers/topbarLeftButton.js";
-import type { Settings } from "/modules/Delusoire/std/lib/settings.js";
+import { display } from "/modules/Delusoire/stdlib/lib/modal.js";
+import { Button } from "/modules/Delusoire/stdlib/src/registers/topbarLeftButton.js";
+import type { Settings } from "/modules/Delusoire/stdlib/lib/settings.js";
 
 const { React, URI } = S;
 

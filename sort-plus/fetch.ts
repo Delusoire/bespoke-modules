@@ -2,7 +2,7 @@ import { fetchAlbum } from "/modules/Delusoire/delulib/lib/GraphQL/fetchAlbum.js
 import { fetchArtistDiscography } from "/modules/Delusoire/delulib/lib/GraphQL/fetchArtistDiscography.js";
 import { fetchArtistOverview } from "/modules/Delusoire/delulib/lib/GraphQL/fetchArtistOveriew.js";
 import type { ItemMin, ItemsReleases, ItemsReleasesWithCount, ItemsWithCount } from "/modules/Delusoire/delulib/lib/GraphQL/sharedTypes.js";
-import { _, fp } from "/modules/Delusoire/std/deps.js";
+import { _, fp } from "/modules/Delusoire/stdlib/deps.js";
 import { pMchain } from "/modules/Delusoire/delulib/lib/fp.js";
 import {
 	type TrackData,
@@ -16,7 +16,7 @@ import { fetchArtistLikedTracks, fetchLikedTracks, fetchPlaylistContents } from 
 
 import { CONFIG } from "./settings.js";
 
-import { S } from "/modules/Delusoire/std/index.js";
+import { S } from "/modules/Delusoire/stdlib/index.js";
 import { URI_is_LikedTracks } from "./util.js";
 
 const { URI } = S;

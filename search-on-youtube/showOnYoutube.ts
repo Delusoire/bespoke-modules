@@ -1,5 +1,5 @@
 import { searchYoutube, spotifyApi } from "/modules/Delusoire/delulib/lib/api.js";
-import { _ } from "/modules/Delusoire/std/deps.js";
+import { _ } from "/modules/Delusoire/stdlib/deps.js";
 import { normalizeStr } from "/modules/Delusoire/delulib/lib/util.js";
 
 // import { Innertube, UniversalCache } from "https://esm.sh/youtubei.js/web.bundle.min";
@@ -10,7 +10,7 @@ import { normalizeStr } from "/modules/Delusoire/delulib/lib/util.js";
 // 	},
 // });
 
-import { S } from "/modules/Delusoire/std/index.js";
+import { S } from "/modules/Delusoire/stdlib/index.js";
 import { CONFIG } from "./settings.js";
 
 const { URI } = S;

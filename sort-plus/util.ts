@@ -1,9 +1,9 @@
-import { _, fp } from "/modules/Delusoire/std/deps.js";
-import { S } from "/modules/Delusoire/std/index.js";
+import { _, fp } from "/modules/Delusoire/stdlib/deps.js";
+import { S } from "/modules/Delusoire/stdlib/index.js";
 import { spotifyApi } from "/modules/Delusoire/delulib/lib/api.js";
 import type { TrackData } from "/modules/Delusoire/delulib/lib/parse.js";
 
-import type { URIClass } from "/modules/Delusoire/std/expose/webpack.js";
+import type { URIClass } from "/modules/Delusoire/stdlib/expose/webpack.js";
 
 const { URI } = S;
 

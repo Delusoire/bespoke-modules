@@ -1,4 +1,4 @@
-import { S } from "/modules/Delusoire/std/index.js";
+import { S } from "/modules/Delusoire/stdlib/index.js";
 
 export interface CreatePlaylistButtonProps {
 	name: string;

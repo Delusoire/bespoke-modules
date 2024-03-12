@@ -1,4 +1,4 @@
-import { S } from "/modules/Delusoire/std/index.js";
+import { S } from "/modules/Delusoire/stdlib/index.js";
 const { React } = S;
 
 import StatCard from "../components/cards/stat_card.js";
@@ -11,13 +11,13 @@ import RefreshButton from "../components/buttons/refresh_button.js";
 import { SpotifyTimeRange } from "../api/spotify.js";
 import { getTracksFromURIs } from "/modules/Delusoire/library-db/lib/db.js";
 import { PlaylistItems, SavedPlaylists } from "/modules/Delusoire/library-db/index.js";
-import { fp } from "/modules/Delusoire/std/deps.js";
+import { fp } from "/modules/Delusoire/stdlib/deps.js";
 import { fetchAlbumsMeta, fetchArtistsMeta, fetchAudioFeaturesMeta } from "./playlist.js";
 import { calculateTracksMeta } from "./top_genres.js";
 import { getURI, toID } from "../util/parse.js";
 import { useStatus } from "../components/status/useStatus.js";
 import { logger, settingsButton, storage } from "../index.js";
-import { useDropdown } from "/modules/Delusoire/std/lib/components/index.js";
+import { useDropdown } from "/modules/Delusoire/stdlib/lib/components/index.js";
 
 const DropdownOptions = { "Past Month": "Past Month", "Past 6 Months": "Past 6 Months", "All Time": "All Time" } as const;
 const OptionToTimeRange = {

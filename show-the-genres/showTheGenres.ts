@@ -1,12 +1,12 @@
 import { fetchLastFMTrack, spotifyApi } from "/modules/Delusoire/delulib/lib/api.js";
-import { waitForElement } from "/modules/Delusoire/std/lib/util.js";
+import { waitForElement } from "/modules/Delusoire/stdlib/lib/util.js";
 
 import { CONFIG } from "./settings.js";
 
 import { fetchArtistRelated } from "/modules/Delusoire/delulib/lib/GraphQL/fetchArtistRelated.js";
 import { onHistoryChanged } from "/modules/Delusoire/delulib/lib/listeners.js";
-import { _ } from "/modules/Delusoire/std/deps.js";
-import { Events, S } from "/modules/Delusoire/std/index.js";
+import { _ } from "/modules/Delusoire/stdlib/deps.js";
+import { Events, S } from "/modules/Delusoire/stdlib/index.js";
 import "./components.js";
 
 const { URI } = S;

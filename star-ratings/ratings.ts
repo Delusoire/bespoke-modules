@@ -10,8 +10,8 @@ import { SpotifyLoc } from "/modules/Delusoire/delulib/lib/util.js";
 import { updateCollectionControls, updateNowPlayingControls, updateTrackListControls } from "./controls.js";
 import { CONFIG } from "./settings.js";
 import { getNowPlayingBar } from "./util.js";
-import { _ } from "/modules/Delusoire/std/deps.js";
-import { S } from "/modules/Delusoire/std/index.js";
+import { _ } from "/modules/Delusoire/stdlib/deps.js";
+import { S } from "/modules/Delusoire/stdlib/index.js";
 
 const { URI } = S;
 const History = S.Platform.getHistory();

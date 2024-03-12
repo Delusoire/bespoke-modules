@@ -1,4 +1,4 @@
-import { _, fp } from "/modules/Delusoire/std/deps.js";
+import { _, fp } from "/modules/Delusoire/stdlib/deps.js";
 
 export type vector = number[];
 export type matrix = vector[];

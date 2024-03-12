@@ -1,4 +1,4 @@
-import { S } from "/modules/Delusoire/std/index.js";
+import { S } from "/modules/Delusoire/stdlib/index.js";
 import Status from "./Status.js";
 
 export type QueryStatus = "error" | "success" | "pending";

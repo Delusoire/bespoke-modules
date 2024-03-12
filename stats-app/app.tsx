@@ -4,7 +4,7 @@ import GenresPage from "./pages/top_genres.js";
 import LibraryPage from "./pages/library.js";
 import AlbumsPage from "./pages/top_albums.js";
 
-import { S } from "/modules/Delusoire/std/index.js";
+import { S } from "/modules/Delusoire/stdlib/index.js";
 
 const { ReactDOM } = S;
 

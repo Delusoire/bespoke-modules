@@ -11,5 +11,5 @@
 		"css": false,
 		"mixin": false
 	},
-	"dependencies": ["Delusoire/std"]
+	"dependencies": ["Delusoire/stdlib"]
 }

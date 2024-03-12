@@ -1,6 +1,6 @@
-import { _ } from "/modules/Delusoire/std/deps.js";
+import { _ } from "/modules/Delusoire/stdlib/deps.js";
 import { OneUplet, TwoUplet, zip_n_uplets } from "/modules/Delusoire/delulib/lib/fp.js";
-import { S } from "/modules/Delusoire/std/index.js";
+import { S } from "/modules/Delusoire/stdlib/index.js";
 
 const { Cosmos } = S;
 

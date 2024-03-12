@@ -8,7 +8,7 @@ import {
 	getSettings,
 } from "./backup.js";
 import { restoreLocalStorage, restoreLibrary, restoreSettings } from "./restore.js";
-import { S } from "/modules/Delusoire/std/index.js";
+import { S } from "/modules/Delusoire/stdlib/index.js";
 
 const ClipboardAPI = S.Platform.getClipboardAPI();
 

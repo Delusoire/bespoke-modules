@@ -1,5 +1,5 @@
-import { fp } from "/modules/Delusoire/std/deps.js";
-import { S } from "/modules/Delusoire/std/index.js";
+import { fp } from "/modules/Delusoire/stdlib/deps.js";
+import { S } from "/modules/Delusoire/stdlib/index.js";
 
 const ContributionLine = (name: string, value: number, limit: number, total: number) => {
 	return (

@@ -1,6 +1,6 @@
 import CreatePlaylistButton, { CreatePlaylistButtonProps } from "../buttons/create_playlist_button.js";
 
-import { S } from "/modules/Delusoire/std/index.js";
+import { S } from "/modules/Delusoire/stdlib/index.js";
 
 interface PageContainerProps {
 	title: string;

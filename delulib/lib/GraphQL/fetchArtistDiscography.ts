@@ -1,5 +1,5 @@
 import type { Item2, ItemsReleases } from "./sharedTypes.js";
-import { S } from "/modules/Delusoire/std/index.js";
+import { S } from "/modules/Delusoire/stdlib/index.js";
 
 export type fetchArtistDiscographyRes = {
 	__typename: "artist";

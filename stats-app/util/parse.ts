@@ -1,5 +1,5 @@
-import { URIClass } from "/modules/Delusoire/std/expose/webpack";
-import { S } from "/modules/Delusoire/std/index.js";
+import { URIClass } from "/modules/Delusoire/stdlib/expose/webpack";
+import { S } from "/modules/Delusoire/stdlib/index.js";
 
 const { URI } = S;
 

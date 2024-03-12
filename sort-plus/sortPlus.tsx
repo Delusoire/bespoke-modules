@@ -1,13 +1,13 @@
 import type { TrackData } from "/modules/Delusoire/delulib/lib/parse.js";
 import { setQueue as _setQueue, createQueueItem } from "/modules/Delusoire/delulib/lib/util.js";
-import { _, fp } from "/modules/Delusoire/std/deps.js";
-import { S } from "/modules/Delusoire/std/index.js";
+import { _, fp } from "/modules/Delusoire/stdlib/deps.js";
+import { S } from "/modules/Delusoire/stdlib/index.js";
 
 import { fillTracksFromLastFM, fillTracksFromSpotify } from "./populate.js";
 import { CONFIG } from "./settings.js";
 import { type AsyncTracksOperation, SEPARATOR_URI, SortAction, SortActionIcon, SortActionProp, URI_is_LikedTracks } from "./util.js";
 import { getTracksFromUri } from "./fetch.js";
-import { SVGIcons } from "/modules/Delusoire/std/index.js";
+import { SVGIcons } from "/modules/Delusoire/stdlib/index.js";
 
 export * from "./playlistsInterop.js";
 
@@ -88,8 +88,8 @@ const SubMenuItems = Object.values(SortAction).map(
 		}),
 );
 
-import { createIconComponent } from "/modules/Delusoire/std/lib/createIconComponent.js";
-import { useMenuItem } from "/modules/Delusoire/std/src/registers/menu.js";
+import { createIconComponent } from "/modules/Delusoire/stdlib/lib/createIconComponent.js";
+import { useMenuItem } from "/modules/Delusoire/stdlib/src/registers/menu.js";
 
 const SortByShuffleSubMenuItem = ({ descending }: SortBySubMenuItemProps) => {
 	const { props } = useMenuItem();

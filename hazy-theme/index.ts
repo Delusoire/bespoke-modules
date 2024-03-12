@@ -1,7 +1,7 @@
 // @ts-nocheck
-import { S, Events } from "/modules/Delusoire/std/index.js";
+import { S, Events } from "/modules/Delusoire/stdlib/index.js";
 
-const BACKGROUND_URL = ""
+const BACKGROUND_URL = "";
 
 const PlayerAPI = S.Platform.getPlayerAPI();
 const History = S.Platform.getHistory();

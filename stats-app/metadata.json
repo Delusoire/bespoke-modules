@@ -11,5 +11,5 @@
 		"css": "index.css",
 		"mixin": false
 	},
-	"dependencies": ["Delusoire/std", "Delusoire/delulib", "Delusoire/library-db"]
+	"dependencies": ["Delusoire/stdlib", "Delusoire/delulib", "Delusoire/library-db"]
 }

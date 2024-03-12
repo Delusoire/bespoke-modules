@@ -4,8 +4,8 @@ import { SpotifyLoc } from "/modules/Delusoire/delulib/lib/util.js";
 import type { LibraryBackup, LocalStorageBackup, SettingBackup } from "./backup.js";
 import { type LikedPlaylist, type PersonalFolder, type PersonalPlaylist, isContentOfPersonalPlaylist } from "./util.js";
 
-import { S } from "/modules/Delusoire/std/index.js";
-import { _ } from "/modules/Delusoire/std/deps.js";
+import { S } from "/modules/Delusoire/stdlib/index.js";
+import { _ } from "/modules/Delusoire/stdlib/deps.js";
 
 const LocalStorageAPI = S.Platform.getLocalStorageAPI();
 

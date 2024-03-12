@@ -11,5 +11,5 @@
 		"css": "index.css",
 		"mixin": "mixin.js"
 	},
-	"dependencies": ["Delusoire/std"]
+	"dependencies": ["Delusoire/stdlib"]
 }

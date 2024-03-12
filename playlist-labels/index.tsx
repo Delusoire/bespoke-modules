@@ -1,8 +1,8 @@
-import { S } from "/modules/Delusoire/std/index.js";
-import { _ } from "/modules/Delusoire/std/deps.js";
+import { S } from "/modules/Delusoire/stdlib/index.js";
+import { _ } from "/modules/Delusoire/stdlib/deps.js";
 import { onTrackListMutationListeners } from "/modules/Delusoire/delulib/lib/listeners.js";
 import { useLivePlaylistItems } from "/modules/Delusoire/library-db/index.js";
-import { createIconComponent } from "/modules/Delusoire/std/lib/createIconComponent.js";
+import { createIconComponent } from "/modules/Delusoire/stdlib/lib/createIconComponent.js";
 import { useLiveQuery } from "/modules/Delusoire/dexie-react-hooks/index.js";
 import { db } from "/modules/Delusoire/library-db/lib/db.js";
 

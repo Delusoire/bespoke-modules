@@ -1,4 +1,4 @@
-import { S } from "/modules/Delusoire/std/index.js";
+import { S } from "/modules/Delusoire/stdlib/index.js";
 const { React } = S;
 
 import StatCard from "../components/cards/stat_card.js";
