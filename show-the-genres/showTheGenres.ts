@@ -32,7 +32,7 @@ nowPlayingGenreContainerEl.style.gridArea = "genres";
 	trackInfoContainer.appendChild(nowPlayingGenreContainerEl);
 })();
 
-Events.Player.songchanged.on(state => {
+eventBus.Player.song_changed.subscribe(state => {
 	nowPlayingGenreContainerEl.uri = state.item?.uri;
 });
 

@@ -1,5 +1,4 @@
-// @ts-nocheck
-import { S, Events } from "/modules/Delusoire/stdlib/index.js";
+import { S, createEventBus } from "/modules/Delusoire/stdlib/index.js";
 const BACKGROUND_URL = "";
 const PlayerAPI = S.Platform.getPlayerAPI();
 const History = S.Platform.getHistory();
@@ -35,7 +34,6 @@ async function onSongChange() {
     style.setProperty("--image_url", `url("${image_url ?? BACKGROUND_URL}")`);
     updateLyricsPageProperties();
 }
-Events.Player.songchanged.on(onSongChange);
 windowControls();
 controlDimensions();
 galaxyFade();
@@ -172,4 +170,8 @@ function galaxyFade() {
             applyFadeToScrollNode(scrollNode);
         });
     });
+}
+export default function(mod) {
+    const eventBus = createEventBus(mod);
+    eventBus.Player.song_changed.subscribe(onSongChange);
 }

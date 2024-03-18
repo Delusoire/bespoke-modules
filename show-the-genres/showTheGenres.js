@@ -27,7 +27,7 @@ nowPlayingGenreContainerEl.style.gridArea = "genres";
     const trackInfoContainer = await waitForElement("div.ZcNcu7WZgOAz_Mkcoff3");
     trackInfoContainer.appendChild(nowPlayingGenreContainerEl);
 })();
-Events.Player.songchanged.on((state)=>{
+eventBus.Player.song_changed.subscribe((state)=>{
     nowPlayingGenreContainerEl.uri = state.item?.uri;
 });
 const getArtistsGenresOrRelated = async (artistsUris)=>{

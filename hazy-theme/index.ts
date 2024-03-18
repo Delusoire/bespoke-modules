@@ -1,5 +1,5 @@
-// @ts-nocheck
-import { S, Events } from "/modules/Delusoire/stdlib/index.js";
+import type { Module } from "/hooks/module";
+import { S, createEventBus } from "/modules/Delusoire/stdlib/index.js";
 
 const BACKGROUND_URL = "";
 
@@ -46,7 +46,6 @@ async function onSongChange() {
 	updateLyricsPageProperties();
 }
 
-Events.Player.songchanged.on(onSongChange);
 windowControls();
 controlDimensions();
 galaxyFade();
@@ -189,4 +188,9 @@ function galaxyFade() {
 			applyFadeToScrollNode(scrollNode);
 		});
 	});
+}
+
+export default function (mod: Module) {
+	const eventBus = createEventBus(mod);
+	eventBus.Player.song_changed.subscribe(onSongChange);
 }
