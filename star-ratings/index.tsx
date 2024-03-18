@@ -1,4 +1,4 @@
-import { createRegistrar } from "/modules/Delusoire/stdlib/index.js";
+import { type EventBus, createRegistrar, createEventBus } from "/modules/Delusoire/stdlib/index.js";
 import { createSettings } from "/modules/Delusoire/stdlib/lib/settings.js";
 
 import type { Module } from "/hooks/module.js";
@@ -8,9 +8,11 @@ import type { Settings } from "/modules/Delusoire/stdlib/lib/settings.js";
 const { URI } = S;
 
 export let settings: Settings;
+export let eventBus: EventBus;
 export default async function (mod: Module) {
 	const registrar = createRegistrar(mod);
 	[settings] = createSettings(mod);
+	eventBus = createEventBus(mod);
 
 	const { FolderPickerMenuItem } = await import("./starRatings.js");
 

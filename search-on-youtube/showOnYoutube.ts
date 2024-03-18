@@ -1,17 +1,38 @@
-import { searchYoutube, spotifyApi } from "/modules/Delusoire/delulib/lib/api.js";
+import { spotifyApi } from "/modules/Delusoire/delulib/lib/api.js";
 import { _ } from "/modules/Delusoire/stdlib/deps.js";
 import { normalizeStr } from "/modules/Delusoire/delulib/lib/util.js";
 
-// import { Innertube, UniversalCache } from "https://esm.sh/youtubei.js/web.bundle.min";
-// const yt = await Innertube.create({
-// 	cache: new UniversalCache(false),
-// 	fetch: (url, init) => {
-// 		return fetch(url, init);
-// 	},
-// });
+import { Innertube, UniversalCache } from "https://esm.sh/youtubei.js/web.bundle.min";
+const yt = await Innertube.create({
+	cache: new UniversalCache(false),
+	fetch: async (input, init) => {
+		const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
+		const headers = init?.headers ? new Headers(init.headers) : input instanceof Request ? input.headers : new Headers();
+		if (headers.has("X-Origin")) {
+			headers.set("Origin", headers.get("X-Origin"));
+			headers.delete("X-Origin");
+		}
+
+		const _headers = new Headers();
+		_headers.set("X-Set-Url", url);
+		_headers.set("X-Set-Headers", JSON.stringify(Object.fromEntries(headers.entries())));
+
+		if (input instanceof Request) {
+			// @ts-ignore
+			input.duplex = "half";
+		}
+
+		const request = new Request("http://localhost:3000/", input instanceof Request ? input : undefined);
+
+		const res = await fetch(request, {
+			...(init || {}),
+			headers: _headers,
+		});
+		return res;
+	},
+});
 
 import { S } from "/modules/Delusoire/stdlib/index.js";
-import { CONFIG } from "./settings.js";
 
 const { URI } = S;
 
@@ -26,17 +47,17 @@ export const showOnYouTube = async (uri: string) => {
 		const searchString = `${nonFeatArtists.join(", ")} - ${track.name} [Official Music Video]`;
 
 		try {
-			const videos = await searchYoutube(CONFIG.YouTubeApiKey, searchString).then(res => res.items);
-			const normalizedTrackName = normalizeStr(track.name);
+			const { videos } = await yt.search(searchString, { sort_by: "relevance", type: "video" });
 
+			const normalizedTrackName = normalizeStr(track.name);
 			const video =
 				videos.find(video => {
-					normalizeStr(video.snippet.title).includes(normalizedTrackName);
+					normalizeStr(video.title.text).includes(normalizedTrackName);
 				}) ?? videos[0];
 
-			YTVidIDCache.set(id, video.id.videoId);
+			YTVidIDCache.set(id, video.id);
 
-			window.open(`https://www.youtube.com/watch?v=${video.id.videoId}`);
+			window.open(`https://www.youtube.com/watch?v=${video.id}`);
 		} catch (_) {
 			window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(searchString)}`);
 		}

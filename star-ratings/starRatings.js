@@ -2,17 +2,18 @@ import { updateCollectionControls, updateNowPlayingControls, updateTrackControls
 import { loadRatings } from "./util.js";
 import { CONFIG } from "./settings.js";
 import { _ } from "/modules/Delusoire/stdlib/deps.js";
-import { onHistoryChanged, onTrackListMutationListeners } from "/modules/Delusoire/delulib/lib/listeners.js";
-import { Events, SVGIcons } from "/modules/Delusoire/stdlib/index.js";
+import { onTrackListMutationListeners } from "/modules/Delusoire/delulib/lib/listeners.js";
+import { SVGIcons } from "/modules/Delusoire/stdlib/index.js";
 import { S } from "/modules/Delusoire/stdlib/index.js";
 import { useMenuItem } from "/modules/Delusoire/stdlib/src/registers/menu.js";
 import { createIconComponent } from "/modules/Delusoire/stdlib/lib/createIconComponent.js";
+import { eventBus } from "./index.js";
 const { URI } = S;
 globalThis.tracksRatings || (globalThis.tracksRatings = {});
 globalThis.playlistUris || (globalThis.playlistUris = []);
 const PlayerAPI = S.Platform.getPlayerAPI();
 loadRatings();
-Events.Player.songchanged.on((state)=>{
+eventBus.Player.song_changed.subscribe((state)=>{
     if (!state) return;
     const { uri } = state.item ?? {};
     if (!uri) return;
@@ -25,11 +26,16 @@ Events.Player.songchanged.on((state)=>{
 onTrackListMutationListeners.push(async (_, tracks)=>{
     for (const track of tracks)updateTrackControls(track, track.props.uri);
 });
-onHistoryChanged(_.overSome([
-    URI.is.Album,
-    URI.is.Artist,
-    URI.is.PlaylistV1OrV2
-]), (uri)=>updateCollectionControls(uri));
+eventBus.History.updated.subscribe(({ pathname })=>{
+    const uri = URI.fromString(pathname);
+    if (_.overSome([
+        URI.is.Album,
+        URI.is.Artist,
+        URI.is.PlaylistV1OrV2
+    ])) {
+        updateCollectionControls(uri);
+    }
+});
 export const FolderPickerMenuItem = ()=>{
     const { props } = useMenuItem();
     const { uri } = props.reference;

@@ -5,29 +5,8 @@ const { URI } = S;
 const History = S.Platform.getHistory();
 export const getTrackLists = ()=>Array.from(document.querySelectorAll(".ShMHCGsT93epRGdxJp2w.Ss6hr6HYpN4wjHJ9GHmi"));
 export const getTrackListTracks = (trackList)=>Array.from(trackList.querySelectorAll(".h4HgbO_Uu1JYg5UGANeQ"));
-export const onHistoryChanged = (toMatchTo, callback, dropDuplicates = true)=>{
-    const createMatchFn = (toMatchTo)=>{
-        switch(typeof toMatchTo){
-            case "string":
-                return (input)=>input?.startsWith(toMatchTo) ?? false;
-            case "function":
-                return toMatchTo;
-            default:
-                return (input)=>toMatchTo.test(input);
-        }
-    };
-    let lastPathname = "";
-    const matchFn = createMatchFn(toMatchTo);
-    const historyChanged = ({ pathname })=>{
-        if (matchFn(pathname)) {
-            if (dropDuplicates && lastPathname === pathname) {} else callback(URI.from(pathname)?.toURI());
-        }
-        lastPathname = pathname;
-    };
-    historyChanged(History.location ?? {});
-    return History.listen(historyChanged);
-};
 const PRESENTATION_KEY = Symbol("presentation");
+// TODO: use a Subject & handle module lifecycles correctly
 export const onTrackListMutationListeners = new Array();
 const _onTrackListMutation = (trackList, record, observer)=>{
     const tracks = getTrackListTracks(trackList[PRESENTATION_KEY]);

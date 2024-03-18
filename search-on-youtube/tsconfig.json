@@ -4,7 +4,9 @@
         "baseUrl": "../../../",
         "paths": {
             "/*": ["./*"],
-            "https://esm.sh/youtubei.js/web.bundle.min": ["../node_modules/youtubei.js/dist/src/platform/lib.d.ts"],
+            "https://esm.sh/youtubei.js/web.bundle.min": [
+                "modules/Delusoire/search-on-youtube/node_modules/youtubei.js/dist/src/platform/lib.d.ts"
+            ],
             "https://esm.sh/v135/*": [
                 "modules/Delusoire/search-on-youtube/node_modules/@types/*",
                 "modules/Delusoire/search-on-youtube/node_modules/*",

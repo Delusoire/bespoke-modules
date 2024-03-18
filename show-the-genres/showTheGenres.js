@@ -2,10 +2,10 @@ import { fetchLastFMTrack, spotifyApi } from "/modules/Delusoire/delulib/lib/api
 import { waitForElement } from "/modules/Delusoire/stdlib/lib/util.js";
 import { CONFIG } from "./settings.js";
 import { fetchArtistRelated } from "/modules/Delusoire/delulib/lib/GraphQL/fetchArtistRelated.js";
-import { onHistoryChanged } from "/modules/Delusoire/delulib/lib/listeners.js";
 import { _ } from "/modules/Delusoire/stdlib/deps.js";
-import { Events, S } from "/modules/Delusoire/stdlib/index.js";
+import { S } from "/modules/Delusoire/stdlib/index.js";
 import "./components.js";
+import { eventBus } from "./index.js";
 const { URI } = S;
 const PlayerAPI = S.Platform.getPlayerAPI();
 const fetchLastFMTagsForNowPlayingTrack = async ()=>{
@@ -57,4 +57,9 @@ const updateArtistPage = async (uri)=>{
     const headerTextDetailsEl = await waitForElement("span.Ydwa1P5GkCggtLlSvphs");
     headerTextEl.insertBefore(artistGenreContainerEl, headerTextDetailsEl);
 };
-onHistoryChanged((uri)=>URI.is.Artist(uri), updateArtistPage);
+eventBus.History.updated.subscribe(({ pathname })=>{
+    const uri = URI.fromString(pathname);
+    if (URI.is.Artist(uri)) {
+        updateArtistPage(uri);
+    }
+});

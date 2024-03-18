@@ -11,39 +11,6 @@ export const getTrackLists = () => Array.from(document.querySelectorAll<HTMLDivE
 export const getTrackListTracks = (trackList: HTMLDivElement) =>
 	Array.from(trackList.querySelectorAll<HTMLDivElement>(".main-trackList-trackListRow"));
 
-export const onHistoryChanged = (
-	toMatchTo: string | RegExp | ((location: string) => boolean),
-	callback: (uri?: string) => void,
-	dropDuplicates = true,
-) => {
-	const createMatchFn = (toMatchTo: string | RegExp | ((input: string) => boolean)) => {
-		switch (typeof toMatchTo) {
-			case "string":
-				return (input: string) => input?.startsWith(toMatchTo) ?? false;
-
-			case "function":
-				return toMatchTo;
-
-			default:
-				return (input: string) => toMatchTo.test(input);
-		}
-	};
-
-	let lastPathname = "";
-	const matchFn = createMatchFn(toMatchTo);
-
-	const historyChanged = ({ pathname }: any) => {
-		if (matchFn(pathname)) {
-			if (dropDuplicates && lastPathname === pathname) {
-			} else callback(URI.from(pathname)?.toURI());
-		}
-		lastPathname = pathname;
-	};
-
-	historyChanged(History.location ?? {});
-	return History.listen(historyChanged);
-};
-
 const PRESENTATION_KEY = Symbol("presentation");
 
 type TrackListElement = HTMLDivElement & {
@@ -52,6 +19,7 @@ type TrackListElement = HTMLDivElement & {
 type TrackElement = HTMLDivElement & { props?: Record<string, any> };
 
 type TrackListMutationListener = (tracklist: Required<TrackListElement>, tracks: Array<Required<TrackElement>>) => void;
+// TODO: use a Subject & handle module lifecycles correctly
 export const onTrackListMutationListeners = new Array<TrackListMutationListener>();
 
 const _onTrackListMutation = (trackList: Required<TrackListElement>, record: MutationRecord[], observer: MutationObserver) => {
