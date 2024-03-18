@@ -41,10 +41,12 @@ onTrackListMutationListeners.push(async (_, tracks) => {
 });
 
 eventBus.History.updated.subscribe(({ pathname }) => {
-	const uri = URI.fromString(pathname);
-	if (_.overSome([URI.is.Album, URI.is.Artist, URI.is.PlaylistV1OrV2])) {
-		updateCollectionControls(uri);
-	}
+	try {
+		const uri = URI.fromString(pathname);
+		if (_.overSome([URI.is.Album, URI.is.Artist, URI.is.PlaylistV1OrV2])) {
+			updateCollectionControls(uri);
+		}
+	} catch (_) {}
 });
 
 export const FolderPickerMenuItem = () => {

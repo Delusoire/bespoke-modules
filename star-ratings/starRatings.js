@@ -27,14 +27,16 @@ onTrackListMutationListeners.push(async (_, tracks)=>{
     for (const track of tracks)updateTrackControls(track, track.props.uri);
 });
 eventBus.History.updated.subscribe(({ pathname })=>{
-    const uri = URI.fromString(pathname);
-    if (_.overSome([
-        URI.is.Album,
-        URI.is.Artist,
-        URI.is.PlaylistV1OrV2
-    ])) {
-        updateCollectionControls(uri);
-    }
+    try {
+        const uri = URI.fromString(pathname);
+        if (_.overSome([
+            URI.is.Album,
+            URI.is.Artist,
+            URI.is.PlaylistV1OrV2
+        ])) {
+            updateCollectionControls(uri);
+        }
+    } catch (_) {}
 });
 export const FolderPickerMenuItem = ()=>{
     const { props } = useMenuItem();

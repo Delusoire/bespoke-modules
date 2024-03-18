@@ -75,8 +75,10 @@ const updateArtistPage = async (uri: string) => {
 };
 
 eventBus.History.updated.subscribe(({ pathname }) => {
-	const uri = URI.fromString(pathname);
-	if (URI.is.Artist(uri)) {
-		updateArtistPage(uri);
-	}
+	try {
+		const uri = URI.fromString(pathname);
+		if (URI.is.Artist(uri)) {
+			updateArtistPage(uri);
+		}
+	} catch (_) {}
 });
