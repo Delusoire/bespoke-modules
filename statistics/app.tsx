@@ -28,13 +28,13 @@ const NavBar = ({ categories, selectedCategory }) => (
 	<div className="fVB_YDdnaDlztX7CcWTA">
 		<div className="e179_Eg8r7Ub6yjjxctr contentSpacing">
 			<div className="VIeVCUUETJyYPCDpsBif">
-				<S.ReactComponents.Scrollable>
+				<S.ReactComponents.ScrollableContainer>
 					{categories.map(category => (
 						<NavToChip to={`spotify:app:stats:${category}`} title={category} selected={category === selectedCategory}>
 							{category}
 						</NavToChip>
 					))}
-				</S.ReactComponents.Scrollable>
+				</S.ReactComponents.ScrollableContainer>
 			</div>
 		</div>
 	</div>

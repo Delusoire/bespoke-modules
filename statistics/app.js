@@ -29,7 +29,7 @@ const NavBar = ({ categories, selectedCategory })=>/*#__PURE__*/ S.React.createE
         className: "e179_Eg8r7Ub6yjjxctr contentSpacing"
     }, /*#__PURE__*/ S.React.createElement("div", {
         className: "VIeVCUUETJyYPCDpsBif"
-    }, /*#__PURE__*/ S.React.createElement(S.ReactComponents.Scrollable, null, categories.map((category)=>/*#__PURE__*/ S.React.createElement(NavToChip, {
+    }, /*#__PURE__*/ S.React.createElement(S.ReactComponents.ScrollableContainer, null, categories.map((category)=>/*#__PURE__*/ S.React.createElement(NavToChip, {
             to: `spotify:app:stats:${category}`,
             title: category,
             selected: category === selectedCategory
