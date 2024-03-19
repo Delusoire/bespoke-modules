@@ -19,7 +19,7 @@ import { useStatus } from "../components/status/useStatus.js";
 import { logger, settingsButton, storage } from "../index.js";
 import { useDropdown } from "/modules/Delusoire/stdlib/lib/components/index.js";
 
-const DropdownOptions = { "Past Month": "Past Month", "Past 6 Months": "Past 6 Months", "All Time": "All Time" } as const;
+const DropdownOptions = { "Past Month": () => "Past Month", "Past 6 Months": () => "Past 6 Months", "All Time": () => "All Time" } as const;
 const OptionToTimeRange = {
 	"Past Month": SpotifyTimeRange.Short,
 	"Past 6 Months": SpotifyTimeRange.Medium,
@@ -99,7 +99,13 @@ const LibraryPage = () => {
 
 	const albumCards = albums.map(album => {
 		return (
-			<SpotifyCard type="album" uri={album.uri} header={album.name} subheader={`Appears in ${album.multiplicity} tracks`} imageUrl={album.image} />
+			<SpotifyCard
+				type="album"
+				uri={album.uri}
+				header={album.name}
+				subheader={`Appears in ${album.multiplicity} tracks`}
+				imageUrl={album.image}
+			/>
 		);
 	});
 
