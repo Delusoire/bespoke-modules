@@ -1,21 +1,24 @@
 :root {
-    --spicetify-playlist-labels-size: 28px;
-    --spicetify-playlist-labels-gap: 6px;
-    --spicetify-playlist-labels-container-width: calc(
-        var(--spicetify-playlist-labels-size) * 8 + var(--spicetify-playlist-labels-gap) * 7
+    --playlist-labels-size: 28px;
+    --playlist-labels-gap: 6px;
+    --playlist-labels-count: 5;
+
+    --playlist-labels-container-width: calc(
+        var(--playlist-labels-size) * var(--playlist-labels-count) + var(--playlist-labels-gap) *
+            (var(--playlist-labels-count) - 1)
     );
-    --spicetify-playlist-labels-column-width: calc(
-        var(--spicetify-playlist-labels-size) * 8 + var(--spicetify-playlist-labels-gap) * 7 + 12px + 120px
+    --playlist-labels-column-width: calc(
+        12px + var(--playlist-labels-container-width) + 12px + 16px + 12px + 46px + 12px + 16px
     );
 }
 
 .playlist-labels-labels-container {
-    width: var(--spicetify-playlist-labels-container-width);
+    width: var(--playlist-labels-container-width);
     height: var(--row-height);
     align-items: center;
     display: flex;
     overflow: hidden;
-    gap: var(--spicetify-playlist-labels-gap);
+    gap: var(--playlist-labels-gap);
     justify-content: flex-end;
 }
 
@@ -36,7 +39,7 @@
         [index] var(--tracklist-index-column-width, 16px)
         [first] minmax(120px, var(--col1, 4fr))
         [var1] minmax(120px, var(--col2, 2fr))
-        [last] minmax(var(--spicetify-playlist-labels-column-width), var(--col2, 1fr)) !important;
+        [last] minmax(var(--playlist-labels-column-width), var(--col2, 1fr)) !important;
 }
 
 .main-trackList-trackList.main-trackList-indexable[aria-colcount="5"] .main-trackList-trackListRowGrid {
@@ -45,7 +48,7 @@
         [first] minmax(120px, var(--col1, 6fr))
         [var1] minmax(120px, var(--col2, 4fr))
         [var2] minmax(120px, var(--col3, 3fr))
-        [last] minmax(var(--spicetify-playlist-labels-column-width), var(--col4, 1fr)) !important;
+        [last] minmax(var(--playlist-labels-column-width), var(--col4, 1fr)) !important;
 }
 
 .main-trackList-trackList.main-trackList-indexable[aria-colcount="6"] .main-trackList-trackListRowGrid {
@@ -55,5 +58,5 @@
         [var1] minmax(120px, var(--col2, 4fr))
         [var2] minmax(120px, var(--col3, 3fr))
         [var3] minmax(120px, var(--col4, 2fr))
-        [last] minmax(var(--spicetify-playlist-labels-column-width), var(--col5, 1fr)) !important;
+        [last] minmax(var(--playlist-labels-column-width), var(--col5, 1fr)) !important;
 }
