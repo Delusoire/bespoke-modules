@@ -72,8 +72,9 @@ function windowControls() {
 
 async function controlDimensions() {
 	let ratio = 3.375;
-	const height = document.querySelector(".ZQftYELq0aOsg6tPbVbV").computedStyleMap().get("padding-top").value / devicePixelRatio;
-	if (devicePixelRatio > 1.5) {
+	const zoomFactor = window.outerWidth / window.innerWidth;
+	const height = document.querySelector(".ZQftYELq0aOsg6tPbVbV").computedStyleMap().get("padding-top").value / zoomFactor;
+	if (zoomFactor > 1.25) {
 		ratio = 2.95;
 	}
 	style.setProperty("--control-height", `${height}px`);
