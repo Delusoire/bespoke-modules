@@ -1,5 +1,4 @@
 import { categories, selectedCategoryCtx } from "../../app.js";
-import CreatePlaylistButton, { type CreatePlaylistButtonProps } from "../buttons/create_playlist_button.js";
 
 import { S } from "/modules/Delusoire/stdlib/index.js";
 import { TopNavBar } from "/modules/Delusoire/stdlib/lib/components/MountedNavBar.js";
@@ -8,13 +7,13 @@ const { React } = S;
 
 interface PageContainerProps {
 	title: string;
-	createPlaylistButtonProps?: CreatePlaylistButtonProps;
-	headerEls?: React.ReactElement | React.ReactElement[];
-	children: React.ReactElement | React.ReactElement[];
+	headerLeft?: React.ReactNode;
+	headerRight?: React.ReactNode;
+	children: React.ReactNode;
 }
 
 const PageContainer = (props: PageContainerProps) => {
-	const { title, createPlaylistButtonProps, headerEls, children } = props;
+	const { title, headerLeft, headerRight, children } = props;
 	const { TextComponent } = S.ReactComponents;
 	const selectedCategory = React.useContext(selectedCategoryCtx);
 	return (
@@ -24,10 +23,10 @@ const PageContainer = (props: PageContainerProps) => {
 					<TextComponent as="h1" variant="canon" semanticColor="textBase">
 						{title}
 					</TextComponent>
-					{createPlaylistButtonProps && <CreatePlaylistButton {...createPlaylistButtonProps} />}
+					{headerLeft}
 					<TopNavBar categories={categories} selectedCategory={selectedCategory} />
 				</div>
-				<div className="header-right">{headerEls}</div>
+				<div className="header-right">{headerRight}</div>
 			</div>
 			<div className={"page-content"}>{children}</div>
 		</section>

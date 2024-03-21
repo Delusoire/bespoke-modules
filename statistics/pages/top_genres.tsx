@@ -46,60 +46,38 @@ export const calculateTracksMeta = (tracks: Track[]) => {
 	return { explicitness: explicitCount / tracks.length, popularity: popularityTotal / tracks.length, releaseDates, obscureTracks };
 };
 
-const GenresPage = () => {
-	const [dropdown, activeOption] = useDropdown({ options: DropdownOptions, storage, storageVariable: "top-genres" });
-	const timeRange = OptionToTimeRange[activeOption];
-
-	const { status, error, data, refetch } = S.ReactQuery.useQuery({
-		queryKey: ["topGenres", timeRange],
-		queryFn: async () => {
-			const topTracks = await fetchTopTracks(timeRange);
-			const topArtists = await fetchTopArtists(timeRange);
-
-			const tracks = topTracks.items;
-			const artists = topArtists.items;
-
-			// ! very unscientific
-			const genres = calculateGenresFromArtists(artists, i => artists.length - i);
-
-			const trackURIs = tracks.map(getURI);
-			const trackIDs = trackURIs.map(toID);
-			const audioFeatures = await fetchAudioFeaturesMeta(trackIDs);
-
-			const { explicitness, releaseDates, obscureTracks, popularity } = calculateTracksMeta(tracks);
-
-			return {
-				genres,
-				releaseDates,
-				obscureTracks,
-				audioFeatures: Object.assign(audioFeatures, {
-					popularity,
-					explicitness,
-				}),
-			};
-		},
-	});
+interface GenresPageContentProps {
+	genres: Record<string, number>;
+	releaseDates: Record<string, number>;
+	obscureTracks: Track[];
+	audioFeatures: {
+		danceability: number;
+		energy: number;
+		key: number;
+		loudness: number;
+		mode: number;
+		speechiness: number;
+		acousticness: number;
+		instrumentalness: number;
+		liveness: number;
+		valence: number;
+		tempo: number;
+		time_signature: number;
+		popularity: number;
+		explicitness: number;
+	};
+}
+const GenresPageContent = (data: GenresPageContentProps) => {
+	const { usePlayContextItem } = S.getPlayContext({ uri: "" }, { featureIdentifier: "queue" });
 
 	const thisRef = React.useRef(null);
 
-	const { usePlayContextItem } = S.getPlayContext({ uri: "" }, { featureIdentifier: "queue" });
-
-	const Status = useStatus({ status, error, logger });
-	if (Status) {
-		return Status;
-	}
-
 	const { genres, releaseDates, obscureTracks, audioFeatures } = data;
-
-	const PageContainerProps = {
-		title: "Top Genres",
-		headerEls: [dropdown, <RefreshButton refresh={refetch} />, settingsButton],
-	};
 
 	const statsCards = Object.entries(audioFeatures).map(([key, value]) => <StatCard label={key} value={value} />);
 
 	return (
-		<PageContainer {...PageContainerProps}>
+		<>
 			<section className="main-shelf-shelf Shelf">
 				<ContributionChart contributions={genres} />
 				<InlineGrid special>{statsCards}</InlineGrid>
@@ -140,6 +118,49 @@ const GenresPage = () => {
 					</S.ReactComponents.Tracklist>
 				</S.ReactComponents.TracklistColumnsContextProvider>
 			</Shelf>
+		</>
+	);
+};
+
+const GenresPage = () => {
+	const [dropdown, activeOption] = useDropdown({ options: DropdownOptions, storage, storageVariable: "top-genres" });
+	const timeRange = OptionToTimeRange[activeOption];
+
+	const { status, error, data, refetch } = S.ReactQuery.useQuery({
+		queryKey: ["topGenres", timeRange],
+		queryFn: async () => {
+			const topTracks = await fetchTopTracks(timeRange);
+			const topArtists = await fetchTopArtists(timeRange);
+
+			const tracks = topTracks.items;
+			const artists = topArtists.items;
+
+			// ! very unscientific
+			const genres = calculateGenresFromArtists(artists, i => artists.length - i);
+
+			const trackURIs = tracks.map(getURI);
+			const trackIDs = trackURIs.map(toID);
+			const audioFeatures = await fetchAudioFeaturesMeta(trackIDs);
+
+			const { explicitness, releaseDates, obscureTracks, popularity } = calculateTracksMeta(tracks);
+
+			return {
+				genres,
+				releaseDates,
+				obscureTracks,
+				audioFeatures: Object.assign(audioFeatures, {
+					popularity,
+					explicitness,
+				}),
+			};
+		},
+	});
+
+	const Status = useStatus({ status, error, logger });
+
+	return (
+		<PageContainer title="Top Genres" headerRight={[dropdown, status !== "pending" && <RefreshButton refresh={refetch} />, settingsButton]}>
+			{Status || <GenresPageContent {...data} />}
 		</PageContainer>
 	);
 };

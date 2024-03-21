@@ -8,6 +8,7 @@ import { SpotifyTimeRange } from "../api/spotify.js";
 import { useStatus } from "../components/status/useStatus.js";
 import { logger, settingsButton, storage } from "../index.js";
 import { useDropdown } from "/modules/Delusoire/stdlib/lib/components/index.js";
+import CreatePlaylistButton from "../components/buttons/create_playlist_button.js";
 const DropdownOptions = {
     "Past Month": ()=>"Past Month",
     "Past 6 Months": ()=>"Past 6 Months",
@@ -26,50 +27,14 @@ const columns = [
 ];
 const allowedDropTypes = [];
 export const fetchTopTracks = (timeRange)=>spotifyApi.currentUser.topItems("tracks", timeRange, 50, 0);
-const TracksPage = ()=>{
-    const [dropdown, activeOption] = useDropdown({
-        options: DropdownOptions,
-        storage,
-        storageVariable: "top-tracks"
-    });
-    const timeRange = OptionToTimeRange[activeOption];
-    const { status, error, data, refetch } = S.ReactQuery.useQuery({
-        queryKey: [
-            "topTracks",
-            timeRange
-        ],
-        queryFn: ()=>fetchTopTracks(timeRange)
-    });
+const TracksPageContent = ({ topTracks })=>{
     const thisRef = React.useRef(null);
     const { usePlayContextItem } = S.getPlayContext({
         uri: ""
     }, {
         featureIdentifier: "queue"
     });
-    const Status = useStatus({
-        status,
-        error,
-        logger
-    });
-    if (Status) {
-        return Status;
-    }
-    const topTracks = data.items;
-    const pageContainerProps = {
-        title: "Top Tracks",
-        headerEls: [
-            dropdown,
-            /*#__PURE__*/ S.React.createElement(RefreshButton, {
-                refresh: refetch
-            }),
-            settingsButton
-        ],
-        infoToCreatePlaylist: {
-            playlistName: `Top Songs - ${activeOption}`,
-            itemsUris: topTracks.map((track)=>track.uri)
-        }
-    };
-    return /*#__PURE__*/ S.React.createElement(PageContainer, pageContainerProps, /*#__PURE__*/ S.React.createElement(S.ReactComponents.TracklistColumnsContextProvider, {
+    return /*#__PURE__*/ S.React.createElement(S.ReactComponents.TracklistColumnsContextProvider, {
         columns: columns
     }, /*#__PURE__*/ S.React.createElement(S.ReactComponents.Tracklist, {
         ariaLabel: "Top Tracks",
@@ -97,6 +62,43 @@ const TracksPage = ()=>{
         tracks: topTracks,
         isCompactMode: false,
         columnPersistenceKey: "stats-top-tracks"
-    }, "spotify:app:stats:tracks")));
+    }, "spotify:app:stats:tracks"));
+};
+const TracksPage = ()=>{
+    const [dropdown, activeOption] = useDropdown({
+        options: DropdownOptions,
+        storage,
+        storageVariable: "top-tracks"
+    });
+    const timeRange = OptionToTimeRange[activeOption];
+    const { status, error, data, refetch } = S.ReactQuery.useQuery({
+        queryKey: [
+            "topTracks",
+            timeRange
+        ],
+        queryFn: ()=>fetchTopTracks(timeRange)
+    });
+    const Status = useStatus({
+        status,
+        error,
+        logger
+    });
+    const topTracks = data?.items;
+    return /*#__PURE__*/ S.React.createElement(PageContainer, {
+        title: "Top Tracks",
+        headerLeft: status === "success" && /*#__PURE__*/ S.React.createElement(CreatePlaylistButton, {
+            name: `Top Songs - ${activeOption}`,
+            tracks: topTracks.map((track)=>track.uri)
+        }),
+        headerRight: [
+            dropdown,
+            status !== "pending" && /*#__PURE__*/ S.React.createElement(RefreshButton, {
+                refresh: refetch
+            }),
+            settingsButton
+        ]
+    }, Status || /*#__PURE__*/ S.React.createElement(TracksPageContent, {
+        topTracks: topTracks
+    }));
 };
 export default React.memo(TracksPage);

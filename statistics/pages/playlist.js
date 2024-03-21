@@ -88,37 +88,36 @@ export const fetchAlbumsMeta = async (ids)=>{
     };
 };
 const PlaylistPage = ({ uri })=>{
-    const queryFn = async ()=>{
-        const playlist = await PlaylistAPI.getPlaylist(uri);
-        const { metadata, contents } = playlist;
-        const tracks = contents.items;
-        const duration = tracks.map((track)=>track.duration.milliseconds).reduce(fp.add);
-        const trackURIs = tracks.map(getURI);
-        const trackIDs = trackURIs.map(toID);
-        const audioFeatures = await fetchAudioFeaturesMeta(trackIDs);
-        const artistObjs = tracks.flatMap((track)=>track.artists);
-        const artistURIs = artistObjs.map(getURI);
-        const artistIDs = artistURIs.map(toID);
-        const { artists, genres } = await fetchArtistsMeta(artistIDs);
-        const albumObjs = tracks.map((track)=>track.album);
-        const albumURIs = albumObjs.map(getURI);
-        const albumIDs = albumURIs.map(toID);
-        const { albums, releaseYears } = await fetchAlbumsMeta(albumIDs);
-        return {
-            tracks,
-            duration,
-            audioFeatures,
-            artists,
-            genres,
-            albums,
-            releaseYears
-        };
-    };
     const { status, error, data } = S.ReactQuery.useQuery({
         queryKey: [
             "playlistAnalysis"
         ],
-        queryFn
+        queryFn: async ()=>{
+            const playlist = await PlaylistAPI.getPlaylist(uri);
+            const { metadata, contents } = playlist;
+            const tracks = contents.items;
+            const duration = tracks.map((track)=>track.duration.milliseconds).reduce(fp.add);
+            const trackURIs = tracks.map(getURI);
+            const trackIDs = trackURIs.map(toID);
+            const audioFeatures = await fetchAudioFeaturesMeta(trackIDs);
+            const artistObjs = tracks.flatMap((track)=>track.artists);
+            const artistURIs = artistObjs.map(getURI);
+            const artistIDs = artistURIs.map(toID);
+            const { artists, genres } = await fetchArtistsMeta(artistIDs);
+            const albumObjs = tracks.map((track)=>track.album);
+            const albumURIs = albumObjs.map(getURI);
+            const albumIDs = albumURIs.map(toID);
+            const { albums, releaseYears } = await fetchAlbumsMeta(albumIDs);
+            return {
+                tracks,
+                duration,
+                audioFeatures,
+                artists,
+                genres,
+                albums,
+                releaseYears
+            };
+        }
     });
     const Status = useStatus({
         status,

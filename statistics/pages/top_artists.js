@@ -20,6 +20,17 @@ const OptionToTimeRange = {
     "All Time": SpotifyTimeRange.Long
 };
 export const fetchTopArtists = (timeRange)=>spotifyApi.currentUser.topItems("artists", timeRange, 50, 0);
+const ArtistsPageContent = ({ topArtists })=>{
+    return /*#__PURE__*/ S.React.createElement("div", {
+        className: "iKwGKEfAfW7Rkx2_Ba4E grid"
+    }, topArtists.map((artist, index)=>/*#__PURE__*/ S.React.createElement(SpotifyCard, {
+            type: "artist",
+            uri: artist.uri,
+            header: artist.name,
+            subheader: `#${index + 1} Artist`,
+            imageUrl: artist.images.at(-1)?.url ?? DEFAULT_TRACK_IMG
+        })));
+};
 const ArtistsPage = ()=>{
     const [dropdown, activeOption] = useDropdown({
         options: DropdownOptions,
@@ -39,28 +50,17 @@ const ArtistsPage = ()=>{
         error,
         logger
     });
-    if (Status) {
-        return Status;
-    }
-    const topArtists = data.items;
-    const PageContainerProps = {
+    return /*#__PURE__*/ S.React.createElement(PageContainer, {
         title: "Top Artists",
-        headerEls: [
+        headerRight: [
             dropdown,
-            /*#__PURE__*/ S.React.createElement(RefreshButton, {
+            status !== "pending" && /*#__PURE__*/ S.React.createElement(RefreshButton, {
                 refresh: refetch
             }),
             settingsButton
         ]
-    };
-    return /*#__PURE__*/ S.React.createElement(PageContainer, PageContainerProps, /*#__PURE__*/ S.React.createElement("div", {
-        className: "iKwGKEfAfW7Rkx2_Ba4E grid"
-    }, topArtists.map((artist, index)=>/*#__PURE__*/ S.React.createElement(SpotifyCard, {
-            type: "artist",
-            uri: artist.uri,
-            header: artist.name,
-            subheader: `#${index + 1} Artist`,
-            imageUrl: artist.images.at(-1)?.url ?? DEFAULT_TRACK_IMG
-        }))));
+    }, Status || /*#__PURE__*/ S.React.createElement(ArtistsPageContent, {
+        topArtists: data.items
+    }));
 };
 export default React.memo(ArtistsPage);

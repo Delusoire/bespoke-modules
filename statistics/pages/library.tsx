@@ -26,61 +26,43 @@ const OptionToTimeRange = {
 	"All Time": SpotifyTimeRange.Long,
 } as const;
 
-const LibraryPage = () => {
-	const [dropdown, activeOption] = useDropdown({ options: DropdownOptions, storage, storageVariable: "top-genres" });
-	const timeRange = OptionToTimeRange[activeOption];
-
-	const { error, data, refetch, status } = S.ReactQuery.useQuery({
-		queryKey: ["libraryAnaysis", timeRange],
-		queryFn: async () => {
-			const trackURIsInLibrary = Array.from(PlaylistItems)
-				.map(([k, v]) => v.size && k)
-				.filter(Boolean);
-			const tracks = await getTracksFromURIs(trackURIsInLibrary);
-
-			const duration = tracks.map(track => track.duration_ms).reduce(fp.add);
-			const { explicitness, obscureTracks, popularity, releaseDates } = calculateTracksMeta(tracks);
-
-			const trackURIs = tracks.map(getURI);
-			const trackIDs = trackURIs.map(toID);
-			const audioFeatures = fetchAudioFeaturesMeta(trackIDs);
-
-			const albumIDs = tracks.map(track => track.album.id);
-			const artistIDs = tracks.flatMap(track => track.artists.map(artist => artist.id));
-
-			const { albums } = await fetchAlbumsMeta(albumIDs);
-			const { artists, genres } = await fetchArtistsMeta(artistIDs);
-
-			const playlists = Array.from(SavedPlaylists.keys());
-
-			return {
-				duration,
-				releaseDates,
-				playlists,
-				genres,
-				tracks,
-				albums,
-				artists,
-				audioFeatures: Object.assign(audioFeatures, {
-					explicitness,
-					popularity,
-				}),
-			};
-		},
-	});
-
-	const Status = useStatus({ status, error, logger });
-	if (Status) {
-		return Status;
-	}
-
-	const { genres, artists, albums, playlists, duration, releaseDates, tracks, audioFeatures } = data;
-
-	const PageContainerProps = {
-		title: "Library Analysis",
-		headerEls: [dropdown, <RefreshButton refresh={refetch} />, settingsButton],
+interface LibraryPageContentProps {
+	duration: number;
+	releaseDates: Record<string, number>;
+	playlists: string[];
+	genres: Record<string, number>;
+	tracks: any[];
+	albums: Array<{
+		name: string;
+		uri: string;
+		image: string;
+		releaseYear: number;
+		multiplicity: number;
+	}>;
+	artists: Array<{
+		name: string;
+		uri: string;
+		image: string;
+		multiplicity: number;
+	}>;
+	audioFeatures: {
+		danceability: number;
+		energy: number;
+		key: number;
+		loudness: number;
+		mode: number;
+		speechiness: number;
+		acousticness: number;
+		instrumentalness: number;
+		liveness: number;
+		valence: number;
+		tempo: number;
+		time_signature: number;
+		explicitness: number;
+		popularity: number;
 	};
-
+}
+const LibraryPageContent = ({ genres, artists, albums, playlists, duration, releaseDates, tracks, audioFeatures }: LibraryPageContentProps) => {
 	const statCards = Object.entries(audioFeatures).map(([key, value]) => {
 		return <StatCard label={key} value={value} />;
 	});
@@ -110,7 +92,7 @@ const LibraryPage = () => {
 	});
 
 	return (
-		<PageContainer {...PageContainerProps}>
+		<>
 			<section className="stats-libraryOverview">
 				<StatCard label="Total Playlists" value={playlists.length.toString()} />
 				<StatCard label="Total Tracks" value={tracks.length.toString()} />
@@ -131,6 +113,58 @@ const LibraryPage = () => {
 			<Shelf title="Release Year Distribution">
 				<ContributionChart contributions={releaseDates} />
 			</Shelf>
+		</>
+	);
+};
+
+const LibraryPage = () => {
+	const [dropdown, activeOption] = useDropdown({ options: DropdownOptions, storage, storageVariable: "top-genres" });
+	const timeRange = OptionToTimeRange[activeOption];
+
+	const { error, data, refetch, status } = S.ReactQuery.useQuery({
+		queryKey: ["libraryAnaysis", timeRange],
+		queryFn: async () => {
+			const trackURIsInLibrary = Array.from(PlaylistItems)
+				.map(([k, v]) => v.size && k)
+				.filter(Boolean);
+			const tracks = await getTracksFromURIs(trackURIsInLibrary);
+
+			const duration = tracks.map(track => track.duration_ms).reduce(fp.add);
+			const { explicitness, obscureTracks, popularity, releaseDates } = calculateTracksMeta(tracks);
+
+			const trackURIs = tracks.map(getURI);
+			const trackIDs = trackURIs.map(toID);
+			const audioFeatures = await fetchAudioFeaturesMeta(trackIDs);
+
+			const albumIDs = tracks.map(track => track.album.id);
+			const artistIDs = tracks.flatMap(track => track.artists.map(artist => artist.id));
+
+			const { albums } = await fetchAlbumsMeta(albumIDs);
+			const { artists, genres } = await fetchArtistsMeta(artistIDs);
+
+			const playlists = Array.from(SavedPlaylists.keys());
+
+			return {
+				duration,
+				releaseDates,
+				playlists,
+				genres,
+				tracks,
+				albums,
+				artists,
+				audioFeatures: Object.assign(audioFeatures, {
+					explicitness,
+					popularity,
+				}),
+			};
+		},
+	});
+
+	const Status = useStatus({ status, error, logger });
+
+	return (
+		<PageContainer title="Library Analysis" headerRight={[dropdown, status !== "pending" && <RefreshButton refresh={refetch} />, settingsButton]}>
+			{Status || <LibraryPageContent {...data} />}
 		</PageContainer>
 	);
 };

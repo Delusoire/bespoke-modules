@@ -21,6 +21,20 @@ const OptionToTimeRange = {
     "Past 6 Months": SpotifyTimeRange.Medium,
     "All Time": SpotifyTimeRange.Long
 };
+const AlbumsPageContent = ({ topAlbums })=>{
+    return /*#__PURE__*/ S.React.createElement("div", {
+        className: "iKwGKEfAfW7Rkx2_Ba4E grid"
+    }, topAlbums.map((album, index)=>{
+        const type = album.uri.startsWith("https") ? "lastfm" : "album";
+        return /*#__PURE__*/ S.React.createElement(SpotifyCard, {
+            type: type,
+            uri: album.uri,
+            header: album.name,
+            subheader: `#${index + 1} Album`,
+            imageUrl: album.images[0]?.url ?? DEFAULT_TRACK_IMG
+        });
+    }));
+};
 const AlbumsPage = ()=>{
     const [dropdown, activeOption] = useDropdown({
         options: DropdownOptions,
@@ -28,7 +42,7 @@ const AlbumsPage = ()=>{
         storageVariable: "top-artists"
     });
     const timeRange = OptionToTimeRange[activeOption];
-    const { status, error, data: topAlbums, refetch } = S.ReactQuery.useQuery({
+    const { status, error, data, refetch } = S.ReactQuery.useQuery({
         queryKey: [
             "topAlbums",
             CONFIG.LFMUsername,
@@ -49,31 +63,17 @@ const AlbumsPage = ()=>{
         error,
         logger
     });
-    if (Status) {
-        return Status;
-    }
-    const props = {
+    return /*#__PURE__*/ S.React.createElement(PageContainer, {
         title: "Top Albums",
-        headerEls: [
+        headerRight: [
             dropdown,
-            /*#__PURE__*/ S.React.createElement(RefreshButton, {
+            status !== "pending" && /*#__PURE__*/ S.React.createElement(RefreshButton, {
                 refresh: refetch
             }),
             settingsButton
         ]
-    };
-    const albumCards = topAlbums.map((album, index)=>{
-        const type = album.uri.startsWith("https") ? "lastfm" : "album";
-        return /*#__PURE__*/ S.React.createElement(SpotifyCard, {
-            type: type,
-            uri: album.uri,
-            header: album.name,
-            subheader: `#${index + 1} Album`,
-            imageUrl: album.images[0]?.url ?? DEFAULT_TRACK_IMG
-        });
-    });
-    return /*#__PURE__*/ S.React.createElement(PageContainer, props, /*#__PURE__*/ S.React.createElement("div", {
-        className: "iKwGKEfAfW7Rkx2_Ba4E grid"
-    }, albumCards));
+    }, Status || /*#__PURE__*/ S.React.createElement(AlbumsPageContent, {
+        topAlbums: data
+    }));
 };
 export default React.memo(AlbumsPage);

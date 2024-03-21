@@ -21,16 +21,33 @@ const OptionToTimeRange = {
 	"All Time": SpotifyTimeRange.Long,
 } as const;
 
+interface AlbumsPageContentProps {
+	topAlbums: any[];
+}
+const AlbumsPageContent = ({ topAlbums }: AlbumsPageContentProps) => {
+	return (
+		<div className={"main-gridContainer-gridContainer grid"}>
+			{topAlbums.map((album, index) => {
+				const type = album.uri.startsWith("https") ? "lastfm" : "album";
+				return (
+					<SpotifyCard
+						type={type}
+						uri={album.uri}
+						header={album.name}
+						subheader={`#${index + 1} Album`}
+						imageUrl={album.images[0]?.url ?? DEFAULT_TRACK_IMG}
+					/>
+				);
+			})}
+		</div>
+	);
+};
+
 const AlbumsPage = () => {
 	const [dropdown, activeOption] = useDropdown({ options: DropdownOptions, storage, storageVariable: "top-artists" });
 	const timeRange = OptionToTimeRange[activeOption];
 
-	const {
-		status,
-		error,
-		data: topAlbums,
-		refetch,
-	} = S.ReactQuery.useQuery({
+	const { status, error, data, refetch } = S.ReactQuery.useQuery({
 		queryKey: ["topAlbums", CONFIG.LFMUsername, timeRange],
 		queryFn: async () => {
 			const { topalbums } = await fetchLFMTopAlbums(CONFIG.LFMApiKey)(CONFIG.LFMUsername, timeRange);
@@ -44,31 +61,9 @@ const AlbumsPage = () => {
 	});
 
 	const Status = useStatus({ status, error, logger });
-	if (Status) {
-		return Status;
-	}
-
-	const props = {
-		title: "Top Albums",
-		headerEls: [dropdown, <RefreshButton refresh={refetch} />, settingsButton],
-	};
-
-	const albumCards = topAlbums.map((album, index) => {
-		const type = album.uri.startsWith("https") ? "lastfm" : "album";
-		return (
-			<SpotifyCard
-				type={type}
-				uri={album.uri}
-				header={album.name}
-				subheader={`#${index + 1} Album`}
-				imageUrl={album.images[0]?.url ?? DEFAULT_TRACK_IMG}
-			/>
-		);
-	});
-
 	return (
-		<PageContainer {...props}>
-			<div className={"main-gridContainer-gridContainer grid"}>{albumCards}</div>
+		<PageContainer title="Top Albums" headerRight={[dropdown, status !== "pending" && <RefreshButton refresh={refetch} />, settingsButton]}>
+			{Status || <AlbumsPageContent topAlbums={data} />}
 		</PageContainer>
 	);
 };

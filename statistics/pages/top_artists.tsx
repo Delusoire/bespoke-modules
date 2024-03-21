@@ -20,6 +20,24 @@ const OptionToTimeRange = {
 } as const;
 
 export const fetchTopArtists = (timeRange: SpotifyTimeRange) => spotifyApi.currentUser.topItems("artists", timeRange, 50, 0);
+interface ArtistsPageContentProps {
+	topArtists: any[];
+}
+const ArtistsPageContent = ({ topArtists }: ArtistsPageContentProps) => {
+	return (
+		<div className={"main-gridContainer-gridContainer grid"}>
+			{topArtists.map((artist, index) => (
+				<SpotifyCard
+					type={"artist"}
+					uri={artist.uri}
+					header={artist.name}
+					subheader={`#${index + 1} Artist`}
+					imageUrl={artist.images.at(-1)?.url ?? DEFAULT_TRACK_IMG}
+				/>
+			))}
+		</div>
+	);
+};
 
 const ArtistsPage = () => {
 	const [dropdown, activeOption] = useDropdown({ options: DropdownOptions, storage, storageVariable: "top-artists" });
@@ -31,30 +49,10 @@ const ArtistsPage = () => {
 	});
 
 	const Status = useStatus({ status, error, logger });
-	if (Status) {
-		return Status;
-	}
-
-	const topArtists = data.items;
-
-	const PageContainerProps = {
-		title: "Top Artists",
-		headerEls: [dropdown, <RefreshButton refresh={refetch} />, settingsButton],
-	};
 
 	return (
-		<PageContainer {...PageContainerProps}>
-			<div className={"main-gridContainer-gridContainer grid"}>
-				{topArtists.map((artist, index) => (
-					<SpotifyCard
-						type={"artist"}
-						uri={artist.uri}
-						header={artist.name}
-						subheader={`#${index + 1} Artist`}
-						imageUrl={artist.images.at(-1)?.url ?? DEFAULT_TRACK_IMG}
-					/>
-				))}
-			</div>
+		<PageContainer title="Top Artists" headerRight={[dropdown, status !== "pending" && <RefreshButton refresh={refetch} />, settingsButton]}>
+			{Status || <ArtistsPageContent topArtists={data.items} />}
 		</PageContainer>
 	);
 };

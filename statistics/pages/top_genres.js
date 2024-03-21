@@ -51,70 +51,19 @@ export const calculateTracksMeta = (tracks)=>{
         obscureTracks
     };
 };
-const GenresPage = ()=>{
-    const [dropdown, activeOption] = useDropdown({
-        options: DropdownOptions,
-        storage,
-        storageVariable: "top-genres"
-    });
-    const timeRange = OptionToTimeRange[activeOption];
-    const { status, error, data, refetch } = S.ReactQuery.useQuery({
-        queryKey: [
-            "topGenres",
-            timeRange
-        ],
-        queryFn: async ()=>{
-            const topTracks = await fetchTopTracks(timeRange);
-            const topArtists = await fetchTopArtists(timeRange);
-            const tracks = topTracks.items;
-            const artists = topArtists.items;
-            // ! very unscientific
-            const genres = calculateGenresFromArtists(artists, (i)=>artists.length - i);
-            const trackURIs = tracks.map(getURI);
-            const trackIDs = trackURIs.map(toID);
-            const audioFeatures = await fetchAudioFeaturesMeta(trackIDs);
-            const { explicitness, releaseDates, obscureTracks, popularity } = calculateTracksMeta(tracks);
-            return {
-                genres,
-                releaseDates,
-                obscureTracks,
-                audioFeatures: Object.assign(audioFeatures, {
-                    popularity,
-                    explicitness
-                })
-            };
-        }
-    });
-    const thisRef = React.useRef(null);
+const GenresPageContent = (data)=>{
     const { usePlayContextItem } = S.getPlayContext({
         uri: ""
     }, {
         featureIdentifier: "queue"
     });
-    const Status = useStatus({
-        status,
-        error,
-        logger
-    });
-    if (Status) {
-        return Status;
-    }
+    const thisRef = React.useRef(null);
     const { genres, releaseDates, obscureTracks, audioFeatures } = data;
-    const PageContainerProps = {
-        title: "Top Genres",
-        headerEls: [
-            dropdown,
-            /*#__PURE__*/ S.React.createElement(RefreshButton, {
-                refresh: refetch
-            }),
-            settingsButton
-        ]
-    };
     const statsCards = Object.entries(audioFeatures).map(([key, value])=>/*#__PURE__*/ S.React.createElement(StatCard, {
             label: key,
             value: value
         }));
-    return /*#__PURE__*/ S.React.createElement(PageContainer, PageContainerProps, /*#__PURE__*/ S.React.createElement("section", {
+    return /*#__PURE__*/ S.React.createElement(S.React.Fragment, null, /*#__PURE__*/ S.React.createElement("section", {
         className: "QyANtc_r7ff_tqrf5Bvc Shelf"
     }, /*#__PURE__*/ S.React.createElement(ContributionChart, {
         contributions: genres
@@ -155,5 +104,55 @@ const GenresPage = ()=>{
         isCompactMode: false,
         columnPersistenceKey: "stats-top-genres"
     }, "spotify:app:stats:genres"))));
+};
+const GenresPage = ()=>{
+    const [dropdown, activeOption] = useDropdown({
+        options: DropdownOptions,
+        storage,
+        storageVariable: "top-genres"
+    });
+    const timeRange = OptionToTimeRange[activeOption];
+    const { status, error, data, refetch } = S.ReactQuery.useQuery({
+        queryKey: [
+            "topGenres",
+            timeRange
+        ],
+        queryFn: async ()=>{
+            const topTracks = await fetchTopTracks(timeRange);
+            const topArtists = await fetchTopArtists(timeRange);
+            const tracks = topTracks.items;
+            const artists = topArtists.items;
+            // ! very unscientific
+            const genres = calculateGenresFromArtists(artists, (i)=>artists.length - i);
+            const trackURIs = tracks.map(getURI);
+            const trackIDs = trackURIs.map(toID);
+            const audioFeatures = await fetchAudioFeaturesMeta(trackIDs);
+            const { explicitness, releaseDates, obscureTracks, popularity } = calculateTracksMeta(tracks);
+            return {
+                genres,
+                releaseDates,
+                obscureTracks,
+                audioFeatures: Object.assign(audioFeatures, {
+                    popularity,
+                    explicitness
+                })
+            };
+        }
+    });
+    const Status = useStatus({
+        status,
+        error,
+        logger
+    });
+    return /*#__PURE__*/ S.React.createElement(PageContainer, {
+        title: "Top Genres",
+        headerRight: [
+            dropdown,
+            status !== "pending" && /*#__PURE__*/ S.React.createElement(RefreshButton, {
+                refresh: refetch
+            }),
+            settingsButton
+        ]
+    }, Status || /*#__PURE__*/ S.React.createElement(GenresPageContent, data));
 };
 export default React.memo(GenresPage);

@@ -1,7 +1,6 @@
 import { S } from "/modules/Delusoire/stdlib/index.js";
 const { React } = S;
-const ErrorIcon = ()=>{
-    return /*#__PURE__*/ S.React.createElement("svg", {
+const ErrorIcon = ()=>/*#__PURE__*/ S.React.createElement("svg", {
         "data-encore-id": "icon",
         role: "img",
         "aria-hidden": "true",
@@ -12,9 +11,7 @@ const ErrorIcon = ()=>{
     }), /*#__PURE__*/ S.React.createElement("path", {
         d: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18zM1 12C1 5.925 5.925 1 12 1s11 4.925 11 11-4.925 11-11 11S1 18.075 1 12z"
     }));
-};
-const LibraryIcon = ()=>{
-    return /*#__PURE__*/ S.React.createElement("svg", {
+const LibraryIcon = ()=>/*#__PURE__*/ S.React.createElement("svg", {
         role: "img",
         height: "46",
         width: "46",
@@ -25,7 +22,6 @@ const LibraryIcon = ()=>{
     }, /*#__PURE__*/ S.React.createElement("path", {
         d: "M14.5 2.134a1 1 0 0 1 1 0l6 3.464a1 1 0 0 1 .5.866V21a1 1 0 0 1-1 1h-6a1 1 0 0 1-1-1V3a1 1 0 0 1 .5-.866zM16 4.732V20h4V7.041l-4-2.309zM3 22a1 1 0 0 1-1-1V3a1 1 0 0 1 2 0v18a1 1 0 0 1-1 1zm6 0a1 1 0 0 1-1-1V3a1 1 0 0 1 2 0v18a1 1 0 0 1-1 1z"
     }));
-};
 export const Status = (props)=>{
     const [isVisible, setIsVisible] = React.useState(false);
     React.useEffect(()=>{

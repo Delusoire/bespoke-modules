@@ -27,65 +27,7 @@ const OptionToTimeRange = {
     "Past 6 Months": SpotifyTimeRange.Medium,
     "All Time": SpotifyTimeRange.Long
 };
-const LibraryPage = ()=>{
-    const [dropdown, activeOption] = useDropdown({
-        options: DropdownOptions,
-        storage,
-        storageVariable: "top-genres"
-    });
-    const timeRange = OptionToTimeRange[activeOption];
-    const { error, data, refetch, status } = S.ReactQuery.useQuery({
-        queryKey: [
-            "libraryAnaysis",
-            timeRange
-        ],
-        queryFn: async ()=>{
-            const trackURIsInLibrary = Array.from(PlaylistItems).map(([k, v])=>v.size && k).filter(Boolean);
-            const tracks = await getTracksFromURIs(trackURIsInLibrary);
-            const duration = tracks.map((track)=>track.duration_ms).reduce(fp.add);
-            const { explicitness, obscureTracks, popularity, releaseDates } = calculateTracksMeta(tracks);
-            const trackURIs = tracks.map(getURI);
-            const trackIDs = trackURIs.map(toID);
-            const audioFeatures = fetchAudioFeaturesMeta(trackIDs);
-            const albumIDs = tracks.map((track)=>track.album.id);
-            const artistIDs = tracks.flatMap((track)=>track.artists.map((artist)=>artist.id));
-            const { albums } = await fetchAlbumsMeta(albumIDs);
-            const { artists, genres } = await fetchArtistsMeta(artistIDs);
-            const playlists = Array.from(SavedPlaylists.keys());
-            return {
-                duration,
-                releaseDates,
-                playlists,
-                genres,
-                tracks,
-                albums,
-                artists,
-                audioFeatures: Object.assign(audioFeatures, {
-                    explicitness,
-                    popularity
-                })
-            };
-        }
-    });
-    const Status = useStatus({
-        status,
-        error,
-        logger
-    });
-    if (Status) {
-        return Status;
-    }
-    const { genres, artists, albums, playlists, duration, releaseDates, tracks, audioFeatures } = data;
-    const PageContainerProps = {
-        title: "Library Analysis",
-        headerEls: [
-            dropdown,
-            /*#__PURE__*/ S.React.createElement(RefreshButton, {
-                refresh: refetch
-            }),
-            settingsButton
-        ]
-    };
+const LibraryPageContent = ({ genres, artists, albums, playlists, duration, releaseDates, tracks, audioFeatures })=>{
     const statCards = Object.entries(audioFeatures).map(([key, value])=>{
         return /*#__PURE__*/ S.React.createElement(StatCard, {
             label: key,
@@ -110,7 +52,7 @@ const LibraryPage = ()=>{
             imageUrl: album.image
         });
     });
-    return /*#__PURE__*/ S.React.createElement(PageContainer, PageContainerProps, /*#__PURE__*/ S.React.createElement("section", {
+    return /*#__PURE__*/ S.React.createElement(S.React.Fragment, null, /*#__PURE__*/ S.React.createElement("section", {
         className: "stats-libraryOverview"
     }, /*#__PURE__*/ S.React.createElement(StatCard, {
         label: "Total Playlists",
@@ -142,5 +84,61 @@ const LibraryPage = ()=>{
     }, /*#__PURE__*/ S.React.createElement(ContributionChart, {
         contributions: releaseDates
     })));
+};
+const LibraryPage = ()=>{
+    const [dropdown, activeOption] = useDropdown({
+        options: DropdownOptions,
+        storage,
+        storageVariable: "top-genres"
+    });
+    const timeRange = OptionToTimeRange[activeOption];
+    const { error, data, refetch, status } = S.ReactQuery.useQuery({
+        queryKey: [
+            "libraryAnaysis",
+            timeRange
+        ],
+        queryFn: async ()=>{
+            const trackURIsInLibrary = Array.from(PlaylistItems).map(([k, v])=>v.size && k).filter(Boolean);
+            const tracks = await getTracksFromURIs(trackURIsInLibrary);
+            const duration = tracks.map((track)=>track.duration_ms).reduce(fp.add);
+            const { explicitness, obscureTracks, popularity, releaseDates } = calculateTracksMeta(tracks);
+            const trackURIs = tracks.map(getURI);
+            const trackIDs = trackURIs.map(toID);
+            const audioFeatures = await fetchAudioFeaturesMeta(trackIDs);
+            const albumIDs = tracks.map((track)=>track.album.id);
+            const artistIDs = tracks.flatMap((track)=>track.artists.map((artist)=>artist.id));
+            const { albums } = await fetchAlbumsMeta(albumIDs);
+            const { artists, genres } = await fetchArtistsMeta(artistIDs);
+            const playlists = Array.from(SavedPlaylists.keys());
+            return {
+                duration,
+                releaseDates,
+                playlists,
+                genres,
+                tracks,
+                albums,
+                artists,
+                audioFeatures: Object.assign(audioFeatures, {
+                    explicitness,
+                    popularity
+                })
+            };
+        }
+    });
+    const Status = useStatus({
+        status,
+        error,
+        logger
+    });
+    return /*#__PURE__*/ S.React.createElement(PageContainer, {
+        title: "Library Analysis",
+        headerRight: [
+            dropdown,
+            status !== "pending" && /*#__PURE__*/ S.React.createElement(RefreshButton, {
+                refresh: refetch
+            }),
+            settingsButton
+        ]
+    }, Status || /*#__PURE__*/ S.React.createElement(LibraryPageContent, data));
 };
 export default React.memo(LibraryPage);
