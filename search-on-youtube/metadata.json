@@ -7,9 +7,7 @@
 	"description": "Search/Play the music video of the selected track on YouTube. Setting your own API Key allows you to bypass the search and directly open the first result.",
 	"readme": "./assets/README.md",
 	"entries": {
-		"js": "index.js",
-		"css": false,
-		"mixin": false
+		"js": "index.js"
 	},
 	"dependencies": ["Delusoire/stdlib", "Delusoire/delulib"]
 }

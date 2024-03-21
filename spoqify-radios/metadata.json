@@ -7,9 +7,7 @@
 	"description": "Create anonymized radio-playlists for your favorite songs, playlists, artists and albums.",
 	"readme": "./assets/README.md",
 	"entries": {
-		"js": "index.js",
-		"css": false,
-		"mixin": false
+		"js": "index.js"
 	},
 	"dependencies": ["Delusoire/stdlib", "Delusoire/delulib"]
 }

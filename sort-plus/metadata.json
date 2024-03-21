@@ -7,9 +7,7 @@
 	"description": "Sort your Playlists/Albums/Artists/Liked Songs on a bunch of metrics. (You can shuffle too!)",
 	"readme": "./assets/README.md",
 	"entries": {
-		"js": "index.js",
-		"css": false,
-		"mixin": false
+		"js": "index.js"
 	},
 	"dependencies": ["Delusoire/stdlib", "Delusoire/delulib"]
 }

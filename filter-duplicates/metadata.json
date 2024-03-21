@@ -6,10 +6,6 @@
 	"authors": ["Delusoire"],
 	"description": "",
 	"readme": "./assets/README.md",
-	"entries": {
-		"js": false,
-		"css": false,
-		"mixin": false
-	},
+	"entries": {},
 	"dependencies": []
 }

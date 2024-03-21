@@ -7,9 +7,7 @@
 	"description": "Vault for your playlists and settings (Backup/Restore)",
 	"readme": "./assets/README.md",
 	"entries": {
-		"js": "index.js",
-		"css": false,
-		"mixin": false
+		"js": "index.js"
 	},
 	"dependencies": ["Delusoire/stdlib", "Delusoire/delulib"]
 }
