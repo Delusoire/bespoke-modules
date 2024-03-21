@@ -1,6 +1,10 @@
-import CreatePlaylistButton, { CreatePlaylistButtonProps } from "../buttons/create_playlist_button.js";
+import { categories, selectedCategoryCtx } from "../../app.js";
+import CreatePlaylistButton, { type CreatePlaylistButtonProps } from "../buttons/create_playlist_button.js";
 
 import { S } from "/modules/Delusoire/stdlib/index.js";
+import { TopNavBar } from "/modules/Delusoire/stdlib/lib/components/MountedNavBar.js";
+
+const { React } = S;
 
 interface PageContainerProps {
 	title: string;
@@ -12,6 +16,7 @@ interface PageContainerProps {
 const PageContainer = (props: PageContainerProps) => {
 	const { title, createPlaylistButtonProps, headerEls, children } = props;
 	const { TextComponent } = S.ReactComponents;
+	const selectedCategory = React.useContext(selectedCategoryCtx);
 	return (
 		<section className="contentSpacing">
 			<div className={"page-header"}>
@@ -20,6 +25,7 @@ const PageContainer = (props: PageContainerProps) => {
 						{title}
 					</TextComponent>
 					{createPlaylistButtonProps && <CreatePlaylistButton {...createPlaylistButtonProps} />}
+					<TopNavBar categories={categories} selectedCategory={selectedCategory} />
 				</div>
 				<div className="header-right">{headerEls}</div>
 			</div>
