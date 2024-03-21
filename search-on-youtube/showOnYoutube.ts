@@ -22,7 +22,7 @@ const yt = await Innertube.create({
 			input.duplex = "half";
 		}
 
-		const request = new Request("http://localhost:3000/", input instanceof Request ? input : undefined);
+		const request = new Request("https://bespoke-proxy.delusoire.workers.dev/", input instanceof Request ? input : undefined);
 
 		const res = await fetch(request, {
 			...(init || {}),
