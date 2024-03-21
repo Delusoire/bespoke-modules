@@ -41,7 +41,7 @@ async function onSongChange() {
 	fetchFadeTime();
 
 	const { image_url } = PlayerAPI.getState().item?.metadata ?? {};
-	style.setProperty("--image_url", `url("${image_url ?? BACKGROUND_URL}")`);
+	style.setProperty("--image-url", `url("${image_url ?? BACKGROUND_URL}")`);
 
 	updateLyricsPageProperties();
 }
