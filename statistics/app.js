@@ -15,7 +15,7 @@ const Pages = {
 export const categories = Object.keys(Pages);
 export const selectedCategoryCtx = React.createContext(null);
 export default function() {
-    const match = S.useMatch("/stats/:category");
+    const match = S.ReactRouter.useMatch("/stats/:category");
     const selectedCategory = match?.params?.category ?? categories[0];
     const SelectedPage = Pages[selectedCategory];
     return /*#__PURE__*/ S.React.createElement("div", {
