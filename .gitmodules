@@ -1,9 +1,6 @@
 [submodule "marketplace"]
 	path = marketplace
 	url = https://github.com/Delusoire/bespoke-marketplace
-[submodule "stddd"]
-	path = stddd
-	url = https://github.com/Delusoire/bespoke-std
 [submodule "stdlib"]
 	path = stdlib
 	url = https://github.com/Delusoire/bespoke-stdlib
