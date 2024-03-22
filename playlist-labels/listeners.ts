@@ -1,11 +1,7 @@
 import { _ } from "/modules/Delusoire/stdlib/deps.js";
-import { S } from "/modules/Delusoire/stdlib/index.js";
 
-import { PermanentMutationObserver } from "./util.js";
+import { PermanentMutationObserver } from "/modules/Delusoire/delulib/lib/util.js";
 import { REACT_FIBER } from "/modules/Delusoire/stdlib/lib/util.js";
-
-const { URI } = S;
-const History = S.Platform.getHistory();
 
 export const getTrackLists = () => Array.from(document.querySelectorAll<HTMLDivElement>(".main-trackList-trackList.main-trackList-indexable"));
 export const getTrackListTracks = (trackList: HTMLDivElement) =>

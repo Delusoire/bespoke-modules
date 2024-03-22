@@ -33,6 +33,7 @@ export const SpotifyLoc = {
     }
 };
 export const normalizeStr = (str)=>str.normalize("NFKD").replace(/\(.*\)/g, "").replace(/\[.*\]/g, "").replace(/-_,/g, " ").replace(/[^a-zA-Z0-9 ]/g, "").replace(/\s+/g, " ").toLowerCase().trim();
+// TODO should be killed when module is unloaded
 export class PermanentMutationObserver extends MutationObserver {
     target = null;
     constructor(targetSelector, callback, opts = {

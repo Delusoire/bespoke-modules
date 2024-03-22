@@ -1,8 +1,5 @@
-import { S } from "/modules/Delusoire/stdlib/index.js";
-import { PermanentMutationObserver } from "./util.js";
+import { PermanentMutationObserver } from "/modules/Delusoire/delulib/lib/util.js";
 import { REACT_FIBER } from "/modules/Delusoire/stdlib/lib/util.js";
-const { URI } = S;
-const History = S.Platform.getHistory();
 export const getTrackLists = ()=>Array.from(document.querySelectorAll(".ShMHCGsT93epRGdxJp2w.Ss6hr6HYpN4wjHJ9GHmi"));
 export const getTrackListTracks = (trackList)=>Array.from(trackList.querySelectorAll(".h4HgbO_Uu1JYg5UGANeQ"));
 const PRESENTATION_KEY = Symbol("presentation");

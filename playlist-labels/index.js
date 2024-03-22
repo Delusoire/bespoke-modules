@@ -1,5 +1,5 @@
 import { S } from "/modules/Delusoire/stdlib/index.js";
-import { onTrackListMutationListeners } from "/modules/Delusoire/delulib/lib/listeners.js";
+import { onTrackListMutationListeners } from "./listeners.js";
 import { useLivePlaylistItems } from "/modules/Delusoire/library-db/index.js";
 import { createIconComponent } from "/modules/Delusoire/stdlib/lib/createIconComponent.js";
 import { useLiveQuery } from "/modules/Delusoire/dexie-react-hooks/index.js";
@@ -74,7 +74,8 @@ const PlaylistLabel = ({ uri, playlistUri })=>{
     }, /*#__PURE__*/ S.React.createElement("img", {
         src: image
     })))));
-}; /*
+};
+/*
 import { _ } from "/hooks/deps.js";
 import { onTrackListMutationListeners } from "/modules/Delusoire/delulib/lib/listeners.js";
 import { db, getTracksFromURIs } from "./db.js";
@@ -104,4 +105,8 @@ onTrackListMutationListeners.push(async (tracklist, tracks) => {
 		setTrackGreyed(track, urisForIsrcInPlaylists.length > 1 && urisForIsrcInPlaylists.includes(uri));
 	});
 });
-*/ 
+*/ export default async function() {
+    return ()=>{
+        onTrackListMutationListeners.length = 0;
+    };
+}

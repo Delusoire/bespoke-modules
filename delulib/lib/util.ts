@@ -26,6 +26,7 @@ export const normalizeStr = (str: string) =>
 		.toLowerCase()
 		.trim();
 
+// TODO should be killed when module is unloaded
 export class PermanentMutationObserver extends MutationObserver {
 	target: HTMLElement | null = null;
 

@@ -1,6 +1,6 @@
 import { S } from "/modules/Delusoire/stdlib/index.js";
 import { _ } from "/modules/Delusoire/stdlib/deps.js";
-import { onTrackListMutationListeners } from "/modules/Delusoire/delulib/lib/listeners.js";
+import { onTrackListMutationListeners } from "./listeners.js";
 import { useLivePlaylistItems } from "/modules/Delusoire/library-db/index.js";
 import { createIconComponent } from "/modules/Delusoire/stdlib/lib/createIconComponent.js";
 import { useLiveQuery } from "/modules/Delusoire/dexie-react-hooks/index.js";
@@ -123,3 +123,9 @@ onTrackListMutationListeners.push(async (tracklist, tracks) => {
 	});
 });
 */
+
+export default async function () {
+	return () => {
+		onTrackListMutationListeners.length = 0;
+	};
+}
