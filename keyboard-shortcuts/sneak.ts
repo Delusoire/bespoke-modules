@@ -30,10 +30,10 @@ class _SneakKey extends LitElement {
     `;
 
 	@property()
-	key = "None";
+	accessor key = "None";
 
-	@property()
-	target = document.body;
+	@property({ type: Object })
+	accessor target = document.body;
 
 	protected render() {
 		const { x, y } = this.target.getBoundingClientRect();
@@ -57,8 +57,8 @@ export class _SneakOverlay extends LitElement {
         }
     `;
 
-	@property()
-	props = [] as Array<{ key: string; target: HTMLElement }>;
+	@property({ type: Array })
+	accessor props = [] as Array<{ key: string; target: HTMLElement }>;
 
 	constructor() {
 		super();
