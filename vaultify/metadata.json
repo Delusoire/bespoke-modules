@@ -1,6 +1,6 @@
 {
 	"name": "vaultify",
-	"tags": ["backup", "restore"],
+	"tags": ["extension", "backup", "restore"],
 	"preview": "./assets/PREVIEW.png",
 	"version": "beta",
 	"authors": ["Delusoire"],

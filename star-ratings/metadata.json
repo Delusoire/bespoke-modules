@@ -1,6 +1,6 @@
 {
 	"name": "star-ratings",
-	"tags": ["like", "stars"],
+	"tags": ["extension", "like", "stars"],
 	"preview": "./assets/PREVIEW.png",
 	"version": "beta",
 	"authors": ["Delusoire"],

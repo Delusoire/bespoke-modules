@@ -1,6 +1,6 @@
 {
 	"name": "show-the-genres",
-	"tags": ["genres", "lastfm"],
+	"tags": ["extension", "genres", "lastfm"],
 	"preview": "./assets/PREVIEW.png",
 	"version": "beta",
 	"authors": ["Delusoire"],
