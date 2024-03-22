@@ -373,7 +373,7 @@ function _apply_decs_2203_r(targetClass, memberDecs, classDecs, parentClass) {
 function _identity(x) {
     return x;
 }
-var _dec, _initClass, _LitElement, _dec1, _init_genre, _dec2, _initClass1, _LitElement1, _dec3, _dec4, _dec5, _dec6, _dec7, _init_name, _init_uri, _init_genres, _init_isSmall, _init_fetchGenres;
+var _dec, _initClass, _LitElement, _dec1, _init_genre, _initProto, _dec2, _initClass1, _LitElement1, _dec3, _dec4, _dec5, _dec6, _dec7, _init_name, _init_uri, _init_genres, _init_isSmall, _init_fetchGenres, _initProto1;
 import { LitElement, css, html } from "https://esm.sh/lit";
 import { customElement, property, state } from "https://esm.sh/lit/decorators.js";
 import { join } from "https://esm.sh/lit/directives/join.js";
@@ -390,10 +390,10 @@ new class extends _identity {
     static{
         class _GenreLink extends (_LitElement = LitElement) {
             static{
-                ({ e: [_init_genre], c: [__GenreLink, _initClass] } = _apply_decs_2203_r(this, [
+                ({ e: [_init_genre, _initProto], c: [__GenreLink, _initClass] } = _apply_decs_2203_r(this, [
                     [
                         _dec1,
-                        0,
+                        1,
                         "genre"
                     ]
                 ], [
@@ -406,7 +406,13 @@ new class extends _identity {
             font-size: var(--genre-link-size);
         }
     `;
-            genre = _init_genre(this, "No Genre");
+            #___private_genre = (_initProto(this), _init_genre(this, "No Genre"));
+            get genre() {
+                return this.#___private_genre;
+            }
+            set genre(_v) {
+                this.#___private_genre = _v;
+            }
             openPlaylistsSearch() {
                 History.push({
                     pathname: `/search/${this.genre}/playlists`
@@ -424,41 +430,71 @@ _dec2 = customElement("genre-container"), _dec3 = property(), _dec4 = property()
 }), _dec7 = property();
 class _ArtistGenreContainer extends (_LitElement1 = LitElement) {
     static{
-        ({ e: [_init_name, _init_uri, _init_genres, _init_isSmall, _init_fetchGenres], c: [__ArtistGenreContainer, _initClass1] } = _apply_decs_2203_r(this, [
+        ({ e: [_init_name, _init_uri, _init_genres, _init_isSmall, _init_fetchGenres, _initProto1], c: [__ArtistGenreContainer, _initClass1] } = _apply_decs_2203_r(this, [
             [
                 _dec3,
-                0,
+                1,
                 "name"
             ],
             [
                 _dec4,
-                0,
+                1,
                 "uri"
             ],
             [
                 _dec5,
-                0,
+                1,
                 "genres"
             ],
             [
                 _dec6,
-                0,
+                1,
                 "isSmall"
             ],
             [
                 _dec7,
-                0,
+                1,
                 "fetchGenres"
             ]
         ], [
             _dec2
         ], _LitElement1));
     }
-    name = _init_name(this, undefined);
-    uri = _init_uri(this, undefined);
-    genres = _init_genres(this, []);
-    isSmall = _init_isSmall(this, true);
-    fetchGenres = _init_fetchGenres(this, ()=>Promise.resolve([]));
+    #___private_name = (_initProto1(this), _init_name(this, undefined));
+    get name() {
+        return this.#___private_name;
+    }
+    set name(_v) {
+        this.#___private_name = _v;
+    }
+    #___private_uri = _init_uri(this, undefined);
+    get uri() {
+        return this.#___private_uri;
+    }
+    set uri(_v) {
+        this.#___private_uri = _v;
+    }
+    #___private_genres = _init_genres(this, []);
+    get genres() {
+        return this.#___private_genres;
+    }
+    set genres(_v) {
+        this.#___private_genres = _v;
+    }
+    #___private_isSmall = _init_isSmall(this, true);
+    get isSmall() {
+        return this.#___private_isSmall;
+    }
+    set isSmall(_v) {
+        this.#___private_isSmall = _v;
+    }
+    #___private_fetchGenres = _init_fetchGenres(this, ()=>Promise.resolve([]));
+    get fetchGenres() {
+        return this.#___private_fetchGenres;
+    }
+    set fetchGenres(_v) {
+        this.#___private_fetchGenres = _v;
+    }
     async willUpdate(changedProperties) {
         if (changedProperties.has("uri") && this.uri) {
             this.genres = await this.fetchGenres();

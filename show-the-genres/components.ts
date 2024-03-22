@@ -25,7 +25,7 @@ class _GenreLink extends LitElement {
     `;
 
 	@property()
-	genre = "No Genre";
+	accessor genre = "No Genre";
 
 	private openPlaylistsSearch() {
 		History.push({ pathname: `/search/${this.genre}/playlists` });
@@ -39,19 +39,19 @@ class _GenreLink extends LitElement {
 @customElement("genre-container")
 class _ArtistGenreContainer extends LitElement {
 	@property()
-	name?: string = undefined;
+	accessor name?: string = undefined;
 
 	@property()
-	uri?: string = undefined;
+	accessor uri?: string = undefined;
 
 	@state()
-	genres: string[] = [];
+	accessor genres: string[] = [];
 
 	@property({ type: Boolean })
-	isSmall = true;
+	accessor isSmall = true;
 
 	@property()
-	fetchGenres = () => Promise.resolve([]);
+	accessor fetchGenres = () => Promise.resolve([]);
 
 	protected async willUpdate(changedProperties: PropertyValues<this>) {
 		if (changedProperties.has("uri") && this.uri) {
