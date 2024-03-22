@@ -18,9 +18,9 @@ const extractPlaylists = (leaf: any): Record<string, any>[] => {
 const extractItemsUris = ({ items }: any) => items.map(item => item.uri);
 const getPlaylistTracks = playlist => PlaylistAPI.getContents(playlist).then(extractItemsUris);
 
-export const mapAssocs = (uris: string[], fn: (assocs: Set<string>) => void) => {
+export const mapAssocs = (uris: string[], fn: (assocs: Map<string, number>) => void) => {
 	for (const uri of uris) {
-		const assocs = PlaylistItems.get(uri) ?? new Set<string>();
+		const assocs = PlaylistItems.get(uri) ?? new Map<string, number>();
 		fn(assocs);
 		PlaylistItems.set(uri, assocs);
 	}
@@ -54,13 +54,13 @@ const { URI } = S;
 const onTracksAddedToPlaylist = async (playlist: string, uris: string[]) => {
 	// ! ugly hack to ignore local files & episodes; come up with better fix
 	uris = uris.filter(uri => URI.is.Track(uri));
-	mapAssocs(uris, o => o.add(playlist));
+	mapAssocs(uris, o => o.set(playlist, (o.get(playlist) ?? 0) + 1));
 	await getTracksFromURIs(uris);
 	triggerUpdate(uris);
 };
 
 const onTracksRemovedFromPlaylist = (playlist: string, uris: string[]) => {
-	mapAssocs(uris, o => o.delete(playlist));
+	mapAssocs(uris, o => o.set(playlist, (o.get(playlist) ?? 0) - 1));
 	triggerUpdate(uris);
 };
 
@@ -81,7 +81,7 @@ RootlistAPI.getEvents().addListener("operation_complete", async ({ data }) => {
 	}
 });
 
-export const PlaylistItems = new Map<string, Set<string>>();
+export const PlaylistItems = new Map<string, Map<string, number>>();
 
 for (const playlist of SavedPlaylists) {
 	const uris = await PlaylistAPI.getContents(playlist).then(extractItemsUris);
@@ -124,5 +124,5 @@ export const useLivePlaylistItems = (uri: string) => {
 		};
 	}, []);
 
-	return PlaylistItems.get(uri);
+	return Array.from(PlaylistItems.get(uri)?.entries() ?? []).flatMap(([playlist, count]) => (count > 0 ? [playlist] : []));
 };

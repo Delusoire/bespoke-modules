@@ -20,7 +20,7 @@ const extractItemsUris = ({ items })=>items.map((item)=>item.uri);
 const getPlaylistTracks = (playlist)=>PlaylistAPI.getContents(playlist).then(extractItemsUris);
 export const mapAssocs = (uris, fn)=>{
     for (const uri of uris){
-        const assocs = PlaylistItems.get(uri) ?? new Set();
+        const assocs = PlaylistItems.get(uri) ?? new Map();
         fn(assocs);
         PlaylistItems.set(uri, assocs);
     }
@@ -49,12 +49,12 @@ const { URI } = S;
 const onTracksAddedToPlaylist = async (playlist, uris)=>{
     // ! ugly hack to ignore local files & episodes; come up with better fix
     uris = uris.filter((uri)=>URI.is.Track(uri));
-    mapAssocs(uris, (o)=>o.add(playlist));
+    mapAssocs(uris, (o)=>o.set(playlist, (o.get(playlist) ?? 0) + 1));
     await getTracksFromURIs(uris);
     triggerUpdate(uris);
 };
 const onTracksRemovedFromPlaylist = (playlist, uris)=>{
-    mapAssocs(uris, (o)=>o.delete(playlist));
+    mapAssocs(uris, (o)=>o.set(playlist, (o.get(playlist) ?? 0) - 1));
     triggerUpdate(uris);
 };
 export const SavedPlaylists = new Set();
@@ -109,5 +109,7 @@ export const useLivePlaylistItems = (uri)=>{
             ls.delete(update);
         };
     }, []);
-    return PlaylistItems.get(uri);
+    return Array.from(PlaylistItems.get(uri)?.entries() ?? []).flatMap(([playlist, count])=>count > 0 ? [
+            playlist
+        ] : []);
 };

@@ -5,11 +5,10 @@ import { useLiveQuery } from "/modules/Delusoire/dexie-react-hooks/index.js";
 import { db } from "/modules/Delusoire/library-db/lib/db.js";
 const { ReactDOM, URI } = S;
 const PlaylistLabels = ({ uri })=>{
-    const playlistItems = useLivePlaylistItems(uri);
-    const playlists = playlistItems?.keys() ?? [];
+    const playlists = useLivePlaylistItems(uri);
     return /*#__PURE__*/ S.React.createElement("div", {
         className: "playlist-labels-labels-container"
-    }, Array.from(playlists).map((playlist)=>/*#__PURE__*/ S.React.createElement(PlaylistLabel, {
+    }, playlists.map((playlist)=>/*#__PURE__*/ S.React.createElement(PlaylistLabel, {
             uri: uri,
             playlistUri: playlist
         })));

@@ -9,11 +9,10 @@ import type { Module } from "/hooks/module.js";
 const { ReactDOM, URI } = S;
 
 const PlaylistLabels = ({ uri }) => {
-	const playlistItems = useLivePlaylistItems(uri);
-	const playlists = playlistItems?.keys() ?? [];
+	const playlists = useLivePlaylistItems(uri);
 	return (
 		<div className="playlist-labels-labels-container">
-			{Array.from(playlists).map(playlist => (
+			{playlists.map(playlist => (
 				<PlaylistLabel uri={uri} playlistUri={playlist} />
 			))}
 		</div>
