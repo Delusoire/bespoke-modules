@@ -3,7 +3,7 @@ import { S } from "/modules/Delusoire/stdlib/index.js";
 import { spotifyApi } from "/modules/Delusoire/delulib/lib/api.js";
 import type { TrackData } from "/modules/Delusoire/delulib/lib/parse.js";
 
-import type { URIClass } from "/modules/Delusoire/stdlib/expose/webpack.js";
+import type { URIClass } from "/modules/Delusoire/stdlib/src/expose/webpack.js";
 
 const { URI } = S;
 

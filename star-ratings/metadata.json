@@ -10,5 +10,5 @@
 		"js": "index.js",
 		"css": "index.css"
 	},
-	"dependencies": ["Delusoire/stdlib", "Delusoire/delulib"]
+	"dependencies": ["Delusoire/stdlib", "Delusoire/delulib", "Delusoire/sort-plus"]
 }
