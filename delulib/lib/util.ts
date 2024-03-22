@@ -1,3 +1,4 @@
+import type { Module } from "/hooks/module.js";
 import { S } from "/modules/Delusoire/stdlib/index.js";
 
 const PlayerAPI = S.Platform.getPlayerAPI();
@@ -26,11 +27,11 @@ export const normalizeStr = (str: string) =>
 		.toLowerCase()
 		.trim();
 
-// TODO should be killed when module is unloaded
 export class PermanentMutationObserver extends MutationObserver {
 	target: HTMLElement | null = null;
 
 	constructor(
+		mod: Module,
 		targetSelector: string,
 		callback: MutationCallback,
 		opts: MutationObserverInit = {
@@ -39,17 +40,24 @@ export class PermanentMutationObserver extends MutationObserver {
 		},
 	) {
 		super(callback);
-		new MutationObserver(() => {
+		const metaObserver = new MutationObserver(() => {
 			const nextTarget = document.querySelector<HTMLElement>(targetSelector);
 			if (nextTarget && !nextTarget.isEqualNode(this.target)) {
 				this.target && this.disconnect();
 				this.target = nextTarget;
 				this.observe(this.target, opts);
 			}
-		}).observe(document.body, {
+		});
+		metaObserver.observe(document.body, {
 			childList: true,
 			subtree: true,
 		});
+		const unloadJS = mod.unloadJS;
+		mod.unloadJS = () => {
+			metaObserver.disconnect();
+			this.disconnect();
+			return unloadJS();
+		};
 	}
 }
 

@@ -3,6 +3,8 @@ import { _ } from "/modules/Delusoire/stdlib/deps.js";
 import { PermanentMutationObserver } from "/modules/Delusoire/delulib/lib/util.js";
 import { REACT_FIBER } from "/modules/Delusoire/stdlib/lib/util.js";
 
+import { module } from "./index.js";
+
 export const getTrackLists = () => Array.from(document.querySelectorAll<HTMLDivElement>(".main-trackList-trackList.main-trackList-indexable"));
 export const getTrackListTracks = (trackList: HTMLDivElement) =>
 	Array.from(trackList.querySelectorAll<HTMLDivElement>(".main-trackList-trackListRow"));
@@ -36,7 +38,7 @@ const _onTrackListMutation = (trackList: Required<TrackListElement>, record: Mut
 	onTrackListMutationListeners.map(listener => listener(trackList, fullyRenderedTracks));
 };
 
-new PermanentMutationObserver("main", () => {
+new PermanentMutationObserver(module, "main", () => {
 	const trackLists = getTrackLists() as Array<TrackListElement>;
 	for (const trackList of trackLists.filter(trackList => !trackList[PRESENTATION_KEY])) {
 		trackList[PRESENTATION_KEY] = trackList.lastElementChild!.firstElementChild!.nextElementSibling! as HTMLDivElement;

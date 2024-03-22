@@ -4,6 +4,7 @@ import { PermanentMutationObserver } from "/modules/Delusoire/delulib/lib/util.j
 
 import { PlayerW } from "./src/utils/PlayerW.js";
 import { LyricsWrapper } from "./src/components/components.js";
+import type { Module } from "/hooks/module.js";
 
 const injectLyrics = (insertSelector: string, scrollSelector: string) => () => {
 	const lyricsContainer = document.querySelector<HTMLDivElement>(insertSelector);
@@ -23,5 +24,8 @@ const injectNPVLyrics = injectLyrics("aside .main-nowPlayingView-lyricsContent",
 const injectCinemaLyrics = injectLyrics("#lyrics-cinema .lyrics-lyrics-contentWrapper", "#lyrics-cinema .os-viewport-native-scrollbars-invisible");
 injectNPVLyrics();
 injectCinemaLyrics();
-new PermanentMutationObserver(".Root__right-sidebar", injectNPVLyrics);
-new PermanentMutationObserver(".Root__lyrics-cinema", injectCinemaLyrics);
+
+export default async function (mod: Module) {
+	new PermanentMutationObserver(mod, ".Root__right-sidebar", injectNPVLyrics);
+	new PermanentMutationObserver(mod, ".Root__lyrics-cinema", injectCinemaLyrics);
+}

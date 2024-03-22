@@ -18,5 +18,7 @@ const injectNPVLyrics = injectLyrics("aside .hzUuLPdH48AzgQun5NYQ", "aside .hzUu
 const injectCinemaLyrics = injectLyrics("#lyrics-cinema .esRByMgBY3TiENAsbDHA", "#lyrics-cinema .os-viewport-native-scrollbars-invisible");
 injectNPVLyrics();
 injectCinemaLyrics();
-new PermanentMutationObserver(".OTfMDdomT5S7B5dbYTT8", injectNPVLyrics);
-new PermanentMutationObserver(".Root__lyrics-cinema", injectCinemaLyrics);
+export default async function(mod) {
+    new PermanentMutationObserver(mod, ".OTfMDdomT5S7B5dbYTT8", injectNPVLyrics);
+    new PermanentMutationObserver(mod, ".Root__lyrics-cinema", injectCinemaLyrics);
+}

@@ -1,27 +1,12 @@
 import { S } from "/modules/Delusoire/stdlib/index.js";
 import { _ } from "/modules/Delusoire/stdlib/deps.js";
-import { onTrackListMutationListeners } from "./listeners.js";
 import { useLivePlaylistItems } from "/modules/Delusoire/library-db/index.js";
 import { createIconComponent } from "/modules/Delusoire/stdlib/lib/createIconComponent.js";
 import { useLiveQuery } from "/modules/Delusoire/dexie-react-hooks/index.js";
 import { db } from "/modules/Delusoire/library-db/lib/db.js";
+import type { Module } from "/hooks/module.js";
 
 const { ReactDOM, URI } = S;
-
-onTrackListMutationListeners.push(async (tracklist, tracks) => {
-	tracks.map(async (track, i) => {
-		if (track.querySelector(".playlist-labels-container")) return;
-		const lastColumn = track.querySelector(".main-trackList-rowSectionEnd");
-		const labelContainer = document.createElement("div");
-		labelContainer.classList.add("playlist-labels-container");
-
-		const { uri } = track.props;
-
-		ReactDOM.render(<PlaylistLabels uri={uri} />, labelContainer);
-
-		lastColumn.insertBefore(labelContainer, lastColumn.firstChild);
-	});
-});
 
 const PlaylistLabels = ({ uri }) => {
 	const playlistItems = useLivePlaylistItems(uri);
@@ -124,7 +109,26 @@ onTrackListMutationListeners.push(async (tracklist, tracks) => {
 });
 */
 
-export default async function () {
+export let module: Module;
+export default async function (mod: Module) {
+	module = mod;
+
+	const { onTrackListMutationListeners } = await import("./listeners.js");
+	onTrackListMutationListeners.push(async (tracklist, tracks) => {
+		tracks.map(async (track, i) => {
+			if (track.querySelector(".playlist-labels-container")) return;
+			const lastColumn = track.querySelector(".main-trackList-rowSectionEnd");
+			const labelContainer = document.createElement("div");
+			labelContainer.classList.add("playlist-labels-container");
+
+			const { uri } = track.props;
+
+			ReactDOM.render(<PlaylistLabels uri={uri} />, labelContainer);
+
+			lastColumn.insertBefore(labelContainer, lastColumn.firstChild);
+		});
+	});
+
 	return () => {
 		onTrackListMutationListeners.length = 0;
 	};

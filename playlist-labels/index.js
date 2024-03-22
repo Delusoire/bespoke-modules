@@ -1,23 +1,9 @@
 import { S } from "/modules/Delusoire/stdlib/index.js";
-import { onTrackListMutationListeners } from "./listeners.js";
 import { useLivePlaylistItems } from "/modules/Delusoire/library-db/index.js";
 import { createIconComponent } from "/modules/Delusoire/stdlib/lib/createIconComponent.js";
 import { useLiveQuery } from "/modules/Delusoire/dexie-react-hooks/index.js";
 import { db } from "/modules/Delusoire/library-db/lib/db.js";
 const { ReactDOM, URI } = S;
-onTrackListMutationListeners.push(async (tracklist, tracks)=>{
-    tracks.map(async (track, i)=>{
-        if (track.querySelector(".playlist-labels-container")) return;
-        const lastColumn = track.querySelector(".HcMOFLaukKJdK5LfdHh0");
-        const labelContainer = document.createElement("div");
-        labelContainer.classList.add("playlist-labels-container");
-        const { uri } = track.props;
-        ReactDOM.render(/*#__PURE__*/ S.React.createElement(PlaylistLabels, {
-            uri: uri
-        }), labelContainer);
-        lastColumn.insertBefore(labelContainer, lastColumn.firstChild);
-    });
-});
 const PlaylistLabels = ({ uri })=>{
     const playlistItems = useLivePlaylistItems(uri);
     const playlists = playlistItems?.keys() ?? [];
@@ -105,7 +91,23 @@ onTrackListMutationListeners.push(async (tracklist, tracks) => {
 		setTrackGreyed(track, urisForIsrcInPlaylists.length > 1 && urisForIsrcInPlaylists.includes(uri));
 	});
 });
-*/ export default async function() {
+*/ export let module;
+export default async function(mod) {
+    module = mod;
+    const { onTrackListMutationListeners } = await import("./listeners.js");
+    onTrackListMutationListeners.push(async (tracklist, tracks)=>{
+        tracks.map(async (track, i)=>{
+            if (track.querySelector(".playlist-labels-container")) return;
+            const lastColumn = track.querySelector(".HcMOFLaukKJdK5LfdHh0");
+            const labelContainer = document.createElement("div");
+            labelContainer.classList.add("playlist-labels-container");
+            const { uri } = track.props;
+            ReactDOM.render(/*#__PURE__*/ S.React.createElement(PlaylistLabels, {
+                uri: uri
+            }), labelContainer);
+            lastColumn.insertBefore(labelContainer, lastColumn.firstChild);
+        });
+    });
     return ()=>{
         onTrackListMutationListeners.length = 0;
     };
