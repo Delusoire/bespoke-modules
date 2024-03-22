@@ -1,6 +1,6 @@
 {
 	"name": "spoqify-radios",
-	"tags": ["radio", "spoqify"],
+	"tags": ["extension", "radio", "spoqify"],
 	"preview": "./assets/PREVIEW.png",
 	"version": "beta",
 	"authors": ["Delusoire"],

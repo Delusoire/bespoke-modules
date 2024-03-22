@@ -1,6 +1,6 @@
 {
 	"name": "statistics",
-	"tags": ["stats"],
+	"tags": ["app", "stats"],
 	"preview": "./assets/PREVIEW.png",
 	"version": "https://github.com/harbassan/spicetify-apps/commit/a8bf02cafb661b5d9504084cdef73a1ee2572d43",
 	"authors": ["Delusoire", "harbassan"],

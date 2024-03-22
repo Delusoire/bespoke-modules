@@ -1,6 +1,6 @@
 {
 	"name": "search-on-youtube",
-	"tags": ["youtube", "search"],
+	"tags": ["extension", "youtube", "search"],
 	"preview": "./assets/PREVIEW.png",
 	"version": "beta",
 	"authors": ["Delusoire"],

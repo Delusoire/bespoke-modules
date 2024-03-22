@@ -1,6 +1,6 @@
 {
 	"name": "adblock",
-	"tags": ["ads", "premium"],
+	"tags": ["extension", "ads", "premium"],
 	"preview": "./assets/PREVIEW.png",
 	"version": "beta",
 	"authors": ["Delusoire"],
