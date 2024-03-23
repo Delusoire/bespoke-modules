@@ -35,7 +35,6 @@ async function onSongChange() {
     updateLyricsPageProperties();
 }
 windowControls();
-controlDimensions();
 galaxyFade();
 function scrollToTop() {
     const element = document.querySelector(".NXiYChVp4Oydfxd7rT5r");
@@ -56,19 +55,27 @@ function windowControls() {
         document.body.classList.add("windows");
     }
 }
+let loaded = true;
 async function controlDimensions() {
-    let ratio = 3.375;
     const zoomFactor = window.outerWidth / window.innerWidth;
-    const height = document.querySelector(".ZQftYELq0aOsg6tPbVbV").computedStyleMap().get("padding-top").value / zoomFactor;
-    if (zoomFactor > 1.25) {
-        ratio = 2.95;
+    const { enableGlobalNavBar } = S.Platform.getLocalStorageAPI().getItem("remote-config-overrides");
+    const isTouchscreenUi = enableGlobalNavBar === "home-next-to-navigation" || enableGlobalNavBar === "home-next-to-search";
+    const app = document.querySelector(".ZQftYELq0aOsg6tPbVbV");
+    let height, width;
+    if (isTouchscreenUi) {
+        const styleMap = app.firstElementChild.computedStyleMap();
+        const panelGap = Number.parseInt(styleMap.get("--panel-gap")[0]);
+        height = styleMap.get("height").value + 2 * panelGap;
+        width = styleMap.get("padding-right").value;
+    } else {
+        height = app.computedStyleMap().get("padding-top").value;
+        width = height * (zoomFactor > 1.25 ? 2.95 : 3.375);
     }
-    style.setProperty("--control-height", `${height}px`);
-    style.setProperty("--control-width", `${height * ratio}px`);
+    style.setProperty("--control-height", `${height / zoomFactor}px`);
+    style.setProperty("--control-width", `${width / zoomFactor}px`);
+    loaded && requestAnimationFrame(controlDimensions);
 }
-window.addEventListener("resize", ()=>{
-    controlDimensions();
-});
+controlDimensions();
 function waitForElement(elements, func, timeout = 100) {
     const queries = elements.map((element)=>document.querySelector(element));
     if (queries.every((a)=>a)) {
@@ -175,4 +182,7 @@ function galaxyFade() {
 export default function(mod) {
     const eventBus = createEventBus(mod);
     eventBus.Player.song_changed.subscribe(onSongChange);
+    return ()=>{
+        loaded = false;
+    };
 }

@@ -50,7 +50,7 @@ export default function (mod: Module) {
 		setPlaylistEditHidden?.(!isPlaylistPage);
 	});
 
-	registrar.register("topbarLeftButton", <PlaylistEdit />);
+	registrar.register("topbarLeftButton", PlaylistEdit);
 
 	const LazyStatsApp = S.React.lazy(() => import("./app.js"));
 	registrar.register("route", <S.ReactComponents.Route path={"/stats/*"} element={<LazyStatsApp />} />);

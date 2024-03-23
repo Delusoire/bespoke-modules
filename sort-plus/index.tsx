@@ -25,12 +25,10 @@ export default async function (mod: Module) {
 		const uri = props?.uri;
 		return uri && [URI.is.Album, URI.is.Artist, URI_is_LikedTracks, URI.is.Track, URI.is.PlaylistV1OrV2].some(f => f(uri));
 	});
-	registrar.register(
-		"topbarLeftButton",
-		<Button label="Create a Playlist from Sorted Queue" icon={SVGIcons.playlist} onClick={createPlaylistFromLastSortedQueue} />,
-	);
-	registrar.register(
-		"topbarLeftButton",
-		<Button label="Reorder Playlist from Sorted Queue" icon={SVGIcons.shuffle} onClick={reordedPlaylistLikeSortedQueue} />,
-	);
+	registrar.register("topbarLeftButton", () => (
+		<Button label="Create a Playlist from Sorted Queue" icon={SVGIcons.playlist} onClick={createPlaylistFromLastSortedQueue} />
+	));
+	registrar.register("topbarLeftButton", () => (
+		<Button label="Reorder Playlist from Sorted Queue" icon={SVGIcons.shuffle} onClick={reordedPlaylistLikeSortedQueue} />
+	));
 }

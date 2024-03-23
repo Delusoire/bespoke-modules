@@ -22,14 +22,14 @@ export default async function(mod) {
             URI.is.PlaylistV1OrV2
         ].some((f)=>f(uri));
     });
-    registrar.register("topbarLeftButton", /*#__PURE__*/ S.React.createElement(Button, {
-        label: "Create a Playlist from Sorted Queue",
-        icon: SVGIcons.playlist,
-        onClick: createPlaylistFromLastSortedQueue
-    }));
-    registrar.register("topbarLeftButton", /*#__PURE__*/ S.React.createElement(Button, {
-        label: "Reorder Playlist from Sorted Queue",
-        icon: SVGIcons.shuffle,
-        onClick: reordedPlaylistLikeSortedQueue
-    }));
+    registrar.register("topbarLeftButton", ()=>/*#__PURE__*/ S.React.createElement(Button, {
+            label: "Create a Playlist from Sorted Queue",
+            icon: SVGIcons.playlist,
+            onClick: createPlaylistFromLastSortedQueue
+        }));
+    registrar.register("topbarLeftButton", ()=>/*#__PURE__*/ S.React.createElement(Button, {
+            label: "Reorder Playlist from Sorted Queue",
+            icon: SVGIcons.shuffle,
+            onClick: reordedPlaylistLikeSortedQueue
+        }));
 }

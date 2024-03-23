@@ -41,7 +41,7 @@ export default function(mod) {
         const isPlaylistPage = URI.is.PlaylistV1OrV2(pathname);
         setPlaylistEditHidden?.(!isPlaylistPage);
     });
-    registrar.register("topbarLeftButton", /*#__PURE__*/ S.React.createElement(PlaylistEdit, null));
+    registrar.register("topbarLeftButton", PlaylistEdit);
     const LazyStatsApp = S.React.lazy(()=>import("./app.js"));
     registrar.register("route", /*#__PURE__*/ S.React.createElement(S.ReactComponents.Route, {
         path: "/stats/*",

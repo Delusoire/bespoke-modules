@@ -1,7 +1,7 @@
 import { _ } from "/modules/Delusoire/stdlib/deps.js";
 
 import { PermanentMutationObserver } from "/modules/Delusoire/delulib/lib/util.js";
-import { REACT_FIBER } from "/modules/Delusoire/stdlib/lib/util.js";
+import { REACT_FIBER } from "/modules/Delusoire/stdlib/lib/dom.js";
 
 import { module } from "./index.js";
 
