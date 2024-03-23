@@ -1,7 +1,7 @@
 import { S } from "/modules/Delusoire/stdlib/index.js";
-function SpotifyCard(props) {
-    // @ts-ignore
-    const { Cards, TextComponent, Menus, RightClickMenu } = S.ReactComponents;
+const SpotifyCard = (props)=>{
+    const { Cards, Menus, RightClickMenu } = S.ReactComponents;
+    const { Type } = S.ReactComponents.UI;
     const { Default: Card, CardImage } = Cards;
     const { type, header, uri, imageUrl, subheader } = props;
     const getMenu = ()=>{
@@ -46,7 +46,7 @@ function SpotifyCard(props) {
                 ],
                 isCircular: type === "artist"
             }),
-        renderSubHeaderContent: ()=>/*#__PURE__*/ S.React.createElement(TextComponent, {
+        renderSubHeaderContent: ()=>/*#__PURE__*/ S.React.createElement(Type, {
                 as: "div",
                 variant: "mesto",
                 semanticColor: "textSubdued"
@@ -54,5 +54,5 @@ function SpotifyCard(props) {
         uri: uri,
         ...lastfmProps
     }));
-}
+};
 export default SpotifyCard;

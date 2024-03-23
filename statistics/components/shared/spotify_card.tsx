@@ -8,9 +8,9 @@ interface SpotifyCardProps {
 	imageUrl: string;
 }
 
-function SpotifyCard(props: SpotifyCardProps): React.ReactElement<HTMLDivElement> {
-	// @ts-ignore
-	const { Cards, TextComponent, Menus, RightClickMenu } = S.ReactComponents;
+const SpotifyCard = (props: SpotifyCardProps) => {
+	const { Cards, Menus, RightClickMenu } = S.ReactComponents;
+	const { Type } = S.ReactComponents.UI;
 	const { Default: Card, CardImage } = Cards;
 	const { type, header, uri, imageUrl, subheader } = props;
 
@@ -48,15 +48,15 @@ function SpotifyCard(props: SpotifyCardProps): React.ReactElement<HTMLDivElement
 					/>
 				)}
 				renderSubHeaderContent={() => (
-					<TextComponent as="div" variant="mesto" semanticColor="textSubdued">
+					<Type as="div" variant="mesto" semanticColor="textSubdued">
 						{subheader}
-					</TextComponent>
+					</Type>
 				)}
 				uri={uri}
 				{...lastfmProps}
 			/>
 		</RightClickMenu>
 	);
-}
+};
 
 export default SpotifyCard;

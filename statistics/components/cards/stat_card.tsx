@@ -1,3 +1,4 @@
+import { _ } from "/modules/Delusoire/stdlib/deps.js";
 import { S } from "/modules/Delusoire/stdlib/index.js";
 
 interface StatCardProps {
@@ -5,7 +6,7 @@ interface StatCardProps {
 	value: number | string;
 }
 
-function formatValue(name: string, value: string | number): string {
+const formatValue = (name: string, value: string | number) => {
 	if (typeof value === "string") return value;
 
 	switch (name) {
@@ -16,26 +17,17 @@ function formatValue(name: string, value: string | number): string {
 		default:
 			return `${Math.round(value * 100)} %`;
 	}
-}
+};
 
-function normalizeString(inputString: string): string {
-	return inputString.charAt(0).toUpperCase() + inputString.slice(1).toLowerCase();
-}
-
-function StatCard(props: StatCardProps): React.ReactElement<HTMLDivElement> {
-	const { TextComponent } = S.ReactComponents;
-	const { label, value } = props;
-
-	return (
-		<div className="main-card-card">
-			<TextComponent as="div" semanticColor="textBase" variant="alto">
-				{formatValue(label, value)}
-			</TextComponent>
-			<TextComponent as="div" semanticColor="textBase" variant="balladBold">
-				{normalizeString(label)}
-			</TextComponent>
-		</div>
-	);
-}
+const StatCard = ({ label, value }: StatCardProps) => (
+	<div className="main-card-card">
+		<S.ReactComponents.UI.Type as="div" semanticColor="textBase" variant="alto">
+			{formatValue(label, value)}
+		</S.ReactComponents.UI.Type>
+		<S.ReactComponents.UI.Type as="div" semanticColor="textBase" variant="balladBold">
+			{_.capitalize(label)}
+		</S.ReactComponents.UI.Type>
+	</div>
+);
 
 export default StatCard;

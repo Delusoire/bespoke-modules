@@ -2,9 +2,7 @@ import { categories, selectedCategoryCtx } from "../../app.js";
 import { S } from "/modules/Delusoire/stdlib/index.js";
 import { TopNavBar } from "/modules/Delusoire/stdlib/lib/components/MountedNavBar.js";
 const { React } = S;
-const PageContainer = (props)=>{
-    const { title, headerLeft, headerRight, children } = props;
-    const { TextComponent } = S.ReactComponents;
+const PageContainer = ({ title, headerLeft, headerRight, children })=>{
     const selectedCategory = React.useContext(selectedCategoryCtx);
     return /*#__PURE__*/ S.React.createElement("section", {
         className: "contentSpacing"
@@ -12,7 +10,7 @@ const PageContainer = (props)=>{
         className: "page-header"
     }, /*#__PURE__*/ S.React.createElement("div", {
         className: "header-left"
-    }, /*#__PURE__*/ S.React.createElement(TextComponent, {
+    }, /*#__PURE__*/ S.React.createElement(S.ReactComponents.UI.Type, {
         as: "h1",
         variant: "canon",
         semanticColor: "textBase"

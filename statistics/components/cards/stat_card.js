@@ -1,5 +1,6 @@
+import { _ } from "/modules/Delusoire/stdlib/deps.js";
 import { S } from "/modules/Delusoire/stdlib/index.js";
-function formatValue(name, value) {
+const formatValue = (name, value)=>{
     if (typeof value === "string") return value;
     switch(name){
         case "tempo":
@@ -9,23 +10,16 @@ function formatValue(name, value) {
         default:
             return `${Math.round(value * 100)} %`;
     }
-}
-function normalizeString(inputString) {
-    return inputString.charAt(0).toUpperCase() + inputString.slice(1).toLowerCase();
-}
-function StatCard(props) {
-    const { TextComponent } = S.ReactComponents;
-    const { label, value } = props;
-    return /*#__PURE__*/ S.React.createElement("div", {
+};
+const StatCard = ({ label, value })=>/*#__PURE__*/ S.React.createElement("div", {
         className: "LunqxlFIupJw_Dkx6mNx"
-    }, /*#__PURE__*/ S.React.createElement(TextComponent, {
+    }, /*#__PURE__*/ S.React.createElement(S.ReactComponents.UI.Type, {
         as: "div",
         semanticColor: "textBase",
         variant: "alto"
-    }, formatValue(label, value)), /*#__PURE__*/ S.React.createElement(TextComponent, {
+    }, formatValue(label, value)), /*#__PURE__*/ S.React.createElement(S.ReactComponents.UI.Type, {
         as: "div",
         semanticColor: "textBase",
         variant: "balladBold"
-    }, normalizeString(label)));
-}
+    }, _.capitalize(label)));
 export default StatCard;

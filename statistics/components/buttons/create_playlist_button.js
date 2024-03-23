@@ -16,13 +16,11 @@ async function createPlaylist({ name, tracks }) {
         });
     }
 }
-function CreatePlaylistButton(props) {
-    const { Tooltip, ButtonSecondary } = S.ReactComponents;
-    return /*#__PURE__*/ S.React.createElement(Tooltip, {
+const CreatePlaylistButton = (props)=>/*#__PURE__*/ S.React.createElement(S.ReactComponents.Tooltip, {
         label: "Turn Into Playlist",
         renderInline: true,
         placement: "top"
-    }, /*#__PURE__*/ S.React.createElement(ButtonSecondary, {
+    }, /*#__PURE__*/ S.React.createElement(S.ReactComponents.UI.ButtonSecondary, {
         "aria-label": "Turn Into Playlist",
         children: "Turn Into Playlist",
         semanticColor: "textBase",
@@ -30,5 +28,4 @@ function CreatePlaylistButton(props) {
         onClick: ()=>createPlaylist(props),
         className: "stats-make-playlist-button"
     }));
-}
 export default CreatePlaylistButton;

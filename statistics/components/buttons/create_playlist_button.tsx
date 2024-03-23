@@ -18,21 +18,17 @@ async function createPlaylist({ name, tracks }: CreatePlaylistButtonProps): Prom
 	}
 }
 
-function CreatePlaylistButton(props: CreatePlaylistButtonProps): React.ReactElement<HTMLButtonElement> {
-	const { Tooltip, ButtonSecondary } = S.ReactComponents;
-
-	return (
-		<Tooltip label={"Turn Into Playlist"} renderInline={true} placement="top">
-			<ButtonSecondary
-				aria-label="Turn Into Playlist"
-				children="Turn Into Playlist"
-				semanticColor="textBase"
-				buttonSize="sm"
-				onClick={() => createPlaylist(props)}
-				className="stats-make-playlist-button"
-			/>
-		</Tooltip>
-	);
-}
+const CreatePlaylistButton = (props: CreatePlaylistButtonProps): React.ReactElement<HTMLButtonElement> => (
+	<S.ReactComponents.Tooltip label={"Turn Into Playlist"} renderInline={true} placement="top">
+		<S.ReactComponents.UI.ButtonSecondary
+			aria-label="Turn Into Playlist"
+			children="Turn Into Playlist"
+			semanticColor="textBase"
+			buttonSize="sm"
+			onClick={() => createPlaylist(props)}
+			className="stats-make-playlist-button"
+		/>
+	</S.ReactComponents.Tooltip>
+);
 
 export default CreatePlaylistButton;

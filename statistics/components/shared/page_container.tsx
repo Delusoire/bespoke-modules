@@ -12,17 +12,15 @@ interface PageContainerProps {
 	children: React.ReactNode;
 }
 
-const PageContainer = (props: PageContainerProps) => {
-	const { title, headerLeft, headerRight, children } = props;
-	const { TextComponent } = S.ReactComponents;
+const PageContainer = ({ title, headerLeft, headerRight, children }: PageContainerProps) => {
 	const selectedCategory = React.useContext(selectedCategoryCtx);
 	return (
 		<section className="contentSpacing">
 			<div className={"page-header"}>
 				<div className="header-left">
-					<TextComponent as="h1" variant="canon" semanticColor="textBase">
+					<S.ReactComponents.UI.Type as="h1" variant="canon" semanticColor="textBase">
 						{title}
-					</TextComponent>
+					</S.ReactComponents.UI.Type>
 					{headerLeft}
 					<TopNavBar categories={categories} selectedCategory={selectedCategory} />
 				</div>
