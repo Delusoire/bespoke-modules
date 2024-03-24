@@ -21,7 +21,7 @@ export const categories = Object.keys(Pages) as Array<keyof typeof Pages>;
 export const selectedCategoryCtx = React.createContext<string>(null);
 
 export default function () {
-	const match = S.ReactRouter.useMatch("/stats/:category");
+	const match = S.ReactRouter.useMatch("/bespoke/stats/:category");
 	const selectedCategory = match?.params?.category ?? categories[0];
 
 	const SelectedPage = Pages[selectedCategory];
@@ -29,7 +29,7 @@ export default function () {
 	return (
 		<div id="stats-app">
 			<S.ReactComponents.Routes>
-				<S.ReactComponents.Route path="/" element={<S.ReactComponents.InstrumentedRedirect to={`/stats/${selectedCategory}`} />} />
+				<S.ReactComponents.Route path="/" element={<S.ReactComponents.InstrumentedRedirect to={`/bespoke/stats/${selectedCategory}`} />} />
 				<S.ReactComponents.Route
 					path=":category"
 					element={<selectedCategoryCtx.Provider value={selectedCategory}>{SelectedPage}</selectedCategoryCtx.Provider>}

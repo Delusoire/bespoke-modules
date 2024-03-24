@@ -44,12 +44,12 @@ export default function(mod) {
     registrar.register("topbarLeftButton", PlaylistEdit);
     const LazyStatsApp = S.React.lazy(()=>import("./app.js"));
     registrar.register("route", /*#__PURE__*/ S.React.createElement(S.ReactComponents.Route, {
-        path: "/stats/*",
+        path: "/bespoke/stats/*",
         element: /*#__PURE__*/ S.React.createElement(LazyStatsApp, null)
     }));
     registrar.register("navlink", ()=>/*#__PURE__*/ S.React.createElement(NavLink, {
             localizedApp: "Statistics",
-            appRoutePath: "/stats",
+            appRoutePath: "/bespoke/stats",
             icon: ICON,
             activeIcon: ACTIVE_ICON
         }));

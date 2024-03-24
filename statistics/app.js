@@ -15,7 +15,7 @@ const Pages = {
 export const categories = Object.keys(Pages);
 export const selectedCategoryCtx = React.createContext(null);
 export default function() {
-    const match = S.ReactRouter.useMatch("/stats/:category");
+    const match = S.ReactRouter.useMatch("/bespoke/stats/:category");
     const selectedCategory = match?.params?.category ?? categories[0];
     const SelectedPage = Pages[selectedCategory];
     return /*#__PURE__*/ S.React.createElement("div", {
@@ -23,7 +23,7 @@ export default function() {
     }, /*#__PURE__*/ S.React.createElement(S.ReactComponents.Routes, null, /*#__PURE__*/ S.React.createElement(S.ReactComponents.Route, {
         path: "/",
         element: /*#__PURE__*/ S.React.createElement(S.ReactComponents.InstrumentedRedirect, {
-            to: `/stats/${selectedCategory}`
+            to: `/bespoke/stats/${selectedCategory}`
         })
     }), /*#__PURE__*/ S.React.createElement(S.ReactComponents.Route, {
         path: ":category",
