@@ -1,12 +1,12 @@
 import { _ } from "/modules/Delusoire/stdlib/deps.js";
-import { TwoUplet, Triplet, zip_n_uplets } from "/modules/Delusoire/delulib/lib/fp.js";
+import { type TwoUplet, type Triplet, zip_n_uplets } from "/modules/Delusoire/delulib/lib/fp.js";
 import {
-	matrix,
+	type matrix,
 	matrixMultMatrix,
 	remapScalar,
 	scalarAddVector,
 	scalarMultVector,
-	vector,
+	type vector,
 	vectorAddVector,
 	vectorDist,
 	vectorDivScalar,
@@ -89,7 +89,12 @@ export class KochanekBartels extends CubicHermite {
 		return [incoming, outgoing];
 	}
 
-	static fromAlpha(vertices: vector[], tcb: Triplet<number>, alpha = 0, endconditions: EndConditions = [EndCondition.NATURAL, EndCondition.NATURAL]) {
+	static fromAlpha(
+		vertices: vector[],
+		tcb: Triplet<number>,
+		alpha = 0,
+		endconditions: EndConditions = [EndCondition.NATURAL, EndCondition.NATURAL],
+	) {
 		const deltas = zip_n_uplets<TwoUplet<vector>>(2)(vertices).map(([x0, x1]) => vectorDist(x0, x1) ** alpha);
 		const grid = deltas.reduce((partialSums, delta) => [...partialSums, partialSums.at(-1)! + delta], [0]);
 		return KochanekBartels.fromGrid(vertices, tcb, grid, endconditions);
@@ -120,7 +125,9 @@ export class KochanekBartels extends CubicHermite {
 		const zip_vertices = zip_n_uplets<Triplet<vector>>(3)(vertices);
 		const zip_grid = zip_n_uplets<Triplet<number>>(3)(grid);
 
-		let tangents = _.zip(zip_vertices, zip_grid, tcb).flatMap(([points, times, tcb]) => KochanekBartels._calculate_tangents(points!, times!, tcb!));
+		let tangents = _.zip(zip_vertices, zip_grid, tcb).flatMap(([points, times, tcb]) =>
+			KochanekBartels._calculate_tangents(points!, times!, tcb!),
+		);
 
 		if (closed) {
 			tangents = [tangents.at(-1)!, ...tangents.slice(0, -1)];

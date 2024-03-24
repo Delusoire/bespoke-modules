@@ -10,9 +10,8 @@ import { when } from "https://esm.sh/lit/directives/when.js";
 import { _ } from "/modules/Delusoire/stdlib/deps.js";
 import { remapScalar, vectorLerp } from "/modules/Delusoire/delulib/lib/math.js";
 import { MonotoneNormalSpline } from "../splines/monotoneNormalSpline.js";
-import { LyricsType } from "../utils/LyricsProvider.js";
-import { PlayerW } from "../utils/PlayerW.js";
-import { Song } from "../utils/Song.js";
+import { type Lyrics, LyricsType } from "../utils/LyricsProvider.js";
+import { Player } from "../utils/Player.js";
 import { loadedLyricsTypeCtx, scrollTimeoutCtx, scrollContainerCtx } from "./contexts.js";
 import { AnimatedMixin, ScrolledMixin, SyncedContainerMixin, SyncedMixin } from "./mixins.js";
 
@@ -76,8 +75,8 @@ const scaleInterpolator = new MonotoneNormalSpline([
 export class AnimatedText extends AnimatedMixin(SyncedMixin(LitElement)) {
 	static readonly NAME = "animated-text" as string;
 
-	@property()
-	split!: boolean;
+	@property({ type: Boolean })
+	accessor split!: boolean;
 
 	static styles = css`
         :host {
@@ -114,7 +113,7 @@ export class AnimatedText extends AnimatedMixin(SyncedMixin(LitElement)) {
 	}
 
 	onClick() {
-		PlayerW.setTimestamp(this.tsp);
+		Player.setTimestamp(this.tsp);
 	}
 
 	render() {
@@ -221,29 +220,29 @@ export class LyricsWrapper extends LitElement {
     `;
 
 	@property({ attribute: false })
-	song: Song | null = null;
+	accessor state: any | null = null;
 
 	@provide({ context: loadedLyricsTypeCtx })
 	@state()
 	loadedLyricsType?: LyricsType;
 
-	updateSong = (song: Song | null) => {
-		this.song = song;
+	updateState = (state: any | null) => {
+		this.state = state;
 		this.loadedLyricsType = undefined;
 	};
 
 	private lyricsTask = new Task(this, {
-		task: async ([song]) => {
-			const availableLyrics = await song?.lyrics;
+		task: async ([state]) => {
+			const availableLyrics = (await state?.item.lyrics) as Lyrics;
 			const lyrics = Object.values(availableLyrics!)[0];
 			this.loadedLyricsType = lyrics?.__type;
 			return lyrics;
 		},
-		args: () => [this.song],
+		args: () => [this.state],
 	});
 
 	@query(LyricsContainer.NAME)
-	container?: LyricsContainer;
+	accessor container: LyricsContainer | undefined;
 	public updateProgress(progress: number) {
 		if (this.loadedLyricsType === undefined || this.loadedLyricsType === LyricsType.NOT_SYNCED) return;
 		this.container?.updateProgress(progress, 0);
@@ -270,7 +269,7 @@ export class LyricsWrapper extends LitElement {
 	}
 
 	render() {
-		if (!this.song) {
+		if (!this.state) {
 			return html`<div class="info">No Song Loaded</div>`;
 		}
 
@@ -293,45 +292,45 @@ export class LyricsWrapper extends LitElement {
                     </style>
                     <lyrics-container>
                         ${when(
-													isWordSync,
-													() =>
-														html`${map(
-															lyrics.content,
-															l =>
-																html`<timeline-provider tsp=${l.tsp} tep=${l.tep}
+							isWordSync,
+							() =>
+								html`${map(
+									lyrics.content,
+									l =>
+										html`<timeline-provider tsp=${l.tsp} tep=${l.tep}
                                             >${map(
-																							l.content,
-																							w =>
-																								html`<detail-timeline-provider tsp=${w.tsp} tep=${w.tep}
+												l.content,
+												w =>
+													html`<detail-timeline-provider tsp=${w.tsp} tep=${w.tep}
                                                         >${map(
-																													w.content.split(""),
-																													c =>
-																														html`<animated-text
+															w.content.split(""),
+															c =>
+																html`<animated-text
                                                                     tsp=${w.tsp}
                                                                     content=${c === " " ? " " : c}
                                                                 ></animated-text>`,
-																												)}</detail-timeline-provider
+														)}</detail-timeline-provider
                                                     >`,
-																						)}</timeline-provider
+											)}</timeline-provider
                                         >`,
-														)}`,
-													() =>
-														html`${map(
-															lyrics.content,
-															l =>
-																html`<timeline-provider tsp=${l.tsp} tep=${l.tep}
+								)}`,
+							() =>
+								html`${map(
+									lyrics.content,
+									l =>
+										html`<timeline-provider tsp=${l.tsp} tep=${l.tep}
                                             >${map(
-																							l.content,
-																							wl =>
-																								html`<animated-text
+												l.content,
+												wl =>
+													html`<animated-text
                                                         tsp=${wl.tsp}
                                                         tep=${wl.tep}
                                                         content=${wl.content}
                                                     ></animated-text>`,
-																						)}</timeline-provider
+											)}</timeline-provider
                                         >`,
-														)}`,
-												)}</lyrics-container
+								)}`,
+						)}</lyrics-container
                     >,
                 `;
 			},

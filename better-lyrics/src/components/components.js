@@ -373,7 +373,7 @@ function _apply_decs_2203_r(targetClass, memberDecs, classDecs, parentClass) {
 function _identity(x) {
     return x;
 }
-var _dec, _initClass, _AnimatedMixin, _dec1, _init_split, _dec2, _initClass1, _SyncedContainerMixin, _dec3, _initClass2, _ScrolledMixin, _dec4, _initClass3, _SyncedContainerMixin1, _dec5, _initClass4, _LitElement, _dec6, _dec7, _dec8, _dec9, _dec10, _dec11, _init_song, _init_loadedLyricsType, _init_container, _init_scrollTimeout, _init_scrollContainer;
+var _dec, _initClass, _AnimatedMixin, _dec1, _init_split, _initProto, _dec2, _initClass1, _SyncedContainerMixin, _dec3, _initClass2, _ScrolledMixin, _dec4, _initClass3, _SyncedContainerMixin1, _dec5, _initClass4, _LitElement, _dec6, _dec7, _dec8, _dec9, _dec10, _dec11, _init_state, _init_container, _init_loadedLyricsType, _init_scrollTimeout, _init_scrollContainer, _initProto1;
 import { provide } from "https://esm.sh/@lit/context";
 import { Task } from "https://esm.sh/@lit/task";
 import { LitElement, css, html } from "https://esm.sh/lit";
@@ -386,7 +386,7 @@ import { _ } from "/modules/Delusoire/stdlib/deps.js";
 import { remapScalar, vectorLerp } from "/modules/Delusoire/delulib/lib/math.js";
 import { MonotoneNormalSpline } from "../splines/monotoneNormalSpline.js";
 import { LyricsType } from "../utils/LyricsProvider.js";
-import { PlayerW } from "../utils/PlayerW.js";
+import { Player } from "../utils/Player.js";
 import { loadedLyricsTypeCtx, scrollTimeoutCtx, scrollContainerCtx } from "./contexts.js";
 import { AnimatedMixin, ScrolledMixin, SyncedContainerMixin, SyncedMixin } from "./mixins.js";
 const opacityInterpolator = new MonotoneNormalSpline([
@@ -546,7 +546,9 @@ const scaleInterpolator = new MonotoneNormalSpline([
     ]
 ]);
 let _AnimatedText;
-_dec = customElement(_AnimatedText.NAME), _dec1 = property();
+_dec = customElement(_AnimatedText.NAME), _dec1 = property({
+    type: Boolean
+});
 new class extends _identity {
     constructor(){
         super(_AnimatedText), _initClass();
@@ -554,10 +556,10 @@ new class extends _identity {
     static{
         class AnimatedText extends (_AnimatedMixin = AnimatedMixin(SyncedMixin(LitElement))) {
             static{
-                ({ e: [_init_split], c: [_AnimatedText, _initClass] } = _apply_decs_2203_r(this, [
+                ({ e: [_init_split, _initProto], c: [_AnimatedText, _initClass] } = _apply_decs_2203_r(this, [
                     [
                         _dec1,
-                        0,
+                        1,
                         "split"
                     ]
                 ], [
@@ -565,7 +567,13 @@ new class extends _identity {
                 ], _AnimatedMixin));
             }
             static NAME = "animated-text";
-            split = _init_split(this);
+            #___private_split = (_initProto(this), _init_split(this));
+            get split() {
+                return this.#___private_split;
+            }
+            set split(_v) {
+                this.#___private_split = _v;
+            }
             static styles = css`
         :host {
             cursor: pointer;
@@ -598,7 +606,7 @@ new class extends _identity {
                 this.style.scale = nextScale;
             }
             onClick() {
-                PlayerW.setTimestamp(this.tsp);
+                Player.setTimestamp(this.tsp);
             }
             render() {
                 return html`<span role="button" @click=${this.onClick}>${this.content}</span>`;
@@ -728,11 +736,16 @@ new class extends _identity {
     static{
         class LyricsWrapper extends (_LitElement = LitElement) {
             static{
-                ({ e: [_init_song, _init_loadedLyricsType, _init_container, _init_scrollTimeout, _init_scrollContainer], c: [_LyricsWrapper, _initClass4] } = _apply_decs_2203_r(this, [
+                ({ e: [_init_state, _init_container, _init_loadedLyricsType, _init_scrollTimeout, _init_scrollContainer, _initProto1], c: [_LyricsWrapper, _initClass4] } = _apply_decs_2203_r(this, [
                     [
                         _dec6,
-                        0,
-                        "song"
+                        1,
+                        "state"
+                    ],
+                    [
+                        _dec9,
+                        1,
+                        "container"
                     ],
                     [
                         [
@@ -741,11 +754,6 @@ new class extends _identity {
                         ],
                         0,
                         "loadedLyricsType"
-                    ],
-                    [
-                        _dec9,
-                        0,
-                        "container"
                     ],
                     [
                         _dec10,
@@ -772,24 +780,36 @@ new class extends _identity {
             display: unset;
         }
     `;
-            song = _init_song(this, null);
+            #___private_state = (_initProto1(this), _init_state(this, null));
+            get state() {
+                return this.#___private_state;
+            }
+            set state(_v) {
+                this.#___private_state = _v;
+            }
             loadedLyricsType = _init_loadedLyricsType(this);
-            updateSong = (song)=>{
-                this.song = song;
+            updateState = (state)=>{
+                this.state = state;
                 this.loadedLyricsType = undefined;
             };
             lyricsTask = new Task(this, {
-                task: async ([song])=>{
-                    const availableLyrics = await song?.lyrics;
+                task: async ([state])=>{
+                    const availableLyrics = await state?.item.lyrics;
                     const lyrics = Object.values(availableLyrics)[0];
                     this.loadedLyricsType = lyrics?.__type;
                     return lyrics;
                 },
                 args: ()=>[
-                        this.song
+                        this.state
                     ]
             });
-            container = _init_container(this);
+            #___private_container = _init_container(this);
+            get container() {
+                return this.#___private_container;
+            }
+            set container(_v) {
+                this.#___private_container = _v;
+            }
             updateProgress(progress) {
                 if (this.loadedLyricsType === undefined || this.loadedLyricsType === LyricsType.NOT_SYNCED) return;
                 this.container?.updateProgress(progress, 0);
@@ -808,7 +828,7 @@ new class extends _identity {
                 this.scrollContainer?.removeEventListener("scroll", this.onExternalScroll);
             }
             render() {
-                if (!this.song) {
+                if (!this.state) {
                     return html`<div class="info">No Song Loaded</div>`;
                 }
                 return this.lyricsTask.render({

@@ -19,11 +19,11 @@ export declare class SyncedMixinI {
 export const SyncedMixin = <T extends Constructor<LitElement>>(superClass: T) => {
 	class mixedClass extends superClass {
 		@property()
-		content = "";
+		accessor content = "";
 		@property({ type: Number })
-		tsp = 0; // time start percent
+		accessor tsp = 0; // time start percent
 		@property({ type: Number })
-		tep = 1; // time end percent
+		accessor tep = 1; // time end percent
 
 		updateProgress(scaledProgress: number, depthToActiveAncestor: number) {}
 	}
@@ -91,7 +91,7 @@ export const ScrolledMixin = <T extends Constructor<LitElement & SyncedMixinI>>(
 export const SyncedContainerMixin = <T extends Constructor<LitElement & SyncedMixinI>>(superClass: T) => {
 	class mixedClass extends superClass {
 		@queryAssignedElements()
-		childs!: NodeListOf<LitElement & SyncedMixinI>;
+		accessor childs!: NodeListOf<LitElement & SyncedMixinI>;
 
 		computeChildProgress(rp: number, child: number) {
 			return rp;

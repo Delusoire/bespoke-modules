@@ -378,7 +378,7 @@ import { scrollTimeoutCtx, scrollContainerCtx } from "./contexts.js";
 export const SyncedMixin = (superClass)=>{
     var _dec, _dec1, _dec2, _init_content, _init_tsp// time start percent
     , _init_tep// time end percent
-    ;
+    , _initProto;
     _dec = property(), _dec1 = property({
         type: Number
     }), _dec2 = property({
@@ -386,27 +386,45 @@ export const SyncedMixin = (superClass)=>{
     });
     class mixedClass extends superClass {
         static{
-            ({ e: [_init_content, _init_tsp, _init_tep] } = _apply_decs_2203_r(this, [
+            ({ e: [_init_content, _init_tsp, _init_tep, _initProto] } = _apply_decs_2203_r(this, [
                 [
                     _dec,
-                    0,
+                    1,
                     "content"
                 ],
                 [
                     _dec1,
-                    0,
+                    1,
                     "tsp"
                 ],
                 [
                     _dec2,
-                    0,
+                    1,
                     "tep"
                 ]
             ], []));
         }
-        content = _init_content(this, "");
-        tsp = _init_tsp(this, 0);
-        tep = _init_tep(this, 1);
+        #___private_content = (_initProto(this), _init_content(this, ""));
+        get content() {
+            return this.#___private_content;
+        }
+        set content(_v) {
+            this.#___private_content = _v;
+        }
+        #___private_tsp = _init_tsp(this, 0);
+        get tsp() {
+            return this.#___private_tsp;
+        }
+        set tsp(_v) {
+            this.#___private_tsp = _v;
+        }
+        #___private_tep = _init_tep(this, 1);
+        get tep() {
+            return this.#___private_tep;
+        }
+        set tep(_v) {
+            this.#___private_tep = _v;
+        }
         updateProgress(scaledProgress, depthToActiveAncestor) {}
     }
     return mixedClass;
@@ -478,19 +496,25 @@ export const ScrolledMixin = (superClass)=>{
     return mixedClass;
 };
 export const SyncedContainerMixin = (superClass)=>{
-    var _dec, _init_childs;
+    var _dec, _init_childs, _initProto;
     _dec = queryAssignedElements();
     class mixedClass extends superClass {
         static{
-            ({ e: [_init_childs] } = _apply_decs_2203_r(this, [
+            ({ e: [_init_childs, _initProto] } = _apply_decs_2203_r(this, [
                 [
                     _dec,
-                    0,
+                    1,
                     "childs"
                 ]
             ], []));
         }
-        childs = _init_childs(this);
+        #___private_childs = (_initProto(this), _init_childs(this));
+        get childs() {
+            return this.#___private_childs;
+        }
+        set childs(_v) {
+            this.#___private_childs = _v;
+        }
         computeChildProgress(rp, child) {
             return rp;
         }

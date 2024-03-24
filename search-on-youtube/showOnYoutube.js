@@ -10,19 +10,16 @@ const yt = await Innertube.create({
             headers.set("Origin", headers.get("X-Origin"));
             headers.delete("X-Origin");
         }
+        init ??= {};
         const _headers = new Headers();
-        _headers.set("X-Set-Url", url);
         _headers.set("X-Set-Headers", JSON.stringify(Object.fromEntries(headers.entries())));
+        init.headers = _headers;
         if (input instanceof Request) {
             // @ts-ignore
             input.duplex = "half";
         }
-        const request = new Request("https://bespoke-proxy.delusoire.workers.dev/", input instanceof Request ? input : undefined);
-        const res = await fetch(request, {
-            ...init || {},
-            headers: _headers
-        });
-        return res;
+        const request = new Request(`https://bespoke-proxy.delusoire.workers.dev/${url}`, input instanceof Request ? input : undefined);
+        return fetch(request, init);
     }
 });
 import { S } from "/modules/Delusoire/stdlib/index.js";
