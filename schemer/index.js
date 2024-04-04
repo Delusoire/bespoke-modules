@@ -20,40 +20,49 @@ const SchemeEdit = ()=>{
 export default function(mod) {
     const registrar = createRegistrar(mod);
     registrar.register("topbarLeftButton", SchemeEdit);
-    test();
+    create_schemes();
 }
-function test() {
-    window.sm = sm;
+function create_schemes() {
     sm.create_statics([
         {
-            name: "Red Text",
+            name: "Spicetify",
             fields: {
-                text: "#ff0000"
+                text: "#ffffff",
+                subtext: "#c0b4b4",
+                base: "#0a0a0f",
+                main: "#0F111A",
+                main_elevated: "#1b1e2c",
+                highlight: "#1b1e2c",
+                highlight_elevated: "#1b1e2c",
+                card: "#0a0a0f",
+                button: "#FF4151",
+                button_active: "#ff5c69",
+                notification: "#33bacc",
+                tab: "#c0b4b4",
+                tab_active: "#FF4151",
+                playbar: "#c0b4b4",
+                playbar_active: "#FF4151"
             }
         },
-        {
-            name: "Green Text",
-            fields: {
-                text: "#00ff00"
-            }
-        },
-        {
-            name: "Blue Text",
-            fields: {
-                text: "#0000ff"
-            }
-        }
-    ], "default");
-    sm.create_statics([
         {
             name: "Nord",
             fields: {
-                main: "#2e3440"
+                text: "#eceff4",
+                subtext: "#d8dee9",
+                base: "#23272f",
+                main: "#2e3440",
+                main_elevated: "#3b4252",
+                highlight: "#3b4252",
+                highlight_elevated: "#434c5e",
+                card: "#2e3440",
+                button: "#8fbcbb",
+                button_active: "#9fcbca",
+                notification: "#88c0d0",
+                tab: "#d8dee9",
+                tab_active: "#81a1c1",
+                playbar: "#81a1c1",
+                playbar_active: "#8fbcbb"
             }
         }
-    ], "cool theme");
-// sm.create_local({ name: "Cyan", fields: { text: "#00ffff" } });
-// sm.create_local({ name: "Magenta", fields: { text: "#ff00ff" } });
-// sm.create_local({ name: "Yellow", fields: { text: "#ffff00" } });
-// sm.toggle_scheme("Cyan");
+    ], "schemer");
 }

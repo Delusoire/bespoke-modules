@@ -2,28 +2,25 @@
 const def_fields = {
     text: "#ffffff",
     subtext: "#a7a7a7",
+    base: "#000000",
     main: "#121212",
     main_elevated: "#242424",
     highlight: "#1a1a1a",
     highlight_elevated: "#2a2a2a",
-    sidebar: "#000000",
-    player: "#1a1a1a",
     card: "#292929",
-    shadow: "#000000",
-    selected_row: "#ffffff",
     button: "#1ed760",
     button_active: "#1ed760",
-    button_disabled: "#727272",
-    tab_active: "#2a2a2a",
     notification: "#3d91f4",
-    notification_error: "#e91429",
-    misc: "#727272"
+    tab: "#b3b3b3",
+    tab_active: "#ffffff",
+    playbar: "#ffffff",
+    playbar_active: "#1ed760"
 };
 // store
 let local_schemes = JSON.parse(localStorage.getItem("schemes") || "[]");
 const static_schemes = [
     {
-        name: "Spotify",
+        name: "Spotify • default",
         local: false,
         fields: def_fields
     }
@@ -52,8 +49,17 @@ function from_partial(partial_scheme, provider = false) {
         }
     };
 }
+function hex_to_rgb(hex) {
+    const r = Number.parseInt(hex.slice(1, 3), 16);
+    const g = Number.parseInt(hex.slice(3, 5), 16);
+    const b = Number.parseInt(hex.slice(5, 7), 16);
+    return `${r}, ${g}, ${b}`;
+}
 function stringify_scheme(scheme) {
-    return Object.entries(scheme.fields).map(([name, value])=>`--spice-${name}: ${value};`).join(" ");
+    return Object.entries(scheme.fields).flatMap(([name, value])=>[
+            `--spice-${name}: ${value};`,
+            `--spice-rgb-${name}: ${hex_to_rgb(value)};`
+        ]).join(" ");
 }
 function write_scheme(scheme) {
     stylesheet.innerHTML = `.encore-dark-theme { ${stringify_scheme(scheme)} }`;
