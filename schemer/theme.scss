@@ -1,9 +1,7 @@
 /* Basic styles to map the colors to different UI elements */
 
 /* main background */
-.ZQftYELq0aOsg6tPbVbV {
-    background-color: var(--spice-base);
-}
+.ZQftYELq0aOsg6tPbVbV,
 .sqKERfoKl4KwrtHqcKOd {
     background-color: var(--spice-base);
 }
@@ -22,16 +20,10 @@ a {
 .link-subtle {
     color: var(--spice-tab);
 
-    &:hover {
+    &:hover,
+    &:active,
+    &:active > svg {
         color: var(--spice-tab_active);
-    }
-
-    &.active {
-        color: var(--spice-tab_active);
-
-        > svg {
-            color: var(--spice-tab_active);
-        }
     }
 }
 
@@ -44,25 +36,15 @@ a {
 }
 
 /* buttons */
-.Vz6yjzttS0YlLcwrkoUR.tP0mccyU1WAa7I9PevC1 {
-    color: var(--spice-button);
-}
-.Vz6yjzttS0YlLcwrkoUR.tP0mccyU1WAa7I9PevC1:not([disabled]):focus, .Vz6yjzttS0YlLcwrkoUR.tP0mccyU1WAa7I9PevC1:not([disabled]):hover {
-    color: var(--spice-button);
-}
+.Vz6yjzttS0YlLcwrkoUR.tP0mccyU1WAa7I9PevC1,
+.Vz6yjzttS0YlLcwrkoUR.tP0mccyU1WAa7I9PevC1:not([disabled]):focus, .Vz6yjzttS0YlLcwrkoUR.tP0mccyU1WAa7I9PevC1:not([disabled]):hover,
 .Vz6yjzttS0YlLcwrkoUR.tP0mccyU1WAa7I9PevC1:not([disabled]):focus:not(:focus-visible,:hover) {
     color: var(--spice-button);
 }
-
-.KAZD28usA1vPz5GVpm63.RK45o6dbvO1mb0wQtSwq {
-    color: var(--spice-button);
-}
-.KAZD28usA1vPz5GVpm63.RK45o6dbvO1mb0wQtSwq:focus, .KAZD28usA1vPz5GVpm63.RK45o6dbvO1mb0wQtSwq:hover {
-    color: var(--spice-button);
-}
+.KAZD28usA1vPz5GVpm63.RK45o6dbvO1mb0wQtSwq,
+.KAZD28usA1vPz5GVpm63.RK45o6dbvO1mb0wQtSwq:focus, .KAZD28usA1vPz5GVpm63.RK45o6dbvO1mb0wQtSwq:hover,
 .KAZD28usA1vPz5GVpm63.RK45o6dbvO1mb0wQtSwq:active:focus, .KAZD28usA1vPz5GVpm63.RK45o6dbvO1mb0wQtSwq:active:hover {
     color: var(--spice-button);
-
 }
 .KAZD28usA1vPz5GVpm63.EHxL6K_6WWDlTCZP6x5w:after {
     background-color: var(--spice-button);
