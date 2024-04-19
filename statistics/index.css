@@ -103,27 +103,6 @@
     margin-block-end: 0 !important;
 }
 
-.encore-dark-theme {
-    --spice-text: var(--text-base);
-    --spice-subtext: var(--text-subdued);
-    --spice-main: var(--background-base);
-    --spice-main-elevated: var(--background-elevated-base);
-    --spice-highlight: var(--background-highlight);
-    --spice-highlight-elevated: var(--background-elevated-highlight);
-    --spice-sidebar: var(--background-press);
-    --spice-player: var(--background-highlight);
-    --spice-card: var(--decorative-subdued);
-    --spice-shadow: var(--background-elevated-press);
-    --spice-selected-row: var(--decorative-base);
-    --spice-button: var(--text-bright-accent);
-    --spice-button-active: var(--essential-bright-accent);
-    --spice-button-disabled: var(--essential-subdued);
-    --spice-tab-active: var(--background-elevated-highlight);
-    --spice-notification: var(--text-announcement);
-    --spice-notification-error: var(--essential-negative);
-    --spice-misc: var(--essential-subdued);
-}
-
 #stats-app .stats-gridInline {
         --grid-gap: 24px;
         grid-template-columns: repeat(10, 180px) !important;
