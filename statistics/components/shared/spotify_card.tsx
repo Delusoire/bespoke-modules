@@ -11,7 +11,6 @@ interface SpotifyCardProps {
 const SpotifyCard = (props: SpotifyCardProps) => {
 	const { Cards, Menus, RightClickMenu } = S.ReactComponents;
 	const { Type } = S.ReactComponents.UI;
-	const { Default: Card, CardImage } = Cards;
 	const { type, header, uri, imageUrl, subheader } = props;
 
 	const getMenu = () => {
@@ -32,11 +31,11 @@ const SpotifyCard = (props: SpotifyCardProps) => {
 
 	return (
 		<RightClickMenu menu={getMenu()}>
-			<Card
+			<Cards.Generic
 				featureIdentifier={type}
 				headerText={header}
 				renderCardImage={() => (
-					<CardImage
+					<Cards.CardImage
 						images={[
 							{
 								height: 640,

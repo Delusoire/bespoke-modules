@@ -2,7 +2,6 @@ import { S } from "/modules/Delusoire/stdlib/index.js";
 const SpotifyCard = (props)=>{
     const { Cards, Menus, RightClickMenu } = S.ReactComponents;
     const { Type } = S.ReactComponents.UI;
-    const { Default: Card, CardImage } = Cards;
     const { type, header, uri, imageUrl, subheader } = props;
     const getMenu = ()=>{
         switch(type){
@@ -33,10 +32,10 @@ const SpotifyCard = (props)=>{
     } : {};
     return /*#__PURE__*/ S.React.createElement(RightClickMenu, {
         menu: getMenu()
-    }, /*#__PURE__*/ S.React.createElement(Card, {
+    }, /*#__PURE__*/ S.React.createElement(Cards.Generic, {
         featureIdentifier: type,
         headerText: header,
-        renderCardImage: ()=>/*#__PURE__*/ S.React.createElement(CardImage, {
+        renderCardImage: ()=>/*#__PURE__*/ S.React.createElement(Cards.CardImage, {
                 images: [
                     {
                         height: 640,
