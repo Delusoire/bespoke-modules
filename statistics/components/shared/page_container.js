@@ -16,7 +16,8 @@ const PageContainer = ({ title, headerLeft, headerRight, children })=>{
         semanticColor: "textBase"
     }, title), headerLeft, /*#__PURE__*/ S.React.createElement(TopNavBar, {
         categories: categories,
-        selectedCategory: selectedCategory
+        selectedCategory: selectedCategory,
+        namespace: "stats"
     })), /*#__PURE__*/ S.React.createElement("div", {
         className: "header-right"
     }, headerRight)), /*#__PURE__*/ S.React.createElement("div", {

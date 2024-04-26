@@ -22,7 +22,7 @@ const PageContainer = ({ title, headerLeft, headerRight, children }: PageContain
 						{title}
 					</S.ReactComponents.UI.Type>
 					{headerLeft}
-					<TopNavBar categories={categories} selectedCategory={selectedCategory} />
+					<TopNavBar categories={categories} selectedCategory={selectedCategory} namespace="stats" />
 				</div>
 				<div className="header-right">{headerRight}</div>
 			</div>
