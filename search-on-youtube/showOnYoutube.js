@@ -18,7 +18,7 @@ const yt = await Innertube.create({
             // @ts-ignore
             input.duplex = "half";
         }
-        const request = new Request(`http://localhost:8787/mitm/${url}`, input instanceof Request ? input : undefined);
+        const request = new Request(`https://bespoke-proxy.delusoire.workers.dev/mitm/${url}`, input instanceof Request ? input : undefined);
         return fetch(request, init);
     }
 });
