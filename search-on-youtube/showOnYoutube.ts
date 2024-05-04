@@ -9,8 +9,13 @@ const yt = await Innertube.create({
 		const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
 		const headers = init?.headers ? new Headers(init.headers) : input instanceof Request ? input.headers : new Headers();
 
-		headers.set("Origin", headers.get("X-Origin") ?? "https://www.youtube.com");
-		headers.delete("X-Origin");
+		if (headers.has("X-Origin")) {
+			headers.set("Origin", headers.get("X-Origin"));
+			headers.delete("X-Origin");
+		}
+		if (!headers.has("Origin")) {
+			headers.set("Origin", "https://www.youtube.com");
+		}
 
 		init ??= {};
 

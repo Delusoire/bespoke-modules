@@ -10,6 +10,9 @@ const yt = await Innertube.create({
             headers.set("Origin", headers.get("X-Origin"));
             headers.delete("X-Origin");
         }
+        if (!headers.has("Origin")) {
+            headers.set("Origin", "https://www.youtube.com");
+        }
         init ??= {};
         const _headers = new Headers();
         _headers.set("X-Set-Headers", JSON.stringify(Object.fromEntries(headers.entries())));
