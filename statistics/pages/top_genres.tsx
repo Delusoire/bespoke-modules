@@ -46,6 +46,25 @@ export const calculateTracksMeta = (tracks: Track[]) => {
 	return { explicitness: explicitCount / tracks.length, popularity: popularityTotal / tracks.length, releaseDates, obscureTracks };
 };
 
+const GenresTrackRow = ({ track, index }: { track: Track; index: number }) => {
+	const { usePlayContextItem } = S.getPlayContext({ uri: "" }, { featureIdentifier: "queue" });
+
+	return (
+		<S.ReactComponents.TracklistRow
+			index={index}
+			uri={track.uri}
+			name={track.name}
+			artists={track.artists}
+			imgUrl={track.album.images.at(-1)?.url ?? DEFAULT_TRACK_IMG}
+			isExplicit={track.explicit}
+			albumOrShow={track.album}
+			duration_ms={track.duration_ms}
+			usePlayContextItem={usePlayContextItem}
+			allowedDropTypes={allowedDropTypes}
+		/>
+	);
+};
+
 interface GenresPageContentProps {
 	genres: Record<string, number>;
 	releaseDates: Record<string, number>;
@@ -68,8 +87,6 @@ interface GenresPageContentProps {
 	};
 }
 const GenresPageContent = (data: GenresPageContentProps) => {
-	const { usePlayContextItem } = S.getPlayContext({ uri: "" }, { featureIdentifier: "queue" });
-
 	const thisRef = React.useRef(null);
 
 	const { genres, releaseDates, obscureTracks, audioFeatures } = data;
@@ -91,20 +108,7 @@ const GenresPageContent = (data: GenresPageContentProps) => {
 						ariaLabel="Top Tracks"
 						hasHeaderRow={false}
 						columns={columns}
-						renderRow={(track: Track, index: number) => (
-							<S.ReactComponents.TracklistRow
-								index={index}
-								uri={track.uri}
-								name={track.name}
-								artists={track.artists}
-								imgUrl={track.album.images.at(-1)?.url ?? DEFAULT_TRACK_IMG}
-								isExplicit={track.explicit}
-								albumOrShow={track.album}
-								duration_ms={track.duration_ms}
-								usePlayContextItem={usePlayContextItem}
-								allowedDropTypes={allowedDropTypes}
-							/>
-						)}
+						renderRow={(track: Track, index: number) => <GenresTrackRow track={track} index={index} />}
 						resolveItem={track => ({ uri: track.uri })}
 						nrTracks={obscureTracks.length}
 						fetchTracks={(offset, limit) => obscureTracks.slice(offset, offset + limit)}

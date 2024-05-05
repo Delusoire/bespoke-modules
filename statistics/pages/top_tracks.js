@@ -27,30 +27,36 @@ const columns = [
 ];
 const allowedDropTypes = [];
 export const fetchTopTracks = (timeRange)=>spotifyApi.currentUser.topItems("tracks", timeRange, 50, 0);
-const TracksPageContent = ({ topTracks })=>{
-    const thisRef = React.useRef(null);
+const TrackRow = React.memo(({ track, index })=>{
     const { usePlayContextItem } = S.getPlayContext({
-        uri: ""
+        uri: track.uri
     }, {
         featureIdentifier: "queue"
     });
+    return /*#__PURE__*/ S.React.createElement(S.ReactComponents.TracklistRow, {
+        index: index,
+        uri: track.uri,
+        name: track.name,
+        artists: track.artists,
+        imgUrl: track.album.images.at(-1)?.url ?? DEFAULT_TRACK_IMG,
+        isExplicit: track.explicit,
+        albumOrShow: track.album,
+        duration_ms: track.duration_ms,
+        usePlayContextItem: usePlayContextItem,
+        allowedDropTypes: allowedDropTypes
+    });
+});
+const TracksPageContent = ({ topTracks })=>{
+    const thisRef = React.useRef(null);
     return /*#__PURE__*/ S.React.createElement(S.ReactComponents.TracklistColumnsContextProvider, {
         columns: columns
     }, /*#__PURE__*/ S.React.createElement(S.ReactComponents.Tracklist, {
         ariaLabel: "Top Tracks",
         hasHeaderRow: true,
         columns: columns,
-        renderRow: (track, index)=>/*#__PURE__*/ S.React.createElement(S.ReactComponents.TracklistRow, {
-                index: index,
-                uri: track.uri,
-                name: track.name,
-                artists: track.artists,
-                imgUrl: track.album.images.at(-1)?.url ?? DEFAULT_TRACK_IMG,
-                isExplicit: track.explicit,
-                albumOrShow: track.album,
-                duration_ms: track.duration_ms,
-                usePlayContextItem: usePlayContextItem,
-                allowedDropTypes: allowedDropTypes
+        renderRow: (track, index)=>/*#__PURE__*/ S.React.createElement(TrackRow, {
+                track: track,
+                index: index
             }),
         resolveItem: (track)=>({
                 uri: track.uri

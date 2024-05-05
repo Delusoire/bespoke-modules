@@ -24,13 +24,30 @@ const allowedDropTypes = [];
 
 export const fetchTopTracks = (timeRange: SpotifyTimeRange) => spotifyApi.currentUser.topItems("tracks", timeRange, 50, 0);
 
+const TrackRow = React.memo(({ track, index }: { track: Track; index: number }) => {
+	const { usePlayContextItem } = S.getPlayContext({ uri: track.uri }, { featureIdentifier: "queue" });
+
+	return (
+		<S.ReactComponents.TracklistRow
+			index={index}
+			uri={track.uri}
+			name={track.name}
+			artists={track.artists}
+			imgUrl={track.album.images.at(-1)?.url ?? DEFAULT_TRACK_IMG}
+			isExplicit={track.explicit}
+			albumOrShow={track.album}
+			duration_ms={track.duration_ms}
+			usePlayContextItem={usePlayContextItem}
+			allowedDropTypes={allowedDropTypes}
+		/>
+	);
+});
+
 interface TracksPageContentProps {
 	topTracks: any;
 }
 const TracksPageContent = ({ topTracks }: TracksPageContentProps) => {
 	const thisRef = React.useRef(null);
-
-	const { usePlayContextItem } = S.getPlayContext({ uri: "" }, { featureIdentifier: "queue" });
 
 	return (
 		<S.ReactComponents.TracklistColumnsContextProvider columns={columns}>
@@ -38,20 +55,7 @@ const TracksPageContent = ({ topTracks }: TracksPageContentProps) => {
 				ariaLabel="Top Tracks"
 				hasHeaderRow={true}
 				columns={columns}
-				renderRow={(track: Track, index: number) => (
-					<S.ReactComponents.TracklistRow
-						index={index}
-						uri={track.uri}
-						name={track.name}
-						artists={track.artists}
-						imgUrl={track.album.images.at(-1)?.url ?? DEFAULT_TRACK_IMG}
-						isExplicit={track.explicit}
-						albumOrShow={track.album}
-						duration_ms={track.duration_ms}
-						usePlayContextItem={usePlayContextItem}
-						allowedDropTypes={allowedDropTypes}
-					/>
-				)}
+				renderRow={(track: Track, index: number) => <TrackRow track={track} index={index} />}
 				resolveItem={track => ({ uri: track.uri })}
 				nrTracks={topTracks.length}
 				fetchTracks={(offset, limit) => topTracks.slice(offset, offset + limit)}

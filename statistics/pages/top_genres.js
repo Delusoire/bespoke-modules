@@ -51,12 +51,26 @@ export const calculateTracksMeta = (tracks)=>{
         obscureTracks
     };
 };
-const GenresPageContent = (data)=>{
+const GenresTrackRow = ({ track, index })=>{
     const { usePlayContextItem } = S.getPlayContext({
         uri: ""
     }, {
         featureIdentifier: "queue"
     });
+    return /*#__PURE__*/ S.React.createElement(S.ReactComponents.TracklistRow, {
+        index: index,
+        uri: track.uri,
+        name: track.name,
+        artists: track.artists,
+        imgUrl: track.album.images.at(-1)?.url ?? DEFAULT_TRACK_IMG,
+        isExplicit: track.explicit,
+        albumOrShow: track.album,
+        duration_ms: track.duration_ms,
+        usePlayContextItem: usePlayContextItem,
+        allowedDropTypes: allowedDropTypes
+    });
+};
+const GenresPageContent = (data)=>{
     const thisRef = React.useRef(null);
     const { genres, releaseDates, obscureTracks, audioFeatures } = data;
     const statsCards = Object.entries(audioFeatures).map(([key, value])=>/*#__PURE__*/ S.React.createElement(StatCard, {
@@ -81,17 +95,9 @@ const GenresPageContent = (data)=>{
         ariaLabel: "Top Tracks",
         hasHeaderRow: false,
         columns: columns,
-        renderRow: (track, index)=>/*#__PURE__*/ S.React.createElement(S.ReactComponents.TracklistRow, {
-                index: index,
-                uri: track.uri,
-                name: track.name,
-                artists: track.artists,
-                imgUrl: track.album.images.at(-1)?.url ?? DEFAULT_TRACK_IMG,
-                isExplicit: track.explicit,
-                albumOrShow: track.album,
-                duration_ms: track.duration_ms,
-                usePlayContextItem: usePlayContextItem,
-                allowedDropTypes: allowedDropTypes
+        renderRow: (track, index)=>/*#__PURE__*/ S.React.createElement(GenresTrackRow, {
+                track: track,
+                index: index
             }),
         resolveItem: (track)=>({
                 uri: track.uri
