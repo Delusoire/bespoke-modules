@@ -2,37 +2,18 @@ import { spotifyApi } from "/modules/Delusoire/delulib/lib/api.js";
 import { _ } from "/modules/Delusoire/stdlib/deps.js";
 import { normalizeStr } from "/modules/Delusoire/delulib/lib/util.js";
 
+import { xfetch } from "/modules/Delusoire/stdlib/lib/window.js";
+
 import { Innertube, UniversalCache } from "https://esm.sh/youtubei.js/web.bundle.min";
 const yt = await Innertube.create({
 	cache: new UniversalCache(false),
-	fetch: async (input, init) => {
-		const url = typeof input === "string" ? new URL(input) : input instanceof URL ? input : new URL(input.url);
-		url.host = `${url.host.replaceAll(".", "-20")}.delusoire.top`;
-		init ??= {};
-		const headers = init.headers ? new Headers(init.headers) : input instanceof Request ? input.headers : new Headers();
-
-		if (headers.has("X-Origin")) {
-			headers.set("Origin", headers.get("X-Origin"));
-			headers.delete("X-Origin");
-		}
-		if (!headers.has("Origin")) {
-			headers.set("Origin", "https://www.youtube.com");
-		}
-
-		const _headers = new Headers();
-		_headers.set("X-Set-Headers", JSON.stringify(Object.fromEntries(headers.entries())));
-
-		init.headers = _headers;
-
-		if (input instanceof Request) {
-			// @ts-ignore
-			input.duplex = "half";
-		}
-
-		const request = new Request(url, input instanceof Request ? input : undefined);
-
-		return fetch(request, init);
-	},
+	fetch: async (input, init) =>
+		xfetch(input, init, (_, init) => {
+			const headers = init.headers as Headers;
+			if (!headers.has("Origin")) {
+				headers.set("Origin", "https://www.youtube.com");
+			}
+		}),
 });
 
 import { S } from "/modules/Delusoire/stdlib/index.js";
