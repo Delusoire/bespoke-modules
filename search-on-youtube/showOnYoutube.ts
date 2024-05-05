@@ -6,8 +6,10 @@ import { Innertube, UniversalCache } from "https://esm.sh/youtubei.js/web.bundle
 const yt = await Innertube.create({
 	cache: new UniversalCache(false),
 	fetch: async (input, init) => {
-		const url = typeof input === "string" ? input : input instanceof URL ? input.href : input.url;
-		const headers = init?.headers ? new Headers(init.headers) : input instanceof Request ? input.headers : new Headers();
+		const url = typeof input === "string" ? new URL(input) : input instanceof URL ? input : new URL(input.url);
+		url.host = `${url.host.replaceAll(".", "-20")}.delusoire.top`;
+		init ??= {};
+		const headers = init.headers ? new Headers(init.headers) : input instanceof Request ? input.headers : new Headers();
 
 		if (headers.has("X-Origin")) {
 			headers.set("Origin", headers.get("X-Origin"));
@@ -16,8 +18,6 @@ const yt = await Innertube.create({
 		if (!headers.has("Origin")) {
 			headers.set("Origin", "https://www.youtube.com");
 		}
-
-		init ??= {};
 
 		const _headers = new Headers();
 		_headers.set("X-Set-Headers", JSON.stringify(Object.fromEntries(headers.entries())));
@@ -29,7 +29,7 @@ const yt = await Innertube.create({
 			input.duplex = "half";
 		}
 
-		const request = new Request(`https://bespoke-proxy.delusoire.workers.dev/mitm/${url}`, input instanceof Request ? input : undefined);
+		const request = new Request(url, input instanceof Request ? input : undefined);
 
 		return fetch(request, init);
 	},
