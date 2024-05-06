@@ -1,5 +1,5 @@
-import { _ } from "/modules/Delusoire/stdlib/deps.js";
-import { S } from "/modules/Delusoire/stdlib/index.js";
+import { _ } from "/modules/official/stdlib/deps.js";
+import { S } from "/modules/official/stdlib/index.js";
 
 interface StatCardProps {
 	label: string;

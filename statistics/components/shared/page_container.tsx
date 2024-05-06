@@ -1,7 +1,7 @@
 import { categories, selectedCategoryCtx } from "../../app.js";
 
-import { S } from "/modules/Delusoire/stdlib/index.js";
-import { TopNavBar } from "/modules/Delusoire/stdlib/lib/components/MountedNavBar.js";
+import { S } from "/modules/official/stdlib/index.js";
+import { TopNavBar } from "/modules/official/stdlib/lib/components/MountedNavBar.js";
 
 const { React } = S;
 

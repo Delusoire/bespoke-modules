@@ -9,5 +9,5 @@
 	"entries": {
 		"js": "index.js"
 	},
-	"dependencies": ["Delusoire/stdlib"]
+	"dependencies": ["official/stdlib"]
 }

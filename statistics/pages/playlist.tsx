@@ -1,4 +1,4 @@
-import { S } from "/modules/Delusoire/stdlib/index.js";
+import { S } from "/modules/official/stdlib/index.js";
 const { React } = S;
 
 import StatCard from "../components/cards/stat_card.js";
@@ -8,7 +8,7 @@ import InlineGrid from "../components/inline_grid.js";
 import Shelf from "../components/shelf.js";
 import { spotifyApi } from "/modules/Delusoire/delulib/lib/api.js";
 import { chunkify20, chunkify50 } from "/modules/Delusoire/delulib/lib/fp.js";
-import { _, fp } from "/modules/Delusoire/stdlib/deps.js";
+import { _, fp } from "/modules/official/stdlib/deps.js";
 import { DEFAULT_TRACK_IMG } from "../static.js";
 import { getURI, toID } from "../util/parse.js";
 import type { Artist } from "@fostertheweb/spotify-web-api-ts-sdk";

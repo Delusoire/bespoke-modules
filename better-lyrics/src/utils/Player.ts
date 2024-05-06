@@ -8,7 +8,7 @@ import {
 	interval,
 	takeUntil,
 } from "https://esm.sh/rxjs";
-import { S } from "/modules/Delusoire/stdlib/index.js";
+import { S } from "/modules/official/stdlib/index.js";
 import { getSongPositionMs } from "/modules/Delusoire/delulib/lib/util.js";
 
 import { eventBus } from "../../index.js";

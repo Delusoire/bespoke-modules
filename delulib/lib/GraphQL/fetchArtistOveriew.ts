@@ -1,5 +1,5 @@
 import type { Item1, ItemMin, Items, ItemsReleases, ItemsReleasesWithCount, ItemsWithCount, TopTracksItem } from "./sharedTypes.js";
-import { S } from "/modules/Delusoire/stdlib/index.js";
+import { S } from "/modules/official/stdlib/index.js";
 
 export type fetchArtistOverviewRes = {
 	__typename: "Artist";

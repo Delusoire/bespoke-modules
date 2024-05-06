@@ -1,9 +1,9 @@
-import { S, createRegistrar } from "/modules/Delusoire/stdlib/index.js";
-import { createSettings } from "/modules/Delusoire/stdlib/lib/settings.js";
-import { useMenuItem } from "/modules/Delusoire/stdlib/src/registers/menu.js";
-import { createIconComponent } from "/modules/Delusoire/stdlib/lib/createIconComponent.js";
+import { S, createRegistrar } from "/modules/official/stdlib/index.js";
+import { createSettings } from "/modules/official/stdlib/lib/settings.js";
+import { useMenuItem } from "/modules/official/stdlib/src/registers/menu.js";
+import { createIconComponent } from "/modules/official/stdlib/lib/createIconComponent.js";
 import type { Module } from "/hooks/module.js";
-import type { Settings } from "/modules/Delusoire/stdlib/lib/settings.js";
+import type { Settings } from "/modules/official/stdlib/lib/settings.js";
 
 const { URI } = S;
 

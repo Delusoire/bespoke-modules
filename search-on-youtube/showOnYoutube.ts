@@ -1,8 +1,8 @@
 import { spotifyApi } from "/modules/Delusoire/delulib/lib/api.js";
-import { _ } from "/modules/Delusoire/stdlib/deps.js";
+import { _ } from "/modules/official/stdlib/deps.js";
 import { normalizeStr } from "/modules/Delusoire/delulib/lib/util.js";
 
-import { xfetch } from "/modules/Delusoire/stdlib/lib/window.js";
+import { xfetch } from "/modules/official/stdlib/lib/window.js";
 
 import { Innertube, UniversalCache } from "https://esm.sh/youtubei.js/web.bundle.min";
 const yt = await Innertube.create({
@@ -16,7 +16,7 @@ const yt = await Innertube.create({
 		}),
 });
 
-import { S } from "/modules/Delusoire/stdlib/index.js";
+import { S } from "/modules/official/stdlib/index.js";
 
 const { URI } = S;
 

@@ -1,11 +1,11 @@
-import { _ } from "/modules/Delusoire/stdlib/deps.js";
+import { _ } from "/modules/official/stdlib/deps.js";
 import { SpotifyLoc } from "/modules/Delusoire/delulib/lib/util.js";
 
 import { CONFIG } from "./settings.js";
-import { S, SVGIcons } from "/modules/Delusoire/stdlib/index.js";
+import { S, SVGIcons } from "/modules/official/stdlib/index.js";
 
-import { useMenuItem } from "/modules/Delusoire/stdlib/src/registers/menu.js";
-import { createIconComponent } from "/modules/Delusoire/stdlib/lib/createIconComponent.js";
+import { useMenuItem } from "/modules/official/stdlib/src/registers/menu.js";
+import { createIconComponent } from "/modules/official/stdlib/lib/createIconComponent.js";
 
 const { URI } = S;
 const History = S.Platform.getHistory();

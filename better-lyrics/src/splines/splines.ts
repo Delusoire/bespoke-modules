@@ -1,4 +1,4 @@
-import { _ } from "/modules/Delusoire/stdlib/deps.js";
+import { _ } from "/modules/official/stdlib/deps.js";
 import { type TwoUplet, type Triplet, zip_n_uplets } from "/modules/Delusoire/delulib/lib/fp.js";
 import {
 	type matrix,

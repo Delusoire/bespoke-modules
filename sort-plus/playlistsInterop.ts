@@ -1,4 +1,4 @@
-import { _ } from "/modules/Delusoire/stdlib/deps.js";
+import { _ } from "/modules/official/stdlib/deps.js";
 import { progressify } from "/modules/Delusoire/delulib/lib/fp.js";
 import {
 	createPlaylistFromTracks,
@@ -14,7 +14,7 @@ import { lastFetchedUri, lastSortAction } from "./sortPlus.js";
 import { CONFIG } from "./settings.js";
 import { ERROR, getNameFromUri } from "./util.js";
 
-import { S } from "/modules/Delusoire/stdlib/index.js";
+import { S } from "/modules/official/stdlib/index.js";
 
 const { URI } = S;
 

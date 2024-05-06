@@ -3,7 +3,7 @@ import { render } from "https://esm.sh/lit";
 import { PermanentMutationObserver } from "/modules/Delusoire/delulib/lib/util.js";
 
 import type { Module } from "/hooks/module.js";
-import { createEventBus, type EventBus } from "/modules/Delusoire/stdlib/index.js";
+import { createEventBus, type EventBus } from "/modules/official/stdlib/index.js";
 
 export let eventBus: EventBus;
 export default async function (mod: Module) {

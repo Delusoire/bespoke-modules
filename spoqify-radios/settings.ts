@@ -1,6 +1,6 @@
 import { settings } from "./index.js";
 import { createFolder } from "/modules/Delusoire/delulib/lib/platform.js";
-import { Settings } from "/modules/Delusoire/stdlib/lib/settings.js";
+import { Settings } from "/modules/official/stdlib/lib/settings.js";
 
 const ANONIMYZED_RADIOS_FOLDER_NAME = "🎭 Anonymized Radios";
 

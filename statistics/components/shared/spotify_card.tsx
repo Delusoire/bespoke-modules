@@ -1,4 +1,4 @@
-import { S } from "/modules/Delusoire/stdlib/index.js";
+import { S } from "/modules/official/stdlib/index.js";
 
 interface SpotifyCardProps {
 	type: "artist" | "album" | "lastfm" | "playlist" | "show";

@@ -1,4 +1,4 @@
-import { S } from "/modules/Delusoire/stdlib/index.js";
+import { S } from "/modules/official/stdlib/index.js";
 const { React } = S;
 
 import PageContainer from "../components/shared/page_container.js";
@@ -9,7 +9,7 @@ import type { Track } from "@fostertheweb/spotify-web-api-ts-sdk";
 import { SpotifyTimeRange } from "../api/spotify.js";
 import { useStatus } from "../components/status/useStatus.js";
 import { logger, settingsButton, storage } from "../index.js";
-import { useDropdown } from "/modules/Delusoire/stdlib/lib/components/index.js";
+import { useDropdown } from "/modules/official/stdlib/lib/components/index.js";
 import CreatePlaylistButton from "../components/buttons/create_playlist_button.js";
 
 const DropdownOptions = { "Past Month": () => "Past Month", "Past 6 Months": () => "Past 6 Months", "All Time": () => "All Time" } as const;

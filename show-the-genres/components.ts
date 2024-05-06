@@ -3,8 +3,8 @@ import { customElement, property, state } from "https://esm.sh/lit/decorators.js
 import { join } from "https://esm.sh/lit/directives/join.js";
 import { map } from "https://esm.sh/lit/directives/map.js";
 
-import { _ } from "/modules/Delusoire/stdlib/deps.js";
-import { S } from "/modules/Delusoire/stdlib/index.js";
+import { _ } from "/modules/official/stdlib/deps.js";
+import { S } from "/modules/official/stdlib/index.js";
 
 const History = S.Platform.getHistory();
 

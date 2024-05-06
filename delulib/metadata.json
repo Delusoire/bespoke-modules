@@ -7,5 +7,5 @@
 	"description": "Required by other modules",
 	"readme": "./assets/README.md",
 	"entries": {},
-	"dependencies": ["Delusoire/stdlib"]
+	"dependencies": ["official/stdlib"]
 }

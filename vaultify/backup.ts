@@ -1,9 +1,9 @@
-import { _ } from "/modules/Delusoire/stdlib/deps.js";
+import { _ } from "/modules/official/stdlib/deps.js";
 import { fetchPlaylistContents, fetchRootFolder } from "/modules/Delusoire/delulib/lib/platform.js";
 
 import type { LikedPlaylist, PersonalFolder, PersonalPlaylist, PoF } from "./util.js";
 
-import { S } from "/modules/Delusoire/stdlib/index.js";
+import { S } from "/modules/official/stdlib/index.js";
 
 const LibraryAPI = S.Platform.getLibraryAPI();
 const LocalStorageAPI = S.Platform.getLocalStorageAPI();

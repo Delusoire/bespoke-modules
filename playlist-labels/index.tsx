@@ -1,7 +1,7 @@
-import { S } from "/modules/Delusoire/stdlib/index.js";
-import { _ } from "/modules/Delusoire/stdlib/deps.js";
+import { S } from "/modules/official/stdlib/index.js";
+import { _ } from "/modules/official/stdlib/deps.js";
 import { useLivePlaylistItems } from "/modules/Delusoire/library-db/index.js";
-import { createIconComponent } from "/modules/Delusoire/stdlib/lib/createIconComponent.js";
+import { createIconComponent } from "/modules/official/stdlib/lib/createIconComponent.js";
 import { useLiveQuery } from "/modules/Delusoire/dexie-react-hooks/index.js";
 import { db } from "/modules/Delusoire/library-db/lib/db.js";
 import type { Module } from "/hooks/module.js";

@@ -1,5 +1,5 @@
 import type { Items } from "./sharedTypes.js";
-import { S } from "/modules/Delusoire/stdlib/index.js";
+import { S } from "/modules/official/stdlib/index.js";
 
 type Track = {
 	__typename: "Track";

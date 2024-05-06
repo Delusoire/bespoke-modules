@@ -1,5 +1,5 @@
 import type { Module } from "/hooks/module.js";
-import { S } from "/modules/Delusoire/stdlib/index.js";
+import { S } from "/modules/official/stdlib/index.js";
 
 const PlayerAPI = S.Platform.getPlayerAPI();
 

@@ -1,7 +1,7 @@
-import { _ } from "/modules/Delusoire/stdlib/deps.js";
+import { _ } from "/modules/official/stdlib/deps.js";
 import { type OneUplet, type TwoUplet, zip_n_uplets } from "/modules/Delusoire/delulib/lib/fp.js";
-import { S } from "/modules/Delusoire/stdlib/index.js";
-import { xfetch } from "/modules/Delusoire/stdlib/lib/window.js";
+import { S } from "/modules/official/stdlib/index.js";
+import { xfetch } from "/modules/official/stdlib/lib/window.js";
 
 const headers = {
 	authority: "apic-desktop.musixmatch.com",

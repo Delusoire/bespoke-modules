@@ -1,5 +1,5 @@
 import type { Module } from "/hooks/module";
-import { S, createEventBus } from "/modules/Delusoire/stdlib/index.js";
+import { S, createEventBus } from "/modules/official/stdlib/index.js";
 
 const BACKGROUND_URL = "";
 
