@@ -1,5 +1,5 @@
 import { S } from "/modules/official/stdlib/index.js";
 
-const UserAPI = S.Platform.getUserAPI();
+const ProductStateAPI = S.Platform.getProductStateAPI();
 
-UserAPI._product_state_service.putOverridesValues({ pairs: { ads: "0", catalogue: "premium", name: "Spotify", product: "premium" } });
+ProductStateAPI.putOverridesValues({ pairs: { ads: "0", catalogue: "premium", name: "Spotify", product: "premium" } });
