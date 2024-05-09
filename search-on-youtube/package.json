@@ -1,6 +1,7 @@
 {
-	"dependencies": {},
-	"devDependencies": { "@fostertheweb/spotify-web-api-ts-sdk": "^1.2.1", "youtubei.js": "^9.1.0" },
-	"peerDependencies": {},
-	"private": true
+  "name": "search-on-youtube",
+  "dependencies": {},
+  "devDependencies": { "@fostertheweb/spotify-web-api-ts-sdk": "^1.2.1", "youtubei.js": "^9.1.0" },
+  "peerDependencies": {},
+  "private": true
 }
