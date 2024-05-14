@@ -15,59 +15,59 @@ export type ItemsReleasesWithCount<A> = ItemsWithCount<{
 
 export type Date = (
 	| {
-			year: number;
-			month?: number;
-			day?: number;
-			hour?: number;
-			mintue?: number;
-			second?: number;
-			precision: "YEAR";
-	  }
+		year: number;
+		month?: number;
+		day?: number;
+		hour?: number;
+		mintue?: number;
+		second?: number;
+		precision: "YEAR";
+	}
 	| {
-			year: number;
-			month: number;
-			day?: number;
-			hour?: number;
-			mintue?: number;
-			second?: number;
-			precision: "MONTH";
-	  }
+		year: number;
+		month: number;
+		day?: number;
+		hour?: number;
+		mintue?: number;
+		second?: number;
+		precision: "MONTH";
+	}
 	| {
-			year: number;
-			month: number;
-			day: number;
-			hour?: number;
-			mintue?: number;
-			second?: number;
-			precision: "DAY";
-	  }
+		year: number;
+		month: number;
+		day: number;
+		hour?: number;
+		mintue?: number;
+		second?: number;
+		precision: "DAY";
+	}
 	| {
-			year: number;
-			month: number;
-			day: number;
-			hour: number;
-			mintue?: number;
-			second?: number;
-			precision: "HOUR";
-	  }
+		year: number;
+		month: number;
+		day: number;
+		hour: number;
+		mintue?: number;
+		second?: number;
+		precision: "HOUR";
+	}
 	| {
-			year: number;
-			month: number;
-			day: number;
-			hour: number;
-			mintue: number;
-			second?: number;
-			precision: "MINUTE";
-	  }
+		year: number;
+		month: number;
+		day: number;
+		hour: number;
+		mintue: number;
+		second?: number;
+		precision: "MINUTE";
+	}
 	| {
-			year: number;
-			month: number;
-			day: number;
-			hour: number;
-			mintue: number;
-			second: number;
-			precision: "SECOND";
-	  }
+		year: number;
+		month: number;
+		day: number;
+		hour: number;
+		mintue: number;
+		second: number;
+		precision: "SECOND";
+	}
 ) & {
 	isoString: string;
 };
@@ -141,7 +141,7 @@ export type TopTracksItem = {
 		albumOfTrack: {
 			uri: string;
 			coverArt: {
-				sources: Array<{ url: string }>;
+				sources: Array<{ url: string; }>;
 			};
 		};
 	};

@@ -1,5 +1,7 @@
 import type { Item1, ItemMin, Items, ItemsReleases, ItemsReleasesWithCount, ItemsWithCount, TopTracksItem } from "./sharedTypes.js";
-import { S } from "/modules/official/stdlib/index.js";
+import { GraphQLDefs } from "/modules/official/stdlib/src/expose/GraphQL.js";
+import { Platform } from "/modules/official/stdlib/src/expose/Platform.js";
+import { Locale } from "/modules/official/stdlib/src/webpack/misc.js";
 
 export type fetchArtistOverviewRes = {
 	__typename: "Artist";
@@ -26,7 +28,7 @@ export type fetchArtistOverviewRes = {
 			comment: string;
 			type: string;
 			backgroundImage: {
-				sources: Array<{ url: string }>;
+				sources: Array<{ url: string; }>;
 			};
 			itemV2: {};
 			item: {
@@ -153,7 +155,7 @@ export type fetchArtistOverviewRes = {
 				nearUser: boolean;
 				venue: {
 					name: string;
-					location: { name: string };
+					location: { name: string; };
 					coordinates: {
 						latitude: number;
 						longitude: number;
@@ -173,7 +175,7 @@ export type fetchArtistOverviewRes = {
 		};
 		merch: Items<{
 			image: {
-				sources: Array<{ url: string }>;
+				sources: Array<{ url: string; }>;
 			};
 			name: string;
 			description: string;
@@ -183,12 +185,12 @@ export type fetchArtistOverviewRes = {
 		}>;
 	};
 };
-export const fetchArtistOverview = async (uri: string) => {
-	const res = await S.Platform.getGraphQLLoader()(S.GraphQLDefinitions.query.queryArtistOverview, {
+export const fetchArtistOverview = async ( uri: string ) => {
+	const res = await Platform.getGraphQLLoader()( GraphQLDefs.query.queryArtistOverview, {
 		uri,
-		locale: S.Locale.getLocaleForURLPath(),
+		locale: Locale.getLocaleForURLPath(),
 		includePrerelease: true,
-	});
+	} );
 
 	return res.data.artistUnion as fetchArtistOverviewRes;
 };

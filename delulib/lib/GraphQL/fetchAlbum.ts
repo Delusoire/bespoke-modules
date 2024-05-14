@@ -1,5 +1,6 @@
-import { S } from "/modules/official/stdlib/index.js";
 import { Items, ItemsWithCount } from "./sharedTypes.js";
+import { Platform } from "/modules/official/stdlib/src/expose/Platform.js";
+import { Locale } from "/modules/official/stdlib/src/webpack/misc.js";
 
 export type fetchAlbumRes = {
 	__typename: "album";
@@ -126,27 +127,27 @@ export type fetchAlbumRes = {
 	}>;
 };
 const queue = new Array<() => void>();
-export const fetchAlbum = async (uri: string, offset = 0, limit = 415) => {
-	let resolveOwn: undefined | (() => void);
-	await new Promise<void>(resolve => {
-		queue.push((resolveOwn = resolve));
-		if (queue.length < 1000) {
+export const fetchAlbum = async ( uri: string, offset = 0, limit = 415 ) => {
+	let resolveOwn: undefined | ( () => void );
+	await new Promise<void>( resolve => {
+		queue.push( ( resolveOwn = resolve ) );
+		if ( queue.length < 1000 ) {
 			resolve();
 		}
-	});
+	} );
 
-	const res = await S.Platform.getGraphQLLoader()(S.GraphQLDefinitions.query.getAlbum, {
+	const res = await Platform.getGraphQLLoader()( S.GraphQLDefinitions.query.getAlbum, {
 		uri,
-		locale: S.Locale.getLocaleForURLPath(),
+		locale: Locale.getLocaleForURLPath(),
 		offset,
 		limit,
-	});
+	} );
 
-	const index = queue.findIndex(r => r === resolveOwn);
-	if (index != -1) {
-		queue.splice(index, 1);
+	const index = queue.findIndex( r => r === resolveOwn );
+	if ( index != -1 ) {
+		queue.splice( index, 1 );
 	}
-	queue[0]?.();
+	queue[ 0 ]?.();
 
 	return res.data.albumUnion as fetchAlbumRes;
 };

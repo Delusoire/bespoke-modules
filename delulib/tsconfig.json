@@ -1,21 +1,21 @@
 {
-    "extends": "../../tsconfig.json",
-    "compilerOptions": {
-        "baseUrl": "../../../",
-        "paths": {
-            "/*": ["./*"],
-            "https://esm.sh/v135/*": [
-                "modules/Delusoire/delulib/node_modules/@types/*",
-                "modules/Delusoire/delulib/node_modules/*",
-                "node_modules/@types/*",
-                "node_modules/*"
-            ],
-            "https://esm.sh/*": [
-                "modules/Delusoire/delulib/node_modules/@types/*",
-                "modules/Delusoire/delulib/node_modules/*",
-                "node_modules/@types/*",
-                "node_modules/*"
-            ]
-        }
-    }
+   "extends": "../../../tsconfig.json",
+   "compilerOptions": {
+      "baseUrl": "../../../",
+      "paths": {
+         "/*": ["./*"],
+         "https://esm.sh/v135/*": [
+            "modules/Delusoire/delulib/node_modules/@types/*",
+            "modules/Delusoire/delulib/node_modules/*",
+            "node_modules/@types/*",
+            "node_modules/*"
+         ],
+         "https://esm.sh/*": [
+            "modules/Delusoire/delulib/node_modules/@types/*",
+            "modules/Delusoire/delulib/node_modules/*",
+            "node_modules/@types/*",
+            "node_modules/*"
+         ]
+      }
+   }
 }
