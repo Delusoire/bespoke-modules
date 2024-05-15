@@ -1,6 +1,2 @@
-/.swc/
-
-/node_modules/
-/bun.lockb
-
-/classmap.d.ts
+node_modules/
+bun.lockb
