@@ -1,13 +1,22 @@
 {
 	"name": "better-lyrics",
-	"tags": ["extension", "lyrics", "bad"],
+	"tags": [
+		"extension",
+		"lyrics",
+		"bad"
+	],
 	"preview": "./assets/PREVIEW.png",
-	"version": "beta",
-	"authors": ["Delusoire"],
+	"version": "0.1.0-beta",
+	"authors": [
+		"Delusoire"
+	],
 	"description": "Bad lyrics, Beautfil Lyrics but worse. At least it doesn't take your cpu hostage? Credits; This extension started as a Beautiful Lyrics clone, and become worse over time.",
 	"readme": "./assets/README.md",
 	"entries": {
 		"js": "index.js"
 	},
-	"dependencies": ["official/stdlib", "Delusoire/delulib"]
+	"dependencies": [
+		"official/stdlib",
+		"Delusoire/delulib"
+	]
 }

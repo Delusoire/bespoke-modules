@@ -1,13 +1,22 @@
 {
 	"name": "vaultify",
-	"tags": ["extension", "backup", "restore"],
+	"tags": [
+		"extension",
+		"backup",
+		"restore"
+	],
 	"preview": "./assets/PREVIEW.png",
-	"version": "beta",
-	"authors": ["Delusoire"],
+	"version": "0.1.0-beta",
+	"authors": [
+		"Delusoire"
+	],
 	"description": "Vault for your playlists and settings (Backup/Restore)",
 	"readme": "./assets/README.md",
 	"entries": {
 		"js": "index.js"
 	},
-	"dependencies": ["official/stdlib", "Delusoire/delulib"]
+	"dependencies": [
+		"official/stdlib",
+		"Delusoire/delulib"
+	]
 }

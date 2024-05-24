@@ -1,9 +1,14 @@
 {
 	"name": "hazy",
-	"tags": ["theme"],
+	"tags": [
+		"theme"
+	],
 	"preview": "./assets/PREVIEW.png",
-	"version": "Astromations_Hazy_commit_fa443999da80ba2ee1faf7038de1a16596dacbe9",
-	"authors": ["Delusoire", "Astromations"],
+	"version": "0.1.0-beta+Astromations--Hazy--fa443999da80ba2ee1faf7038de1a16596dacbe9",
+	"authors": [
+		"Delusoire",
+		"Astromations"
+	],
 	"description": "The Hazy theme from spicetify",
 	"readme": "./assets/README.md",
 	"entries": {
@@ -11,5 +16,7 @@
 		"css": "index.css",
 		"mixin": "mixin.js"
 	},
-	"dependencies": ["official/stdlib"]
+	"dependencies": [
+		"official/stdlib"
+	]
 }

@@ -1,13 +1,20 @@
 {
 	"name": "library-db",
-	"tags": ["lib"],
+	"tags": [
+		"lib"
+	],
 	"preview": "./assets/PREVIEW.png",
-	"version": "beta",
-	"authors": ["Delusoire"],
+	"version": "0.1.0-beta",
+	"authors": [
+		"Delusoire"
+	],
 	"description": "Provides metadata about your Spotify library to other modules.",
 	"readme": "./assets/README.md",
 	"entries": {
 		"js": "index.js"
 	},
-	"dependencies": ["official/stdlib", "Delusoire/delulib"]
+	"dependencies": [
+		"official/stdlib",
+		"Delusoire/delulib"
+	]
 }

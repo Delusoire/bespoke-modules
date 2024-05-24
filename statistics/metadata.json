@@ -1,14 +1,24 @@
 {
 	"name": "statistics",
-	"tags": ["app", "stats"],
+	"tags": [
+		"app",
+		"stats"
+	],
 	"preview": "./assets/PREVIEW.png",
-	"version": "harbassan_spicetify-apps_commit_a8bf02cafb661b5d9504084cdef73a1ee2572d43",
-	"authors": ["Delusoire", "harbassan"],
+	"version": "0.1.0-beta+harbassan--spicetify-apps--a8bf02cafb661b5d9504084cdef73a1ee2572d43",
+	"authors": [
+		"Delusoire",
+		"harbassan"
+	],
 	"description": "See your top artists, tracks, genres and an analysis of your music library.",
 	"readme": "./assets/README.md",
 	"entries": {
 		"js": "index.js",
 		"css": "index.css"
 	},
-	"dependencies": ["official/stdlib", "Delusoire/delulib", "Delusoire/library-db"]
+	"dependencies": [
+		"official/stdlib",
+		"Delusoire/delulib",
+		"Delusoire/library-db"
+	]
 }

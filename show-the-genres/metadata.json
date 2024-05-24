@@ -1,14 +1,23 @@
 {
 	"name": "show-the-genres",
-	"tags": ["extension", "genres", "lastfm"],
+	"tags": [
+		"extension",
+		"genres",
+		"lastfm"
+	],
 	"preview": "./assets/PREVIEW.png",
-	"version": "beta",
-	"authors": ["Delusoire"],
+	"version": "0.1.0-beta",
+	"authors": [
+		"Delusoire"
+	],
 	"description": "Show the genres for the currently playing track and on artists' pages. This extensions requires you to use your own LastFM API Key.",
 	"readme": "./assets/README.md",
 	"entries": {
 		"js": "index.js",
 		"css": "index.css"
 	},
-	"dependencies": ["official/stdlib", "Delusoire/delulib"]
+	"dependencies": [
+		"official/stdlib",
+		"Delusoire/delulib"
+	]
 }

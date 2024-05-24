@@ -1,13 +1,22 @@
 {
 	"name": "search-on-youtube",
-	"tags": ["extension", "youtube", "search"],
+	"tags": [
+		"extension",
+		"youtube",
+		"search"
+	],
 	"preview": "./assets/PREVIEW.png",
-	"version": "beta",
-	"authors": ["Delusoire"],
+	"version": "0.1.0-beta",
+	"authors": [
+		"Delusoire"
+	],
 	"description": "Search/Play the music video of the selected track on YouTube. Setting your own API Key allows you to bypass the search and directly open the first result.",
 	"readme": "./assets/README.md",
 	"entries": {
 		"js": "index.js"
 	},
-	"dependencies": ["official/stdlib", "Delusoire/delulib"]
+	"dependencies": [
+		"official/stdlib",
+		"Delusoire/delulib"
+	]
 }
