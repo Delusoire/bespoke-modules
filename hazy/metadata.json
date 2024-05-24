@@ -13,10 +13,9 @@
 	"readme": "./assets/README.md",
 	"entries": {
 		"js": "index.js",
-		"css": "index.css",
-		"mixin": "mixin.js"
+		"css": "index.css"
 	},
-	"dependencies": [
-		"official/stdlib"
-	]
+	"dependencies": {
+		"official/stdlib": "0.1.0-beta"
+	}
 }

@@ -1,7 +1,7 @@
-import { S, createEventBus } from "/modules/official/stdlib/index.js";
-const BACKGROUND_URL = "";
-const PlayerAPI = S.Platform.getPlayerAPI();
-const History = S.Platform.getHistory();
+import { createEventBus } from "/modules/official/stdlib/index.js";
+import { Platform } from "/modules/official/stdlib/src/expose/Platform.js";const BACKGROUND_URL = "";
+const PlayerAPI = Platform.getPlayerAPI();
+const History = Platform.getHistory();
 const style = document.documentElement.style;
 const getPlayerAPIPref = key =>
 	PlayerAPI._prefs
@@ -61,7 +61,7 @@ function windowControls() {
 let loaded = true;
 async function controlDimensions() {
 	const zoomFactor = window.outerWidth / window.innerWidth;
-	const { enableGlobalNavBar } = S.Platform.getLocalStorageAPI().getItem("remote-config-overrides");
+	const { enableGlobalNavBar } = Platform.getLocalStorageAPI().getItem("remote-config-overrides");
 	const isTouchscreenUi = enableGlobalNavBar === "home-next-to-navigation" || enableGlobalNavBar === "home-next-to-search";
 	const app = document.querySelector(".ZQftYELq0aOsg6tPbVbV");
 	let height, width;
