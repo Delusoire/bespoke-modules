@@ -1,17 +1,15 @@
-import { fetchLastFMTrack, spotifyApi } from "/modules/Delusoire/delulib/lib/api.js";
-import { _, fp } from "/modules/official/stdlib/deps.js";
-import { S } from "/modules/official/stdlib/index.js";
-import { chunkify50, progressify } from "/modules/Delusoire/delulib/lib/fp.js";
-import { TrackData, parseWebAPITrack } from "/modules/Delusoire/delulib/lib/parse.js";
+import { fetchLastFMTrack, spotifyApi } from "/modules/Delusoire/delulib/lib/api.ts";
+import { _, fp } from "/modules/official/stdlib/deps.ts";
+import { chunkify50, progressify } from "/modules/Delusoire/delulib/lib/fp.ts";
+import { TrackData, parseWebAPITrack } from "/modules/Delusoire/delulib/lib/parse.ts";
 
-import { getTracksFromAlbum } from "./fetch.js";
-import { CONFIG } from "./settings.js";
-import { SortAction, SortActionProp, joinByUri } from "./util.js";
-
-const { URI } = S;
+import { getTracksFromAlbum } from "./fetch.ts";
+import { CONFIG } from "./settings.ts";
+import { SortAction, SortActionProp, joinByUri } from "./util.ts";
+import { fromString } from "/modules/official/stdlib/src/webpack/URI.ts";
 
 const fillTracksFromWebAPI = async (tracks: TrackData[]) => {
-	const ids = tracks.map(track => URI.fromString(track.uri)!.id!);
+	const ids = tracks.map(track => fromString(track.uri)!.id!);
 
 	const fetchedTracks = await chunkify50(is => spotifyApi.tracks.get(is))(ids);
 	return joinByUri(tracks, fetchedTracks.map(parseWebAPITrack));

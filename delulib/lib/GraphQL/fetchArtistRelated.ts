@@ -1,24 +1,12 @@
-import { GraphQLDefs } from "/modules/official/stdlib/src/expose/GraphQL.js";
-import { Platform } from "/modules/official/stdlib/src/expose/Platform.js";
-import { Locale } from "/modules/official/stdlib/src/webpack/misc.js";
+import { GraphQLDefs } from "/modules/official/stdlib/src/expose/GraphQL.ts";
+import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
+import { Locale } from "/modules/official/stdlib/src/webpack/misc.ts";
 
-type fetchArtistRelatedRes = Array<{
-	id: string;
-	uri: string;
-	profile: {
-		name: string;
-	};
-	visuals: {
-		avatarImage: {
-			sources: Array<Platform.ImageSized>;
-		};
-	};
-}>;
-export const fetchArtistRelated = async ( uri: string ) => {
-	const res = await Platform.getGraphQLLoader()( GraphQLDefs.queryArtistRelated, {
+export const fetchArtistRelated = async (uri: string) => {
+	const res = await Platform.getGraphQLLoader()(GraphQLDefs.query.queryArtistRelated, {
 		uri,
 		locale: Locale.getLocaleForURLPath(),
-	} );
+	});
 
-	return res.data.artistUnion.relatedContent.relatedArtists.items as fetchArtistRelatedRes;
+	return res.data.artistUnion.relatedContent.relatedArtists.items as any;
 };

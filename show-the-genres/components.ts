@@ -4,9 +4,9 @@ import { join } from "https://esm.sh/lit/directives/join.js";
 import { map } from "https://esm.sh/lit/directives/map.js";
 
 import { _ } from "/modules/official/stdlib/deps.js";
-import { S } from "/modules/official/stdlib/index.js";
+import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
 
-const History = S.Platform.getHistory();
+const History = Platform.getHistory();
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -39,10 +39,10 @@ class _GenreLink extends LitElement {
 @customElement("genre-container")
 class _ArtistGenreContainer extends LitElement {
 	@property()
-	accessor name?: string = undefined;
+	accessor name?: string;
 
 	@property()
-	accessor uri?: string = undefined;
+	accessor uri?: string;
 
 	@state()
 	accessor genres: string[] = [];

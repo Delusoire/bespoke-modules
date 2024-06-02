@@ -1,24 +1,13 @@
 import { Platform } from "/modules/official/stdlib/src/expose/Platform.js";
 import { Locale } from "/modules/official/stdlib/src/webpack/misc.js";
-const queue = new Array();
-export const fetchAlbum = async (uri, offset = 0, limit = 415)=>{
-    let resolveOwn;
-    await new Promise((resolve)=>{
-        queue.push(resolveOwn = resolve);
-        if (queue.length < 1000) {
-            resolve();
-        }
-    });
-    const res = await Platform.getGraphQLLoader()(S.GraphQLDefinitions.query.getAlbum, {
+import { GraphQLDefs } from "/modules/official/stdlib/src/expose/GraphQL.js";
+import { getConcurrentExecutionLimiterWrapper } from "/modules/Delusoire/delulib/lib/fp.js";
+export const fetchAlbum = getConcurrentExecutionLimiterWrapper(1000)(async (uri, offset = 0, limit = 415)=>{
+    const res = await Platform.getGraphQLLoader()(GraphQLDefs.query.getAlbum, {
         uri,
         locale: Locale.getLocaleForURLPath(),
         offset,
         limit
     });
-    const index = queue.findIndex((r)=>r === resolveOwn);
-    if (index != -1) {
-        queue.splice(index, 1);
-    }
-    queue[0]?.();
     return res.data.albumUnion;
-};
+});

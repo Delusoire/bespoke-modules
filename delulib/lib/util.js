@@ -1,4 +1,4 @@
-import { Platform } from "/modules/official/stdlib/src/expose/Platform";
+import { Platform } from "/modules/official/stdlib/src/expose/Platform.js";
 const PlayerAPI = Platform.getPlayerAPI();
 export const SpotifyLoc = {
     before: {

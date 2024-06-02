@@ -1,16 +1,16 @@
-import { fetchLastFMTrack, spotifyApi } from "/modules/Delusoire/delulib/lib/api.js";
-import { waitForElement } from "/modules/official/stdlib/lib/dom.js";
+import { fetchLastFMTrack, spotifyApi } from "/modules/Delusoire/delulib/lib/api.ts";
+import { waitForElement } from "/modules/official/stdlib/lib/dom.ts";
 
-import { CONFIG } from "./settings.js";
+import { CONFIG } from "./settings.ts";
 
-import { fetchArtistRelated } from "/modules/Delusoire/delulib/lib/GraphQL/fetchArtistRelated.js";
-import { _ } from "/modules/official/stdlib/deps.js";
-import { S } from "/modules/official/stdlib/index.js";
-import "./components.js";
-import { eventBus } from "./index.js";
+import { fetchArtistRelated } from "/modules/Delusoire/delulib/lib/GraphQL/fetchArtistRelated.ts";
+import { _ } from "/modules/official/stdlib/deps.ts";
+import "./components.ts";
+import { eventBus } from "./index.ts";
+import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
+import { fromString, is } from "/modules/official/stdlib/src/webpack/URI.ts";
 
-const { URI } = S;
-const PlayerAPI = S.Platform.getPlayerAPI();
+const PlayerAPI = Platform.getPlayerAPI();
 
 const fetchLastFMTagsForNowPlayingTrack = async () => {
 	const item = PlayerAPI.getState().item;
@@ -38,7 +38,7 @@ eventBus.Player.song_changed.subscribe(state => {
 
 const getArtistsGenresOrRelated = async (artistsUris: string[]) => {
 	const getArtistsGenres = async (artistsUris: string[]) => {
-		const ids = artistsUris.map(uri => URI.fromString(uri).id as string);
+		const ids = artistsUris.map(uri => fromString(uri).id as string);
 		const artists = await spotifyApi.artists.get(_.compact(ids));
 		const genres = new Set(artists.flatMap(artist => artist.genres));
 		return Array.from(genres);
@@ -76,9 +76,9 @@ const updateArtistPage = async (uri: string) => {
 
 eventBus.History.updated.subscribe(({ pathname }) => {
 	try {
-		const uri = URI.fromString(pathname);
-		if (URI.is.Artist(uri)) {
+		const uri = fromString(pathname);
+		if (is.Artist(uri)) {
 			updateArtistPage(uri);
 		}
-	} catch (_) {}
+	} catch (_) { }
 });

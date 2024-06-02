@@ -1,11 +1,9 @@
-import type { Module } from "/hooks/module.js";
-import type { Settings } from "/modules/official/stdlib/lib/settings.js";
-
-import { createSettings } from "/modules/official/stdlib/lib/settings.js";
+import type { ModuleInstance } from "/hooks/module.ts";
+import { createSettings, type Settings } from "/modules/official/stdlib/lib/settings.tsx";
 
 export let settings: Settings;
-export default async function (mod: Module) {
+export default async function (mod: ModuleInstance) {
 	[settings] = createSettings(mod);
 
-	await import("./settings.js");
+	await import("./settings.ts");
 }

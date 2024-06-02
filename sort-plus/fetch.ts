@@ -1,9 +1,8 @@
-import { fetchAlbum } from "/modules/Delusoire/delulib/lib/GraphQL/fetchAlbum.js";
-import { fetchArtistDiscography } from "/modules/Delusoire/delulib/lib/GraphQL/fetchArtistDiscography.js";
-import { fetchArtistOverview } from "/modules/Delusoire/delulib/lib/GraphQL/fetchArtistOveriew.js";
-import type { ItemMin, ItemsReleases, ItemsReleasesWithCount, ItemsWithCount } from "/modules/Delusoire/delulib/lib/GraphQL/sharedTypes.js";
-import { _, fp } from "/modules/official/stdlib/deps.js";
-import { pMchain } from "/modules/Delusoire/delulib/lib/fp.js";
+import { fetchAlbum } from "/modules/Delusoire/delulib/lib/GraphQL/fetchAlbum.ts";
+import { fetchArtistDiscography } from "/modules/Delusoire/delulib/lib/GraphQL/fetchArtistDiscography.ts";
+import { fetchArtistOverview } from "/modules/Delusoire/delulib/lib/GraphQL/fetchArtistOveriew.ts";
+import { _, fp } from "/modules/official/stdlib/deps.ts";
+import { pMchain } from "/modules/Delusoire/delulib/lib/fp.ts";
 import {
 	type TrackData,
 	parseAlbumTrack,
@@ -11,15 +10,13 @@ import {
 	parseLibraryAPILikedTracks,
 	parsePlaylistAPITrack,
 	parseTopTrackFromArtist,
-} from "/modules/Delusoire/delulib/lib/parse.js";
-import { fetchArtistLikedTracks, fetchLikedTracks, fetchPlaylistContents } from "/modules/Delusoire/delulib/lib/platform.js";
+} from "/modules/Delusoire/delulib/lib/parse.ts";
+import { fetchArtistLikedTracks, fetchLikedTracks, fetchPlaylistContents } from "/modules/Delusoire/delulib/lib/platform.ts";
 
-import { CONFIG } from "./settings.js";
+import { CONFIG } from "./settings.ts";
 
-import { S } from "/modules/official/stdlib/index.js";
-import { URI_is_LikedTracks } from "./util.js";
-
-const { URI } = S;
+import { is } from "/modules/official/stdlib/src/webpack/URI.ts";
+import { is_LikedTracks } from "./util.ts";
 
 export const getTracksFromAlbum = async (uri: string) => {
 	const albumRes = await fetchAlbum(uri);
@@ -44,7 +41,7 @@ export const getLikedTracks = _.flow(fetchLikedTracks, pMchain(fp.map(parseLibra
 export const getTracksFromPlaylist = _.flow(
 	fetchPlaylistContents,
 	pMchain(fp.map(parsePlaylistAPITrack)),
-	pMchain(fp.filter(track => !URI.is.LocalTrack(track.uri))),
+	pMchain(fp.filter(track => !is.LocalTrack(track.uri))),
 );
 
 export const getTracksFromArtist = async (uri: string) => {
@@ -82,8 +79,8 @@ export const getTracksFromArtist = async (uri: string) => {
 };
 
 export const getTracksFromUri = _.cond([
-	[URI.is.Album, getTracksFromAlbum],
-	[URI.is.Artist, getTracksFromArtist],
-	[URI_is_LikedTracks, getLikedTracks],
-	[URI.is.PlaylistV1OrV2, getTracksFromPlaylist],
+	[is.Album, getTracksFromAlbum],
+	[is.Artist, getTracksFromArtist],
+	[is_LikedTracks, getLikedTracks],
+	[is.PlaylistV1OrV2, getTracksFromPlaylist],
 ]);

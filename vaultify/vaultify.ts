@@ -1,3 +1,4 @@
+import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
 import {
 	type LibraryBackup,
 	type LocalStorageBackup,
@@ -6,11 +7,11 @@ import {
 	getLocalStorage,
 	getLocalStoreAPI,
 	getSettings,
-} from "./backup.js";
-import { restoreLocalStorage, restoreLibrary, restoreSettings } from "./restore.js";
-import { S } from "/modules/official/stdlib/index.js";
+} from "./backup.ts";
+import { restoreLocalStorage, restoreLibrary, restoreSettings } from "./restore.ts";
+import { Snackbar } from "/modules/official/stdlib/src/expose/Snackbar.ts";
 
-const ClipboardAPI = S.Platform.getClipboardAPI();
+const ClipboardAPI = Platform.getClipboardAPI();
 
 export const backup = async (silent = false) => {
 	const library = await getLibrary();
@@ -27,10 +28,10 @@ export const backup = async (silent = false) => {
 		} as Vault),
 	);
 
-	!silent && S.Snackbar.enqueueSnackbar("Backed up Playlists, Extensions and Settings");
+	!silent && Snackbar.enqueueSnackbar("Backed up Playlists, Extensions and Settings");
 };
 
-type Vault = { library: LibraryBackup; settings: SettingBackup } & LocalStorageBackup;
+type Vault = { library: LibraryBackup; settings: SettingBackup; } & LocalStorageBackup;
 export enum RestoreScope {
 	LIBRARY = "library",
 	LOCALSTORAGE = "localstorage",

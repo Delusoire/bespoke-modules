@@ -1,47 +1,20 @@
-import { _ } from "/modules/official/stdlib/deps.js";
+import { _ } from "/modules/official/stdlib/deps.ts";
 
-import { S, SVGIcons, createRegistrar } from "/modules/official/stdlib/index.js";
-import { createSettings } from "/modules/official/stdlib/lib/settings.js";
+import { createRegistrar } from "/modules/official/stdlib/index.ts";
+import { createSettings } from "/modules/official/stdlib/lib/settings.tsx";
 
-import { useMenuItem } from "/modules/official/stdlib/src/registers/menu.js";
-import { createIconComponent } from "/modules/official/stdlib/lib/createIconComponent.js";
-import type { Module } from "/hooks/module.js";
-import type { Settings } from "/modules/official/stdlib/lib/settings.js";
-
-const { URI } = S;
+import type { ModuleInstance } from "/hooks/module.ts";
+import type { Settings } from "/modules/official/stdlib/lib/settings.tsx";
+import { React } from "/modules/official/stdlib/src/expose/React.ts";
 
 export let settings: Settings;
-export default async function (mod: Module) {
+export default async function (mod: ModuleInstance) {
 	const registrar = createRegistrar(mod);
 	[settings] = createSettings(mod);
 
-	const { createAnonRadio, FolderPickerMenuItem } = await import("./spoqifyRadios.js");
+	const { SpoqifyRadiosButton, FolderPickerMenuItem } = await import("./spoqifyRadios.tsx");
 
-	registrar.register(
-		"menu",
-		S.React.createElement(() => {
-			const { props } = useMenuItem();
-			const uri = props.uri;
-			return (
-				<S.ReactComponents.MenuItem
-					disabled={false}
-					onClick={() => {
-						createAnonRadio(uri);
-					}}
-					leadingIcon={createIconComponent({
-						icon: SVGIcons.podcasts,
-					})}
-				>
-					Create anonymized radio
-				</S.ReactComponents.MenuItem>
-			);
-		}),
-		({ props }) => {
-			return _.overSome([URI.is.Album, URI.is.Artist, URI.is.PlaylistV1OrV2, URI.is.Track])(props?.uri);
-		},
-	);
+	registrar.register("menu", <SpoqifyRadiosButton />);
 
-	registrar.register("menu", <FolderPickerMenuItem />, ({ props }) => {
-		return URI.is.Folder(props?.reference?.uri);
-	});
+	registrar.register("menu", <FolderPickerMenuItem />);
 }

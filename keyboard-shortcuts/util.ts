@@ -1,10 +1,10 @@
-import { _ } from "/modules/official/stdlib/deps.js";
+import { _ } from "/modules/official/stdlib/deps.ts";
 
-import { listeningToSneakBinds } from "./sneak.js";
+import { listeningToSneakBinds } from "./sneak.ts";
+import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
+import { Mousetrap } from "/modules/official/stdlib/src/webpack/Mousetrap.ts";
 
-import { S } from "/modules/official/stdlib/index.js";
-
-const History = S.Platform.getHistory();
+const History = Platform.getHistory();
 
 const SCROLL_STEP = 25;
 
@@ -48,10 +48,10 @@ export class Bind {
 	constructor(
 		private key: string,
 		private callback: (event: KeyboardEvent) => void,
-	) {}
+	) { }
 
 	register() {
-		S.Mousetrap.bind(this.key, e => void (!listeningToSneakBinds && this.callback(e)));
+		Mousetrap.bind(this.key, e => void (!listeningToSneakBinds && this.callback(e)));
 	}
 }
 

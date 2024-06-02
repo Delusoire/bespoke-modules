@@ -1,12 +1,11 @@
-import { _ } from "/modules/official/stdlib/deps.js";
-import { fetchPlaylistContents, fetchRootFolder } from "/modules/Delusoire/delulib/lib/platform.js";
+import { _ } from "/modules/official/stdlib/deps.ts";
+import { fetchPlaylistContents, fetchRootFolder } from "/modules/Delusoire/delulib/lib/platform.ts";
 
-import type { LikedPlaylist, PersonalFolder, PersonalPlaylist, PoF } from "./util.js";
+import type { LikedPlaylist, PersonalFolder, PersonalPlaylist, PoF } from "./util.ts";
+import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
 
-import { S } from "/modules/official/stdlib/index.js";
-
-const LibraryAPI = S.Platform.getLibraryAPI();
-const LocalStorageAPI = S.Platform.getLocalStorageAPI();
+const LibraryAPI = Platform.getLibraryAPI();
+const LocalStorageAPI = Platform.getLocalStorageAPI();
 
 export type LibraryBackup = Record<string, Array<string>> & {
 	rootlist: PersonalFolder;
@@ -54,8 +53,8 @@ export const getLibrary = async () => {
 	) as LibraryBackup;
 };
 
-const Prefs = S.Platform.getPlayerAPI()._prefs;
-const ProductState = S.Platform.getUserAPI()._product_state_service;
+const Prefs = Platform.getPlayerAPI()._prefs;
+const ProductState = Platform.getUserAPI()._product_state_service;
 
 BigInt.prototype.toJSON = function () {
 	return `${this.toString()}n`;

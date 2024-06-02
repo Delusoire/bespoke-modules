@@ -32,3 +32,20 @@ export const progressify = (f, n)=>{
     };
 };
 export const zip_n_uplets = (n)=>(a)=>a.map((_, i, a)=>a.slice(i, i + n)).slice(0, 1 - n);
+export const getConcurrentExecutionLimiterWrapper = (limit)=>(task)=>{
+        const waitingQ = new Set();
+        const executingQ = new Set();
+        return async function() {
+            const { promise, resolve } = Promise.withResolvers();
+            waitingQ.add(resolve);
+            if (executingQ.size >= limit) {
+                await promise;
+            }
+            waitingQ.delete(resolve);
+            executingQ.add(resolve);
+            return await task(...arguments).finally(()=>{
+                executingQ.delete(resolve);
+                waitingQ.keys().next().value?.();
+            });
+        };
+    };

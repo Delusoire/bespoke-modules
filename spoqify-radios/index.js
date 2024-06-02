@@ -1,38 +1,11 @@
-import { _ } from "/modules/official/stdlib/deps.js";
-import { S, SVGIcons, createRegistrar } from "/modules/official/stdlib/index.js";
+import { createRegistrar } from "/modules/official/stdlib/index.js";
 import { createSettings } from "/modules/official/stdlib/lib/settings.js";
-import { useMenuItem } from "/modules/official/stdlib/src/registers/menu.js";
-import { createIconComponent } from "/modules/official/stdlib/lib/createIconComponent.js";
-const { URI } = S;
+import { React } from "/modules/official/stdlib/src/expose/React.js";
 export let settings;
-export default async function (mod) {
-	const registrar = createRegistrar(mod);
-	[settings] = createSettings(mod);
-	const { createAnonRadio, FolderPickerMenuItem } = await import("./spoqifyRadios.js");
-	registrar.register(
-		"menu",
-		S.React.createElement(() => {
-			const { props } = useMenuItem();
-			const uri = props.uri;
-			return /*#__PURE__*/ S.React.createElement(
-				S.ReactComponents.MenuItem,
-				{
-					disabled: false,
-					onClick: () => {
-						createAnonRadio(uri);
-					},
-					leadingIcon: createIconComponent({
-						icon: SVGIcons.podcasts,
-					}),
-				},
-				"Create anonymized radio",
-			);
-		}),
-		({ props }) => {
-			return _.overSome([URI.is.Album, URI.is.Artist, URI.is.PlaylistV1OrV2, URI.is.Track])(props?.uri);
-		},
-	);
-	registrar.register("menu", /*#__PURE__*/ S.React.createElement(FolderPickerMenuItem, null), ({ props }) => {
-		return URI.is.Folder(props?.reference?.uri);
-	});
+export default async function(mod) {
+    const registrar = createRegistrar(mod);
+    [settings] = createSettings(mod);
+    const { SpoqifyRadiosButton, FolderPickerMenuItem } = await import("./spoqifyRadios.js");
+    registrar.register("menu", /*#__PURE__*/ React.createElement(SpoqifyRadiosButton, null));
+    registrar.register("menu", /*#__PURE__*/ React.createElement(FolderPickerMenuItem, null));
 }

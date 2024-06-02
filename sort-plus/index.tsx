@@ -1,34 +1,27 @@
-import { S, createRegistrar } from "/modules/official/stdlib/index.js";
-import { createSettings } from "/modules/official/stdlib/lib/settings.js";
+import { createRegistrar } from "/modules/official/stdlib/index.ts";
+import { createSettings } from "/modules/official/stdlib/lib/settings.tsx";
 
-import { Button } from "/modules/official/stdlib/src/registers/topbarLeftButton.js";
+import { TopbarLeftButton } from "/modules/official/stdlib/src/registers/topbarLeftButton.tsx";
 
-import { URI_is_LikedTracks } from "./util.js";
-import { SVGIcons } from "/modules/official/stdlib/index.js";
-import type { Settings } from "/modules/official/stdlib/lib/settings.js";
-import type { Module } from "/hooks/module.js";
+import type { Settings } from "/modules/official/stdlib/lib/settings.tsx";
+import type { ModuleInstance } from "/hooks/module.ts";
 
-const { URI } = S;
+import { React } from "/modules/official/stdlib/src/expose/React.ts";
 
 export let settings: Settings;
-export default async function (mod: Module) {
+export default async function (mod: ModuleInstance) {
 	const registrar = createRegistrar(mod);
 	[settings] = createSettings(mod);
 
-	const { FolderPickerMenuItem, SortBySubMenu, createPlaylistFromLastSortedQueue, reordedPlaylistLikeSortedQueue } = await import("./sortPlus.js");
+	const { FolderPickerMenuItem, SortBySubMenu, createPlaylistFromLastSortedQueue, reordedPlaylistLikeSortedQueue } = await import("./sortPlus.tsx");
 
-	registrar.register("menu", <FolderPickerMenuItem />, ({ props }) => {
-		return URI.is.Folder(props?.reference?.uri);
-	});
+	registrar.register("menu", <FolderPickerMenuItem />);
 
-	registrar.register("menu", <SortBySubMenu />, ({ props }) => {
-		const uri = props?.uri;
-		return uri && [URI.is.Album, URI.is.Artist, URI_is_LikedTracks, URI.is.Track, URI.is.PlaylistV1OrV2].some(f => f(uri));
-	});
+	registrar.register("menu", <SortBySubMenu />);
 	registrar.register("topbarLeftButton", () => (
-		<Button label="Create a Playlist from Sorted Queue" icon={SVGIcons.playlist} onClick={createPlaylistFromLastSortedQueue} />
+		<TopbarLeftButton label="Create a Playlist from Sorted Queue" icon='<path d="M15 14.5H5V13h10v1.5zm0-5.75H5v-1.5h10v1.5zM15 3H5V1.5h10V3zM3 3H1V1.5h2V3zm0 11.5H1V13h2v1.5zm0-5.75H1v-1.5h2v1.5z"/>' onClick={createPlaylistFromLastSortedQueue} />
 	));
 	registrar.register("topbarLeftButton", () => (
-		<Button label="Reorder Playlist from Sorted Queue" icon={SVGIcons.shuffle} onClick={reordedPlaylistLikeSortedQueue} />
+		<TopbarLeftButton label="Reorder Playlist from Sorted Queue" icon='<path d="M4.5 6.8l.7-.8C4.1 4.7 2.5 4 .9 4v1c1.3 0 2.6.6 3.5 1.6l.1.2zm7.5 4.7c-1.2 0-2.3-.5-3.2-1.3l-.6.8c1 1 2.4 1.5 3.8 1.5V14l3.5-2-3.5-2v1.5zm0-6V7l3.5-2L12 3v1.5c-1.6 0-3.2.7-4.2 2l-3.4 3.9c-.9 1-2.2 1.6-3.5 1.6v1c1.6 0 3.2-.7 4.2-2l3.4-3.9c.9-1 2.2-1.6 3.5-1.6z"/>' onClick={reordedPlaylistLikeSortedQueue} />
 	));
 }

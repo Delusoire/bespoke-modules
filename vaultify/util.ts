@@ -1,5 +1,4 @@
-import { S } from "/modules/official/stdlib/index.js";
-const { URI } = S;
+import { is } from "/modules/official/stdlib/src/webpack/URI.ts";
 
 export type PoF = Playlist | Folder;
 
@@ -16,8 +15,8 @@ export interface Folder {
 	items: PoF[];
 }
 
-type SpotifyTrackUri = string & { _: "track" };
-type SpotifyPlaylistUri = string & { _: "playlist" };
+type SpotifyTrackUri = string & { _: "track"; };
+type SpotifyPlaylistUri = string & { _: "playlist"; };
 
 type namedProp<A> = Record<string, A>;
 export type LikedPlaylist = namedProp<SpotifyPlaylistUri>;
@@ -25,4 +24,4 @@ export type PersonalPlaylist = namedProp<SpotifyTrackUri[]>;
 export type PersonalFolder = namedProp<Array<LikedPlaylist | PersonalPlaylist | PersonalFolder>>;
 
 export const isContentOfPersonalPlaylist = (subleaf: PersonalFolder[""] | PersonalPlaylist[""]): subleaf is PersonalPlaylist[""] =>
-	typeof subleaf[0] === "string" && URI.is.Track(subleaf[0]);
+	typeof subleaf[0] === "string" && is.Track(subleaf[0]);

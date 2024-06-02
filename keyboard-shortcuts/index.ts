@@ -1,13 +1,13 @@
-import { toggleInLibrary } from "/modules/Delusoire/delulib/lib/platform.js";
-import { S } from "/modules/official/stdlib/index.js";
+import { toggleInLibrary } from "/modules/Delusoire/delulib/lib/platform.ts";
 
-import { KEY_LIST, type _SneakOverlay, mousetrapInst } from "./sneak.js";
-import { Bind, appScroll, appScrollY, openPage, rotateSidebar } from "./util.js";
+import { KEY_LIST, type _SneakOverlay, mousetrapInst } from "./sneak.ts";
+import { Bind, appScroll, appScrollY, openPage, rotateSidebar } from "./util.ts";
+import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
 
-const UserAPI = S.Platform.getUserAPI();
-const UpdateAPI = S.Platform.getUpdateAPI();
-const History = S.Platform.getHistory();
-const PlayerAPI = S.Platform.getPlayerAPI();
+const UserAPI = Platform.getUserAPI();
+const UpdateAPI = Platform.getUpdateAPI();
+const History = Platform.getHistory();
+const PlayerAPI = Platform.getPlayerAPI();
 
 let sneakOverlay: _SneakOverlay;
 

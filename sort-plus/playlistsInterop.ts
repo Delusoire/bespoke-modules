@@ -1,5 +1,5 @@
-import { _ } from "/modules/official/stdlib/deps.js";
-import { progressify } from "/modules/Delusoire/delulib/lib/fp.js";
+import { _ } from "/modules/official/stdlib/deps.ts";
+import { progressify } from "/modules/Delusoire/delulib/lib/fp.ts";
 import {
 	createPlaylistFromTracks,
 	fetchFolder,
@@ -7,26 +7,24 @@ import {
 	fetchRootFolder,
 	movePlaylistTracks,
 	setPlaylistVisibility,
-} from "/modules/Delusoire/delulib/lib/platform.js";
-import { SpotifyLoc } from "/modules/Delusoire/delulib/lib/util.js";
+} from "/modules/Delusoire/delulib/lib/platform.ts";
+import { SpotifyLoc } from "/modules/Delusoire/delulib/lib/util.ts";
 
-import { lastFetchedUri, lastSortAction } from "./sortPlus.js";
-import { CONFIG } from "./settings.js";
-import { ERROR, getNameFromUri } from "./util.js";
-
-import { S } from "/modules/official/stdlib/index.js";
-
-const { URI } = S;
+import { lastFetchedUri, lastSortAction } from "./sortPlus.tsx";
+import { CONFIG } from "./settings.ts";
+import { ERROR, getNameFromUri } from "./util.ts";
+import { Snackbar } from "/modules/official/stdlib/src/expose/Snackbar.ts";
+import { fromString, is } from "/modules/official/stdlib/src/webpack/URI.ts";
 
 export const createPlaylistFromLastSortedQueue = async () => {
 	if (globalThis.lastSortedQueue.length === 0) {
-		S.Snackbar.enqueueSnackbar(ERROR.LAST_SORTED_QUEUE_EMPTY, { variant: "error" });
+		Snackbar.enqueueSnackbar(ERROR.LAST_SORTED_QUEUE_EMPTY, { variant: "error" });
 		return;
 	}
 
 	const sortedPlaylistsFolder = await fetchFolder(CONFIG.sortedPlaylistsFolderUri).catch(fetchRootFolder);
 
-	const uri = URI.fromString(lastFetchedUri);
+	const uri = fromString(lastFetchedUri);
 	const playlistName = `${await getNameFromUri(uri)} - ${lastSortAction}`;
 
 	const { success, uri: playlistUri } = await createPlaylistFromTracks(
@@ -36,22 +34,22 @@ export const createPlaylistFromLastSortedQueue = async () => {
 	);
 
 	if (!success) {
-		S.Snackbar.enqueueSnackbar(`Failed to create Playlist ${playlistName}`, { variant: "error" });
+		Snackbar.enqueueSnackbar(`Failed to create Playlist ${playlistName}`, { variant: "error" });
 		return;
 	}
 
 	setPlaylistVisibility(playlistUri, false);
-	S.Snackbar.enqueueSnackbar(`Playlist ${playlistName} created`, { variant: "default" });
+	Snackbar.enqueueSnackbar(`Playlist ${playlistName} created`, { variant: "default" });
 };
 
 export const reordedPlaylistLikeSortedQueue = async () => {
 	if (globalThis.lastSortedQueue.length === 0) {
-		S.Snackbar.enqueueSnackbar(ERROR.LAST_SORTED_QUEUE_EMPTY, { variant: "error" });
+		Snackbar.enqueueSnackbar(ERROR.LAST_SORTED_QUEUE_EMPTY, { variant: "error" });
 		return;
 	}
 
-	if (!URI.is.PlaylistV1OrV2(lastFetchedUri)) {
-		S.Snackbar.enqueueSnackbar(ERROR.LAST_SORTED_QUEUE_NOT_A_PLAYLIST, { variant: "error" });
+	if (!is.PlaylistV1OrV2(lastFetchedUri)) {
+		Snackbar.enqueueSnackbar(ERROR.LAST_SORTED_QUEUE_NOT_A_PLAYLIST, { variant: "error" });
 		return;
 	}
 
@@ -78,8 +76,8 @@ export const reordedPlaylistLikeSortedQueue = async () => {
 
 	await Promise.all(uidsByReqs.map(fn));
 
-	S.Snackbar.enqueueSnackbar("Reordered the sorted playlist", { variant: "default" });
+	Snackbar.enqueueSnackbar("Reordered the sorted playlist", { variant: "default" });
 	if (playlistUids.length) {
-		S.Snackbar.enqueueSnackbar(`Left ${playlistUids.length} unordered at the bottom`, { variant: "default" });
+		Snackbar.enqueueSnackbar(`Left ${playlistUids.length} unordered at the bottom`, { variant: "default" });
 	}
 };

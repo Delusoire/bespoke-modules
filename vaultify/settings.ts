@@ -1,6 +1,6 @@
-import { settings } from "./index.js";
+import { settings } from "./index.ts";
 
-import { RestoreScope, backup, restoreFactory } from "./vaultify.js";
+import { RestoreScope, backup, restoreFactory } from "./vaultify.ts";
 
 export const CONFIG = settings
 	.addButton({

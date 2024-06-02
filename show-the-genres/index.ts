@@ -1,12 +1,11 @@
-import { createSettings } from "/modules/official/stdlib/lib/settings.js";
-import type { Module } from "/hooks/module.js";
-import type { Settings } from "/modules/official/stdlib/lib/settings.js";
-import { createEventBus, type EventBus } from "/modules/official/stdlib/index.js";
+import { createSettings, type Settings } from "/modules/official/stdlib/lib/settings.tsx";
+import type { ModuleInstance } from "/hooks/module.ts";
+import { createEventBus, type EventBus } from "/modules/official/stdlib/index.ts";
 
 export let settings: Settings;
 export let eventBus: EventBus;
-export default function (mod: Module) {
+export default function (mod: ModuleInstance) {
 	[settings] = createSettings(mod);
 	eventBus = createEventBus(mod);
-	import("./showTheGenres.js");
+	import("./showTheGenres.ts");
 }

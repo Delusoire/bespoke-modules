@@ -1,4 +1,4 @@
-import { settings } from "./index.js";
+import { settings } from "./index.ts";
 
 export const CONFIG = settings
 	.addInput(

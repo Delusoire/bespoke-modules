@@ -3,11 +3,11 @@ import { customElement, property } from "https://esm.sh/lit/decorators.js";
 import { map } from "https://esm.sh/lit/directives/map.js";
 import { styleMap } from "https://esm.sh/lit/directives/style-map.js";
 
-import { CLICKABLE_ELEMENT_SELECTOR, isElementInViewPort } from "./util.js";
+import { CLICKABLE_ELEMENT_SELECTOR, isElementInViewPort } from "./util.ts";
 
-import { S } from "/modules/official/stdlib/index.js";
+import { Mousetrap } from "/modules/official/stdlib/src/webpack/Mousetrap.ts";
 
-export const mousetrapInst = S.Mousetrap();
+export const mousetrapInst = Mousetrap();
 export const KEY_LIST = "abcdefghijklmnopqrstuvwxyz".split("");
 
 export let listeningToSneakBinds = false;
@@ -58,7 +58,7 @@ export class _SneakOverlay extends LitElement {
     `;
 
 	@property({ type: Array })
-	accessor props = [] as Array<{ key: string; target: HTMLElement }>;
+	accessor props = [] as Array<{ key: string; target: HTMLElement; }>;
 
 	constructor() {
 		super();
