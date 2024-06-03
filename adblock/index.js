@@ -1,5 +1,5 @@
-import { S } from "/modules/official/stdlib/index.js";
-const UserAPI = S.Platform.getUserAPI();
+import { Platform } from "/modules/official/stdlib/src/expose/Platform.js";
+const UserAPI = Platform.getUserAPI();
 UserAPI._product_state_service.putOverridesValues({
 	pairs: {
 		ads: "0",

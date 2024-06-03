@@ -1,5 +1,5 @@
-import { S } from "/modules/official/stdlib/index.js";
+import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
 
-const ProductStateAPI = S.Platform.getProductStateAPI();
+const ProductStateAPI = Platform.getProductStateAPI();
 
 ProductStateAPI.putOverridesValues({ pairs: { ads: "0", catalogue: "premium", name: "Spotify", product: "premium" } });

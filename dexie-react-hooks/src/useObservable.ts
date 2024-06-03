@@ -1,6 +1,4 @@
-import { S } from "/modules/official/stdlib/index.js";
-
-const { React } = S;
+import { React } from "/modules/official/stdlib/src/expose/React.ts";
 
 export interface InteropableObservable<T> {
 	subscribe(onNext: (x: T) => any, onError?: (error: any) => any): (() => any) | { unsubscribe(): any };
@@ -9,10 +7,24 @@ export interface InteropableObservable<T> {
 }
 
 export function useObservable<T, TDefault>(observable: InteropableObservable<T>): T | undefined;
-export function useObservable<T, TDefault>(observable: InteropableObservable<T>, defaultResult: TDefault): T | TDefault;
-export function useObservable<T>(observableFactory: () => InteropableObservable<T>, deps?: any[]): T | undefined;
-export function useObservable<T, TDefault>(observableFactory: () => InteropableObservable<T>, deps: any[], defaultResult: TDefault): T | TDefault;
-export function useObservable<T, TDefault>(observableFactory: InteropableObservable<T> | (() => InteropableObservable<T>), arg2?: any, arg3?: any) {
+export function useObservable<T, TDefault>(
+	observable: InteropableObservable<T>,
+	defaultResult: TDefault,
+): T | TDefault;
+export function useObservable<T>(
+	observableFactory: () => InteropableObservable<T>,
+	deps?: any[],
+): T | undefined;
+export function useObservable<T, TDefault>(
+	observableFactory: () => InteropableObservable<T>,
+	deps: any[],
+	defaultResult: TDefault,
+): T | TDefault;
+export function useObservable<T, TDefault>(
+	observableFactory: InteropableObservable<T> | (() => InteropableObservable<T>),
+	arg2?: any,
+	arg3?: any,
+) {
 	// Resolve vars from overloading variants of this function:
 	let deps: any[];
 	let defaultResult: TDefault;
@@ -33,7 +45,7 @@ export function useObservable<T, TDefault>(observableFactory: InteropableObserva
 	// We control when component should rerender. Make triggerUpdate
 	// as examplified on React's docs at:
 	// https://reactjs.org/docs/hooks-faq.html#is-there-something-like-forceupdate
-	const [_, triggerUpdate] = React.useReducer(x => x + 1, 0);
+	const [_, triggerUpdate] = React.useReducer((x) => x + 1, 0);
 
 	// Memoize the observable based on deps
 	const observable = React.useMemo(() => {
@@ -42,7 +54,9 @@ export function useObservable<T, TDefault>(observableFactory: InteropableObserva
 		const observable = typeof observableFactory === "function" ? observableFactory() : observableFactory;
 		if (!observable || typeof observable.subscribe !== "function") {
 			if (observableFactory === observable) {
-				throw new TypeError("Given argument to useObservable() was neither a valid observable nor a function.");
+				throw new TypeError(
+					"Given argument to useObservable() was neither a valid observable nor a function.",
+				);
 			}
 			throw new TypeError("Observable factory given to useObservable() did not return a valid observable.");
 		}
@@ -59,7 +73,7 @@ export function useObservable<T, TDefault>(observableFactory: InteropableObserva
 				} else {
 					// Find out if the observable has a current value: try get it by subscribing and
 					// unsubscribing synchronously
-					const subscription = observable.subscribe(val => {
+					const subscription = observable.subscribe((val) => {
 						monitor.current.result = val;
 						monitor.current.hasResult = true;
 					});
@@ -81,7 +95,7 @@ export function useObservable<T, TDefault>(observableFactory: InteropableObserva
 	// Subscribe to the observable
 	React.useEffect(() => {
 		const subscription = observable.subscribe(
-			val => {
+			(val) => {
 				const { current } = monitor;
 				if (current.error !== null || current.result !== val) {
 					current.error = null;
@@ -90,7 +104,7 @@ export function useObservable<T, TDefault>(observableFactory: InteropableObserva
 					triggerUpdate();
 				}
 			},
-			err => {
+			(err) => {
 				const { current } = monitor;
 				if (current.error !== err) {
 					current.error = err;

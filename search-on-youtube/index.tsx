@@ -1,41 +1,17 @@
-import { S, createRegistrar } from "/modules/official/stdlib/index.js";
-import { createSettings } from "/modules/official/stdlib/lib/settings.js";
-import { useMenuItem } from "/modules/official/stdlib/src/registers/menu.js";
-import { createIconComponent } from "/modules/official/stdlib/lib/createIconComponent.js";
-import type { Module } from "/hooks/module.js";
-import type { Settings } from "/modules/official/stdlib/lib/settings.js";
+import { createRegistrar } from "/modules/official/stdlib/index.ts";
+import { createSettings } from "/modules/official/stdlib/lib/settings.tsx";
+import type { ModuleInstance } from "/hooks/module.ts";
+import type { Settings } from "/modules/official/stdlib/lib/settings.tsx";
 
-const { URI } = S;
+import { React } from "/modules/official/stdlib/src/expose/React.ts";
 
 export let settings: Settings;
 
-export default async function (mod: Module) {
+export default async function (mod: ModuleInstance) {
 	const registrar = createRegistrar(mod);
 	[settings] = createSettings(mod);
 
-	const { showOnYouTube } = await import("./showOnYoutube.js");
+	const { SearchOnYoutubeMenuItem } = await import("./searchOnYoutube.tsx");
 
-	registrar.register(
-		"menu",
-		S.React.createElement(() => {
-			const { props } = useMenuItem();
-			const uri = props.uri;
-			return (
-				<S.ReactComponents.MenuItem
-					disabled={false}
-					onClick={() => {
-						showOnYouTube(uri);
-					}}
-					leadingIcon={createIconComponent({
-						icon: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="19px" height="19px"><path fill="currentColor" d="M43.2,33.9c-0.4,2.1-2.1,3.7-4.2,4c-3.3,0.5-8.8,1.1-15,1.1c-6.1,0-11.6-0.6-15-1.1c-2.1-0.3-3.8-1.9-4.2-4C4.4,31.6,4,28.2,4,24c0-4.2,0.4-7.6,0.8-9.9c0.4-2.1,2.1-3.7,4.2-4C12.3,9.6,17.8,9,24,9c6.2,0,11.6,0.6,15,1.1c2.1,0.3,3.8,1.9,4.2,4c0.4,2.3,0.9,5.7,0.9,9.9C44,28.2,43.6,31.6,43.2,33.9z"/><path fill="var(--spice-main)" d="M20 31L20 17 32 24z"/></svg>`,
-					})}
-				>
-					Show on youtube
-				</S.ReactComponents.MenuItem>
-			);
-		}),
-		({ props }) => {
-			return URI.is.Track(props?.uri);
-		},
-	);
+	registrar.register("menu", <SearchOnYoutubeMenuItem />);
 }

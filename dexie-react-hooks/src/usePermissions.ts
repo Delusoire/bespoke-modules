@@ -1,24 +1,22 @@
 import { Dexie } from "https://esm.sh/dexie";
-import { useObservable } from "./useObservable.js";
+import { useObservable } from "./useObservable.ts";
 //import type { KeyPaths, TableProp } from "https://esm.sh/dexie"; // Issue #1725 - not compatible with dexie@3.
 // Workaround: provide these types inline for now. When dexie 4 stable is out, we can use the types from dexie@4.
 export type KeyPaths<T> = {
-	[P in keyof T]: P extends string
-		? T[P] extends Array<infer K>
-			? K extends object // only drill into the array element if it's an object
+	[P in keyof T]: P extends string ? T[P] extends Array<infer K> ? K extends object // only drill into the array element if it's an object
 				? P | `${P}.${number}` | `${P}.${number}.${KeyPaths<K>}`
-				: P | `${P}.${number}`
-			: T[P] extends (...args: any[]) => any // Method
-			  ? never
-			  : T[P] extends object
-				  ? P | `${P}.${KeyPaths<T[P]>}`
-				  : P
+			: P | `${P}.${number}`
+		: T[P] extends (...args: any[]) => any // Method
+			? never
+		: T[P] extends object ? P | `${P}.${KeyPaths<T[P]>}`
+		: P
 		: never;
 }[keyof T];
-export type TableProp<DX extends Dexie> = {
-	[K in keyof DX]: DX[K] extends { schema: any; get: any; put: any; add: any; where: any } ? K : never;
-}[keyof DX] &
-	string;
+export type TableProp<DX extends Dexie> =
+	& {
+		[K in keyof DX]: DX[K] extends { schema: any; get: any; put: any; add: any; where: any } ? K : never;
+	}[keyof DX]
+	& string;
 
 interface DexieCloudEntity {
 	table(): string;
@@ -34,35 +32,62 @@ export interface PermissionChecker<T, TableName extends string> {
 
 export function usePermissions<T extends DexieCloudEntity>(
 	entity: T,
-): PermissionChecker<T, T extends { table: () => infer TableName } ? TableName : string>;
-export function usePermissions<TDB extends Dexie, T>(db: TDB, table: TableProp<TDB>, obj: T): PermissionChecker<T, TableProp<TDB>>;
+): PermissionChecker<
+	T,
+	T extends { table: () => infer TableName } ? TableName : string
+>;
+export function usePermissions<TDB extends Dexie, T>(
+	db: TDB,
+	table: TableProp<TDB>,
+	obj: T,
+): PermissionChecker<T, TableProp<TDB>>;
 export function usePermissions(
 	firstArg:
 		| Dexie
 		| {
-				realmId?: string;
-				owner?: string;
-				table?: () => string;
-				readonly db?: Dexie;
-		  },
+			realmId?: string;
+			owner?: string;
+			table?: () => string;
+			readonly db?: Dexie;
+		},
 	table?: string,
 	obj?: { realmId?: string; owner?: string },
 ) {
-	if (!firstArg) throw new TypeError("Invalid arguments to usePermissions(): undefined or null");
+	if (!firstArg) {
+		throw new TypeError(
+			"Invalid arguments to usePermissions(): undefined or null",
+		);
+	}
 	let db: Dexie;
 	if (arguments.length >= 3) {
 		if (!("transaction" in firstArg)) {
 			// Using ducktyping instead of instanceof in case there are multiple Dexie modules in app.
 			// First arg is  ensures first arg is a Dexie instance
-			throw new TypeError("Invalid arguments to usePermission(db, table, obj): 1st arg must be a Dexie instance");
+			throw new TypeError(
+				"Invalid arguments to usePermission(db, table, obj): 1st arg must be a Dexie instance",
+			);
 		}
-		if (typeof table !== "string") throw new TypeError("Invalid arguments to usePermission(db, table, obj): 2nd arg must be string");
-		if (!obj || typeof obj !== "object") throw new TypeError("Invalid arguments to usePermission(db, table, obj): 3rd arg must be an object");
+		if (typeof table !== "string") {
+			throw new TypeError(
+				"Invalid arguments to usePermission(db, table, obj): 2nd arg must be string",
+			);
+		}
+		if (!obj || typeof obj !== "object") {
+			throw new TypeError(
+				"Invalid arguments to usePermission(db, table, obj): 3rd arg must be an object",
+			);
+		}
 		db = firstArg;
 	} else {
-		if (firstArg instanceof Dexie) throw new TypeError("Invalid arguments to usePermission(db, table, obj): Missing table and obj arguments.");
+		if (firstArg instanceof Dexie) {
+			throw new TypeError(
+				"Invalid arguments to usePermission(db, table, obj): Missing table and obj arguments.",
+			);
+		}
 
-		if (typeof firstArg.table === "function" && typeof firstArg.db === "object") {
+		if (
+			typeof firstArg.table === "function" && typeof firstArg.db === "object"
+		) {
 			db = firstArg.db!;
 			obj = firstArg;
 			table = firstArg.table();
@@ -74,8 +99,16 @@ export function usePermissions(
 			);
 		}
 	}
-	if (!("cloud" in db)) throw new Error(`usePermissions() is only for Dexie Cloud but there's no dexie-cloud-addon active in given db.`);
-	if (!("permissions" in (db as any).cloud)) throw new Error("usePermissions() requires a newer version of dexie-cloud-addon. Please upgrade it.");
+	if (!("cloud" in db)) {
+		throw new Error(
+			`usePermissions() is only for Dexie Cloud but there's no dexie-cloud-addon active in given db.`,
+		);
+	}
+	if (!("permissions" in (db as any).cloud)) {
+		throw new Error(
+			"usePermissions() requires a newer version of dexie-cloud-addon. Please upgrade it.",
+		);
+	}
 	return useObservable(
 		// @ts-ignore
 		() => db.cloud.permissions(obj, table),

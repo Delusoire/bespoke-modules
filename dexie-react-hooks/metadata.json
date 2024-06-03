@@ -1,13 +1,20 @@
 {
 	"name": "dexie-react-hooks",
-	"tags": ["npm"],
+	"tags": [
+		"npm"
+	],
 	"preview": "./assets/PREVIEW.png",
 	"version": "1.1.7",
-	"authors": ["Delusoire", "Dexie"],
+	"authors": [
+		"Delusoire",
+		"Dexie"
+	],
 	"description": "dexie-react-hooks from npm",
 	"readme": "./assets/README.md",
 	"entries": {
 		"js": "index.js"
 	},
-	"dependencies": ["official/stdlib"]
+	"dependencies": {
+		"official/stdlib": "0.1.0-beta"
+	}
 }

@@ -1,3 +1,3 @@
-export * from "./src/useLiveQuery.js";
-export * from "./src/useObservable.js";
-export * from "./src/usePermissions.js";
+export * from "./src/useLiveQuery.ts";
+export * from "./src/useObservable.ts";
+export * from "./src/usePermissions.ts";
