@@ -1,5 +1,6 @@
-import { _ } from "/modules/official/stdlib/deps.js";
-import { S } from "/modules/official/stdlib/index.js";
+import { UI } from "/modules/official/stdlib/src/webpack/ComponentLibrary.ts";
+import { _ } from "/modules/official/stdlib/deps.ts";
+import { React } from "/modules/official/stdlib/src/expose/React.ts";
 
 interface StatCardProps {
 	label: string;
@@ -21,12 +22,12 @@ const formatValue = (name: string, value: string | number) => {
 
 const StatCard = ({ label, value }: StatCardProps) => (
 	<div className="main-card-card">
-		<S.ReactComponents.UI.Type as="div" semanticColor="textBase" variant="alto">
+		<UI.Type as="div" semanticColor="textBase" variant="alto">
 			{formatValue(label, value)}
-		</S.ReactComponents.UI.Type>
-		<S.ReactComponents.UI.Type as="div" semanticColor="textBase" variant="balladBold">
+		</UI.Type>
+		<UI.Type as="div" semanticColor="textBase" variant="balladBold">
 			{_.capitalize(label)}
-		</S.ReactComponents.UI.Type>
+		</UI.Type>
 	</div>
 );
 

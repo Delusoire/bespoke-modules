@@ -1,11 +1,10 @@
 import Dexie, { type Table } from "https://esm.sh/dexie";
 import type { Track } from "https://esm.sh/v135/@fostertheweb/spotify-web-api-ts-sdk/dist/mjs/types.js";
-import { chunkify50 } from "/modules/Delusoire/delulib/lib/fp.js";
-import { spotifyApi } from "/modules/Delusoire/delulib/lib/api.js";
-import { S } from "/modules/official/stdlib/index.js";
-import { _ } from "/modules/official/stdlib/deps.js";
-
-const { URI } = S;
+import { chunkify50 } from "/modules/Delusoire/delulib/lib/fp.ts";
+import { spotifyApi } from "/modules/Delusoire/delulib/lib/api.ts";
+import { _ } from "/modules/official/stdlib/deps.ts";
+import { fromString } from "/modules/official/stdlib/src/webpack/URI.ts";
+import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
 
 export const db = new (class extends Dexie {
 	tracks!: Table<Track>;
@@ -22,8 +21,7 @@ export const db = new (class extends Dexie {
 
 // TODO: execute this in a worker
 const fetchOrPopulateDB =
-	<A, B>(table: Table<A, B>, fetcher: (primaryKeys: B[]) => Promise<A[]>) =>
-	async (primaryKeys: B[]) => {
+	<A, B>(table: Table<A, B>, fetcher: (primaryKeys: B[]) => Promise<A[]>) => async (primaryKeys: B[]) => {
 		const objs = await table.bulkGet(primaryKeys);
 		const missed = objs.reduce((missed, obj, i) => {
 			obj ?? missed.push(i);
@@ -31,7 +29,7 @@ const fetchOrPopulateDB =
 		}, [] as number[]);
 
 		if (missed.length) {
-			const fillers = await fetcher(missed.map(i => primaryKeys[i]));
+			const fillers = await fetcher(missed.map((i) => primaryKeys[i]));
 			table.bulkAdd(fillers);
 			missed.forEach((i, j) => {
 				objs[i] = fillers[j];
@@ -41,11 +39,14 @@ const fetchOrPopulateDB =
 		return objs;
 	};
 
-export const getTracksFromURIs = fetchOrPopulateDB(db.tracks, (uris: string[]) => {
-	const ids = uris.map(uri => URI.fromString(uri).id);
-	return chunkify50(is => spotifyApi.tracks.get(is))(ids);
+export const getTracksFromURIs = fetchOrPopulateDB(db.tracks, (uris) => {
+	const ids = uris.map((uri) => fromString(uri).id);
+	return chunkify50((is) => spotifyApi.tracks.get(is))(ids);
 });
 
-const PlaylistAPI = S.Platform.getPlaylistAPI();
+const PlaylistAPI = Platform.getPlaylistAPI();
 
-export const getPlaylistsFromURIs = fetchOrPopulateDB(db.playlists, (uris: string[]) => Promise.all(uris.map(uri => PlaylistAPI.getPlaylist(uri))));
+export const getPlaylistsFromURIs = fetchOrPopulateDB(
+	db.playlists,
+	(uris) => Promise.all(uris.map((uri) => PlaylistAPI.getPlaylist(uri))),
+);

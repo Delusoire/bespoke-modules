@@ -1,12 +1,16 @@
-import { S } from "/modules/official/stdlib/index.js";
+import { Tooltip } from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
+import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
+import { React } from "/modules/official/stdlib/src/expose/React.ts";
+import { UI } from "/modules/official/stdlib/src/webpack/ComponentLibrary.ts";
+import { Snackbar } from "/modules/official/stdlib/src/expose/Snackbar.ts";
 
 export interface CreatePlaylistButtonProps {
 	name: string;
 	tracks: string[];
 }
 
-const RootlistAPI = S.Platform.getRootlistAPI();
-const PlaylistAPI = S.Platform.getPlaylistAPI();
+const RootlistAPI = Platform.getRootlistAPI();
+const PlaylistAPI = Platform.getPlaylistAPI();
 
 async function createPlaylist({ name, tracks }: CreatePlaylistButtonProps): Promise<void> {
 	try {
@@ -14,13 +18,13 @@ async function createPlaylist({ name, tracks }: CreatePlaylistButtonProps): Prom
 		await PlaylistAPI.add(playlistUri, tracks, { before: "start" });
 	} catch (error) {
 		console.error(error);
-		S.Snackbar.enqueueSnackbar("Failed to create playlist", { variant: "error" });
+		Snackbar.enqueueSnackbar("Failed to create playlist", { variant: "error" });
 	}
 }
 
 const CreatePlaylistButton = (props: CreatePlaylistButtonProps): React.ReactElement<HTMLButtonElement> => (
-	<S.ReactComponents.Tooltip label={"Turn Into Playlist"} renderInline={true} placement="top">
-		<S.ReactComponents.UI.ButtonSecondary
+	<Tooltip label={"Turn Into Playlist"} renderInline={true} placement="top">
+		<UI.ButtonSecondary
 			aria-label="Turn Into Playlist"
 			children="Turn Into Playlist"
 			semanticColor="textBase"
@@ -28,7 +32,7 @@ const CreatePlaylistButton = (props: CreatePlaylistButtonProps): React.ReactElem
 			onClick={() => createPlaylist(props)}
 			className="stats-make-playlist-button"
 		/>
-	</S.ReactComponents.Tooltip>
+	</Tooltip>
 );
 
 export default CreatePlaylistButton;

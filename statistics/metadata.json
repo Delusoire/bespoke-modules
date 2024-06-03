@@ -16,9 +16,9 @@
 		"js": "index.js",
 		"css": "index.css"
 	},
-	"dependencies": [
-		"official/stdlib",
-		"Delusoire/delulib",
-		"Delusoire/library-db"
-	]
+	"dependencies": {
+		"official/stdlib": "0.1.0-beta",
+		"Delusoire/delulib": "0.1.0-beta",
+		"Delusoire/library-db": "0.1.0-beta"
+	}
 }

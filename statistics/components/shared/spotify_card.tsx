@@ -1,4 +1,6 @@
-import { S } from "/modules/official/stdlib/index.js";
+import { UI } from "/modules/official/stdlib/src/webpack/ComponentLibrary.ts";
+import { React } from "/modules/official/stdlib/src/expose/React.ts";
+import { Cards, Menus, RightClickMenu } from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
 
 interface SpotifyCardProps {
 	type: "artist" | "album" | "lastfm" | "playlist" | "show";
@@ -9,8 +11,6 @@ interface SpotifyCardProps {
 }
 
 const SpotifyCard = (props: SpotifyCardProps) => {
-	const { Cards, Menus, RightClickMenu } = S.ReactComponents;
-	const { Type } = S.ReactComponents.UI;
 	const { type, header, uri, imageUrl, subheader } = props;
 
 	const getMenu = () => {
@@ -27,7 +27,9 @@ const SpotifyCard = (props: SpotifyCardProps) => {
 				return undefined;
 		}
 	};
-	const lastfmProps = type === "lastfm" ? { onClick: () => window.open(uri, "_blank"), isPlayable: false, delegateNavigation: true } : {};
+	const lastfmProps = type === "lastfm"
+		? { onClick: () => window.open(uri, "_blank"), isPlayable: false, delegateNavigation: true }
+		: {};
 
 	return (
 		<RightClickMenu menu={getMenu()}>
@@ -47,9 +49,9 @@ const SpotifyCard = (props: SpotifyCardProps) => {
 					/>
 				)}
 				renderSubHeaderContent={() => (
-					<Type as="div" variant="mesto" semanticColor="textSubdued">
+					<UI.Type as="div" variant="mesto" semanticColor="textSubdued">
 						{subheader}
-					</Type>
+					</UI.Type>
 				)}
 				uri={uri}
 				{...lastfmProps}

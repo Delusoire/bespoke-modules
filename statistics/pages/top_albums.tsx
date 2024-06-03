@@ -1,20 +1,24 @@
-import { S } from "/modules/official/stdlib/index.js";
-const { React } = S;
+import { React } from "/modules/official/stdlib/src/expose/React.ts";
 
-import SpotifyCard from "../components/shared/spotify_card.js";
-import PageContainer from "../components/shared/page_container.js";
-import RefreshButton from "../components/buttons/refresh_button.js";
-import { fetchLFMTopAlbums } from "../api/lastfm.js";
-import { spotifyApi } from "/modules/Delusoire/delulib/lib/api.js";
-import { DEFAULT_TRACK_IMG } from "../static.js";
-import { CONFIG } from "../settings.js";
+import SpotifyCard from "../components/shared/spotify_card.tsx";
+import PageContainer from "../components/shared/page_container.tsx";
+import RefreshButton from "../components/buttons/refresh_button.tsx";
+import { fetchLFMTopAlbums } from "../api/lastfm.ts";
+import { spotifyApi } from "/modules/Delusoire/delulib/lib/api.ts";
+import { DEFAULT_TRACK_IMG } from "../static.ts";
+import { CONFIG } from "../settings.ts";
 
-import { SpotifyTimeRange } from "../api/spotify.js";
-import { useStatus } from "../components/status/useStatus.js";
-import { logger, settingsButton, storage } from "../index.js";
-import { useDropdown } from "/modules/official/stdlib/lib/components/index.js";
+import { SpotifyTimeRange } from "../api/spotify.ts";
+import { useStatus } from "../components/status/useStatus.tsx";
+import { logger, settingsButton, storage } from "../index.tsx";
+import { useDropdown } from "/modules/official/stdlib/lib/components/index.tsx";
+import { useQuery } from "/modules/official/stdlib/src/webpack/ReactQuery.ts";
 
-const DropdownOptions = { "Past Month": () => "Past Month", "Past 6 Months": () => "Past 6 Months", "All Time": () => "All Time" } as const;
+const DropdownOptions = {
+	"Past Month": () => "Past Month",
+	"Past 6 Months": () => "Past 6 Months",
+	"All Time": () => "All Time",
+} as const;
 const OptionToTimeRange = {
 	"Past Month": SpotifyTimeRange.Short,
 	"Past 6 Months": SpotifyTimeRange.Medium,
@@ -44,16 +48,23 @@ const AlbumsPageContent = ({ topAlbums }: AlbumsPageContentProps) => {
 };
 
 const AlbumsPage = () => {
-	const [dropdown, activeOption] = useDropdown({ options: DropdownOptions, storage, storageVariable: "top-artists" });
+	const [dropdown, activeOption] = useDropdown({
+		options: DropdownOptions,
+		storage,
+		storageVariable: "top-artists",
+	});
 	const timeRange = OptionToTimeRange[activeOption];
 
-	const { status, error, data, refetch } = S.ReactQuery.useQuery({
+	const { status, error, data, refetch } = useQuery({
 		queryKey: ["topAlbums", CONFIG.LFMUsername, timeRange],
 		queryFn: async () => {
 			const { topalbums } = await fetchLFMTopAlbums(CONFIG.LFMApiKey)(CONFIG.LFMUsername, timeRange);
 			return await Promise.all(
-				topalbums.album.map(async album => {
-					const matchingSpotifyAlbums = await spotifyApi.search(`${album.name}+artist:${encodeURIComponent(album.artist.name)}`, ["album"]);
+				topalbums.album.map(async (album) => {
+					const matchingSpotifyAlbums = await spotifyApi.search(
+						`${album.name}+artist:${encodeURIComponent(album.artist.name)}`,
+						["album"],
+					);
 					return matchingSpotifyAlbums.albums.items[0];
 				}),
 			);
@@ -62,7 +73,10 @@ const AlbumsPage = () => {
 
 	const Status = useStatus({ status, error, logger });
 	return (
-		<PageContainer title="Top Albums" headerRight={[dropdown, status !== "pending" && <RefreshButton refresh={refetch} />, settingsButton]}>
+		<PageContainer
+			title="Top Albums"
+			headerRight={[dropdown, status !== "pending" && <RefreshButton refresh={refetch} />, settingsButton]}
+		>
 			{Status || <AlbumsPageContent topAlbums={data} />}
 		</PageContainer>
 	);

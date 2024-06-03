@@ -1,5 +1,6 @@
 import { fp } from "/modules/official/stdlib/deps.js";
-import { S } from "/modules/official/stdlib/index.js";
+
+import { React } from "/modules/official/stdlib/src/expose/React.ts";
 
 const ContributionLine = (name: string, value: number, limit: number, total: number) => {
 	return (

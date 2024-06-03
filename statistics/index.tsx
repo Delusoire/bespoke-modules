@@ -1,25 +1,33 @@
-import { S, SVGIcons, createStorage, createRegistrar, createLogger, createEventBus } from "/modules/official/stdlib/index.js";
-import { createSettings } from "/modules/official/stdlib/lib/settings.js";
+import {
+	createEventBus,
+	createLogger,
+	createRegistrar,
+	createStorage,
+} from "/modules/official/stdlib/index.ts";
+import { createSettings } from "/modules/official/stdlib/lib/settings.tsx";
 
-import { NavLink } from "/modules/official/stdlib/src/registers/navlink.js";
-import { ACTIVE_ICON, ICON } from "./static.js";
-import type { Module } from "/hooks/module.js";
+import { NavLink } from "/modules/official/stdlib/src/registers/navlink.tsx";
+import { ACTIVE_ICON, ICON } from "./static.ts";
 
-import PlaylistPage from "./pages/playlist.js";
-import { display } from "/modules/official/stdlib/lib/modal.js";
-import { Button } from "/modules/official/stdlib/src/registers/topbarLeftButton.js";
-import type { Settings } from "/modules/official/stdlib/lib/settings.js";
+import PlaylistPage from "./pages/playlist.tsx";
+import { display } from "/modules/official/stdlib/lib/modal.tsx";
+import { TopbarLeftButton } from "/modules/official/stdlib/src/registers/topbarLeftButton.tsx";
+import type { Settings } from "/modules/official/stdlib/lib/settings.tsx";
+import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
 
-const { React, URI } = S;
+import { React } from "/modules/official/stdlib/src/expose/React.ts";
+import { fromString, is } from "/modules/official/stdlib/src/webpack/URI.ts";
+import { Route } from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
+import { ModuleInstance } from "/hooks/module.ts";
 
-const History = S.Platform.getHistory();
+const History = Platform.getHistory();
 
-export let storage: Storage = undefined;
-export let logger: Console = undefined;
-export let settings: Settings = undefined;
-export let settingsButton: React.JSX.Element = undefined;
+export let storage: Storage;
+export let logger: Console;
+export let settings: Settings;
+export let settingsButton: React.JSX.Element;
 
-export default function (mod: Module) {
+export default function (mod: ModuleInstance) {
 	storage = createStorage(mod);
 	logger = createLogger(mod);
 	[settings, settingsButton] = createSettings(mod);
@@ -34,11 +42,11 @@ export default function (mod: Module) {
 		if (hidden) return;
 
 		return (
-			<Button
+			<TopbarLeftButton
 				label="playlist-stats"
-				icon={SVGIcons.visualizer}
+				icon='<path d="M.999 15h2V5h-2v10zm4 0h2V1h-2v14zM9 15h2v-4H9v4zm4-7v7h2V8h-2z"/>'
 				onClick={() => {
-					const playlistUri = URI.fromString(History.location.pathname).toURI();
+					const playlistUri = fromString(History.location.pathname).toURI();
 					display({ title: "Playlist Stats", content: <PlaylistPage uri={playlistUri} />, isLarge: true });
 				}}
 			/>
@@ -46,14 +54,22 @@ export default function (mod: Module) {
 	};
 
 	eventBus.History.updated.subscribe(({ pathname }) => {
-		const isPlaylistPage = URI.is.PlaylistV1OrV2(pathname);
+		const isPlaylistPage = is.PlaylistV1OrV2(pathname);
 		setPlaylistEditHidden?.(!isPlaylistPage);
 	});
 
-	registrar.register("topbarLeftButton", PlaylistEdit);
+	registrar.register("topbarLeftButton", <PlaylistEdit />);
 
-	const LazyStatsApp = S.React.lazy(() => import("./app.js"));
-	registrar.register("route", <S.ReactComponents.Route path={"/bespoke/stats/*"} element={<LazyStatsApp />} />);
+	const LazyStatsApp = React.lazy(() => import("./app.js"));
+	registrar.register("route", <Route path={"/bespoke/stats/*"} element={<LazyStatsApp />} />);
 
-	registrar.register("navlink", () => <NavLink localizedApp="Statistics" appRoutePath="/bespoke/stats" icon={ICON} activeIcon={ACTIVE_ICON} />);
+	registrar.register(
+		"navlink",
+		<NavLink
+			localizedApp="Statistics"
+			appRoutePath="/bespoke/stats"
+			icon={ICON}
+			activeIcon={ACTIVE_ICON}
+		/>,
+	);
 }

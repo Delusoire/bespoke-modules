@@ -1,18 +1,28 @@
-import { S } from "/modules/official/stdlib/index.js";
-const { React } = S;
+import { React } from "/modules/official/stdlib/src/expose/React.ts";
 
-import PageContainer from "../components/shared/page_container.js";
-import { DEFAULT_TRACK_IMG } from "../static.js";
-import RefreshButton from "../components/buttons/refresh_button.js";
-import { spotifyApi } from "/modules/Delusoire/delulib/lib/api.js";
-import type { Track } from "@fostertheweb/spotify-web-api-ts-sdk";
-import { SpotifyTimeRange } from "../api/spotify.js";
-import { useStatus } from "../components/status/useStatus.js";
-import { logger, settingsButton, storage } from "../index.js";
-import { useDropdown } from "/modules/official/stdlib/lib/components/index.js";
-import CreatePlaylistButton from "../components/buttons/create_playlist_button.js";
+import PageContainer from "../components/shared/page_container.tsx";
+import { DEFAULT_TRACK_IMG } from "../static.ts";
+import RefreshButton from "../components/buttons/refresh_button.tsx";
+import { spotifyApi } from "/modules/Delusoire/delulib/lib/api.ts";
+import type { Track } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
+import { SpotifyTimeRange } from "../api/spotify.ts";
+import { useStatus } from "../components/status/useStatus.tsx";
+import { logger, settingsButton, storage } from "../index.tsx";
+import { useDropdown } from "/modules/official/stdlib/lib/components/index.tsx";
+import CreatePlaylistButton from "../components/buttons/create_playlist_button.tsx";
+import { useQuery } from "/modules/official/stdlib/src/webpack/ReactQuery.ts";
+import {
+	Tracklist,
+	TracklistColumnsContextProvider,
+	TracklistRow,
+} from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
+import { getPlayContext } from "/modules/official/stdlib/src/webpack/CustomHooks.ts";
 
-const DropdownOptions = { "Past Month": () => "Past Month", "Past 6 Months": () => "Past 6 Months", "All Time": () => "All Time" } as const;
+const DropdownOptions = {
+	"Past Month": () => "Past Month",
+	"Past 6 Months": () => "Past 6 Months",
+	"All Time": () => "All Time",
+} as const;
 const OptionToTimeRange = {
 	"Past Month": SpotifyTimeRange.Short,
 	"Past 6 Months": SpotifyTimeRange.Medium,
@@ -20,15 +30,16 @@ const OptionToTimeRange = {
 } as const;
 
 const columns = ["INDEX", "TITLE_AND_ARTIST", "ALBUM", "DURATION"];
-const allowedDropTypes = [];
+const allowedDropTypes = new Array<never>();
 
-export const fetchTopTracks = (timeRange: SpotifyTimeRange) => spotifyApi.currentUser.topItems("tracks", timeRange, 50, 0);
+export const fetchTopTracks = (timeRange: SpotifyTimeRange) =>
+	spotifyApi.currentUser.topItems("tracks", timeRange, 50, 0);
 
 const TrackRow = React.memo(({ track, index }: { track: Track; index: number }) => {
-	const { usePlayContextItem } = S.getPlayContext({ uri: track.uri }, { featureIdentifier: "queue" });
+	const { usePlayContextItem } = getPlayContext({ uri: track.uri }, { featureIdentifier: "queue" });
 
 	return (
-		<S.ReactComponents.TracklistRow
+		<TracklistRow
 			index={index}
 			uri={track.uri}
 			name={track.name}
@@ -50,13 +61,13 @@ const TracksPageContent = ({ topTracks }: TracksPageContentProps) => {
 	const thisRef = React.useRef(null);
 
 	return (
-		<S.ReactComponents.TracklistColumnsContextProvider columns={columns}>
-			<S.ReactComponents.Tracklist
+		<TracklistColumnsContextProvider columns={columns}>
+			<Tracklist
 				ariaLabel="Top Tracks"
 				hasHeaderRow={true}
 				columns={columns}
 				renderRow={(track: Track, index: number) => <TrackRow track={track} index={index} />}
-				resolveItem={track => ({ uri: track.uri })}
+				resolveItem={(track) => ({ uri: track.uri })}
 				nrTracks={topTracks.length}
 				fetchTracks={(offset, limit) => topTracks.slice(offset, offset + limit)}
 				limit={50}
@@ -66,16 +77,20 @@ const TracksPageContent = ({ topTracks }: TracksPageContentProps) => {
 				columnPersistenceKey="stats-top-tracks"
 			>
 				spotify:app:stats:tracks
-			</S.ReactComponents.Tracklist>
-		</S.ReactComponents.TracklistColumnsContextProvider>
+			</Tracklist>
+		</TracklistColumnsContextProvider>
 	);
 };
 
 const TracksPage = () => {
-	const [dropdown, activeOption] = useDropdown({ options: DropdownOptions, storage, storageVariable: "top-tracks" });
+	const [dropdown, activeOption] = useDropdown({
+		options: DropdownOptions,
+		storage,
+		storageVariable: "top-tracks",
+	});
 	const timeRange = OptionToTimeRange[activeOption];
 
-	const { status, error, data, refetch } = S.ReactQuery.useQuery({
+	const { status, error, data, refetch } = useQuery({
 		queryKey: ["topTracks", timeRange],
 		queryFn: () => fetchTopTracks(timeRange),
 	});
@@ -87,9 +102,12 @@ const TracksPage = () => {
 	return (
 		<PageContainer
 			title="Top Tracks"
-			headerLeft={
-				status === "success" && <CreatePlaylistButton name={`Top Songs - ${activeOption}`} tracks={topTracks.map(track => track.uri)} />
-			}
+			headerLeft={status === "success" && (
+				<CreatePlaylistButton
+					name={`Top Songs - ${activeOption}`}
+					tracks={topTracks.map((track) => track.uri)}
+				/>
+			)}
 			headerRight={[dropdown, status !== "pending" && <RefreshButton refresh={refetch} />, settingsButton]}
 		>
 			{Status || <TracksPageContent topTracks={topTracks} />}

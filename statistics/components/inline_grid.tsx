@@ -1,6 +1,4 @@
-import { S } from "/modules/official/stdlib/index.js";
-
-const { React } = S;
+import { React } from "/modules/official/stdlib/src/expose/React.ts";
 
 interface InlineGridProps {
 	special?: boolean;
@@ -47,7 +45,12 @@ function InlineGrid(props: InlineGridProps): React.ReactElement<HTMLTableSection
 			<button className="stats-scrollButton" onClick={scrollGrid}>
 				{">"}
 			</button>
-			<div className={`main-gridContainer-gridContainer stats-gridInline${special ? " stats-specialGrid" : ""}`} data-scroll="start">
+			<div
+				className={`main-gridContainer-gridContainer stats-gridInline${
+					special ? " stats-specialGrid" : ""
+				}`}
+				data-scroll="start"
+			>
 				{children}
 			</div>
 		</section>

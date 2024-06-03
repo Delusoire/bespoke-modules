@@ -1,8 +1,8 @@
-import { setQueue as _setQueue, createQueueItem } from "/modules/Delusoire/delulib/lib/util.js";
+import { createQueueItem, setQueue as _setQueue } from "/modules/Delusoire/delulib/lib/util.js";
 import { _, fp } from "/modules/official/stdlib/deps.js";
 import { fillTracksFromLastFM, fillTracksFromSpotify } from "./populate.js";
 import { CONFIG } from "./settings.js";
-import { SEPARATOR_URI, SortAction, SortActionIcon, SortActionProp, is_LikedTracks } from "./util.js";
+import { is_LikedTracks, SEPARATOR_URI, SortAction, SortActionIcon, SortActionProp } from "./util.js";
 import { getTracksFromUri } from "./fetch.js";
 import { React } from "/modules/official/stdlib/src/expose/React.js";
 export * from "./playlistsInterop.js";
@@ -21,9 +21,11 @@ const populateTracks = _.cond([
     ]
 ]);
 const setQueue = (tracks)=>{
-    if (PlayerAPI._state.item?.uid == null) return void S.Snackbar.enqueueSnackbar("Queue is null!", {
-        variant: "error"
-    });
+    if (PlayerAPI._state.item?.uid == null) {
+        return void Snackbar.enqueueSnackbar("Queue is null!", {
+            variant: "error"
+        });
+    }
     const dedupedQueue = _.uniqBy(tracks, "uri");
     globalThis.lastSortedQueue = dedupedQueue;
     const isLikedTracks = is_LikedTracks(lastFetchedUri);
@@ -73,6 +75,7 @@ import { is } from "/modules/official/stdlib/src/webpack/URI.js";
 import { Platform } from "/modules/official/stdlib/src/expose/Platform.js";
 import { MenuItem, MenuItemSubMenu } from "/modules/official/stdlib/src/webpack/ReactComponents.js";
 import { useContextMenuState } from "/modules/official/stdlib/src/webpack/CustomHooks.js";
+import { Snackbar } from "/modules/official/stdlib/src/expose/Snackbar.js";
 const SortByShuffleSubMenuItem = ({ descending })=>{
     const { props } = useMenuItem();
     const uri = props.uri;

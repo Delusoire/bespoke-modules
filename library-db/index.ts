@@ -1,22 +1,26 @@
-import { S } from "/modules/official/stdlib/index.js";
-import { getPlaylistsFromURIs, getTracksFromURIs } from "./lib/db.js";
+import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
+import { getPlaylistsFromURIs, getTracksFromURIs } from "./lib/db.ts";
 
-const RootlistAPI = S.Platform.getRootlistAPI();
-const PlaylistAPI = S.Platform.getPlaylistAPI();
+import { React } from "/modules/official/stdlib/src/expose/React.ts";
+import { is } from "/modules/official/stdlib/src/webpack/URI.ts";
 
-const extractPlaylists = (leaf: any): Record<string, any>[] => {
+const RootlistAPI = Platform.getRootlistAPI();
+const PlaylistAPI = Platform.getPlaylistAPI();
+
+const extractPlaylists = (leaf: any): Array<Record<string, any>> => {
 	switch (leaf.type) {
 		case "playlist": {
 			return [leaf];
 		}
 		case "folder": {
-			return leaf.items.flatMap(extractPlaylists).filter(leaf => leaf.owner.uri !== "spotify:user:");
+			return leaf.items.flatMap(extractPlaylists).filter((leaf) => leaf.owner.uri !== "spotify:user:");
 		}
 	}
+	return [];
 };
 
-const extractItemsUris = ({ items }: any) => items.map(item => item.uri);
-const getPlaylistTracks = playlist => PlaylistAPI.getContents(playlist).then(extractItemsUris);
+const extractItemsUris = ({ items }: any) => items.map((item) => item.uri);
+const getPlaylistTracks = (playlist) => PlaylistAPI.getContents(playlist).then(extractItemsUris);
 
 export const mapAssocs = (uris: string[], fn: (assocs: Map<string, number>) => void) => {
 	for (const uri of uris) {
@@ -49,18 +53,16 @@ const triggerUpdate = (uris: string[]) => {
 	}
 };
 
-const { URI } = S;
-
 const onTracksAddedToPlaylist = async (playlist: string, uris: string[]) => {
 	// ! ugly hack to ignore local files & episodes; come up with better fix
-	uris = uris.filter(uri => URI.is.Track(uri));
-	mapAssocs(uris, o => o.set(playlist, (o.get(playlist) ?? 0) + 1));
+	uris = uris.filter((uri) => is.Track(uri));
+	mapAssocs(uris, (o) => o.set(playlist, (o.get(playlist) ?? 0) + 1));
 	await getTracksFromURIs(uris);
 	triggerUpdate(uris);
 };
 
 const onTracksRemovedFromPlaylist = (playlist: string, uris: string[]) => {
-	mapAssocs(uris, o => o.set(playlist, (o.get(playlist) ?? 0) - 1));
+	mapAssocs(uris, (o) => o.set(playlist, (o.get(playlist) ?? 0) - 1));
 	triggerUpdate(uris);
 };
 
@@ -68,7 +70,7 @@ export const SavedPlaylists = new Set<string>();
 
 RootlistAPI.getContents({ limit: 50000 })
 	.then(extractPlaylists)
-	.then(playlists => onPlaylistsAdded(playlists.map(playlist => playlist.uri)));
+	.then((playlists) => onPlaylistsAdded(playlists.map((playlist) => playlist.uri)));
 RootlistAPI.getEvents().addListener("operation_complete", async ({ data }) => {
 	const playlists = data.items;
 	switch (data.operation) {
@@ -97,20 +99,17 @@ PlaylistAPI.getEvents().addListener("operation_complete", ({ data }) => {
 		case "remove": {
 			onTracksRemovedFromPlaylist(
 				data.uri,
-				data.items.map(item => item.uri),
+				data.items.map((item) => item.uri),
 			);
 			return;
 		}
 	}
 });
 
-const { React } = S;
-
 const listeners = new Map<string, Set<() => void>>();
 
-const useUpdate = () => React.useReducer(x => x + 1, 0)[1];
 export const useLivePlaylistItems = (uri: string) => {
-	const update = useUpdate();
+	const [, update] = React.useReducer((n) => n + 1, 0);
 
 	React.useEffect(() => {
 		let ls = listeners.get(uri);
@@ -124,5 +123,7 @@ export const useLivePlaylistItems = (uri: string) => {
 		};
 	}, []);
 
-	return Array.from(PlaylistItems.get(uri)?.entries() ?? []).flatMap(([playlist, count]) => (count > 0 ? [playlist] : []));
+	return Array.from(PlaylistItems.get(uri)?.entries() ?? []).flatMap((
+		[playlist, count],
+	) => (count > 0 ? [playlist] : []));
 };

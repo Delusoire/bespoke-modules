@@ -1,4 +1,4 @@
-import type { ValueOf } from "../util/types";
+import type { ValueOf } from "../util/types.ts";
 
 export type SpotifyTimeRange = ValueOf<typeof SpotifyTimeRange>;
 export const SpotifyTimeRange = {

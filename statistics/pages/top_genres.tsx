@@ -1,25 +1,35 @@
-import { S } from "/modules/official/stdlib/index.js";
-const { React } = S;
+import { React } from "/modules/official/stdlib/src/expose/React.ts";
 
-import StatCard from "../components/cards/stat_card.js";
-import ContributionChart from "../components/cards/contribution_chart.js";
-import InlineGrid from "../components/inline_grid.js";
-import PageContainer from "../components/shared/page_container.js";
-import Shelf from "../components/shelf.js";
+import StatCard from "../components/cards/stat_card.tsx";
+import ContributionChart from "../components/cards/contribution_chart.tsx";
+import InlineGrid from "../components/inline_grid.tsx";
+import PageContainer from "../components/shared/page_container.tsx";
+import Shelf from "../components/shelf.tsx";
 
-import RefreshButton from "../components/buttons/refresh_button.js";
-import { fetchTopTracks } from "./top_tracks.js";
-import { fetchTopArtists } from "./top_artists.js";
-import { calculateGenresFromArtists, fetchAudioFeaturesMeta } from "./playlist.js";
-import type { Track } from "@fostertheweb/spotify-web-api-ts-sdk";
-import { getURI, toID } from "../util/parse.js";
-import { SpotifyTimeRange } from "../api/spotify.js";
-import { DEFAULT_TRACK_IMG } from "../static.js";
-import { useStatus } from "../components/status/useStatus.js";
-import { logger, settingsButton, storage } from "../index.js";
-import { useDropdown } from "/modules/official/stdlib/lib/components/index.js";
+import RefreshButton from "../components/buttons/refresh_button.tsx";
+import { fetchTopTracks } from "./top_tracks.tsx";
+import { fetchTopArtists } from "./top_artists.tsx";
+import { calculateGenresFromArtists, fetchAudioFeaturesMeta } from "./playlist.tsx";
+import type { Track } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
+import { getURI, toID } from "../util/parse.ts";
+import { SpotifyTimeRange } from "../api/spotify.ts";
+import { DEFAULT_TRACK_IMG } from "../static.ts";
+import { useStatus } from "../components/status/useStatus.tsx";
+import { logger, settingsButton, storage } from "../index.tsx";
+import { useDropdown } from "/modules/official/stdlib/lib/components/index.tsx";
+import { useQuery } from "/modules/official/stdlib/src/webpack/ReactQuery.ts";
+import { getPlayContext } from "/modules/official/stdlib/src/webpack/CustomHooks.ts";
+import {
+	Tracklist,
+	TracklistColumnsContextProvider,
+	TracklistRow,
+} from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
 
-const DropdownOptions = { "Past Month": () => "Past Month", "Past 6 Months": () => "Past 6 Months", "All Time": () => "All Time" } as const;
+const DropdownOptions = {
+	"Past Month": () => "Past Month",
+	"Past 6 Months": () => "Past 6 Months",
+	"All Time": () => "All Time",
+} as const;
 const OptionToTimeRange = {
 	"Past Month": SpotifyTimeRange.Short,
 	"Past 6 Months": SpotifyTimeRange.Medium,
@@ -27,7 +37,7 @@ const OptionToTimeRange = {
 } as const;
 
 const columns = ["INDEX", "TITLE_AND_ARTIST", "ALBUM", "DURATION"];
-const allowedDropTypes = [];
+const allowedDropTypes = new Array<never>();
 
 export const calculateTracksMeta = (tracks: Track[]) => {
 	let explicitCount = 0;
@@ -43,14 +53,19 @@ export const calculateTracksMeta = (tracks: Track[]) => {
 
 	const obscureTracks = tracks.toSorted((a, b) => a.popularity - b.popularity).slice(0, 5);
 
-	return { explicitness: explicitCount / tracks.length, popularity: popularityTotal / tracks.length, releaseDates, obscureTracks };
+	return {
+		explicitness: explicitCount / tracks.length,
+		popularity: popularityTotal / tracks.length,
+		releaseDates,
+		obscureTracks,
+	};
 };
 
 const GenresTrackRow = ({ track, index }: { track: Track; index: number }) => {
-	const { usePlayContextItem } = S.getPlayContext({ uri: "" }, { featureIdentifier: "queue" });
+	const { usePlayContextItem } = getPlayContext({ uri: "" }, { featureIdentifier: "queue" });
 
 	return (
-		<S.ReactComponents.TracklistRow
+		<TracklistRow
 			index={index}
 			uri={track.uri}
 			name={track.name}
@@ -91,7 +106,12 @@ const GenresPageContent = (data: GenresPageContentProps) => {
 
 	const { genres, releaseDates, obscureTracks, audioFeatures } = data;
 
-	const statsCards = Object.entries(audioFeatures).map(([key, value]) => <StatCard label={key} value={value} />);
+	const statsCards = Object.entries(audioFeatures).map(([key, value]) => (
+		<StatCard
+			label={key}
+			value={value}
+		/>
+	));
 
 	return (
 		<>
@@ -103,13 +123,13 @@ const GenresPageContent = (data: GenresPageContentProps) => {
 				<ContributionChart contributions={releaseDates} />
 			</Shelf>
 			<Shelf title="Most Obscure Tracks">
-				<S.ReactComponents.TracklistColumnsContextProvider columns={columns}>
-					<S.ReactComponents.Tracklist
+				<TracklistColumnsContextProvider columns={columns}>
+					<Tracklist
 						ariaLabel="Top Tracks"
 						hasHeaderRow={false}
 						columns={columns}
 						renderRow={(track: Track, index: number) => <GenresTrackRow track={track} index={index} />}
-						resolveItem={track => ({ uri: track.uri })}
+						resolveItem={(track) => ({ uri: track.uri })}
 						nrTracks={obscureTracks.length}
 						fetchTracks={(offset, limit) => obscureTracks.slice(offset, offset + limit)}
 						limit={5}
@@ -119,18 +139,22 @@ const GenresPageContent = (data: GenresPageContentProps) => {
 						columnPersistenceKey="stats-top-genres"
 					>
 						spotify:app:stats:genres
-					</S.ReactComponents.Tracklist>
-				</S.ReactComponents.TracklistColumnsContextProvider>
+					</Tracklist>
+				</TracklistColumnsContextProvider>
 			</Shelf>
 		</>
 	);
 };
 
 const GenresPage = () => {
-	const [dropdown, activeOption] = useDropdown({ options: DropdownOptions, storage, storageVariable: "top-genres" });
+	const [dropdown, activeOption] = useDropdown({
+		options: DropdownOptions,
+		storage,
+		storageVariable: "top-genres",
+	});
 	const timeRange = OptionToTimeRange[activeOption];
 
-	const { status, error, data, refetch } = S.ReactQuery.useQuery({
+	const { status, error, data, refetch } = useQuery({
 		queryKey: ["topGenres", timeRange],
 		queryFn: async () => {
 			const topTracks = await fetchTopTracks(timeRange);
@@ -140,7 +164,7 @@ const GenresPage = () => {
 			const artists = topArtists.items;
 
 			// ! very unscientific
-			const genres = calculateGenresFromArtists(artists, i => artists.length - i);
+			const genres = calculateGenresFromArtists(artists, (i) => artists.length - i);
 
 			const trackURIs = tracks.map(getURI);
 			const trackIDs = trackURIs.map(toID);
@@ -163,7 +187,10 @@ const GenresPage = () => {
 	const Status = useStatus({ status, error, logger });
 
 	return (
-		<PageContainer title="Top Genres" headerRight={[dropdown, status !== "pending" && <RefreshButton refresh={refetch} />, settingsButton]}>
+		<PageContainer
+			title="Top Genres"
+			headerRight={[dropdown, status !== "pending" && <RefreshButton refresh={refetch} />, settingsButton]}
+		>
 			{Status || <GenresPageContent {...data} />}
 		</PageContainer>
 	);

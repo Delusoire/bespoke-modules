@@ -1,21 +1,22 @@
-import { S } from "/modules/official/stdlib/index.js";
-const { React } = S;
+import { React } from "/modules/official/stdlib/src/expose/React.ts";
 
-import StatCard from "../components/cards/stat_card.js";
-import ContributionChart from "../components/cards/contribution_chart.js";
-import SpotifyCard from "../components/shared/spotify_card.js";
-import InlineGrid from "../components/inline_grid.js";
-import Shelf from "../components/shelf.js";
-import { spotifyApi } from "/modules/Delusoire/delulib/lib/api.js";
-import { chunkify20, chunkify50 } from "/modules/Delusoire/delulib/lib/fp.js";
-import { _, fp } from "/modules/official/stdlib/deps.js";
-import { DEFAULT_TRACK_IMG } from "../static.js";
-import { getURI, toID } from "../util/parse.js";
-import type { Artist } from "@fostertheweb/spotify-web-api-ts-sdk";
-import { useStatus } from "../components/status/useStatus.js";
-import { logger } from "../index.js";
+import StatCard from "../components/cards/stat_card.tsx";
+import ContributionChart from "../components/cards/contribution_chart.tsx";
+import SpotifyCard from "../components/shared/spotify_card.tsx";
+import InlineGrid from "../components/inline_grid.tsx";
+import Shelf from "../components/shelf.tsx";
+import { spotifyApi } from "/modules/Delusoire/delulib/lib/api.ts";
+import { chunkify20, chunkify50 } from "/modules/Delusoire/delulib/lib/fp.ts";
+import { _, fp } from "/modules/official/stdlib/deps.ts";
+import { DEFAULT_TRACK_IMG } from "../static.ts";
+import { getURI, toID } from "../util/parse.ts";
+import type { Artist } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
+import { useStatus } from "../components/status/useStatus.tsx";
+import { logger } from "../index.tsx";
+import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
+import { useQuery } from "/modules/official/stdlib/src/webpack/ReactQuery.ts";
 
-const PlaylistAPI = S.Platform.getPlaylistAPI();
+const PlaylistAPI = Platform.getPlaylistAPI();
 
 export const fetchAudioFeaturesMeta = async (ids: string[]) => {
 	const audioFeaturesLists = {
@@ -32,7 +33,7 @@ export const fetchAudioFeaturesMeta = async (ids: string[]) => {
 		tempo: new Array<number>(),
 		time_signature: new Array<number>(),
 	};
-	const audioFeaturesList = await chunkify50(chunk => spotifyApi.tracks.audioFeatures(chunk))(ids);
+	const audioFeaturesList = await chunkify50((chunk) => spotifyApi.tracks.audioFeatures(chunk))(ids);
 
 	for (const audioFeatures of audioFeaturesList) {
 		// ? some songs don't have audioFeatures
@@ -45,7 +46,10 @@ export const fetchAudioFeaturesMeta = async (ids: string[]) => {
 	return _.mapValues(audioFeaturesLists, fp.mean);
 };
 
-export const calculateGenresFromArtists = (artists: Artist[], getArtistMultiplicity: (index: number) => number) => {
+export const calculateGenresFromArtists = (
+	artists: Artist[],
+	getArtistMultiplicity: (index: number) => number,
+) => {
 	const genres = {} as Record<string, number>;
 	artists.forEach((artist, i) => {
 		for (const genre of artist.genres) {
@@ -59,17 +63,17 @@ export const calculateGenresFromArtists = (artists: Artist[], getArtistMultiplic
 export const fetchArtistsMeta = async (ids: string[]) => {
 	const idToMult = _(ids)
 		.groupBy(_.identity)
-		.mapValues(ids => ids.length)
+		.mapValues((ids) => ids.length)
 		.value();
 	const uniqIds = _.uniq(ids);
-	const artistsRes = await chunkify50(chunk => spotifyApi.artists.get(chunk))(uniqIds);
-	const artists = artistsRes.map(artist => ({
+	const artistsRes = await chunkify50((chunk) => spotifyApi.artists.get(chunk))(uniqIds);
+	const artists = artistsRes.map((artist) => ({
 		name: artist.name,
 		uri: artist.uri,
 		image: artist.images.at(-1)?.url ?? DEFAULT_TRACK_IMG,
 		multiplicity: idToMult[artist.id],
 	}));
-	const genres = calculateGenresFromArtists(artistsRes, i => artists[i].multiplicity);
+	const genres = calculateGenresFromArtists(artistsRes, (i) => artists[i].multiplicity);
 
 	return { artists, genres };
 };
@@ -77,12 +81,12 @@ export const fetchArtistsMeta = async (ids: string[]) => {
 export const fetchAlbumsMeta = async (ids: string[]) => {
 	const idToMult = _(ids)
 		.groupBy(_.identity)
-		.mapValues(ids => ids.length)
+		.mapValues((ids) => ids.length)
 		.value();
 	const uniqIds = _.uniq(ids);
-	const albumsRes = await chunkify20(chunk => spotifyApi.albums.get(chunk))(uniqIds);
+	const albumsRes = await chunkify20((chunk) => spotifyApi.albums.get(chunk))(uniqIds);
 	const releaseYears = {} as Record<string, number>;
-	const albums = albumsRes.map(album => {
+	const albums = albumsRes.map((album) => {
 		const multiplicity = idToMult[album.id];
 
 		const releaseYear = new Date(album.release_date).getFullYear();
@@ -103,25 +107,25 @@ export const fetchAlbumsMeta = async (ids: string[]) => {
 };
 
 const PlaylistPage = ({ uri }: { uri: string }) => {
-	const { status, error, data } = S.ReactQuery.useQuery({
+	const { status, error, data } = useQuery({
 		queryKey: ["playlistAnalysis"],
 		queryFn: async () => {
 			const playlist = await PlaylistAPI.getPlaylist(uri);
 			const { metadata, contents } = playlist;
 
 			const tracks = contents.items as any[];
-			const duration = tracks.map(track => track.duration.milliseconds as number).reduce(fp.add);
+			const duration = tracks.map((track) => track.duration.milliseconds as number).reduce(fp.add);
 
 			const trackURIs = tracks.map(getURI);
 			const trackIDs = trackURIs.map(toID);
 			const audioFeatures = await fetchAudioFeaturesMeta(trackIDs);
 
-			const artistObjs = tracks.flatMap(track => track.artists as any[]);
+			const artistObjs = tracks.flatMap((track) => track.artists as any[]);
 			const artistURIs = artistObjs.map(getURI);
 			const artistIDs = artistURIs.map(toID);
 			const { artists, genres } = await fetchArtistsMeta(artistIDs);
 
-			const albumObjs = tracks.map(track => track.album);
+			const albumObjs = tracks.map((track) => track.album);
 			const albumURIs = albumObjs.map(getURI);
 			const albumIDs = albumURIs.map(toID);
 			const { albums, releaseYears } = await fetchAlbumsMeta(albumIDs);
@@ -137,9 +141,14 @@ const PlaylistPage = ({ uri }: { uri: string }) => {
 
 	const { audioFeatures, artists, tracks, duration, genres, albums, releaseYears } = data;
 
-	const statCards = Object.entries(audioFeatures).map(([key, value]) => <StatCard label={key} value={value} />);
+	const statCards = Object.entries(audioFeatures).map(([key, value]) => (
+		<StatCard
+			label={key}
+			value={value}
+		/>
+	));
 
-	const artistCards = artists.map(artist => (
+	const artistCards = artists.map((artist) => (
 		<SpotifyCard
 			type="artist"
 			uri={artist.uri}
@@ -149,8 +158,14 @@ const PlaylistPage = ({ uri }: { uri: string }) => {
 		/>
 	));
 
-	const albumCards = albums.map(album => (
-		<SpotifyCard type="album" uri={album.uri} header={album.name} subheader={`Appears in ${album.multiplicity} tracks`} imageUrl={album.image} />
+	const albumCards = albums.map((album) => (
+		<SpotifyCard
+			type="album"
+			uri={album.uri}
+			header={album.name}
+			subheader={`Appears in ${album.multiplicity} tracks`}
+			imageUrl={album.image}
+		/>
 	));
 
 	return (

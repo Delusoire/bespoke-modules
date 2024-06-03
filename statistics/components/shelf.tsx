@@ -1,5 +1,5 @@
-import { S } from "/modules/official/stdlib/index.js";
-const { React } = S;
+import { UI } from "/modules/official/stdlib/src/webpack/ComponentLibrary.ts";
+import { React } from "/modules/official/stdlib/src/expose/React.ts";
 
 interface ShelfProps {
 	title: string;
@@ -11,9 +11,9 @@ const Shelf = ({ title, children }: ShelfProps): React.ReactElement => (
 		<div className="main-shelf-header">
 			<div className="main-shelf-topRow">
 				<div className="main-shelf-titleWrapper">
-					<S.ReactComponents.UI.Type as="h2" variant="canon" semanticColor="textBase">
+					<UI.Type as="h2" variant="canon" semanticColor="textBase">
 						{title}
-					</S.ReactComponents.UI.Type>
+					</UI.Type>
 				</div>
 			</div>
 		</div>

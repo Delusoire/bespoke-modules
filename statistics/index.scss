@@ -12,9 +12,11 @@
     [data-scroll="both"] {
         mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
     }
+
     [data-scroll="end"] {
         mask-image: linear-gradient(to right, transparent, black 10%);
     }
+
     [data-scroll="start"] {
         mask-image: linear-gradient(to right, black 90%, transparent);
     }
@@ -46,7 +48,7 @@
         }
     }
 
-    .stats-tracklistHeader > div {
+    .stats-tracklistHeader>div {
         display: flex;
         -webkit-app-region: no-drag;
         gap: 20px;
@@ -99,11 +101,12 @@
         height: 80vh;
         background-color: var(--spice-main);
     }
+
     .GenericModal[aria-label="Playlist Stats"] .main-shelf-title {
         color: var(--spice-text);
     }
 
-    .stats-genreCard + .stats-gridInlineSection {
+    .stats-genreCard+.stats-gridInlineSection {
         margin-top: 3px;
     }
 }

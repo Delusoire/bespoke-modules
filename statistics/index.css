@@ -98,7 +98,7 @@
     padding: 2px;
 }
 
-.ZWI7JsjzJaR_G8Hy4W6J > * {
+.ZWI7JsjzJaR_G8Hy4W6J>* {
     margin-inline-end: 8px;
     margin-block-end: 0 !important;
 }
@@ -153,7 +153,7 @@
             color: var(--spice-text);
         }
 
-#stats-app .stats-tracklistHeader > div {
+#stats-app .stats-tracklistHeader>div {
         display: flex;
         -webkit-app-region: no-drag;
         gap: 20px;
@@ -201,16 +201,16 @@
         font-size: 0.875rem;
     }
 
-#stats-app .GenericModal[aria-label="Playlist Stats"] .uUYNnjSt8m3EqVjsnHgh {
+#stats-app .GenericModal[aria-label="Playlist Stats"] .main-embedWidgetGenerator-container {
         width: 80vw;
         height: 80vh;
         background-color: var(--spice-main);
     }
 
-#stats-app .GenericModal[aria-label="Playlist Stats"] .MfVrtIzQJ7iZXfRWg6eM {
+#stats-app .GenericModal[aria-label="Playlist Stats"] .main-shelf-title {
         color: var(--spice-text);
     }
 
-#stats-app .stats-genreCard + .stats-gridInlineSection {
+#stats-app .stats-genreCard+.stats-gridInlineSection {
         margin-top: 3px;
     }

@@ -1,25 +1,30 @@
-import { S } from "/modules/official/stdlib/index.js";
-const { React } = S;
+import { React } from "/modules/official/stdlib/src/expose/React.ts";
 
-import SpotifyCard from "../components/shared/spotify_card.js";
-import PageContainer from "../components/shared/page_container.js";
-import { DEFAULT_TRACK_IMG } from "../static.js";
-import RefreshButton from "../components/buttons/refresh_button.js";
-import { spotifyApi } from "/modules/Delusoire/delulib/lib/api.js";
+import SpotifyCard from "../components/shared/spotify_card.tsx";
+import PageContainer from "../components/shared/page_container.tsx";
+import { DEFAULT_TRACK_IMG } from "../static.ts";
+import RefreshButton from "../components/buttons/refresh_button.tsx";
+import { spotifyApi } from "/modules/Delusoire/delulib/lib/api.ts";
 
-import { SpotifyTimeRange } from "../api/spotify.js";
-import { useStatus } from "../components/status/useStatus.js";
-import { logger, settingsButton, storage } from "../index.js";
-import { useDropdown } from "/modules/official/stdlib/lib/components/index.js";
+import { SpotifyTimeRange } from "../api/spotify.ts";
+import { useStatus } from "../components/status/useStatus.tsx";
+import { logger, settingsButton, storage } from "../index.tsx";
+import { useDropdown } from "/modules/official/stdlib/lib/components/index.tsx";
+import { useQuery } from "/modules/official/stdlib/src/webpack/ReactQuery.ts";
 
-const DropdownOptions = { "Past Month": () => "Past Month", "Past 6 Months": () => "Past 6 Months", "All Time": () => "All Time" } as const;
+const DropdownOptions = {
+	"Past Month": () => "Past Month",
+	"Past 6 Months": () => "Past 6 Months",
+	"All Time": () => "All Time",
+} as const;
 const OptionToTimeRange = {
 	"Past Month": SpotifyTimeRange.Short,
 	"Past 6 Months": SpotifyTimeRange.Medium,
 	"All Time": SpotifyTimeRange.Long,
 } as const;
 
-export const fetchTopArtists = (timeRange: SpotifyTimeRange) => spotifyApi.currentUser.topItems("artists", timeRange, 50, 0);
+export const fetchTopArtists = (timeRange: SpotifyTimeRange) =>
+	spotifyApi.currentUser.topItems("artists", timeRange, 50, 0);
 interface ArtistsPageContentProps {
 	topArtists: any[];
 }
@@ -40,10 +45,14 @@ const ArtistsPageContent = ({ topArtists }: ArtistsPageContentProps) => {
 };
 
 const ArtistsPage = () => {
-	const [dropdown, activeOption] = useDropdown({ options: DropdownOptions, storage, storageVariable: "top-artists" });
+	const [dropdown, activeOption] = useDropdown({
+		options: DropdownOptions,
+		storage,
+		storageVariable: "top-artists",
+	});
 	const timeRange = OptionToTimeRange[activeOption];
 
-	const { status, error, data, refetch } = S.ReactQuery.useQuery({
+	const { status, error, data, refetch } = useQuery({
 		queryKey: ["topArtists", timeRange],
 		queryFn: () => fetchTopArtists(timeRange),
 	});
@@ -51,7 +60,10 @@ const ArtistsPage = () => {
 	const Status = useStatus({ status, error, logger });
 
 	return (
-		<PageContainer title="Top Artists" headerRight={[dropdown, status !== "pending" && <RefreshButton refresh={refetch} />, settingsButton]}>
+		<PageContainer
+			title="Top Artists"
+			headerRight={[dropdown, status !== "pending" && <RefreshButton refresh={refetch} />, settingsButton]}
+		>
 			{Status || <ArtistsPageContent topArtists={data.items} />}
 		</PageContainer>
 	);

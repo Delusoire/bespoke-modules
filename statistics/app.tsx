@@ -1,12 +1,12 @@
-import ArtistsPage from "./pages/top_artists.js";
-import TracksPage from "./pages/top_tracks.js";
-import GenresPage from "./pages/top_genres.js";
-import LibraryPage from "./pages/library.js";
-import AlbumsPage from "./pages/top_albums.js";
+import ArtistsPage from "./pages/top_artists.tsx";
+import TracksPage from "./pages/top_tracks.tsx";
+import GenresPage from "./pages/top_genres.tsx";
+import LibraryPage from "./pages/library.tsx";
+import AlbumsPage from "./pages/top_albums.tsx";
 
-import { S } from "/modules/official/stdlib/index.js";
-
-const { React } = S;
+import { React } from "/modules/official/stdlib/src/expose/React.ts";
+import { InstrumentedRedirect, Route, Routes } from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
+import { useMatch } from "/modules/official/stdlib/src/webpack/ReactRouter.ts";
 
 const Pages = {
 	tracks: <TracksPage />,
@@ -21,20 +21,27 @@ export const categories = Object.keys(Pages) as Array<keyof typeof Pages>;
 export const selectedCategoryCtx = React.createContext<string>(null);
 
 export default function () {
-	const match = S.ReactRouter.useMatch("/bespoke/stats/:category");
+	const match = useMatch("/bespoke/stats/:category");
 	const selectedCategory = match?.params?.category ?? categories[0];
 
 	const SelectedPage = Pages[selectedCategory];
 
 	return (
 		<div id="stats-app">
-			<S.ReactComponents.Routes>
-				<S.ReactComponents.Route path="/" element={<S.ReactComponents.InstrumentedRedirect to={`/bespoke/stats/${selectedCategory}`} />} />
-				<S.ReactComponents.Route
-					path=":category"
-					element={<selectedCategoryCtx.Provider value={selectedCategory}>{SelectedPage}</selectedCategoryCtx.Provider>}
+			<Routes>
+				<Route
+					path="/"
+					element={<InstrumentedRedirect to={`/bespoke/stats/${selectedCategory}`} />}
 				/>
-			</S.ReactComponents.Routes>
+				<Route
+					path=":category"
+					element={
+						<selectedCategoryCtx.Provider value={selectedCategory}>
+							{SelectedPage}
+						</selectedCategoryCtx.Provider>
+					}
+				/>
+			</Routes>
 		</div>
 	);
 }

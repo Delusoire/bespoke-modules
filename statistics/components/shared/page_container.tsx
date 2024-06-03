@@ -1,9 +1,9 @@
-import { categories, selectedCategoryCtx } from "../../app.js";
+import { UI } from "/modules/official/stdlib/src/webpack/ComponentLibrary.ts";
+import { categories, selectedCategoryCtx } from "../../app.tsx";
 
-import { S } from "/modules/official/stdlib/index.js";
-import { TopNavBar } from "/modules/official/stdlib/lib/components/MountedNavBar.js";
+import { TopNavBar } from "/modules/official/stdlib/lib/components/MountedNavBar.tsx";
 
-const { React } = S;
+import { React } from "/modules/official/stdlib/src/expose/React.ts";
 
 interface PageContainerProps {
 	title: string;
@@ -18,9 +18,9 @@ const PageContainer = ({ title, headerLeft, headerRight, children }: PageContain
 		<section className="contentSpacing">
 			<div className={"page-header"}>
 				<div className="header-left">
-					<S.ReactComponents.UI.Type as="h1" variant="canon" semanticColor="textBase">
+					<UI.Type as="h1" variant="canon" semanticColor="textBase">
 						{title}
-					</S.ReactComponents.UI.Type>
+					</UI.Type>
 					{headerLeft}
 					<TopNavBar categories={categories} selectedCategory={selectedCategory} namespace="stats" />
 				</div>

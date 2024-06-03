@@ -20,6 +20,7 @@
 	"dependencies": [
 		"official/stdlib",
 		"Delusoire/delulib",
-		"Delusoire/library-db"
+		"Delusoire/library-db",
+		"Delusoire/dexie-react-hooks"
 	]
 }
