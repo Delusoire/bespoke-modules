@@ -67,11 +67,11 @@ export const fetchArtistsMeta = async (ids: string[]) => {
 		.value();
 	const uniqIds = _.uniq(ids);
 	const artistsRes = await chunkify50((chunk) => spotifyApi.artists.get(chunk))(uniqIds);
-	const artists = artistsRes.map((artist) => ({
+	const artists = artistsRes.map((artist, i) => ({
 		name: artist.name,
 		uri: artist.uri,
 		image: artist.images.at(-1)?.url ?? DEFAULT_TRACK_IMG,
-		multiplicity: idToMult[artist.id],
+		multiplicity: idToMult[uniqIds[i]],
 	}));
 	const genres = calculateGenresFromArtists(artistsRes, (i) => artists[i].multiplicity);
 

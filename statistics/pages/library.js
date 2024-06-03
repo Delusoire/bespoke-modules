@@ -43,7 +43,7 @@ const LibraryPageContent = ({ genres, artists, albums, playlists, duration, rele
             imageUrl: artist.image
         });
     });
-    const albumCards = albums.map((album)=>{
+    const albumCards = albums.slice(0, 20).map((album)=>{
         return /*#__PURE__*/ React.createElement(SpotifyCard, {
             type: "album",
             uri: album.uri,
@@ -63,9 +63,6 @@ const LibraryPageContent = ({ genres, artists, albums, playlists, duration, rele
     }), /*#__PURE__*/ React.createElement(StatCard, {
         label: "Total Artists",
         value: artists.length.toString()
-    }), /*#__PURE__*/ React.createElement(StatCard, {
-        label: "Total Minutes",
-        value: Math.floor(duration / 60).toString()
     }), /*#__PURE__*/ React.createElement(StatCard, {
         label: "Total Hours",
         value: (duration / 60 / 60).toFixed(1)

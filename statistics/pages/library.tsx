@@ -86,7 +86,7 @@ const LibraryPageContent = (
 		);
 	});
 
-	const albumCards = albums.map((album) => {
+	const albumCards = albums.slice(0, 20).map((album) => {
 		return (
 			<SpotifyCard
 				type="album"
@@ -104,7 +104,6 @@ const LibraryPageContent = (
 				<StatCard label="Total Playlists" value={playlists.length.toString()} />
 				<StatCard label="Total Tracks" value={tracks.length.toString()} />
 				<StatCard label="Total Artists" value={artists.length.toString()} />
-				<StatCard label="Total Minutes" value={Math.floor(duration / 60).toString()} />
 				<StatCard label="Total Hours" value={(duration / 60 / 60).toFixed(1)} />
 			</section>
 			<Shelf title="Most Frequent Genres">
