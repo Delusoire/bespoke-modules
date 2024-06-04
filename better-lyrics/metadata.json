@@ -15,8 +15,8 @@
 	"entries": {
 		"js": "index.js"
 	},
-	"dependencies": [
-		"official/stdlib",
-		"Delusoire/delulib"
-	]
+	"dependencies": {
+		"official/stdlib": "0.1.0-beta",
+		"Delusoire/delulib": "0.1.0-beta"
+	}
 }

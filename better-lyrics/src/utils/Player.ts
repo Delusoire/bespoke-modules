@@ -1,37 +1,35 @@
 import {
+	animationFrameScheduler,
+	asyncScheduler,
 	BehaviorSubject,
+	interval,
 	Observable,
 	Subject,
 	Subscription,
-	animationFrameScheduler,
-	asyncScheduler,
-	interval,
 	takeUntil,
 } from "https://esm.sh/rxjs";
-import { S } from "/modules/official/stdlib/index.js";
-import { getSongPositionMs } from "/modules/Delusoire/delulib/lib/util.js";
+import { getSongPositionMs } from "/modules/Delusoire/delulib/lib/util.ts";
 
-import { eventBus } from "../../index.js";
-import { findLyrics } from "./LyricsProvider.js";
+import { eventBus } from "../../index.ts";
+import { findLyrics } from "./LyricsProvider.ts";
+import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
 
-const PlayerAPI = S.Platform.getPlayerAPI();
+const PlayerAPI = Platform.getPlayerAPI();
 
-const takeIf =
-	<A>(predicate: (value: A) => boolean) =>
-	(observable: Observable<A>) =>
-		new Observable(subscriber => {
-			observable.subscribe({
-				next(value) {
-					predicate(value) && subscriber.next(value);
-				},
-				error(err) {
-					subscriber.error(err);
-				},
-				complete() {
-					subscriber.complete();
-				},
-			});
+const takeIf = <A>(predicate: (value: A) => boolean) => (observable: Observable<A>) =>
+	new Observable((subscriber) => {
+		observable.subscribe({
+			next(value) {
+				predicate(value) && subscriber.next(value);
+			},
+			error(err) {
+				subscriber.error(err);
+			},
+			complete() {
+				subscriber.complete();
+			},
 		});
+	});
 
 export const Player = new (class {
 	stateSubject = new BehaviorSubject<any>(null);
@@ -40,7 +38,7 @@ export const Player = new (class {
 	s = new Subscription();
 
 	constructor() {
-		eventBus.Player.song_changed.subscribe(state => {
+		eventBus.Player.song_changed.subscribe((state) => {
 			const { item } = state;
 
 			if (item && item.type === "track") {
@@ -57,7 +55,7 @@ export const Player = new (class {
 			}
 		});
 
-		const quadIntervalObservable = new Observable(subscriber => {
+		const quadIntervalObservable = new Observable((subscriber) => {
 			let syncs = 0;
 
 			const timeoutFn = () => 1000 * ++syncs;
@@ -70,13 +68,19 @@ export const Player = new (class {
 			});
 		});
 
-		const pauseObservable = eventBus.Player.status_changed.pipe(takeIf(state => state.isPaused || state.isBuffering));
-		const playObservable = eventBus.Player.status_changed.pipe(takeIf(state => !state.isPaused && !state.isBuffering));
+		const pauseObservable = eventBus.Player.status_changed.pipe(
+			takeIf((state) => state.isPaused || state.isBuffering),
+		);
+		const playObservable = eventBus.Player.status_changed.pipe(
+			takeIf((state) => !state.isPaused && !state.isBuffering),
+		);
 
 		const quadIntervalUntilPausedObservable = quadIntervalObservable.pipe(takeUntil(pauseObservable));
 
 		const animationFrameIntervalObservable = interval(0, animationFrameScheduler);
-		const animationFrameIntervalUntilPlayedObservable = animationFrameIntervalObservable.pipe(takeUntil(playObservable));
+		const animationFrameIntervalUntilPlayedObservable = animationFrameIntervalObservable.pipe(
+			takeUntil(playObservable),
+		);
 
 		this.s.add(
 			playObservable.subscribe(() => {

@@ -1,6 +1,12 @@
-import { _ } from "/modules/official/stdlib/deps.js";
-import { type TwoUplet, zip_n_uplets } from "/modules/Delusoire/delulib/lib/fp.js";
-import { remapScalar, scalarLerp, type vector, vectorDist, vectorLerp } from "/modules/Delusoire/delulib/lib/math.js";
+import { _ } from "/modules/official/stdlib/deps.ts";
+import { type TwoUplet, zip_n_uplets } from "/modules/Delusoire/delulib/lib/fp.ts";
+import {
+	remapScalar,
+	scalarLerp,
+	type vector,
+	vectorDist,
+	vectorLerp,
+} from "/modules/Delusoire/delulib/lib/math.ts";
 
 export type vectorWithTime = readonly [number, vector];
 
@@ -28,7 +34,8 @@ class CatmullRomCurve {
 
 	at(t: number) {
 		t = _.clamp(t, this.T[1], this.T[2]);
-		const vectorLerpWithRemapedScalar = (s: vectorWithTime, e: vectorWithTime, x: number) => vectorLerp(s[1], e[1], remapScalar(s[0], e[0], x));
+		const vectorLerpWithRemapedScalar = (s: vectorWithTime, e: vectorWithTime, x: number) =>
+			vectorLerp(s[1], e[1], remapScalar(s[0], e[0], x));
 
 		const A = [
 			vectorLerpWithRemapedScalar([this.T[0], this.P[0]], [this.T[1], this.P[1]], t),
@@ -50,8 +57,8 @@ export class AlphaCatmullRomSpline {
 		private points: Array<vector>,
 		alpha: number,
 	) {
-		this.catnumRollCurves = zip_n_uplets<Quadruplet<vector>>(4)(points).map(P =>
-			CatmullRomCurve.fromPointsAndAlpha(P as unknown as PointQuadruplet, alpha),
+		this.catnumRollCurves = zip_n_uplets<Quadruplet<vector>>(4)(points).map((P) =>
+			CatmullRomCurve.fromPointsAndAlpha(P as unknown as PointQuadruplet, alpha)
 		);
 	}
 
@@ -83,15 +90,19 @@ export class CatmullRomSpline {
 	private catnumRollCurves;
 
 	private constructor(points: Array<vectorWithTime>) {
-		this.points = _.sortBy(points, p => p[0]);
-		this.catnumRollCurves = zip_n_uplets<Quadruplet<vector>>(4)(this.points).map(P =>
-			CatmullRomCurve.fromPointsInTime(P as unknown as PointInTimeQuadruplet),
+		this.points = _.sortBy(points, (p) => p[0]);
+		this.catnumRollCurves = zip_n_uplets<Quadruplet<vector>>(4)(this.points).map((P) =>
+			CatmullRomCurve.fromPointsInTime(P as unknown as PointInTimeQuadruplet)
 		);
 	}
 
 	at(t: number) {
 		const point = [t, []] as vectorWithTime;
-		const i = _.clamp(_.sortedLastIndexBy(this.points, point, p => p[0]) - 2, 0, this.catnumRollCurves.length - 1);
+		const i = _.clamp(
+			_.sortedLastIndexBy(this.points, point, (p) => p[0]) - 2,
+			0,
+			this.catnumRollCurves.length - 1,
+		);
 		return this.catnumRollCurves[i].at(t);
 	}
 

@@ -1,10 +1,10 @@
 import { consume } from "https://esm.sh/@lit/context";
-import { LitElement, html } from "https://esm.sh/lit";
+import { html, LitElement } from "https://esm.sh/lit";
 import { property, queryAssignedElements } from "https://esm.sh/lit/decorators.js";
 
-import { _ } from "/modules/official/stdlib/deps.js";
+import { _ } from "/modules/official/stdlib/deps.ts";
 
-import { scrollTimeoutCtx, scrollContainerCtx } from "./contexts.js";
+import { scrollContainerCtx, scrollTimeoutCtx } from "./contexts.ts";
 
 type Constructor<T = {}> = new (...args: any[]) => T;
 
@@ -74,7 +74,8 @@ export const ScrolledMixin = <T extends Constructor<LitElement & SyncedMixinI>>(
 
 			const lineHeight = parseInt(document.defaultView!.getComputedStyle(this).lineHeight);
 			const scrollTop = this.offsetTop - this.scrollContainer.offsetTop - lineHeight * 2;
-			const verticalLinesToActive = Math.abs(scrollTop - this.scrollContainer.scrollTop) / this.scrollContainer.offsetHeight;
+			const verticalLinesToActive = Math.abs(scrollTop - this.scrollContainer.scrollTop) /
+				this.scrollContainer.offsetHeight;
 
 			if (!bypassProximityCheck && !_.inRange(verticalLinesToActive, 0.1, 0.75)) return;
 

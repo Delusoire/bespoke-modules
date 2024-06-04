@@ -1,6 +1,6 @@
 import { createContext } from "https://esm.sh/@lit/context";
 
-import { LyricsType } from "../utils/LyricsProvider.js";
+import type { LyricsType } from "../utils/LyricsProvider.ts";
 
 export const scrollTimeoutCtx = createContext<number>("scrollTimeout");
 export const scrollContainerCtx = createContext<HTMLElement | undefined>("scrollContainer");

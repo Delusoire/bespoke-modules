@@ -1,16 +1,16 @@
 import { render } from "https://esm.sh/lit";
 
-import { PermanentMutationObserver } from "/modules/Delusoire/delulib/lib/util.js";
+import { PermanentMutationObserver } from "/modules/Delusoire/delulib/lib/util.ts";
 
-import type { Module } from "/hooks/module.js";
-import { createEventBus, type EventBus } from "/modules/official/stdlib/index.js";
+import { createEventBus, type EventBus } from "/modules/official/stdlib/index.ts";
+import { ModuleInstance } from "/hooks/module.ts";
 
 export let eventBus: EventBus;
-export default async function (mod: Module) {
+export default async function (mod: ModuleInstance) {
 	eventBus = createEventBus(mod);
 
-	const { Player } = await import("./src/utils/Player.js");
-	const { LyricsWrapper } = await import("./src/components/components.js");
+	const { Player } = await import("./src/utils/Player.ts");
+	const { LyricsWrapper } = await import("./src/components/components.ts");
 
 	const injectLyrics = (insertSelector: string, scrollSelector: string) => () => {
 		const lyricsContainer = document.querySelector<HTMLDivElement>(insertSelector);
@@ -20,12 +20,15 @@ export default async function (mod: Module) {
 		lyricsContainer.replaceWith(lyricsContainerClone);
 
 		const ourLyricsContainer = new LyricsWrapper(scrollSelector);
-		Player.stateSubject.subscribe(state => ourLyricsContainer.updateState(state));
-		Player.progressPercentSubject.subscribe(progress => ourLyricsContainer.updateProgress(progress));
+		Player.stateSubject.subscribe((state) => ourLyricsContainer.updateState(state));
+		Player.progressPercentSubject.subscribe((progress) => ourLyricsContainer.updateProgress(progress));
 		render(ourLyricsContainer, lyricsContainerClone);
 	};
 
-	const injectNPVLyrics = injectLyrics("aside .main-nowPlayingView-lyricsContent", "aside .main-nowPlayingView-lyricsContent");
+	const injectNPVLyrics = injectLyrics(
+		"aside .main-nowPlayingView-lyricsContent",
+		"aside .main-nowPlayingView-lyricsContent",
+	);
 	const injectCinemaLyrics = injectLyrics(
 		"#lyrics-cinema .lyrics-lyrics-contentWrapper",
 		"#lyrics-cinema .os-viewport-native-scrollbars-invisible",

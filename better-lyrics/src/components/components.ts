@@ -1,19 +1,19 @@
 import { provide } from "https://esm.sh/@lit/context";
 import { Task } from "https://esm.sh/@lit/task";
-import { LitElement, css, html } from "https://esm.sh/lit";
+import { css, html, LitElement } from "https://esm.sh/lit";
 import { customElement, property, query, state } from "https://esm.sh/lit/decorators.js";
 import { map } from "https://esm.sh/lit/directives/map.js";
 import { when } from "https://esm.sh/lit/directives/when.js";
 // import { PropertyValueMap } from "https://esm.sh/v133/@lit/reactive-element/development/reactive-element.js";
 // import { hermite } from "https://esm.sh/@thi.ng/ramp"
 
-import { _ } from "/modules/official/stdlib/deps.js";
-import { remapScalar, vectorLerp } from "/modules/Delusoire/delulib/lib/math.js";
-import { MonotoneNormalSpline } from "../splines/monotoneNormalSpline.js";
-import { type Lyrics, LyricsType } from "../utils/LyricsProvider.js";
-import { Player } from "../utils/Player.js";
-import { loadedLyricsTypeCtx, scrollTimeoutCtx, scrollContainerCtx } from "./contexts.js";
-import { AnimatedMixin, ScrolledMixin, SyncedContainerMixin, SyncedMixin } from "./mixins.js";
+import { _ } from "/modules/official/stdlib/deps.ts";
+import { remapScalar, vectorLerp } from "/modules/Delusoire/delulib/lib/math.ts";
+import { MonotoneNormalSpline } from "../splines/monotoneNormalSpline.ts";
+import { type Lyrics, LyricsType } from "../utils/LyricsProvider.ts";
+import { Player } from "../utils/Player.ts";
+import { loadedLyricsTypeCtx, scrollContainerCtx, scrollTimeoutCtx } from "./contexts.ts";
+import { AnimatedMixin, ScrolledMixin, SyncedContainerMixin, SyncedMixin } from "./mixins.ts";
 
 declare global {
 	interface HTMLElementTagNameMap {
@@ -143,11 +143,14 @@ export class DetailTimelineProvider extends SyncedContainerMixin(SyncedMixin(Lit
 		if (!this.intermediatePositions) {
 			const childs = Array.from(this.childs);
 			const partialWidths = childs.reduce(
-				(partialWidths, child) => (partialWidths.push(partialWidths.at(-1)! + child.offsetWidth), partialWidths),
+				(
+					partialWidths,
+					child,
+				) => (partialWidths.push(partialWidths.at(-1)! + child.offsetWidth), partialWidths),
 				[0],
 			);
 			this.lastPosition = partialWidths.at(-1)!;
-			this.intermediatePositions = partialWidths.map(pw => pw / this.lastPosition!);
+			this.intermediatePositions = partialWidths.map((pw) => pw / this.lastPosition!);
 		}
 
 		return remapScalar(this.intermediatePositions![child], this.intermediatePositions![child + 1], rp);
@@ -173,13 +176,19 @@ export class TimelineProvider extends ScrolledMixin(SyncedContainerMixin(SyncedM
 		if (!this.timelineSpline) {
 			const childs = Array.from(this.childs);
 			const partialWidths = childs.reduce(
-				(partialWidths, child) => (partialWidths.push(partialWidths.at(-1)! + child.offsetWidth), partialWidths),
+				(
+					partialWidths,
+					child,
+				) => (partialWidths.push(partialWidths.at(-1)! + child.offsetWidth), partialWidths),
 				[0],
 			);
 			this.lastPosition = partialWidths.at(-1)!;
-			this.intermediatePositions = partialWidths.map(pw => pw / this.lastPosition!);
+			this.intermediatePositions = partialWidths.map((pw) => pw / this.lastPosition!);
 
-			const pairs = _.zip(childs.map(child => child.tsp).concat(childs.at(-1)!.tep), this.intermediatePositions) as Array<[number, number]>;
+			const pairs = _.zip(
+				childs.map((child) => child.tsp).concat(childs.at(-1)!.tep),
+				this.intermediatePositions,
+			) as Array<[number, number]>;
 			const first = vectorLerp(pairs[0], pairs[1], -1);
 			const last = vectorLerp(pairs.at(-2)!, pairs.at(-1)!, 2);
 			this.timelineSpline = new MonotoneNormalSpline([first, ...pairs, last]);
@@ -277,7 +286,7 @@ export class LyricsWrapper extends LitElement {
 			pending: () => {
 				return html`<div class="loading">Fetching Lyrics...</div>`;
 			},
-			complete: lyrics => {
+			complete: (lyrics) => {
 				if (!lyrics || lyrics.__type === LyricsType.NOT_SYNCED) {
 					return html`<div class="error">No Lyrics Found</div>`;
 				}
@@ -291,50 +300,62 @@ export class LyricsWrapper extends LitElement {
                         }
                     </style>
                     <lyrics-container>
-                        ${when(
-							isWordSync,
-							() =>
-								html`${map(
+                        ${
+					when(
+						isWordSync,
+						() =>
+							html`${
+								map(
 									lyrics.content,
-									l =>
+									(l) =>
 										html`<timeline-provider tsp=${l.tsp} tep=${l.tep}
-                                            >${map(
+                                            >${
+											map(
 												l.content,
-												w =>
+												(w) =>
 													html`<detail-timeline-provider tsp=${w.tsp} tep=${w.tep}
-                                                        >${map(
+                                                        >${
+														map(
 															w.content.split(""),
-															c =>
+															(c) =>
 																html`<animated-text
                                                                     tsp=${w.tsp}
                                                                     content=${c === " " ? " " : c}
                                                                 ></animated-text>`,
-														)}</detail-timeline-provider
+														)
+													}</detail-timeline-provider
                                                     >`,
-											)}</timeline-provider
+											)
+										}</timeline-provider
                                         >`,
-								)}`,
-							() =>
-								html`${map(
+								)
+							}`,
+						() =>
+							html`${
+								map(
 									lyrics.content,
-									l =>
+									(l) =>
 										html`<timeline-provider tsp=${l.tsp} tep=${l.tep}
-                                            >${map(
+                                            >${
+											map(
 												l.content,
-												wl =>
+												(wl) =>
 													html`<animated-text
                                                         tsp=${wl.tsp}
                                                         tep=${wl.tep}
                                                         content=${wl.content}
                                                     ></animated-text>`,
-											)}</timeline-provider
+											)
+										}</timeline-provider
                                         >`,
-								)}`,
-						)}</lyrics-container
+								)
+							}`,
+					)
+				}</lyrics-container
                     >,
                 `;
 			},
-			error: e => {
+			error: (e) => {
 				console.error(e);
 				return html`<div class="error">Error</div>`;
 			},
