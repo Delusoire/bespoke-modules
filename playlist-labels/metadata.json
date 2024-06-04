@@ -15,12 +15,13 @@
 	"readme": "./assets/README.md",
 	"entries": {
 		"js": "index.js",
-		"css": "index.css"
+		"css": "index.css",
+		"mixin": "mixin.js"
 	},
-	"dependencies": [
-		"official/stdlib",
-		"Delusoire/delulib",
-		"Delusoire/library-db",
-		"Delusoire/dexie-react-hooks"
-	]
+	"dependencies": {
+		"official/stdlib": "0.1.0-beta",
+		"Delusoire/delulib": "0.1.0-beta",
+		"Delusoire/library-db": "0.1.0-beta",
+		"Delusoire/dexie-react-hooks": "1.1.7"
+	}
 }

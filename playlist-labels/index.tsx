@@ -1,47 +1,53 @@
-import { S } from "/modules/official/stdlib/index.js";
-import { _ } from "/modules/official/stdlib/deps.js";
-import { useLivePlaylistItems } from "/modules/Delusoire/library-db/index.js";
-import { createIconComponent } from "/modules/official/stdlib/lib/createIconComponent.js";
-import { useLiveQuery } from "/modules/Delusoire/dexie-react-hooks/index.js";
-import { db } from "/modules/Delusoire/library-db/lib/db.js";
-import type { Module } from "/hooks/module.js";
+import { _ } from "/modules/official/stdlib/deps.ts";
+import { useLivePlaylistItems } from "/modules/Delusoire/library-db/index.ts";
+import { createIconComponent } from "/modules/official/stdlib/lib/createIconComponent.tsx";
+import { useLiveQuery } from "/modules/Delusoire/dexie-react-hooks/index.ts";
+import { db } from "/modules/Delusoire/library-db/lib/db.ts";
+import type { Module } from "/hooks/module.ts";
+import { React } from "/modules/official/stdlib/src/expose/React.ts";
+import {
+	Menu,
+	MenuItem,
+	RightClickMenu,
+	Tooltip,
+} from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
+import { fromString } from "/modules/official/stdlib/src/webpack/URI.ts";
+import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
+import { classnames } from "/modules/official/stdlib/src/webpack/ClassNames.ts";
+import { UI } from "/modules/official/stdlib/src/webpack/ComponentLibrary.ts";
 
-const { ReactDOM, URI } = S;
-
-const PlaylistLabels = ({ uri }) => {
+const PlaylistLabels = React.memo(({ uri }: { uri: string }) => {
 	const playlists = useLivePlaylistItems(uri);
 	return (
 		<div className="playlist-labels-labels-container">
-			{playlists.map(playlist => (
-				<PlaylistLabel uri={uri} playlistUri={playlist} />
-			))}
+			{playlists.map((playlist) => <PlaylistLabel key={playlist} uri={uri} playlistUri={playlist} />)}
 		</div>
 	);
-};
+});
 
-const History = S.Platform.getHistory();
-const PlaylistAPI = S.Platform.getPlaylistAPI();
+const History = Platform.getHistory();
+const PlaylistAPI = Platform.getPlaylistAPI();
 
-const PlaylistLabel = ({ uri, playlistUri }) => {
-	const { metadata } =
-		useLiveQuery(async () => {
-			const t = await db.playlists.get(playlistUri);
-			return t;
-		}, [playlistUri]) ?? {};
+const PlaylistLabel = ({ uri, playlistUri }: { uri: string; playlistUri: string }) => {
+	const { metadata } = useLiveQuery(async () => {
+		const t = await db.playlists.get(playlistUri);
+		return t;
+	}, [playlistUri]) ?? {};
 
 	const name = metadata?.name ?? "Playlist";
 	const image = metadata?.images[0]?.url ?? "";
 
 	return (
-		<S.ReactComponents.Tooltip label={name} placement="top">
+		<Tooltip label={name} placement="top">
 			<div>
-				<S.ReactComponents.RightClickMenu
+				<RightClickMenu
 					placement="bottom-end"
 					menu={
-						<S.ReactComponents.Menu>
-							<S.ReactComponents.MenuItem
+						<Menu>
+							<MenuItem
 								leadingIcon={createIconComponent({
-									icon: '<path d="M5.25 3v-.917C5.25.933 6.183 0 7.333 0h1.334c1.15 0 2.083.933 2.083 2.083V3h4.75v1.5h-.972l-1.257 9.544A2.25 2.25 0 0 1 11.041 16H4.96a2.25 2.25 0 0 1-2.23-1.956L1.472 4.5H.5V3h4.75zm1.5-.917V3h2.5v-.917a.583.583 0 0 0-.583-.583H7.333a.583.583 0 0 0-.583.583zM2.986 4.5l1.23 9.348a.75.75 0 0 0 .744.652h6.08a.75.75 0 0 0 .744-.652L13.015 4.5H2.985z"></path>',
+									icon:
+										'<path d="M5.25 3v-.917C5.25.933 6.183 0 7.333 0h1.334c1.15 0 2.083.933 2.083 2.083V3h4.75v1.5h-.972l-1.257 9.544A2.25 2.25 0 0 1 11.041 16H4.96a2.25 2.25 0 0 1-2.23-1.956L1.472 4.5H.5V3h4.75zm1.5-.917V3h2.5v-.917a.583.583 0 0 0-.583-.583H7.333a.583.583 0 0 0-.583.583zM2.986 4.5l1.23 9.348a.75.75 0 0 0 .744.652h6.08a.75.75 0 0 0 .744-.652L13.015 4.5H2.985z"></path>',
 								})}
 								onClick={(e: MouseEvent) => {
 									e.stopPropagation();
@@ -49,8 +55,8 @@ const PlaylistLabel = ({ uri, playlistUri }) => {
 								}}
 							>
 								Remove from {name}
-							</S.ReactComponents.MenuItem>
-						</S.ReactComponents.Menu>
+							</MenuItem>
+						</Menu>
 					}
 				>
 					<div
@@ -60,7 +66,7 @@ const PlaylistLabel = ({ uri, playlistUri }) => {
 						}}
 						onClick={(e: Event) => {
 							e.stopPropagation();
-							const pathname = URI.fromString(uri)?.toURLPath(true);
+							const pathname = fromString(uri)?.toURLPath(true);
 							pathname &&
 								History.push({
 									pathname,
@@ -70,65 +76,70 @@ const PlaylistLabel = ({ uri, playlistUri }) => {
 					>
 						<img src={image} />
 					</div>
-				</S.ReactComponents.RightClickMenu>
+				</RightClickMenu>
 			</div>
-		</S.ReactComponents.Tooltip>
+		</Tooltip>
 	);
 };
-
-/*
-import { _ } from "/hooks/deps.js";
-import { onTrackListMutationListeners } from "/modules/Delusoire/delulib/lib/listeners.js";
-import { db, getTracksFromURIs } from "./db.js";
-import { PlaylistItems } from "./listeners.js";
-
-const setTrackGreyed = (track: HTMLDivElement, greyed: boolean) => {
-	track.style.backgroundColor = greyed ? "gray" : undefined;
-	track.style.opacity = greyed ? "0.3" : "1";
-};
-
-onTrackListMutationListeners.push(async (tracklist, tracks) => {
-	const uris = tracks.map(track => track.props.uri);
-	const trackObjs = await getTracksFromURIs(uris);
-	const isrcs = trackObjs.map(track => track?.external_ids.isrc);
-
-	const playlistItems = Array.from(PlaylistItems.entries())
-		.map(([k, v]) => v.size > 0 && k)
-		.filter(Boolean);
-
-	tracks.map(async (track, i) => {
-		const uri = uris[i];
-		const isrc = isrcs[i];
-		if (!isrc) return;
-
-		const urisForIsrc = await db.tracks.where("external_ids.isrc").equals(isrc).primaryKeys();
-		const urisForIsrcInPlaylists = _.intersection(urisForIsrc, playlistItems);
-		setTrackGreyed(track, urisForIsrcInPlaylists.length > 1 && urisForIsrcInPlaylists.includes(uri));
-	});
-});
-*/
 
 export let module: Module;
 export default async function (mod: Module) {
 	module = mod;
+}
 
-	const { onTrackListMutationListeners } = await import("./listeners.js");
-	onTrackListMutationListeners.push(async (tracklist, tracks) => {
-		tracks.map(async (track, i) => {
-			if (track.querySelector(".playlist-labels-container")) return;
-			const lastColumn = track.querySelector(".main-trackList-rowSectionEnd");
-			const labelContainer = document.createElement("div");
-			labelContainer.classList.add("playlist-labels-container");
-
-			const { uri } = track.props;
-
-			ReactDOM.render(<PlaylistLabels uri={uri} />, labelContainer);
-
-			lastColumn.insertBefore(labelContainer, lastColumn.firstChild);
-		});
-	});
-
-	return () => {
-		onTrackListMutationListeners.length = 0;
+function createContext<A>(def: A) {
+	let ctx: React.Context<A> | null = null;
+	return function () {
+		return ctx ??= React.createContext(def);
 	};
 }
+
+let ctx = createContext<any>(null);
+
+const PlaylistLabelsWrapper = React.memo(() => {
+	const data = React.useContext(ctx());
+	const uri = data.uri;
+	return uri && <PlaylistLabels uri={uri} />;
+});
+
+const COLUMN = "Playlist labels";
+
+globalThis.__patchTracklistWrapperProps = (props) => {
+	const p = Object.assign({}, props);
+	p.renderRow = (data, index) =>
+		React.createElement(() => {
+			return React.createElement(ctx().Provider, {
+				value: data,
+			}, props.renderRow(data, index));
+		});
+	return p;
+};
+
+globalThis.__patchRenderTracklistRowColumn = (column) => {
+	if (column === COLUMN) {
+		return <PlaylistLabelsWrapper />;
+	}
+	return null;
+};
+
+globalThis.__patchTracklistColumnHeaderContextMenu = (column) => {
+	if (column === COLUMN) {
+		return (props) => (
+			<button className={classnames("rGujAXjCLKEd_N6yTwds", props.className)}>
+				<UI.Text
+					variant="bodySmall"
+					className={classnames("standalone-ellipsis-one-line", props.className)}
+				>
+					Playlist Labels
+				</UI.Text>
+				{props.children}
+			</button>
+		);
+	}
+	return () => undefined;
+};
+
+globalThis.__patchTracklistColumns = (columns) => {
+	columns.splice(columns.length - 1, 0, COLUMN);
+	return columns;
+};
