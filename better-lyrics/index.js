@@ -17,8 +17,8 @@ export default async function(mod) {
             Player.progressPercentSubject.subscribe((progress)=>ourLyricsContainer.updateProgress(progress));
             render(ourLyricsContainer, lyricsContainerClone);
         };
-    const injectNPVLyrics = injectLyrics("aside .main-nowPlayingView-lyricsContent", "aside .main-nowPlayingView-lyricsContent");
-    const injectCinemaLyrics = injectLyrics("#lyrics-cinema .lyrics-lyrics-contentWrapper", "#lyrics-cinema .os-viewport-native-scrollbars-invisible");
+    const injectNPVLyrics = injectLyrics("aside .hzUuLPdH48AzgQun5NYQ", "aside .hzUuLPdH48AzgQun5NYQ");
+    const injectCinemaLyrics = injectLyrics("#lyrics-cinema .esRByMgBY3TiENAsbDHA", "#lyrics-cinema .os-viewport-native-scrollbars-invisible");
     injectNPVLyrics();
     injectCinemaLyrics();
     new PermanentMutationObserver(mod, ".Root__right-sidebar", injectNPVLyrics);

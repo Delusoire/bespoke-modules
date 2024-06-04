@@ -13,7 +13,7 @@ export default async function (mod: ModuleInstance) {
 	const { LyricsWrapper } = await import("./src/components/components.ts");
 
 	const injectLyrics = (insertSelector: string, scrollSelector: string) => () => {
-		const lyricsContainer = document.querySelector<HTMLDivElement>(insertSelector);
+		const lyricsContainer = document.querySelector<HTMLElement>(insertSelector);
 		if (!lyricsContainer || lyricsContainer.classList.contains("injected")) return;
 		lyricsContainer.classList.add("injected");
 		const lyricsContainerClone = lyricsContainer.cloneNode(false) as typeof lyricsContainer;
@@ -26,11 +26,11 @@ export default async function (mod: ModuleInstance) {
 	};
 
 	const injectNPVLyrics = injectLyrics(
-		"aside .main-nowPlayingView-lyricsContent",
-		"aside .main-nowPlayingView-lyricsContent",
+		"aside .hzUuLPdH48AzgQun5NYQ",
+		"aside .hzUuLPdH48AzgQun5NYQ",
 	);
 	const injectCinemaLyrics = injectLyrics(
-		"#lyrics-cinema .lyrics-lyrics-contentWrapper",
+		"#lyrics-cinema .esRByMgBY3TiENAsbDHA",
 		"#lyrics-cinema .os-viewport-native-scrollbars-invisible",
 	);
 

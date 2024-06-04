@@ -404,21 +404,21 @@ export const SyncedMixin = (superClass)=>{
                 ]
             ], []));
         }
-        #___private_content = (_initProto(this), _init_content(this, ""));
+        #___private_content;
         get content() {
             return this.#___private_content;
         }
         set content(_v) {
             this.#___private_content = _v;
         }
-        #___private_tsp = _init_tsp(this, 0);
+        #___private_tsp;
         get tsp() {
             return this.#___private_tsp;
         }
         set tsp(_v) {
             this.#___private_tsp = _v;
         }
-        #___private_tep = _init_tep(this, 1);
+        #___private_tep;
         get tep() {
             return this.#___private_tep;
         }
@@ -426,13 +426,17 @@ export const SyncedMixin = (superClass)=>{
             this.#___private_tep = _v;
         }
         updateProgress(scaledProgress, depthToActiveAncestor) {}
+        constructor(...args){
+            super(...args);
+            this.#___private_content = (_initProto(this), _init_content(this, ""));
+            this.#___private_tsp = _init_tsp(this, 0);
+            this.#___private_tep = _init_tep(this, 1);
+        }
     }
     return mixedClass;
 };
 export const AnimatedMixin = (superClass)=>{
     class mixedClass extends superClass {
-        csp;
-        dtaa;
         updateProgress(scaledProgress, depthToActiveAncestor) {
             super.updateProgress(scaledProgress, depthToActiveAncestor);
             const clampedScaledProgress = _.clamp(scaledProgress, -0.5, 1.5);
@@ -472,9 +476,6 @@ export const ScrolledMixin = (superClass)=>{
                 ]
             ], []));
         }
-        scrollTimeout = _init_scrollTimeout(this, 0);
-        scrollContainer = _init_scrollContainer(this);
-        dtaa;
         updateProgress(progress, depthToActiveAncestor) {
             super.updateProgress(progress, depthToActiveAncestor);
             const isActive = depthToActiveAncestor === 0;
@@ -492,6 +493,11 @@ export const ScrolledMixin = (superClass)=>{
                 behavior: document.visibilityState === "visible" ? "smooth" : "auto"
             });
         }
+        constructor(...args){
+            super(...args);
+            this.scrollTimeout = _init_scrollTimeout(this, 0);
+            this.scrollContainer = _init_scrollContainer(this);
+        }
     }
     return mixedClass;
 };
@@ -508,7 +514,7 @@ export const SyncedContainerMixin = (superClass)=>{
                 ]
             ], []));
         }
-        #___private_childs = (_initProto(this), _init_childs(this));
+        #___private_childs;
         get childs() {
             return this.#___private_childs;
         }
@@ -530,6 +536,10 @@ export const SyncedContainerMixin = (superClass)=>{
         }
         render() {
             return html`<slot></slot><br />`;
+        }
+        constructor(...args){
+            super(...args);
+            this.#___private_childs = (_initProto(this), _init_childs(this));
         }
     }
     return mixedClass;

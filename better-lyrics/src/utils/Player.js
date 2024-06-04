@@ -18,10 +18,14 @@ const takeIf = (predicate)=>(observable)=>new Observable((subscriber)=>{
             });
         });
 export const Player = new class {
-    stateSubject = new BehaviorSubject(null);
-    progressPercentSubject = new Subject();
-    s = new Subscription();
     constructor(){
+        this.stateSubject = new BehaviorSubject(null);
+        this.progressPercentSubject = new Subject();
+        this.s = new Subscription();
+        this.setTimestamp = (percent)=>{
+            PlayerAPI.seekTo(Math.round(percent * this.stateSubject.getValue().item.duration.milliseconds));
+            this.progressPercentSubject.next(percent);
+        };
         eventBus.Player.song_changed.subscribe((state)=>{
             const { item } = state;
             if (item && item.type === "track") {
@@ -64,8 +68,4 @@ export const Player = new class {
             }));
         }));
     }
-    setTimestamp = (percent)=>{
-        PlayerAPI.seekTo(Math.round(percent * this.stateSubject.getValue().item.duration.milliseconds));
-        this.progressPercentSubject.next(percent);
-    };
 }();

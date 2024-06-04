@@ -130,7 +130,7 @@ globalThis.__patchTracklistColumnHeaderContextMenu = (column) => {
 					variant="bodySmall"
 					className={classnames("standalone-ellipsis-one-line", props.className)}
 				>
-					Playlist Labels
+					Playlist labels
 				</UI.Text>
 				{props.children}
 			</button>

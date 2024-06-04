@@ -373,7 +373,7 @@ function _apply_decs_2203_r(targetClass, memberDecs, classDecs, parentClass) {
 function _identity(x) {
     return x;
 }
-var _dec, _initClass, _AnimatedMixin, _dec1, _init_split, _initProto, _dec2, _initClass1, _SyncedContainerMixin, _dec3, _initClass2, _ScrolledMixin, _dec4, _initClass3, _SyncedContainerMixin1, _dec5, _initClass4, _LitElement, _dec6, _dec7, _dec8, _dec9, _dec10, _dec11, _init_state, _init_container, _init_loadedLyricsType, _init_scrollTimeout, _init_scrollContainer, _initProto1;
+var _dec, _initClass, _AnimatedMixin, _dec1, _init_split, _dec2, _initClass1, _SyncedContainerMixin, _dec3, _initClass2, _ScrolledMixin, _dec4, _initClass3, _SyncedContainerMixin1, _dec5, _initClass4, _LitElement, _dec6, _dec7, _dec8, _dec9, _dec10, _dec11, _init_state, _init_loadedLyricsType, _init_container, _init_scrollTimeout, _init_scrollContainer;
 import { provide } from "https://esm.sh/@lit/context";
 import { Task } from "https://esm.sh/@lit/task";
 import { css, html, LitElement } from "https://esm.sh/lit";
@@ -545,8 +545,9 @@ const scaleInterpolator = new MonotoneNormalSpline([
         1
     ]
 ]);
+const AnimatedTextName = "animated-text";
 let _AnimatedText;
-_dec = customElement(_AnimatedText.NAME), _dec1 = property({
+_dec = customElement(AnimatedTextName), _dec1 = property({
     type: Boolean
 });
 new class extends _identity {
@@ -556,25 +557,18 @@ new class extends _identity {
     static{
         class AnimatedText extends (_AnimatedMixin = AnimatedMixin(SyncedMixin(LitElement))) {
             static{
-                ({ e: [_init_split, _initProto], c: [_AnimatedText, _initClass] } = _apply_decs_2203_r(this, [
+                ({ e: [_init_split], c: [_AnimatedText, _initClass] } = _apply_decs_2203_r(this, [
                     [
                         _dec1,
-                        1,
+                        0,
                         "split"
                     ]
                 ], [
                     _dec
                 ], _AnimatedMixin));
             }
-            static NAME = "animated-text";
-            #___private_split = (_initProto(this), _init_split(this));
-            get split() {
-                return this.#___private_split;
-            }
-            set split(_v) {
-                this.#___private_split = _v;
-            }
-            static styles = css`
+            static{
+                this.styles = css`
         :host {
             cursor: pointer;
             background-color: black;
@@ -589,6 +583,7 @@ new class extends _identity {
             );
         }
     `;
+            }
             animateContent() {
                 const nextGradientAlpha = opacityInterpolator.at(this.csp).toFixed(5);
                 const nextGlowRadius = `${glowRadiusInterpolator.at(this.csp)}px`;
@@ -611,11 +606,16 @@ new class extends _identity {
             render() {
                 return html`<span role="button" @click=${this.onClick}>${this.content}</span>`;
             }
+            constructor(...args){
+                super(...args);
+                this.split = _init_split(this);
+            }
         }
     }
 }();
+const DetailTimelineProviderName = "detail-timeline-provider";
 let _DetailTimelineProvider;
-_dec2 = customElement(_DetailTimelineProvider.NAME);
+_dec2 = customElement(DetailTimelineProviderName);
 new class extends _identity {
     constructor(){
         super(_DetailTimelineProvider), _initClass1();
@@ -627,15 +627,14 @@ new class extends _identity {
                     _dec2
                 ], _SyncedContainerMixin));
             }
-            static NAME = "detail-timeline-provider";
-            static styles = css`
+            static{
+                this.styles = css`
         :host {
             display: flex;
             flex-wrap: wrap;
         }
     `;
-            intermediatePositions;
-            lastPosition;
+            }
             computeChildProgress(rp, child) {
                 if (!this.intermediatePositions) {
                     const childs = Array.from(this.childs);
@@ -650,8 +649,9 @@ new class extends _identity {
         }
     }
 }();
+const TimelineProviderName = "timeline-provider";
 let _TimelineProvider;
-_dec3 = customElement(_TimelineProvider.NAME);
+_dec3 = customElement(TimelineProviderName);
 new class extends _identity {
     constructor(){
         super(_TimelineProvider), _initClass2();
@@ -663,16 +663,14 @@ new class extends _identity {
                     _dec3
                 ], _ScrolledMixin));
             }
-            static NAME = "timeline-provider";
-            static styles = css`
+            static{
+                this.styles = css`
         :host {
             display: flex;
             flex-wrap: wrap;
         }
     `;
-            intermediatePositions;
-            lastPosition;
-            timelineSpline;
+            }
             computeIntermediatePosition(rsp) {
                 if (!this.timelineSpline) {
                     const childs = Array.from(this.childs);
@@ -699,32 +697,29 @@ new class extends _identity {
         }
     }
 }();
+const LyricsContainerName = "lyrics-container";
 let _LyricsContainer;
-_dec4 = customElement(_LyricsContainer.NAME);
-new class extends _identity {
-    constructor(){
-        super(_LyricsContainer), _initClass3();
+_dec4 = customElement(LyricsContainerName);
+class LyricsContainer extends (_SyncedContainerMixin1 = SyncedContainerMixin(SyncedMixin(LitElement))) {
+    static{
+        ({ c: [_LyricsContainer, _initClass3] } = _apply_decs_2203_r(this, [], [
+            _dec4
+        ], _SyncedContainerMixin1));
+    }
+    render() {
+        return html`<slot></slot>`;
     }
     static{
-        class LyricsContainer extends (_SyncedContainerMixin1 = SyncedContainerMixin(SyncedMixin(LitElement))) {
-            static{
-                ({ c: [_LyricsContainer, _initClass3] } = _apply_decs_2203_r(this, [], [
-                    _dec4
-                ], _SyncedContainerMixin1));
-            }
-            static NAME = "lyrics-container";
-            render() {
-                return html`<slot></slot>`;
-            }
-        }
+        _initClass3();
     }
-}();
+}
+const LyricsWrapperName = "lyrics-wrapper";
 let _LyricsWrapper;
-_dec5 = customElement(_LyricsWrapper.NAME), _dec6 = property({
+_dec5 = customElement(LyricsWrapperName), _dec6 = property({
     attribute: false
 }), _dec7 = provide({
     context: loadedLyricsTypeCtx
-}), _dec8 = state(), _dec9 = query(_LyricsContainer.NAME), _dec10 = provide({
+}), _dec8 = state(), _dec9 = query(LyricsContainerName), _dec10 = provide({
     context: scrollTimeoutCtx
 }), _dec11 = provide({
     context: scrollContainerCtx
@@ -736,16 +731,11 @@ new class extends _identity {
     static{
         class LyricsWrapper extends (_LitElement = LitElement) {
             static{
-                ({ e: [_init_state, _init_container, _init_loadedLyricsType, _init_scrollTimeout, _init_scrollContainer, _initProto1], c: [_LyricsWrapper, _initClass4] } = _apply_decs_2203_r(this, [
+                ({ e: [_init_state, _init_loadedLyricsType, _init_container, _init_scrollTimeout, _init_scrollContainer], c: [_LyricsWrapper, _initClass4] } = _apply_decs_2203_r(this, [
                     [
                         _dec6,
-                        1,
+                        0,
                         "state"
-                    ],
-                    [
-                        _dec9,
-                        1,
-                        "container"
                     ],
                     [
                         [
@@ -754,6 +744,11 @@ new class extends _identity {
                         ],
                         0,
                         "loadedLyricsType"
+                    ],
+                    [
+                        _dec9,
+                        0,
+                        "container"
                     ],
                     [
                         _dec10,
@@ -769,53 +764,44 @@ new class extends _identity {
                     _dec5
                 ], _LitElement));
             }
-            static NAME = "lyrics-wrapper";
-            static SCROLL_TIMEOUT_MS = 500;
+            static{
+                this.SCROLL_TIMEOUT_MS = 500;
+            }
             constructor(query){
                 super();
+                this.state = _init_state(this, null);
+                this.loadedLyricsType = _init_loadedLyricsType(this);
+                this.updateState = (state)=>{
+                    this.state = state;
+                    this.loadedLyricsType = undefined;
+                };
+                this.lyricsTask = new Task(this, {
+                    task: async ([state])=>{
+                        const availableLyrics = await state?.item.lyrics;
+                        const lyrics = Object.values(availableLyrics)[0];
+                        this.loadedLyricsType = lyrics?.__type;
+                        return lyrics;
+                    },
+                    args: ()=>[
+                            this.state
+                        ]
+                });
+                this.container = _init_container(this);
+                this.scrollTimeout = _init_scrollTimeout(this, 0);
+                this.scrollContainer = _init_scrollContainer(this);
                 this.scrollContainer = document.querySelector(query) ?? undefined;
             }
-            static styles = css`
+            static{
+                this.styles = css`
         :host > animated-content-container {
             display: unset;
         }
     `;
-            #___private_state = (_initProto1(this), _init_state(this, null));
-            get state() {
-                return this.#___private_state;
-            }
-            set state(_v) {
-                this.#___private_state = _v;
-            }
-            loadedLyricsType = _init_loadedLyricsType(this);
-            updateState = (state)=>{
-                this.state = state;
-                this.loadedLyricsType = undefined;
-            };
-            lyricsTask = new Task(this, {
-                task: async ([state])=>{
-                    const availableLyrics = await state?.item.lyrics;
-                    const lyrics = Object.values(availableLyrics)[0];
-                    this.loadedLyricsType = lyrics?.__type;
-                    return lyrics;
-                },
-                args: ()=>[
-                        this.state
-                    ]
-            });
-            #___private_container = _init_container(this);
-            get container() {
-                return this.#___private_container;
-            }
-            set container(_v) {
-                this.#___private_container = _v;
             }
             updateProgress(progress) {
                 if (this.loadedLyricsType === undefined || this.loadedLyricsType === LyricsType.NOT_SYNCED) return;
                 this.container?.updateProgress(progress, 0);
             }
-            scrollTimeout = _init_scrollTimeout(this, 0);
-            scrollContainer = _init_scrollContainer(this);
             onExternalScroll(e) {
                 this.scrollTimeout = Date.now() + LyricsWrapper.SCROLL_TIMEOUT_MS;
             }

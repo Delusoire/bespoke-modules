@@ -1,13 +1,6 @@
 const TAU = Math.PI * 2;
 const SLEEPING_EPSILON = 1e-7;
 export class Spring {
-    p;
-    dampingRatio;
-    lastUpdateTime;
-    W0;
-    v;
-    inEquilibrium;
-    p_e;
     // We allow consumers to specify their own timescales
     compute(time = Date.now()) {
         const current = this.inEquilibrium ? this.p : this.solve(time - this.lastUpdateTime);
@@ -79,5 +72,4 @@ export class Spring {
         this.p = this.p_e = position;
         this.inEquilibrium = true;
     }
-    isInEquilibrium;
 }

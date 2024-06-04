@@ -17,11 +17,11 @@ import { AnimatedMixin, ScrolledMixin, SyncedContainerMixin, SyncedMixin } from 
 
 declare global {
 	interface HTMLElementTagNameMap {
-		"lyrics-wrapper": LyricsWrapper;
-		"lyrics-container": LyricsContainer;
-		"timeline-provider": TimelineProvider;
-		"detail-timeline-provider": DetailTimelineProvider;
-		"animated-text": AnimatedText;
+		[LyricsWrapperName]: LyricsWrapper;
+		[LyricsContainerName]: LyricsContainer;
+		[TimelineProviderName]: TimelineProvider;
+		[DetailTimelineProviderName]: DetailTimelineProvider;
+		[AnimatedTextName]: AnimatedText;
 	}
 }
 
@@ -71,12 +71,12 @@ const scaleInterpolator = new MonotoneNormalSpline([
 	[1.5, 1],
 ]);
 
-@customElement(AnimatedText.NAME)
-export class AnimatedText extends AnimatedMixin(SyncedMixin(LitElement)) {
-	static readonly NAME = "animated-text" as string;
+const AnimatedTextName = "animated-text";
 
+@customElement(AnimatedTextName)
+export class AnimatedText extends AnimatedMixin(SyncedMixin(LitElement)) {
 	@property({ type: Boolean })
-	accessor split!: boolean;
+	split!: boolean;
 
 	static styles = css`
         :host {
@@ -125,10 +125,10 @@ interface Spline<A> {
 	at(t: number): A;
 }
 
-@customElement(DetailTimelineProvider.NAME)
-export class DetailTimelineProvider extends SyncedContainerMixin(SyncedMixin(LitElement)) {
-	static readonly NAME = "detail-timeline-provider";
+const DetailTimelineProviderName = "detail-timeline-provider";
 
+@customElement(DetailTimelineProviderName)
+export class DetailTimelineProvider extends SyncedContainerMixin(SyncedMixin(LitElement)) {
 	static styles = css`
         :host {
             display: flex;
@@ -157,10 +157,10 @@ export class DetailTimelineProvider extends SyncedContainerMixin(SyncedMixin(Lit
 	}
 }
 
-@customElement(TimelineProvider.NAME)
-export class TimelineProvider extends ScrolledMixin(SyncedContainerMixin(SyncedMixin(LitElement))) {
-	static readonly NAME = "timeline-provider";
+const TimelineProviderName = "timeline-provider";
 
+@customElement(TimelineProviderName)
+export class TimelineProvider extends ScrolledMixin(SyncedContainerMixin(SyncedMixin(LitElement))) {
 	static styles = css`
         :host {
             display: flex;
@@ -203,18 +203,19 @@ export class TimelineProvider extends ScrolledMixin(SyncedContainerMixin(SyncedM
 	}
 }
 
-@customElement(LyricsContainer.NAME)
-export class LyricsContainer extends SyncedContainerMixin(SyncedMixin(LitElement)) {
-	static readonly NAME = "lyrics-container";
+const LyricsContainerName = "lyrics-container";
 
+@customElement(LyricsContainerName)
+export class LyricsContainer extends SyncedContainerMixin(SyncedMixin(LitElement)) {
 	render() {
 		return html`<slot></slot>`;
 	}
 }
 
-@customElement(LyricsWrapper.NAME)
+const LyricsWrapperName = "lyrics-wrapper";
+
+@customElement(LyricsWrapperName)
 export class LyricsWrapper extends LitElement {
-	static readonly NAME = "lyrics-wrapper";
 	static readonly SCROLL_TIMEOUT_MS = 500;
 
 	constructor(query: string) {
@@ -229,7 +230,7 @@ export class LyricsWrapper extends LitElement {
     `;
 
 	@property({ attribute: false })
-	accessor state: any | null = null;
+	state: any | null = null;
 
 	@provide({ context: loadedLyricsTypeCtx })
 	@state()
@@ -250,8 +251,8 @@ export class LyricsWrapper extends LitElement {
 		args: () => [this.state],
 	});
 
-	@query(LyricsContainer.NAME)
-	accessor container: LyricsContainer | undefined;
+	@query(LyricsContainerName)
+	container: LyricsContainer | undefined;
 	public updateProgress(progress: number) {
 		if (this.loadedLyricsType === undefined || this.loadedLyricsType === LyricsType.NOT_SYNCED) return;
 		this.container?.updateProgress(progress, 0);

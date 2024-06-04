@@ -106,7 +106,7 @@ globalThis.__patchTracklistColumnHeaderContextMenu = (column)=>{
             }, /*#__PURE__*/ React.createElement(UI.Text, {
                 variant: "bodySmall",
                 className: classnames("standalone-ellipsis-one-line", props.className)
-            }, "Playlist Labels"), props.children);
+            }, "Playlist labels"), props.children);
     }
     return ()=>undefined;
 };
