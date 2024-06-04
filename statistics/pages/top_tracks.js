@@ -21,12 +21,6 @@ const OptionToTimeRange = {
     "Past 6 Months": SpotifyTimeRange.Medium,
     "All Time": SpotifyTimeRange.Long
 };
-const columns = [
-    "INDEX",
-    "TITLE_AND_ARTIST",
-    "ALBUM",
-    "DURATION"
-];
 const allowedDropTypes = new Array();
 export const fetchTopTracks = (timeRange)=>spotifyApi.currentUser.topItems("tracks", timeRange, 50, 0);
 const TrackRow = React.memo(({ track, index })=>{
@@ -50,6 +44,12 @@ const TrackRow = React.memo(({ track, index })=>{
 });
 const TracksPageContent = ({ topTracks })=>{
     const thisRef = React.useRef(null);
+    const columns = [
+        "INDEX",
+        "TITLE_AND_ARTIST",
+        "ALBUM",
+        "DURATION"
+    ];
     return /*#__PURE__*/ React.createElement(TracklistColumnsContextProvider, {
         columns: columns
     }, /*#__PURE__*/ React.createElement(Tracklist, {

@@ -61,4 +61,4 @@ export const isElementInViewPort = (e)=>{
         bound.right
     ]);
 };
-export const CLICKABLE_ELEMENT_SELECTOR = `.Root__top-container [href]:not(link),.Root__top-container button,.Root__top-container [role="button"]`;
+export const CLICKABLE_ELEMENT_SELECTOR = `.Root [href]:not(link),.Root button,.Root [role="button"]`;

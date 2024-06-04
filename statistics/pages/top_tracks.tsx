@@ -29,7 +29,6 @@ const OptionToTimeRange = {
 	"All Time": SpotifyTimeRange.Long,
 } as const;
 
-const columns = ["INDEX", "TITLE_AND_ARTIST", "ALBUM", "DURATION"];
 const allowedDropTypes = new Array<never>();
 
 export const fetchTopTracks = (timeRange: SpotifyTimeRange) =>
@@ -59,6 +58,7 @@ interface TracksPageContentProps {
 }
 const TracksPageContent = ({ topTracks }: TracksPageContentProps) => {
 	const thisRef = React.useRef(null);
+	const columns = ["INDEX", "TITLE_AND_ARTIST", "ALBUM", "DURATION"];
 
 	return (
 		<TracklistColumnsContextProvider columns={columns}>

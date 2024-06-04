@@ -26,12 +26,14 @@ export const openPage = (page: string) => History.push({ pathname: page });
 export const rotateSidebar = (offset: number) => {
 	if (offset === 0) return;
 
-	const navLinks = Array.from(Array.from(document.querySelectorAll<HTMLElement>(".main-yourLibraryX-navLink")).values());
+	const navLinks = Array.from(
+		Array.from(document.querySelectorAll<HTMLElement>(".main-yourLibraryX-navLink")).values(),
+	);
 
 	if (navLinks.length === 0) return;
 
 	const activeNavLink = document.querySelector<HTMLElement>(".main-yourLibraryX-navLinkActive");
-	let activeNavLinkIndex = navLinks.findIndex(e => e === activeNavLink);
+	let activeNavLinkIndex = navLinks.findIndex((e) => e === activeNavLink);
 	if (activeNavLinkIndex === -1 && offset < 0) activeNavLinkIndex = navLinks.length;
 	let target = activeNavLinkIndex + (offset % navLinks.length);
 	if (target < 0) target += navLinks.length;
@@ -48,14 +50,15 @@ export class Bind {
 	constructor(
 		private key: string,
 		private callback: (event: KeyboardEvent) => void,
-	) { }
+	) {}
 
 	register() {
-		Mousetrap.bind(this.key, e => void (!listeningToSneakBinds && this.callback(e)));
+		Mousetrap.bind(this.key, (e) => void (!listeningToSneakBinds && this.callback(e)));
 	}
 }
 
-export const isElementVisible = (e: HTMLElement) => e.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true });
+export const isElementVisible = (e: HTMLElement) =>
+	e.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true });
 export const isElementInViewPort = (e: HTMLElement) => {
 	const c = document.body;
 	const bound = e.getBoundingClientRect();
@@ -64,4 +67,4 @@ export const isElementInViewPort = (e: HTMLElement) => {
 	return f(c.clientHeight)([bound.top, bound.bottom]) && f(c.clientWidth)([bound.left, bound.right]);
 };
 
-export const CLICKABLE_ELEMENT_SELECTOR = `.Root__top-container [href]:not(link),.Root__top-container button,.Root__top-container [role="button"]`;
+export const CLICKABLE_ELEMENT_SELECTOR = `.Root [href]:not(link),.Root button,.Root [role="button"]`;
