@@ -24,7 +24,7 @@ nowPlayingGenreContainerEl.fetchGenres = fetchLastFMTagsForNowPlayingTrack;
 nowPlayingGenreContainerEl.className += " ellipsis-one-line main-type-finale";
 nowPlayingGenreContainerEl.style.gridArea = "genres";
 (async ()=>{
-    const trackInfoContainer = await waitForElement("div.main-trackInfo-container");
+    const trackInfoContainer = await waitForElement(".iZrIHsls0lCEhoMDA9kc");
     trackInfoContainer.appendChild(nowPlayingGenreContainerEl);
 })();
 eventBus.Player.song_changed.subscribe((state)=>{
@@ -52,9 +52,9 @@ const updateArtistPage = async (uri)=>{
     artistGenreContainerEl.fetchGenres = (uri)=>getArtistsGenresOrRelated([
             uri
         ]);
-    const lastHeaderTextEl = document.querySelector("div.main-entityHeader-headerText");
-    const headerTextEl = await waitForElement("div.main-entityHeader-headerText", undefined, undefined, lastHeaderTextEl);
-    const headerTextDetailsEl = await waitForElement("span.main-entityHeader-detailsText");
+    const lastHeaderTextEl = document.querySelector(".RP2rRchy4i8TIp1CTmb7");
+    const headerTextEl = await waitForElement(".RP2rRchy4i8TIp1CTmb7", undefined, undefined, lastHeaderTextEl);
+    const headerTextDetailsEl = await waitForElement(".Ydwa1P5GkCggtLlSvphs");
     headerTextEl.insertBefore(artistGenreContainerEl, headerTextDetailsEl);
 };
 eventBus.History.updated.subscribe(({ pathname })=>{

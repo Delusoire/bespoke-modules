@@ -20,6 +20,12 @@ const PlaylistLabels = React.memo(({ uri })=>{
 });
 const History = Platform.getHistory();
 const PlaylistAPI = Platform.getPlaylistAPI();
+const labelSizes = {
+    small: 0,
+    standard: 1,
+    large: 2,
+    xlarge: 3
+};
 const PlaylistLabel = ({ uri, playlistUri })=>{
     const { metadata } = useLiveQuery(async ()=>{
         const t = await db.playlists.get(playlistUri);
@@ -28,11 +34,13 @@ const PlaylistLabel = ({ uri, playlistUri })=>{
         playlistUri
     ]) ?? {};
     const name = metadata?.name ?? "Playlist";
-    const image = metadata?.images[0]?.url ?? "";
+    const images = metadata?.images ?? [];
+    const image = images.sort((image)=>labelSizes[image.label])[0]?.url;
+    const cachedImage = image?.replace(/^https:\/\/i.scdn.co\/image\/(.*)$/, "spotify:image:$1");
     return /*#__PURE__*/ React.createElement(Tooltip, {
         label: name,
         placement: "top"
-    }, /*#__PURE__*/ React.createElement("div", null, /*#__PURE__*/ React.createElement(RightClickMenu, {
+    }, /*#__PURE__*/ React.createElement(RightClickMenu, {
         placement: "bottom-end",
         menu: /*#__PURE__*/ React.createElement(Menu, null, /*#__PURE__*/ React.createElement(MenuItem, {
             leadingIcon: createIconComponent({
@@ -61,9 +69,9 @@ const PlaylistLabel = ({ uri, playlistUri })=>{
                 search: `?uri=${uri}`
             });
         }
-    }, /*#__PURE__*/ React.createElement("img", {
-        src: image
-    })))));
+    }, cachedImage && /*#__PURE__*/ React.createElement("img", {
+        src: cachedImage
+    }))));
 };
 export let module;
 export default async function(mod) {
@@ -84,13 +92,21 @@ const PlaylistLabelsWrapper = React.memo(()=>{
     });
 });
 const COLUMN = "Playlist labels";
+const Row = React.memo(({ data, index, renderRow })=>{
+    return React.createElement(ctx().Provider, {
+        value: data
+    }, renderRow(data, index));
+});
 globalThis.__patchTracklistWrapperProps = (props)=>{
     const p = Object.assign({}, props);
-    p.renderRow = (data, index)=>React.createElement(()=>{
-            return React.createElement(ctx().Provider, {
-                value: data
-            }, props.renderRow(data, index));
-        });
+    p.renderRow = React.useCallback((data, index)=>/*#__PURE__*/ React.createElement(Row, {
+            key: index,
+            data: data,
+            index: index,
+            renderRow: props.renderRow
+        }), [
+        props.renderRow
+    ]);
     return p;
 };
 globalThis.__patchRenderTracklistRowColumn = (column)=>{

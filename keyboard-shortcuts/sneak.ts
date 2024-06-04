@@ -1,4 +1,4 @@
-import { LitElement, css, html } from "https://esm.sh/lit";
+import { css, html, LitElement } from "https://esm.sh/lit";
 import { customElement, property } from "https://esm.sh/lit/decorators.js";
 import { map } from "https://esm.sh/lit/directives/map.js";
 import { styleMap } from "https://esm.sh/lit/directives/style-map.js";
@@ -58,7 +58,7 @@ export class _SneakOverlay extends LitElement {
     `;
 
 	@property({ type: Array })
-	accessor props = [] as Array<{ key: string; target: HTMLElement; }>;
+	accessor props = [] as Array<{ key: string; target: HTMLElement }>;
 
 	constructor() {
 		super();
@@ -70,7 +70,7 @@ export class _SneakOverlay extends LitElement {
 			this.props = Array.from(document.querySelectorAll<HTMLElement>(CLICKABLE_ELEMENT_SELECTOR))
 				// .filter(isElementVisible),
 				.filter(isElementInViewPort)
-				.map(target => {
+				.map((target) => {
 					const key = KEY_LIST[k1] + KEY_LIST[k2++];
 					if (k2 >= KEY_LIST.length) k1++, (k2 = 0);
 					return { target, key };
@@ -89,7 +89,7 @@ export class _SneakOverlay extends LitElement {
 	updateProps(key: KeyboardEvent["key"]) {
 		if (!listeningToSneakBinds) return;
 
-		this.props = this.props.filter(prop => {
+		this.props = this.props.filter((prop) => {
 			const [k1, ...ks] = prop.key.toLowerCase();
 			if (k1 !== key) return false;
 			prop.key = ks.join("");
@@ -100,7 +100,7 @@ export class _SneakOverlay extends LitElement {
 	}
 
 	protected render() {
-		return html`${map(this.props, i => html`<sneak-key part="key" key=${i.key} .target=${i.target} />`)}`;
+		return html`${map(this.props, (i) => html`<sneak-key part="key" key=${i.key} .target=${i.target} />`)}`;
 	}
 }
 

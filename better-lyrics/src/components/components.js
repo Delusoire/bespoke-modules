@@ -373,14 +373,14 @@ function _apply_decs_2203_r(targetClass, memberDecs, classDecs, parentClass) {
 function _identity(x) {
     return x;
 }
-var _dec, _initClass, _AnimatedMixin, _dec1, _init_split, _dec2, _initClass1, _SyncedContainerMixin, _dec3, _initClass2, _ScrolledMixin, _dec4, _initClass3, _SyncedContainerMixin1, _dec5, _initClass4, _LitElement, _dec6, _dec7, _dec8, _dec9, _dec10, _dec11, _init_state, _init_loadedLyricsType, _init_container, _init_scrollTimeout, _init_scrollContainer;
+var _dec, _initClass, _AnimatedMixin, _dec1, _init_split, _initProto, _dec2, _initClass1, _SyncedContainerMixin, _dec3, _initClass2, _ScrolledMixin, _dec4, _initClass3, _SyncedContainerMixin1, _dec5, _initClass4, _LitElement, _dec6, _dec7, _dec8, _dec9, _dec10, _dec11, _init_state, _init_loadedLyricsType, _init_container, _init_scrollTimeout, _init_scrollContainer, _initProto1;
 import { provide } from "https://esm.sh/@lit/context";
 import { Task } from "https://esm.sh/@lit/task";
 import { css, html, LitElement } from "https://esm.sh/lit";
 import { customElement, property, query, state } from "https://esm.sh/lit/decorators.js";
 import { map } from "https://esm.sh/lit/directives/map.js";
 import { when } from "https://esm.sh/lit/directives/when.js";
-// import { PropertyValueMap } from "https://esm.sh/v133/@lit/reactive-element/development/reactive-element.js";
+// import { PropertyValueMap } from "https://esm.sh/@lit/reactive-element/development/reactive-element.js";
 // import { hermite } from "https://esm.sh/@thi.ng/ramp"
 import { _ } from "/modules/official/stdlib/deps.js";
 import { remapScalar, vectorLerp } from "/modules/Delusoire/delulib/lib/math.js";
@@ -557,18 +557,24 @@ new class extends _identity {
     static{
         class AnimatedText extends (_AnimatedMixin = AnimatedMixin(SyncedMixin(LitElement))) {
             static{
-                ({ e: [_init_split], c: [_AnimatedText, _initClass] } = _apply_decs_2203_r(this, [
+                ({ e: [_init_split, _initProto], c: [_AnimatedText, _initClass] } = _apply_decs_2203_r(this, [
                     [
                         _dec1,
-                        0,
+                        1,
                         "split"
                     ]
                 ], [
                     _dec
                 ], _AnimatedMixin));
             }
-            static{
-                this.styles = css`
+            #___private_split = (_initProto(this), _init_split(this));
+            get split() {
+                return this.#___private_split;
+            }
+            set split(_v) {
+                this.#___private_split = _v;
+            }
+            static styles = css`
         :host {
             cursor: pointer;
             background-color: black;
@@ -583,7 +589,6 @@ new class extends _identity {
             );
         }
     `;
-            }
             animateContent() {
                 const nextGradientAlpha = opacityInterpolator.at(this.csp).toFixed(5);
                 const nextGlowRadius = `${glowRadiusInterpolator.at(this.csp)}px`;
@@ -606,10 +611,6 @@ new class extends _identity {
             render() {
                 return html`<span role="button" @click=${this.onClick}>${this.content}</span>`;
             }
-            constructor(...args){
-                super(...args);
-                this.split = _init_split(this);
-            }
         }
     }
 }();
@@ -627,14 +628,14 @@ new class extends _identity {
                     _dec2
                 ], _SyncedContainerMixin));
             }
-            static{
-                this.styles = css`
+            static styles = css`
         :host {
             display: flex;
             flex-wrap: wrap;
         }
     `;
-            }
+            intermediatePositions;
+            lastPosition;
             computeChildProgress(rp, child) {
                 if (!this.intermediatePositions) {
                     const childs = Array.from(this.childs);
@@ -663,14 +664,15 @@ new class extends _identity {
                     _dec3
                 ], _ScrolledMixin));
             }
-            static{
-                this.styles = css`
+            static styles = css`
         :host {
             display: flex;
             flex-wrap: wrap;
         }
     `;
-            }
+            intermediatePositions;
+            lastPosition;
+            timelineSpline;
             computeIntermediatePosition(rsp) {
                 if (!this.timelineSpline) {
                     const childs = Array.from(this.childs);
@@ -731,10 +733,10 @@ new class extends _identity {
     static{
         class LyricsWrapper extends (_LitElement = LitElement) {
             static{
-                ({ e: [_init_state, _init_loadedLyricsType, _init_container, _init_scrollTimeout, _init_scrollContainer], c: [_LyricsWrapper, _initClass4] } = _apply_decs_2203_r(this, [
+                ({ e: [_init_state, _init_loadedLyricsType, _init_container, _init_scrollTimeout, _init_scrollContainer, _initProto1], c: [_LyricsWrapper, _initClass4] } = _apply_decs_2203_r(this, [
                     [
                         _dec6,
-                        0,
+                        1,
                         "state"
                     ],
                     [
@@ -742,65 +744,91 @@ new class extends _identity {
                             _dec7,
                             _dec8
                         ],
-                        0,
+                        1,
                         "loadedLyricsType"
                     ],
                     [
                         _dec9,
-                        0,
+                        1,
                         "container"
                     ],
                     [
                         _dec10,
-                        0,
+                        1,
                         "scrollTimeout"
                     ],
                     [
                         _dec11,
-                        0,
+                        1,
                         "scrollContainer"
                     ]
                 ], [
                     _dec5
                 ], _LitElement));
             }
-            static{
-                this.SCROLL_TIMEOUT_MS = 500;
-            }
+            static SCROLL_TIMEOUT_MS = 500;
             constructor(query){
                 super();
-                this.state = _init_state(this, null);
-                this.loadedLyricsType = _init_loadedLyricsType(this);
-                this.updateState = (state)=>{
-                    this.state = state;
-                    this.loadedLyricsType = undefined;
-                };
-                this.lyricsTask = new Task(this, {
-                    task: async ([state])=>{
-                        const availableLyrics = await state?.item.lyrics;
-                        const lyrics = Object.values(availableLyrics)[0];
-                        this.loadedLyricsType = lyrics?.__type;
-                        return lyrics;
-                    },
-                    args: ()=>[
-                            this.state
-                        ]
-                });
-                this.container = _init_container(this);
-                this.scrollTimeout = _init_scrollTimeout(this, 0);
-                this.scrollContainer = _init_scrollContainer(this);
                 this.scrollContainer = document.querySelector(query) ?? undefined;
             }
-            static{
-                this.styles = css`
+            static styles = css`
         :host > animated-content-container {
             display: unset;
         }
     `;
+            #___private_state = (_initProto1(this), _init_state(this, null));
+            get state() {
+                return this.#___private_state;
+            }
+            set state(_v) {
+                this.#___private_state = _v;
+            }
+            #___private_loadedLyricsType = _init_loadedLyricsType(this);
+            get loadedLyricsType() {
+                return this.#___private_loadedLyricsType;
+            }
+            set loadedLyricsType(_v) {
+                this.#___private_loadedLyricsType = _v;
+            }
+            updateState = (state)=>{
+                this.state = state;
+                this.loadedLyricsType = undefined;
+            };
+            lyricsTask = new Task(this, {
+                task: async ([state])=>{
+                    const availableLyrics = await state?.item.lyrics;
+                    const lyrics = Object.values(availableLyrics)[0];
+                    this.loadedLyricsType = lyrics?.__type;
+                    return lyrics;
+                },
+                args: ()=>[
+                        this.state
+                    ]
+            });
+            #___private_container = _init_container(this);
+            get container() {
+                return this.#___private_container;
+            }
+            set container(_v) {
+                this.#___private_container = _v;
             }
             updateProgress(progress) {
                 if (this.loadedLyricsType === undefined || this.loadedLyricsType === LyricsType.NOT_SYNCED) return;
                 this.container?.updateProgress(progress, 0);
+            }
+            #___private_scrollTimeout = _init_scrollTimeout(this, 0);
+            get scrollTimeout() {
+                return this.#___private_scrollTimeout;
+            }
+            set scrollTimeout(_v) {
+                this.#___private_scrollTimeout = _v;
+            }
+            #___private_scrollContainer = _init_scrollContainer(this);
+            get scrollContainer() {
+                return this.#___private_scrollContainer;
+            }
+            set scrollContainer(_v) {
+                this.#___private_scrollContainer = _v;
             }
             onExternalScroll(e) {
                 this.scrollTimeout = Date.now() + LyricsWrapper.SCROLL_TIMEOUT_MS;

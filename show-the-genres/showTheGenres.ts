@@ -16,11 +16,11 @@ const fetchLastFMTagsForNowPlayingTrack = async () => {
 	const item = PlayerAPI.getState().item;
 	if (item === null) return [];
 	const track = await fetchLastFMTrack(CONFIG.LFMApiKey, item.artists[0].name, item.name);
-	const tags = track.toptags.tag.map(tag => tag.name);
+	const tags = track.toptags.tag.map((tag) => tag.name);
 
 	const deletedTagRegex = /^-\d{13}$/;
 	const blacklistedTags = ["MySpotigramBot"];
-	return tags.filter(tag => !deletedTagRegex.test(tag) && !blacklistedTags.includes(tag));
+	return tags.filter((tag) => !deletedTagRegex.test(tag) && !blacklistedTags.includes(tag));
 };
 
 const nowPlayingGenreContainerEl = document.createElement("genre-container");
@@ -28,19 +28,19 @@ nowPlayingGenreContainerEl.fetchGenres = fetchLastFMTagsForNowPlayingTrack;
 nowPlayingGenreContainerEl.className += " ellipsis-one-line main-type-finale";
 nowPlayingGenreContainerEl.style.gridArea = "genres";
 (async () => {
-	const trackInfoContainer = await waitForElement("div.main-trackInfo-container");
+	const trackInfoContainer = await waitForElement(".iZrIHsls0lCEhoMDA9kc");
 	trackInfoContainer.appendChild(nowPlayingGenreContainerEl);
 })();
 
-eventBus.Player.song_changed.subscribe(state => {
+eventBus.Player.song_changed.subscribe((state) => {
 	nowPlayingGenreContainerEl.uri = state.item?.uri;
 });
 
 const getArtistsGenresOrRelated = async (artistsUris: string[]) => {
 	const getArtistsGenres = async (artistsUris: string[]) => {
-		const ids = artistsUris.map(uri => fromString(uri).id as string);
+		const ids = artistsUris.map((uri) => fromString(uri).id as string);
 		const artists = await spotifyApi.artists.get(_.compact(ids));
-		const genres = new Set(artists.flatMap(artist => artist.genres));
+		const genres = new Set(artists.flatMap((artist) => artist.genres));
 		return Array.from(genres);
 	};
 
@@ -50,27 +50,35 @@ const getArtistsGenresOrRelated = async (artistsUris: string[]) => {
 
 	const relatedArtists = await fetchArtistRelated(artistsUris[0]);
 
-	relatedArtists.map(artist => artist.uri);
+	relatedArtists.map((artist) => artist.uri);
 
 	if (allGenres.length) return allGenres;
 
 	const artistRelated = await fetchArtistRelated(artistsUris[0]);
 
 	return _.chunk(
-		artistRelated.map(a => a.uri),
+		artistRelated.map((a) => a.uri),
 		5,
-	).reduce(async (acc, arr5uris) => ((await acc).length ? await acc : await getArtistsGenres(arr5uris)), Promise.resolve([] as string[]));
+	).reduce(
+		async (acc, arr5uris) => ((await acc).length ? await acc : await getArtistsGenres(arr5uris)),
+		Promise.resolve([] as string[]),
+	);
 };
 
 const updateArtistPage = async (uri: string) => {
 	const artistGenreContainerEl = document.createElement("genre-container");
 	artistGenreContainerEl.name = "Artist Genres";
 	artistGenreContainerEl.uri = uri.toString();
-	artistGenreContainerEl.fetchGenres = uri => getArtistsGenresOrRelated([uri]);
+	artistGenreContainerEl.fetchGenres = (uri) => getArtistsGenresOrRelated([uri]);
 
-	const lastHeaderTextEl = document.querySelector("div.main-entityHeader-headerText");
-	const headerTextEl = await waitForElement("div.main-entityHeader-headerText", undefined, undefined, lastHeaderTextEl);
-	const headerTextDetailsEl = await waitForElement("span.main-entityHeader-detailsText");
+	const lastHeaderTextEl = document.querySelector(".RP2rRchy4i8TIp1CTmb7");
+	const headerTextEl = await waitForElement(
+		".RP2rRchy4i8TIp1CTmb7",
+		undefined,
+		undefined,
+		lastHeaderTextEl,
+	);
+	const headerTextDetailsEl = await waitForElement(".Ydwa1P5GkCggtLlSvphs");
 	headerTextEl.insertBefore(artistGenreContainerEl, headerTextDetailsEl);
 };
 
@@ -80,5 +88,5 @@ eventBus.History.updated.subscribe(({ pathname }) => {
 		if (is.Artist(uri)) {
 			updateArtistPage(uri);
 		}
-	} catch (_) { }
+	} catch (_) {}
 });

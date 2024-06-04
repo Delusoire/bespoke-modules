@@ -28,6 +28,13 @@ const PlaylistLabels = React.memo(({ uri }: { uri: string }) => {
 const History = Platform.getHistory();
 const PlaylistAPI = Platform.getPlaylistAPI();
 
+const labelSizes = {
+	small: 0,
+	standard: 1,
+	large: 2,
+	xlarge: 3,
+};
+
 const PlaylistLabel = ({ uri, playlistUri }: { uri: string; playlistUri: string }) => {
 	const { metadata } = useLiveQuery(async () => {
 		const t = await db.playlists.get(playlistUri);
@@ -35,49 +42,49 @@ const PlaylistLabel = ({ uri, playlistUri }: { uri: string; playlistUri: string 
 	}, [playlistUri]) ?? {};
 
 	const name = metadata?.name ?? "Playlist";
-	const image = metadata?.images[0]?.url ?? "";
+	const images = metadata?.images ?? [];
+	const image = images.sort((image) => labelSizes[image.label])[0]?.url;
+	const cachedImage = image?.replace(/^https:\/\/i.scdn.co\/image\/(.*)$/, "spotify:image:$1");
 
 	return (
 		<Tooltip label={name} placement="top">
-			<div>
-				<RightClickMenu
-					placement="bottom-end"
-					menu={
-						<Menu>
-							<MenuItem
-								leadingIcon={createIconComponent({
-									icon:
-										'<path d="M5.25 3v-.917C5.25.933 6.183 0 7.333 0h1.334c1.15 0 2.083.933 2.083 2.083V3h4.75v1.5h-.972l-1.257 9.544A2.25 2.25 0 0 1 11.041 16H4.96a2.25 2.25 0 0 1-2.23-1.956L1.472 4.5H.5V3h4.75zm1.5-.917V3h2.5v-.917a.583.583 0 0 0-.583-.583H7.333a.583.583 0 0 0-.583.583zM2.986 4.5l1.23 9.348a.75.75 0 0 0 .744.652h6.08a.75.75 0 0 0 .744-.652L13.015 4.5H2.985z"></path>',
-								})}
-								onClick={(e: MouseEvent) => {
-									e.stopPropagation();
-									PlaylistAPI.remove(playlistUri, [{ uri, uid: "" }]);
-								}}
-							>
-								Remove from {name}
-							</MenuItem>
-						</Menu>
-					}
+			<RightClickMenu
+				placement="bottom-end"
+				menu={
+					<Menu>
+						<MenuItem
+							leadingIcon={createIconComponent({
+								icon:
+									'<path d="M5.25 3v-.917C5.25.933 6.183 0 7.333 0h1.334c1.15 0 2.083.933 2.083 2.083V3h4.75v1.5h-.972l-1.257 9.544A2.25 2.25 0 0 1 11.041 16H4.96a2.25 2.25 0 0 1-2.23-1.956L1.472 4.5H.5V3h4.75zm1.5-.917V3h2.5v-.917a.583.583 0 0 0-.583-.583H7.333a.583.583 0 0 0-.583.583zM2.986 4.5l1.23 9.348a.75.75 0 0 0 .744.652h6.08a.75.75 0 0 0 .744-.652L13.015 4.5H2.985z"></path>',
+							})}
+							onClick={(e: MouseEvent) => {
+								e.stopPropagation();
+								PlaylistAPI.remove(playlistUri, [{ uri, uid: "" }]);
+							}}
+						>
+							Remove from {name}
+						</MenuItem>
+					</Menu>
+				}
+			>
+				<div
+					className="playlist-labels-label-container"
+					style={{
+						cursor: "pointer",
+					}}
+					onClick={(e) => {
+						e.stopPropagation();
+						const pathname = fromString(uri)?.toURLPath(true);
+						pathname &&
+							History.push({
+								pathname,
+								search: `?uri=${uri}`,
+							});
+					}}
 				>
-					<div
-						className="playlist-labels-label-container"
-						style={{
-							cursor: "pointer",
-						}}
-						onClick={(e: Event) => {
-							e.stopPropagation();
-							const pathname = fromString(uri)?.toURLPath(true);
-							pathname &&
-								History.push({
-									pathname,
-									search: `?uri=${uri}`,
-								});
-						}}
-					>
-						<img src={image} />
-					</div>
-				</RightClickMenu>
-			</div>
+					{cachedImage && <img src={cachedImage} />}
+				</div>
+			</RightClickMenu>
 		</Tooltip>
 	);
 };
@@ -104,14 +111,16 @@ const PlaylistLabelsWrapper = React.memo(() => {
 
 const COLUMN = "Playlist labels";
 
+const Row = React.memo(({ data, index, renderRow }) => {
+	return React.createElement(ctx().Provider, { value: data }, renderRow(data, index));
+});
+
 globalThis.__patchTracklistWrapperProps = (props) => {
 	const p = Object.assign({}, props);
-	p.renderRow = (data, index) =>
-		React.createElement(() => {
-			return React.createElement(ctx().Provider, {
-				value: data,
-			}, props.renderRow(data, index));
-		});
+	p.renderRow = React.useCallback(
+		(data, index) => <Row key={index} data={data} index={index} renderRow={props.renderRow} />,
+		[props.renderRow],
+	);
 	return p;
 };
 

@@ -4,7 +4,7 @@ import { css, html, LitElement } from "https://esm.sh/lit";
 import { customElement, property, query, state } from "https://esm.sh/lit/decorators.js";
 import { map } from "https://esm.sh/lit/directives/map.js";
 import { when } from "https://esm.sh/lit/directives/when.js";
-// import { PropertyValueMap } from "https://esm.sh/v133/@lit/reactive-element/development/reactive-element.js";
+// import { PropertyValueMap } from "https://esm.sh/@lit/reactive-element/development/reactive-element.js";
 // import { hermite } from "https://esm.sh/@thi.ng/ramp"
 
 import { _ } from "/modules/official/stdlib/deps.ts";
@@ -76,7 +76,7 @@ const AnimatedTextName = "animated-text";
 @customElement(AnimatedTextName)
 export class AnimatedText extends AnimatedMixin(SyncedMixin(LitElement)) {
 	@property({ type: Boolean })
-	split!: boolean;
+	accessor split!: boolean;
 
 	static styles = css`
         :host {
@@ -230,11 +230,11 @@ export class LyricsWrapper extends LitElement {
     `;
 
 	@property({ attribute: false })
-	state: any | null = null;
+	accessor state: any | null = null;
 
 	@provide({ context: loadedLyricsTypeCtx })
 	@state()
-	loadedLyricsType?: LyricsType;
+	accessor loadedLyricsType: LyricsType | undefined;
 
 	updateState = (state: any | null) => {
 		this.state = state;
@@ -252,17 +252,17 @@ export class LyricsWrapper extends LitElement {
 	});
 
 	@query(LyricsContainerName)
-	container: LyricsContainer | undefined;
+	accessor container: LyricsContainer | undefined;
 	public updateProgress(progress: number) {
 		if (this.loadedLyricsType === undefined || this.loadedLyricsType === LyricsType.NOT_SYNCED) return;
 		this.container?.updateProgress(progress, 0);
 	}
 
 	@provide({ context: scrollTimeoutCtx })
-	scrollTimeout = 0;
+	accessor scrollTimeout = 0;
 
 	@provide({ context: scrollContainerCtx })
-	scrollContainer?: HTMLElement;
+	accessor scrollContainer: HTMLElement | undefined;
 
 	private onExternalScroll(e: Event) {
 		this.scrollTimeout = Date.now() + LyricsWrapper.SCROLL_TIMEOUT_MS;

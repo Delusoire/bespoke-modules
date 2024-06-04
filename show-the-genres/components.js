@@ -374,7 +374,7 @@ function _identity(x) {
     return x;
 }
 var _dec, _initClass, _LitElement, _dec1, _init_genre, _initProto, _dec2, _initClass1, _LitElement1, _dec3, _dec4, _dec5, _dec6, _dec7, _init_name, _init_uri, _init_genres, _init_isSmall, _init_fetchGenres, _initProto1;
-import { LitElement, css, html } from "https://esm.sh/lit";
+import { css, html, LitElement } from "https://esm.sh/lit";
 import { customElement, property, state } from "https://esm.sh/lit/decorators.js";
 import { join } from "https://esm.sh/lit/directives/join.js";
 import { map } from "https://esm.sh/lit/directives/map.js";

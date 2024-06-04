@@ -7,6 +7,8 @@ var EndCondition;
     EndCondition[EndCondition["CLOSED"] = 1] = "CLOSED";
 })(EndCondition || (EndCondition = {}));
 class Monomial {
+    segments;
+    grid;
     constructor(segments, grid = _.range(segments.length + 1)){
         this.segments = segments;
         this.grid = grid;
@@ -26,34 +28,32 @@ class Monomial {
     }
 }
 class CubicHermite extends Monomial {
-    static{
-        this.matrix = [
-            [
-                2,
-                -2,
-                1,
-                1
-            ],
-            [
-                -3,
-                3,
-                -2,
-                -1
-            ],
-            [
-                0,
-                0,
-                1,
-                0
-            ],
-            [
-                1,
-                0,
-                0,
-                0
-            ]
-        ];
-    }
+    static matrix = [
+        [
+            2,
+            -2,
+            1,
+            1
+        ],
+        [
+            -3,
+            3,
+            -2,
+            -1
+        ],
+        [
+            0,
+            0,
+            1,
+            0
+        ],
+        [
+            1,
+            0,
+            0,
+            0
+        ]
+    ];
     constructor(vertices, tangents, grid = _.range(vertices.length)){
         if (vertices.length < 2) throw "At least 2 vertices are needed";
         if (tangents.length !== 2 * (vertices.length - 1)) throw "Exactly 2 tangents per segment needed";

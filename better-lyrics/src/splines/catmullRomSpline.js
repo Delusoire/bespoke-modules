@@ -2,6 +2,8 @@ import { _ } from "/modules/official/stdlib/deps.js";
 import { zip_n_uplets } from "/modules/Delusoire/delulib/lib/fp.js";
 import { remapScalar, scalarLerp, vectorDist, vectorLerp } from "/modules/Delusoire/delulib/lib/math.js";
 class CatmullRomCurve {
+    P;
+    T;
     constructor(P, T){
         this.P = P;
         this.T = T;
@@ -66,6 +68,8 @@ class CatmullRomCurve {
     }
 }
 export class AlphaCatmullRomSpline {
+    points;
+    catnumRollCurves;
     constructor(points, alpha){
         this.points = points;
         this.catnumRollCurves = zip_n_uplets(4)(points).map((P)=>CatmullRomCurve.fromPointsAndAlpha(P, alpha));
@@ -92,6 +96,8 @@ export class AlphaCatmullRomSpline {
     }
 }
 export class CatmullRomSpline {
+    points;
+    catnumRollCurves;
     constructor(points){
         this.points = _.sortBy(points, (p)=>p[0]);
         this.catnumRollCurves = zip_n_uplets(4)(this.points).map((P)=>CatmullRomCurve.fromPointsInTime(P));

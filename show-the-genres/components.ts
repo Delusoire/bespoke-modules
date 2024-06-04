@@ -1,4 +1,4 @@
-import { LitElement, PropertyValues, css, html } from "https://esm.sh/lit";
+import { css, html, LitElement, PropertyValues } from "https://esm.sh/lit";
 import { customElement, property, state } from "https://esm.sh/lit/decorators.js";
 import { join } from "https://esm.sh/lit/directives/join.js";
 import { map } from "https://esm.sh/lit/directives/map.js";
@@ -39,10 +39,10 @@ class _GenreLink extends LitElement {
 @customElement("genre-container")
 class _ArtistGenreContainer extends LitElement {
 	@property()
-	accessor name?: string;
+	accessor name: string | undefined;
 
 	@property()
-	accessor uri?: string;
+	accessor uri: string | undefined;
 
 	@state()
 	accessor genres: string[] = [];
@@ -60,7 +60,7 @@ class _ArtistGenreContainer extends LitElement {
 	}
 
 	protected render() {
-		const artistGenreLinks = map(this.genres, genre => html`<genre-link genre=${genre} />`);
+		const artistGenreLinks = map(this.genres, (genre) => html`<genre-link genre=${genre} />`);
 		const divider = () => html`<span>, </span>`;
 
 		return html`<style>
