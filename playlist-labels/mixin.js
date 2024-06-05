@@ -1,4 +1,8 @@
-globalThis.__patchTracklistWrapperProps = (x)=>x;
+import { React } from "/modules/official/stdlib/src/expose/React.js";
+globalThis.__patchTracklistWrapperProps = (x)=>{
+    React.useCallback(()=>null, []);
+    return x;
+};
 globalThis.__patchRenderTracklistRowColumn = ()=>null;
 globalThis.__patchTracklistColumnHeaderContextMenu = ()=>()=>undefined;
 globalThis.__patchTracklistColumns = (x)=>x;

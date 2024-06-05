@@ -1,4 +1,5 @@
 import { Transformer } from "/hooks/transform.ts";
+import { React } from "/modules/official/stdlib/src/expose/React.ts";
 
 type RenderRow = (data: any, index: number) => React.ReactElement;
 
@@ -9,7 +10,10 @@ declare global {
 	var __patchTracklistColumns: (columns: string[]) => string[];
 }
 
-globalThis.__patchTracklistWrapperProps = (x) => x;
+globalThis.__patchTracklistWrapperProps = (x) => {
+	React.useCallback(() => null, []);
+	return x;
+};
 globalThis.__patchRenderTracklistRowColumn = () => null;
 globalThis.__patchTracklistColumnHeaderContextMenu = () => () => undefined;
 globalThis.__patchTracklistColumns = (x) => x;

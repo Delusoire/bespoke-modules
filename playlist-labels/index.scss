@@ -8,6 +8,7 @@
 }
 
 .playlist-labels-labels-container {
+    --playlist-label-height: calc(var(--row-height) * 32/56);
     width: var(--playlist-labels-container-width);
     height: var(--row-height);
     align-items: center;
@@ -19,12 +20,12 @@
 
 .playlist-labels-label-container {
     position: relative;
-    height: calc(var(--row-height) * 0.5);
+    height: var(--playlist-label-height);
 }
 
 .playlist-labels-label-container>img {
-    width: calc(var(--row-height) * 0.5);
+    width: var(--playlist-label-height);
     height: 100%;
     object-fit: cover;
-    border-radius: calc(var(--row-height) * 0.5 * 0.1);
+    border-radius: calc(var(--playlist-label-height) * 0.1);
 }

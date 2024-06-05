@@ -20,23 +20,15 @@ const PlaylistLabels = React.memo(({ uri })=>{
 });
 const History = Platform.getHistory();
 const PlaylistAPI = Platform.getPlaylistAPI();
-const labelSizes = {
-    small: 0,
-    standard: 1,
-    large: 2,
-    xlarge: 3
-};
 const PlaylistLabel = ({ uri, playlistUri })=>{
-    const { metadata } = useLiveQuery(async ()=>{
+    const playlist = useLiveQuery(async ()=>{
         const t = await db.playlists.get(playlistUri);
         return t;
     }, [
         playlistUri
     ]) ?? {};
-    const name = metadata?.name ?? "Playlist";
-    const images = metadata?.images ?? [];
-    const image = images.sort((image)=>labelSizes[image.label])[0]?.url;
-    const cachedImage = image?.replace(/^https:\/\/i.scdn.co\/image\/(.*)$/, "spotify:image:$1");
+    const name = playlist.metadata?.name ?? "Playlist";
+    const imgUrl = playlist.imgDataUrl;
     return /*#__PURE__*/ React.createElement(Tooltip, {
         label: name,
         placement: "top"
@@ -69,8 +61,9 @@ const PlaylistLabel = ({ uri, playlistUri })=>{
                 search: `?uri=${uri}`
             });
         }
-    }, cachedImage && /*#__PURE__*/ React.createElement("img", {
-        src: cachedImage
+    }, imgUrl && /*#__PURE__*/ React.createElement("img", {
+        src: imgUrl,
+        loading: "eager"
     }))));
 };
 export let module;
