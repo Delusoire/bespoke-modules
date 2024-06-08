@@ -8,14 +8,9 @@ const headers = {
 const CONFIG = {
     musixmatchToken: undefined
 };
-// if (!CONFIG.musixmatchToken) {
-const url = new URL("https://apic-desktop.musixmatch.com/ws/1.1/token.get");
-url.searchParams.append("app_id", "web-desktop-app-v1.0");
-xfetch(url, {
-    headers: _.omit(headers, "cookie")
-}).then((res)=>res.json()).then((res)=>{
-    if (res.message.header.status_code === 200 && res.message.body.user_token) {
-        CONFIG.musixmatchToken = res.message.body.user_token;
+fetch("https://cors-proxy.spicetify.app/https://apic-desktop.musixmatch.com/ws/1.1/token.get?app_id=web-desktop-app-v1.0").then((res)=>res.json()).then((json)=>{
+    if (json.message.header.status_code === 200 && json.message.body.user_token) {
+        CONFIG.musixmatchToken = json.message.body.user_token;
     }
 });
 export var LyricsType;

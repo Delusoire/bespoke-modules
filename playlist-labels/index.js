@@ -120,6 +120,6 @@ globalThis.__patchTracklistColumnHeaderContextMenu = (column)=>{
     return ()=>undefined;
 };
 globalThis.__patchTracklistColumns = (columns)=>{
-    columns.splice(columns.length - 1, 0, COLUMN);
-    return columns;
+    const i = -1;
+    return React.useMemo(() => [...columns.slice(0, i), COLUMN, ...columns.slice(i)], [columns]);
 };

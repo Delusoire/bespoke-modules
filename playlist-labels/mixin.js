@@ -5,7 +5,10 @@ globalThis.__patchTracklistWrapperProps = (x)=>{
 };
 globalThis.__patchRenderTracklistRowColumn = ()=>null;
 globalThis.__patchTracklistColumnHeaderContextMenu = ()=>()=>undefined;
-globalThis.__patchTracklistColumns = (x)=>x;
+globalThis.__patchTracklistColumns = (x) => {
+    React.useMemo(() => null, []);
+    return x;
+};
 export default function(transformer) {
     transformer((emit)=>(str)=>{
             str = str.replace(/(tracks,[^;]*nrTracks),/, "$1,e=__patchTracklistWrapperProps(e),");

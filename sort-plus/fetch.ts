@@ -4,14 +4,17 @@ import { fetchArtistOverview } from "/modules/Delusoire/delulib/lib/GraphQL/fetc
 import { _, fp } from "/modules/official/stdlib/deps.ts";
 import { pMchain } from "/modules/Delusoire/delulib/lib/fp.ts";
 import {
-	type TrackData,
-	parseAlbumTrack,
 	parseArtistLikedTrack,
 	parseLibraryAPILikedTracks,
 	parsePlaylistAPITrack,
 	parseTopTrackFromArtist,
+	type TrackData,
 } from "/modules/Delusoire/delulib/lib/parse.ts";
-import { fetchArtistLikedTracks, fetchLikedTracks, fetchPlaylistContents } from "/modules/Delusoire/delulib/lib/platform.ts";
+import {
+	fetchArtistLikedTracks,
+	fetchLikedTracks,
+	fetchPlaylistContents,
+} from "/modules/Delusoire/delulib/lib/platform.ts";
 
 import { CONFIG } from "./settings.ts";
 
@@ -20,18 +23,24 @@ import { is_LikedTracks } from "./util.ts";
 
 export const getTracksFromAlbum = async (uri: string) => {
 	const albumRes = await fetchAlbum(uri);
-	const releaseDate = new Date(albumRes.date.isoString).getTime();
 
 	const filler = {
-		albumUri: albumRes.uri,
-		albumName: albumRes.name,
-		releaseDate,
+		albumUri: uri as string,
 	};
 
+	const tracks = albumRes.tracks.items as any[];
+
 	return Promise.all(
-		albumRes.tracks.items.map(async track => {
-			const parsedTrack = await parseAlbumTrack(track);
-			return Object.assign(parsedTrack, filler) as TrackData;
+		tracks.map(async (track) => {
+			const artists = track.artists.items as any[];
+			return Object.assign({
+				uri: track.uri as string,
+				name: track.name as string,
+				artistUris: artists.map((a) => a.uri as string),
+				artistName: artists[0].profile.name as string,
+				durationMilis: track.duration.totalMilliseconds as number,
+				playcount: track.playcount as number,
+			}, filler);
 		}),
 	);
 };
@@ -41,7 +50,7 @@ export const getLikedTracks = _.flow(fetchLikedTracks, pMchain(fp.map(parseLibra
 export const getTracksFromPlaylist = _.flow(
 	fetchPlaylistContents,
 	pMchain(fp.map(parsePlaylistAPITrack)),
-	pMchain(fp.filter(track => !is.LocalTrack(track.uri))),
+	pMchain(fp.filter((track) => !is.LocalTrack(track.uri))),
 );
 
 export const getTracksFromArtist = async (uri: string) => {
@@ -57,7 +66,8 @@ export const getTracksFromArtist = async (uri: string) => {
 	} else {
 		const { discography, relatedContent } = await fetchArtistOverview(uri);
 
-		CONFIG.artistLikedTracks && allTracks.push(...(await fetchArtistLikedTracks(uri)).map(parseArtistLikedTrack));
+		CONFIG.artistLikedTracks &&
+			allTracks.push(...(await fetchArtistLikedTracks(uri)).map(parseArtistLikedTrack));
 		CONFIG.artistTopTracks && allTracks.push(...discography.topTracks.items.map(parseTopTrackFromArtist));
 		CONFIG.artistPopularReleases && itemsWithCountAr.push(discography.popularReleasesAlbums);
 		CONFIG.artistSingles && itemsReleasesAr.push(discography.singles);
@@ -66,15 +76,20 @@ export const getTracksFromArtist = async (uri: string) => {
 		CONFIG.artistAppearsOn && appearsOnAr.push(relatedContent.appearsOn);
 	}
 
-	const items1 = itemsWithCountAr.flatMap(iwc => iwc.items);
-	const items2 = itemsReleasesAr.flatMap(ir => ir.items.flatMap(i => i.releases.items));
-	const albumLikeUris = items1.concat(items2).map(item => item.uri);
+	const items1 = itemsWithCountAr.flatMap((iwc) => iwc.items);
+	const items2 = itemsReleasesAr.flatMap((ir) => ir.items.flatMap((i) => i.releases.items));
+	const albumLikeUris = items1.concat(items2).map((item) => item.uri);
 	const albumsTracks = await Promise.all(albumLikeUris.map(getTracksFromAlbum));
 
-	const appearsOnUris = appearsOnAr.flatMap(ir => ir.items.flatMap(i => i.releases.items)).map(item => item.uri);
+	const appearsOnUris = appearsOnAr.flatMap((ir) => ir.items.flatMap((i) => i.releases.items)).map((item) =>
+		item.uri
+	);
 	const appearsOnTracks = await Promise.all(appearsOnUris.map(getTracksFromAlbum));
 
-	allTracks.push(...albumsTracks.flat(), ...appearsOnTracks.flat().filter(track => track.artistUris.includes(uri)));
+	allTracks.push(
+		...albumsTracks.flat(),
+		...appearsOnTracks.flat().filter((track) => track.artistUris.includes(uri)),
+	);
 	return await Promise.all(allTracks);
 };
 

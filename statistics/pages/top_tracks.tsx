@@ -17,6 +17,8 @@ import {
 	TracklistRow,
 } from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
 import { getPlayContext } from "/modules/official/stdlib/src/webpack/CustomHooks.ts";
+import { exportedFunctions } from "/modules/official/stdlib/src/webpack/index.ts";
+import { findBy } from "/hooks/util.ts";
 
 const DropdownOptions = {
 	"Past Month": () => "Past Month",
@@ -57,28 +59,24 @@ interface TracksPageContentProps {
 	topTracks: any;
 }
 const TracksPageContent = ({ topTracks }: TracksPageContentProps) => {
-	const thisRef = React.useRef(null);
-	const columns = ["INDEX", "TITLE_AND_ARTIST", "ALBUM", "DURATION"];
-
+	const columns = useTrackListColumns();
 	return (
-		<TracklistColumnsContextProvider columns={columns}>
-			<Tracklist
-				ariaLabel="Top Tracks"
-				hasHeaderRow={true}
-				columns={columns}
-				renderRow={(track: Track, index: number) => <TrackRow track={track} index={index} />}
-				resolveItem={(track) => ({ uri: track.uri })}
-				nrTracks={topTracks.length}
-				fetchTracks={(offset, limit) => topTracks.slice(offset, offset + limit)}
-				limit={50}
-				outerRef={thisRef}
-				tracks={topTracks}
-				isCompactMode={false}
-				columnPersistenceKey="stats-top-tracks"
-			>
-				spotify:app:stats:tracks
-			</Tracklist>
-		</TracklistColumnsContextProvider>
+		<Tracklist
+			ariaLabel="Top Tracks"
+			hasHeaderRow={true}
+			columns={columns}
+			renderRow={(track: Track, index: number) => <TrackRow track={track} index={index} />}
+			resolveItem={(track) => ({ uri: track.uri })}
+			nrTracks={topTracks.length}
+			fetchTracks={(offset, limit) => topTracks.slice(offset, offset + limit)}
+			limit={50}
+			outerRef={thisRef}
+			tracks={topTracks}
+			isCompactMode={false}
+			columnPersistenceKey="stats-top-tracks"
+		>
+			spotify:app:stats:tracks
+		</Tracklist>
 	);
 };
 
@@ -110,7 +108,11 @@ const TracksPage = () => {
 			)}
 			headerRight={[dropdown, status !== "pending" && <RefreshButton refresh={refetch} />, settingsButton]}
 		>
-			{Status || <TracksPageContent topTracks={topTracks} />}
+			{Status ?? (
+				<TracklistColumnsContextProvider columns={["INDEX", "TITLE_AND_ARTIST", "ALBUM", "DURATION"]}>
+					<TracksPageContent topTracks={topTracks} />
+				</TracklistColumnsContextProvider>
+			)}
 		</PageContainer>
 	);
 };

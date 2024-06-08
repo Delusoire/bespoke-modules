@@ -11,7 +11,7 @@ export const progressify = (f, n)=>{
     let i = n;
     let lastProgress = 0;
     return async (..._)=>{
-        const res = await f(...arguments);
+        const res = await f(..._);
         const progress = Math.round((1 - --i / n) * 100);
         if (progress > lastProgress) {
             Snackbar.updater.enqueueSetState(Snackbar, ()=>({
@@ -37,11 +37,11 @@ export const getConcurrentExecutionLimiterWrapper = (limit)=>(task)=>{
         const executingQ = new Set();
         return async function() {
             const { promise, resolve } = Promise.withResolvers();
-            waitingQ.add(resolve);
             if (executingQ.size >= limit) {
+                waitingQ.add(resolve);
                 await promise;
+                waitingQ.delete(resolve);
             }
-            waitingQ.delete(resolve);
             executingQ.add(resolve);
             return await task(...arguments).finally(()=>{
                 executingQ.delete(resolve);

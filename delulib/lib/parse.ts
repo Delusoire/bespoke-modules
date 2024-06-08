@@ -25,7 +25,7 @@ export const parseTopTrackFromArtist = ({ track }: TopTracksItem) => ({
 	name: track.name,
 	albumUri: track.albumOfTrack.uri,
 	albumName: undefined,
-	artistUris: track.artists.items.map(artist => artist.uri),
+	artistUris: track.artists.items.map((artist) => artist.uri),
 	artistName: track.artists.items[0].profile.name,
 	durationMilis: track.duration.totalMilliseconds,
 	playcount: Number(track.playcount),
@@ -39,26 +39,12 @@ export const parseArtistLikedTrack = (track: Platform.Track) => ({
 	name: track.name,
 	albumUri: track.album.uri,
 	albumName: track.album.name,
-	artistUris: track.artists.map(artist => artist.uri),
+	artistUris: track.artists.map((artist) => artist.uri),
 	artistName: track.artists[0].name,
 	durationMilis: track.duration.milliseconds,
 	playcount: undefined,
 	popularity: undefined,
 	releaseDate: undefined,
-});
-
-export const parseAlbumTrack = ({ track }: fetchAlbumRes["tracks"]["items"][0]) => ({
-	uri: track.uri,
-	uid: undefined,
-	name: track.name,
-	albumUri: "", // gets filled in later
-	albumName: "", // gets filled in later
-	artistUris: track.artists.items.map(artist => artist.uri),
-	artistName: track.artists.items[0].profile.name,
-	durationMilis: track.duration.totalMilliseconds,
-	playcount: Number(track.playcount),
-	popularity: undefined,
-	releaseDate: -1, // gets filled in later
 });
 
 export const parsePlaylistAPITrack = (track: Platform.PlaylistAPI.Track) => ({
@@ -67,7 +53,7 @@ export const parsePlaylistAPITrack = (track: Platform.PlaylistAPI.Track) => ({
 	name: track.name,
 	albumUri: track.album.uri,
 	albumName: track.album.name,
-	artistUris: track.artists.map(artist => artist.uri),
+	artistUris: track.artists.map((artist) => artist.uri),
 	artistName: track.artists[0].name,
 	durationMilis: track.duration.milliseconds,
 	playcount: undefined,
@@ -81,7 +67,7 @@ export const parseWebAPITrack = (track: Track) => ({
 	name: track.name,
 	albumUri: track.album.uri,
 	albumName: track.album.name,
-	artistUris: track.artists.map(artist => artist.uri),
+	artistUris: track.artists.map((artist) => artist.uri),
 	artistName: track.artists[0].name,
 	durationMilis: track.duration_ms,
 	playcount: undefined,
@@ -95,7 +81,7 @@ export const parseLibraryAPILikedTracks = (track: Platform.Track) => ({
 	name: track.name,
 	albumUri: track.album.uri,
 	albumName: track.album.name,
-	artistUris: track.artists.map(artist => artist.uri),
+	artistUris: track.artists.map((artist) => artist.uri),
 	artistName: track.artists[0].name,
 	durationMilis: track.duration.milliseconds,
 	playcount: undefined,
