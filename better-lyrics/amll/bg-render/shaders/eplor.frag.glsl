@@ -1,6 +1,8 @@
 #version 300 es
 precision highp float;
 
+#define TAU 6.2831
+
 uniform float hasLyric, frameTime, lowFreq, isHorizontal;
 uniform sampler2D sampler;
 uniform vec2 resolution, offset;
@@ -20,10 +22,9 @@ float noise( in vec2 x )
    return mix( mix( hash( n ), hash( n+1. ), f.x ), mix( hash( n+57. ), hash( n+58. ), f.x ), f.y );
 }
 
-vec2 map( vec2 p, in vec2 offset )
+vec2 map( vec2 p )
 {
-   float a = noise( p*3.5+.1 )*4.2831*mix( .2, 1., hasLyric );
-   p -= offset;
+   float a = noise( p*3.5+.1 )*( TAU-2. )*mix( .2, 1., hasLyric );
    return vec2( cos( a ), sin( a ) );
 }
 
@@ -91,7 +92,7 @@ void main( )
    vec3 col = vec3( 0 );
    for( int i = 0; i<32; i++ )
    {
-      vec2 dir = map( uv, vec2( 1,-.5 ) );
+      vec2 dir = map( uv );
 
       float h = float( i )/32.;
       float w = 4.*h*( 1.-h );
