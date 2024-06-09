@@ -665,10 +665,10 @@ export class EplorRenderer extends BaseRenderer {
 			this.renderSize[0],
 			this.renderSize[1],
 		);
-		this.mainProgram.setUniform1f("tickTimeSeconds", tickTime / 1000);
-		this.mainProgram.setUniform1f("hasLyricValue", this.hasLyricValue);
+		this.mainProgram.setUniform1f("frameTime", tickTime / 1000);
+		this.mainProgram.setUniform1f("hasLyric", this.hasLyricValue);
 		this.mainProgram.setUniform1f(
-			"lowFreqVolume",
+			"lowFreq",
 			this.hasLyric ? this._lowFreqVolume : 0.0,
 		);
 		if (window.innerWidth > 1024) {
@@ -682,7 +682,7 @@ export class EplorRenderer extends BaseRenderer {
 			this.offset[1],
 		);
 		this.mainProgram.setUniform1f(
-			"isVeryWide",
+			"isHorizontal",
 			window.innerWidth > 1024 ? 1 : 0,
 		);
 		const [fba, fbb] = this.fb;
@@ -696,7 +696,7 @@ export class EplorRenderer extends BaseRenderer {
 			gl.clear(this.gl.COLOR_BUFFER_BIT);
 
 			this.mainProgram.use();
-			sprite.draw("samplerString");
+			sprite.draw("sampler");
 
 			fbb.bind();
 
