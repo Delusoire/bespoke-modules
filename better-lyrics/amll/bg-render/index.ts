@@ -6,7 +6,6 @@
 
 export { AbstractBaseRenderer, BaseRenderer } from "./base.ts";
 import { AbstractBaseRenderer, BaseRenderer } from "./base.ts";
-export { PixiRenderer } from "./pixi-renderer.ts";
 export { EplorRenderer } from "./eplor-renderer.ts";
 
 export class BackgroundRender<Renderer extends BaseRenderer> implements AbstractBaseRenderer {

@@ -1,82 +1,106 @@
 #version 300 es
 precision highp float;
-uniform float IIIlllllllIIIllIl, lIIIlllllIllIl, IIIlllIlIIllll, IIIIIllllllIll;
-uniform sampler2D IlllIIlIlllIll;
-uniform vec2 IIlIlIIlIlIllI, IllIlllIlIIlllI;
-out vec4 lIIlIIIIIlIlIlllIIIIlIIl;
-float lIlIIllllIllIll(float IIIlIIlIIIlllIII) {
-   IIIlIIlIIIlllIII -= 0.f;
-   return sin(IIIlIIlIIIlllIII);
+
+uniform float hasLyricValue, tickTimeSeconds, lowFreqVolume, isVeryWide;
+uniform sampler2D samplerString;
+uniform vec2 resolution, offset;
+out vec4 out_vec4;
+
+float weirdSin(float x) {
+   x -= 0.;
+   return sin(x);
 }
-float lIlIlllllIllIll(float IIIlIIlIIIlllIII) {
-   IIIlIIlIIIlllIII += acos(0.f);
-   return sin(IIIlIIlIIIlllIII);
+
+float weirdSinPhaseShift(float x) {
+   x += acos(0.);
+   return sin(x);
 }
-float IllllIIlIllII(float llIIllIllIIIllI) {
-   return fract(lIlIIllllIllIll(llIIllIllIIIllI) * 43758.5453f);
+
+float noise(float x) {
+   return fract(weirdSin(x) * 43758.5453);
 }
-float llIlIIllllIII(vec2 IIIlIIlIIIlllIII) {
-   vec2 IIllIlIIlllI = floor(IIIlIIlIIIlllIII), lIlIllIIIIIlIl = fract(IIIlIIlIIIlllIII);
-   lIlIllIIIIIlIl = lIlIllIIIIIlIl * lIlIllIIIIIlIl * (3.f - 2.f * lIlIllIIIIIlIl);
-   float lIlIlIlIlIlIIl = IIllIlIIlllI.x + IIllIlIIlllI.y * 57.f;
-   return mix(mix(IllllIIlIllII(lIlIlIlIlIlIIl), IllllIIlIllII(lIlIlIlIlIlIIl + 1.f), lIlIllIIIIIlIl.x), mix(IllllIIlIllII(lIlIlIlIlIlIIl + 57.f), IllllIIlIllII(lIlIlIlIlIlIIl + 58.f), lIlIllIIIIIlIl.x), lIlIllIIIIIlIl.y);
+
+float smoothNoise(vec2 v) {
+   vec2 intPart = floor(v);
+   vec2 fracPart = fract(v);
+   fracPart = fracPart * fracPart * (3. - 2. * fracPart);
+   float base = intPart.x + intPart.y * 57.;
+   float x = mix(noise(base), noise(base + 1.), fracPart.x);
+   float y = mix(noise(base + 57.), noise(base + 58.), fracPart.x);
+   return mix(x, y, fracPart.y);
 }
-vec2 lllIIIIIIllIlIIIlI(vec2 IlllIIlIIIIlIIII) {
-   float lIIlIllIIIlIl = llIlIIllllIII(IlllIIlIIIIlIIII * vec2(1) * 3.5f + .1f) * 4.2831f * mix(.2f, 1.f, IIIlllllllIIIllIl);
-   IlllIIlIIIIlIIII += vec2(-1, .5f);
-   return vec2(lIlIlllllIllIll(lIIlIllIIIlIl), lIlIIllllIllIll(lIIlIllIIIlIl));
+
+vec2 transformVec(vec2 u) {
+   float alpha = smoothNoise(u * vec2(1) * 3.5 + .1) * 4.2831 * mix(.2, 1., hasLyricValue);
+   u += vec2(-1, .5);
+   return vec2(weirdSinPhaseShift(alpha), weirdSin(alpha));
 }
-void lllIIIIllIlIIIIIlI(inout vec2 lllIllIlIIIIIIIIlI, float llllIllIIIIIIIIIlI) {
-   lllIllIlIIIIIIIIlI = cos(llllIllIIIIIIIIIlI) * lllIllIlIIIIIIIIlI + sin(llllIllIIIIIIIIIlI) * vec2(lllIllIlIIIIIIIIlI.y, -lllIllIlIIIIIIIIlI.x);
+
+void rotate(inout vec2 u, float angle) {
+   u = cos(angle) * u + sin(angle) * vec2(u.y, -u.x);
 }
-float lllIIIIIIIlllIIIlI(vec2 lIIIIlllllIIIIIIlI, float IIllllIIllIIIIIIlI) {
-   return (length(lIIIIlllllIIIIIIlI / IIllllIIllIIIIIIlI) - 1.f) * IIllllIIllIIIIIIlI;
+
+float lengthTransform(vec2 u, float scale) {
+   return (length(u / scale) - 1.) * scale;
 }
-void IIllIIIIIllIlIlIlI(inout float IIllllIIllIIIIIIlI, vec2 lIIIIlllllIIIIIIlI) {
-   lIIIIlllllIIIIIIlI *= 1e3f;
-   if(mod(floor(lIIIIlllllIIIIIIlI.y / 1e3f + .5f), 2.f) == 0.f)
-      lIIIIlllllIIIIIIlI.x += 5e3f;
-   vec2 lIIIIlIllllIIIIIlI = mod(lIIIIlllllIIIIIIlI + 5500.f, 1e3f) - 5e2f, lIlIIIIIlIlllIIIlI = floor(lIIIIlllllIIIIIIlI / 1e3f + .5f);
-   float lIIIlIlllIIIlIIIlI = fract(sin(dot(lIlIIIIIlIlllIIIlI.xy, vec2(12.9898f, 78.233f))) * 43758.5453f);
-   lIIIIlIllllIIIIIlI.x *= mix(.9f, .6f, fract(lIIIlIlllIIIlIIIlI * 11.13f + 11.13f)) * 1.2f;
-   lIIIIlIllllIIIIIlI.y *= mix(.9f, .6f, fract(lIIIlIlllIIIlIIIlI * 17.17f + 17.17f)) * .8f;
-   float lIlIIIIlIllIlIIIlI = lllIIIIIIIlllIIIlI(lIIIIlIllllIIIIIlI, mix(30.f, 70.f, fract(lIIIlIlllIIIlIIIlI * 7.77f + 7.77f)));
-   IIllllIIllIIIIIIlI += 1.f - smoothstep(0.f, 1.f, lIlIIIIlIllIlIIIlI * .005f);
+
+void applyDistortion(inout float distortion, vec2 u) {
+   u *= 1000.;
+   if (mod(floor(u.y / 1000. + .5), 2.) == 0.)
+      u.x += 5000.;
+   vec2 v = mod(u + 5500., 1000.) - 500.;
+   vec2 cell = floor(u / 1000. + .5);
+   float noiseVal = fract(sin(dot(cell.xy, vec2(12.9898, 78.233))) * 43758.5453);
+   v.x *= mix(.9, .6, fract(noiseVal * 11.13 + 11.13)) * 1.2;
+   v.y *= mix(.9, .6, fract(noiseVal * 17.17 + 17.17)) * .8;
+   float dist = lengthTransform(v, mix(30., 70., fract(noiseVal * 7.77 + 7.77)));
+   distortion += 1. - smoothstep(0., 1., dist * .005);
 }
-vec3 llllllIIIIlll(sampler2D IIIlIIlllIIIllIIlI, vec2 IlllIIIlIIIIllIIlI) {
-   IlllIIIlIIIIllIIlI *= mix(vec2(.6f, 1), vec2(1), IIIIIllllllIll);
-   vec3 IIlllIIlIIllIIIIlI = texture(IIIlIIlllIIIllIIlI, IlllIIIlIIIIllIIlI * 1.2f * mix(vec2(.6f), vec2(1), IIIIIllllllIll) + lIIIlllllIllIl * .02f).xyz;
-   float IIlIIlIllIIIllIIlI = lIIIlllllIllIl * .06f;
-   vec3 IIlIlIIllllIIIIIlI = texture(IIIlIIlllIIIllIIlI, IlllIIIlIIIIllIIlI * 1.2f + IIlIIlIllIIIllIIlI).xyz, IIlIlIIllIIIllIIlI = texture(IIIlIIlllIIIllIIlI, -IlllIIIlIIIIllIIlI + IIlIIlIllIIIllIIlI).xyz;
-   float IllIIllIIIIIllIIlI = lIIIlllllIllIl * .001f, IIllllIIllIIIIIIlI = 0.f, IIlIIllIIIlllIIIlI = 0.f;
-   lllIIIIllIlIIIIIlI(IlllIIIlIIIIllIIlI, .2f - IllIIllIIIIIllIIlI * 3.f);
-   IIllIIIIIllIlIlIlI(IIllllIIllIIIIIIlI, IlllIIIlIIIIllIIlI + vec2(-50.f * IllIIllIIIIIllIIlI, 0));
-   lllIIIIllIlIIIIIlI(IlllIIIlIIIIllIIlI, .3f - IllIIllIIIIIllIIlI * 50.f);
-   IIllIIIIIllIlIlIlI(IIlIIllIIIlllIIIlI, IlllIIIlIIIIllIIlI + vec2(-70.f * IllIIllIIIIIllIIlI + 33.f, -33));
-   lllIIIIllIlIIIIIlI(IlllIIIlIIIIllIIlI, 2.f - IllIIllIIIIIllIIlI * 50.f);
-   IIllIIIIIllIlIlIlI(IIlIIllIIIlllIIIlI, IlllIIIlIIIIllIIlI + vec2(-10.f * IllIIllIIIIIllIIlI + 11.f, -11));
-   return mix(mix(IIlllIIlIIllIIIIlI, IIlIlIIllllIIIIIlI, IIllllIIllIIIIIIlI), IIlIlIIllIIIllIIlI, IIlIIllIIIlllIIIlI);
+
+vec3 sampleAndBlendTextures(sampler2D sampler, vec2 uv) {
+   uv *= mix(vec2(.6, 1), vec2(1), isVeryWide);
+   vec3 baseColor = texture(sampler, uv * 1.2 * mix(vec2(.6), vec2(1), isVeryWide) + tickTimeSeconds * .02).xyz;
+   float timeShift = tickTimeSeconds * .06;
+   vec3 shifterColor1 = texture(sampler, uv * 1.2 + timeShift).xyz;
+   vec3 shifterColor2 = texture(sampler, -uv + timeShift).xyz;
+   float smallShift = tickTimeSeconds * .001;
+   float distortion1 = 0., distortion2 = 0.;
+   rotate(uv, .2 - smallShift * 3.);
+   applyDistortion(distortion1, uv + vec2(-50. * smallShift, 0));
+   rotate(uv, .3 - smallShift * 50.);
+   applyDistortion(distortion2, uv + vec2(-70. * smallShift + 33., -33));
+   rotate(uv, 2. - smallShift * 50.);
+   applyDistortion(distortion2, uv + vec2(-10. * smallShift + 11., -11));
+   return mix(mix(baseColor, shifterColor1, distortion1), shifterColor2, distortion2);
 }
+
 void main() {
-   vec2 lIIlllIlllllIll = gl_FragCoord.xy / IIlIlIIlIlIllI.xy, lIIIlIIllIlIIlI = lIlIIllllIllIll(lIIIlllllIllIl * .2f) * .01f + .5f + lIIlllIlllllIll, lIIllIIlIIIllI = lIIIlIIllIlIIlI * .77f + IllIlllIlIIlllI + vec2(-.05f, 0), lIIllllIIIIllllII, lIlIIlIlIIIllIll;
-   lIIllIIlIIIllI.x *= IIlIlIIlIlIllI.x / IIlIlIIlIlIllI.y * mix(.8f, 1.f, IIIIIllllllIll);
-   lIIllllIIIIllllII = (lIIllIIlIIIllI - lIIIlIIllIlIIlI) / 2.f + vec2(.2f, .35f);
-   float lIIIlIllIllIlIIl = 0.f;
-   vec3 lIIIlIlIIIlIlIIl = vec3(0);
-   lIlIIlIlIIIllIll = lIIllIIlIIIllI;
-   for(int IllIlIIlIIlllllIIIl = 0; IllIlIIlIIlllllIIIl < 32; IllIlIIlIIlllllIIIl++) {
-      vec2 lIlllIlllIlllII = lllIIIIIIllIlIIIlI(lIIllIIlIIIllI), lIIIlllllIIIIllI;
-      float lIIlIlIIlIIlIllI = float(IllIlIIlIIlllllIIIl) / 32.f;
-      lIIIlllllIIIIllI = vec2(lIIllllIIIIllllII.x + (lIIllIIlIIIllI.x - lIIllllIIIIllllII.x) * lIlIlllllIllIll(-lIIIlllllIllIl * .2f) - (lIIllIIlIIIllI.y - lIIllllIIIIllllII.y) * lIlIIllllIllIll(-lIIIlllllIllIl * .2f), lIIllllIIIIllllII.y + (lIIllIIlIIIllI.x - lIIllllIIIIllllII.x) * lIlIIllllIllIll(-lIIIlllllIllIl * .2f) + (lIIllIIlIIIllI.y - lIIllllIIIIllllII.y) * lIlIlllllIllIll(-lIIIlllllIllIl * .2f));
-      lIIIlIlIIIlIlIIl += llllllIIIIlll(IlllIIlIlllIll, .5f + lIIllllIIIIllllII + (lIIIlllllIIIIllI - lIIllllIIIIllllII) / (vec2(mix(2.f, 1.f, IIIlllllllIIIllIl)) + (IIIlllIlIIllll * 2.f + .2f) * (1.f - pow(lIIlllIlllllIll.x * (1.f - lIIlllIlllllIll.y) * lIIlllIlllllIll.y * (1.f - lIIlllIlllllIll.x) * 15.f, 1.5f) * .9f))).xyz;
-      lIIIlIllIllIlIIl += 4.f * lIIlIlIIlIIlIllI * (1.f - lIIlIlIIlIIlIllI);
-      lIIllIIlIIIllI += .0024f * lIlllIlllIlllII * mix(5.f, lIlIIllllIllIll(lIIIlllllIllIl) * 2.5f + 2.5f, IIIIIllllllIll);
-      lIlIIlIlIIIllIll += .05f * lIlllIlllIlllII;
+   vec2 fragCoord = gl_FragCoord.xy / resolution.xy;
+   vec2 adjustedCoord = weirdSin(tickTimeSeconds * .2) * .01 + .5 + fragCoord;
+   vec2 uv = adjustedCoord * .77 + offset + vec2(-.05, 0);
+   vec2 centerOffset, transformedUV;
+
+   uv.x *= resolution.x / resolution.y * mix(.8, 1., isVeryWide);
+   centerOffset = (uv - adjustedCoord) / 2. + vec2(.2, .35);
+
+   float totalDistortion = 0.;
+   vec3 colorSum = vec3(0);
+   transformedUV = uv;
+   for (int i = 0; i < 32; i++) {
+      vec2 transformed = transformVec(uv);
+      float factor = float(i) / 32.;
+      float sampledCoordX = centerOffset.x + (uv.x - centerOffset.x) * weirdSinPhaseShift(-tickTimeSeconds * .2) - (uv.y - centerOffset.y) * weirdSin(-tickTimeSeconds * .2);
+      float sampledCoordY = centerOffset.y + (uv.x - centerOffset.x) * weirdSin(-tickTimeSeconds * .2) + (uv.y - centerOffset.y) * weirdSinPhaseShift(-tickTimeSeconds * .2);
+      vec2 sampledCoord = vec2(sampledCoordX, sampledCoordY);
+      colorSum += sampleAndBlendTextures(samplerString, .5 + centerOffset + (sampledCoord - centerOffset) / (vec2(mix(2., 1., hasLyricValue)) + (lowFreqVolume * 2. + .2) * (1. - pow(fragCoord.x * (1. - fragCoord.y) * fragCoord.y * (1. - fragCoord.x) * 15., 1.5) * .9))).xyz;
+      totalDistortion += 4. * factor * (1. - factor);
+      uv += .0024 * transformed * mix(5., weirdSin(tickTimeSeconds) * 2.5 + 2.5, isVeryWide);
+      transformedUV += .05 * transformed;
    }
-   lIIIlIlIIIlIlIIl /= lIIIlIllIllIlIIl;
-   lIIIlIlIIIlIlIIl *= 1.3f;
-   lIIIlIlIIIlIlIIl = 1.f - exp(-lIIIlIlIIIlIlIIl);
-   lIIIlIlIIIlIlIIl = pow(lIIIlIlIIIlIlIIl, vec3(3));
-   lIIIlIlIIIlIlIIl *= 1.25f;
-   lIIlIIIIIlIlIlllIIIIlIIl = vec4(lIIIlIlIIIlIlIIl, 1);
+   colorSum /= totalDistortion;
+   colorSum *= 1.3;
+   colorSum = 1. - exp(-colorSum);
+   colorSum = pow(colorSum, vec3(3));
+   colorSum *= 1.25;
+   out_vec4 = vec4(colorSum, 1);
 }

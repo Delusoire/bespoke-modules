@@ -23,17 +23,18 @@ export const flattenLyrics = (lyrics)=>Array.isArray(lyrics.content) ? lyrics.co
         lyrics
     ];
 export const findLyrics = async (info)=>{
-    const { lyrics, subtitles, track } = await fetchMxmMacroSubtitlesGet(info.uri, info.title, info.artist, info.album, info.durationS);
+    const res = await fetchMxmMacroSubtitlesGet(info.uri, info.title, info.artist, info.album, info.durationS);
     const l = {};
-    if (!lyrics) return l;
+    if (!res || !res.track) return l;
+    const { lyrics, subtitles, track } = res;
     const wrapInContainerSyncedType = (__type, content)=>({
             __type,
             tsp: 0,
             tep: 1,
             content
         });
-    if (track.has_richsync) {
-        const richSync = await fetchMxmTrackRichSyncGet(track.commontrack_id, track.track_length);
+    const richSync = track.has_richsync && await fetchMxmTrackRichSyncGet(track.commontrack_id, track.track_length);
+    if (richSync) {
         const wordSynced = richSync.map((rsLine)=>{
             const tsp = rsLine.ts / track.track_length;
             const tep = rsLine.te / track.track_length;
@@ -98,7 +99,7 @@ export const findLyrics = async (info)=>{
         l.lineSynced = wrapInContainerSyncedType(1, lineSynced);
     }
     if (track.has_lyrics || track.has_lyrics_crowd) {
-    //l.notSynced = wrapInContainerSyncedType(LyricsType.NOT_SYNCED, lyrics.lyrics_body)
+        l.notSynced = wrapInContainerSyncedType(0, lyrics.lyrics_body);
     }
     return l;
 };
@@ -111,8 +112,8 @@ const getTranslation = async (trackId, lang = "en")=>{
 };
 const fetchMxmMacroSubtitlesGet = async (uri, title, artist, album, durationS, renewsLeft = 1)=>{
     const url = new URL("https://apic-desktop.musixmatch.com/ws/1.1/macro.subtitles.get");
-    url.searchParams.append("format", "json");
     url.searchParams.append("namespace", "lyrics_richsynched");
+    url.searchParams.append("format", "json");
     url.searchParams.append("subtitle_format", "mxm");
     url.searchParams.append("app_id", "web-desktop-app-v1.0");
     url.searchParams.append("q_album", album);
@@ -127,29 +128,30 @@ const fetchMxmMacroSubtitlesGet = async (uri, title, artist, album, durationS, r
         headers
     }).then((res)=>res.json());
     if (res.message.header.hint === "renew") {
-        return renewsLeft > 0 ? fetchMxmMacroSubtitlesGet(uri, title, artist, album, durationS, renewsLeft - 1) : Promise.resolve({});
+        return renewsLeft > 0 ? fetchMxmMacroSubtitlesGet(uri, title, artist, album, durationS, renewsLeft - 1) : null;
     }
     const { "track.lyrics.get": trackLyricsGet, "track.snippet.get": trackSnippetGet, "track.subtitles.get": trackSubtitlesGet, "userblob.get": userblobGet, "matcher.track.get": matcherTrackGet } = res.message.body.macro_calls;
     return {
-        lyrics: trackLyricsGet.message.body.lyrics,
-        snippet: trackSnippetGet.message.body.snippet,
-        subtitles: trackSubtitlesGet.message.body.subtitle_list.map((subtitle_element)=>subtitle_element.subtitle),
-        track: matcherTrackGet.message.body.track
+        lyrics: trackLyricsGet.message.body.lyrics ?? null,
+        snippet: trackSnippetGet.message.body.snippet ?? null,
+        subtitles: trackSubtitlesGet.message.body.subtitle_list?.map((subtitle_element)=>subtitle_element.subtitle) ?? null,
+        track: matcherTrackGet.message.body.track ?? null
     };
 };
-const fetchMxmTrackRichSyncGet = async (commonTrackId, trackLength)=>{
+const fetchMxmTrackRichSyncGet = async (commonTrackId, durationS)=>{
     const url = new URL("https://apic-desktop.musixmatch.com/ws/1.1/track.richsync.get");
     url.searchParams.append("format", "json");
     url.searchParams.append("subtitle_format", "mxm");
     url.searchParams.append("app_id", "web-desktop-app-v1.0");
-    url.searchParams.append("f_subtitle_length", encodeURIComponent(trackLength));
-    url.searchParams.append("q_duration", encodeURIComponent(trackLength));
     url.searchParams.append("commontrack_id", encodeURIComponent(commonTrackId));
+    url.searchParams.append("q_duration", encodeURIComponent(durationS));
+    url.searchParams.append("f_subtitle_length", encodeURIComponent(Math.floor(durationS)));
     url.searchParams.append("usertoken", CONFIG.musixmatchToken);
     const res = await xfetch(url, {
         headers
     }).then((res)=>res.json());
-    return JSON.parse(res.message.body.richsync.richsync_body);
+    const { richsync } = res.message.body;
+    return richsync ? JSON.parse(richsync.richsync_body) : null;
 };
 const fetchMxmCrowdTrackTranslationsGet = async (trackId, lang = "en")=>{
     const url = new URL("https://apic-desktop.musixmatch.com/ws/1.1/crowd.track.translations.get");

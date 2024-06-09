@@ -1,8 +1,8 @@
 import { createEventBus } from "/modules/official/stdlib/index.js";
 import { React } from "/modules/official/stdlib/src/expose/React.js";
-import { BackgroundRender, EplorRenderer, LyricPlayer } from "./core/index.js";
+import { BackgroundRender, EplorRenderer, LyricPlayer } from "./amll/index.js";
 import { Platform } from "/modules/official/stdlib/src/expose/Platform.js";
-import { findLyrics } from "./utils/LyricsProvider.js";
+import { findLyrics } from "./src/utils/LyricsProvider.js";
 import { getSongPositionMs } from "/modules/Delusoire/delulib/lib/util.js";
 export let eventBus;
 export default async function(mod) {
@@ -55,7 +55,12 @@ const LyricRenderer_ = React.memo(({ data })=>{
     const [rendering, setRendering] = React.useState(false);
     React.useEffect(()=>{
         playerRef.current = new LyricPlayer();
+        const clickListener = (e)=>{
+            Platform.getPlayerAPI().seekTo(e.line.lyricLine.startTime);
+        };
+        playerRef.current.addEventListener("line-click", clickListener);
         return ()=>{
+            playerRef.current.removeEventListener("line-click", clickListener);
             playerRef.current.dispose();
         };
     }, []);
@@ -63,9 +68,9 @@ const LyricRenderer_ = React.memo(({ data })=>{
         if (!playerRef.current) {
             return;
         }
+        playerRef.current.setLyricLines([]);
         const item = data?.item;
         if (!item || item.type !== "track") {
-            playerRef.current.setLyricLines([]);
             return;
         }
         let cancelled = false;
@@ -99,7 +104,9 @@ const LyricRenderer_ = React.memo(({ data })=>{
                     endTime: line.tep * metadata.duration
                 };
             });
-            playerRef.current?.setLyricLines(l);
+            // if playerRef was changed cancelled would have been true
+            playerRef.current.setLyricLines(l);
+            playerRef.current.setLyricAdvanceDynamicLyricTime(true);
         });
         return ()=>{
             cancelled = true;

@@ -491,7 +491,7 @@ export class EplorRenderer extends BaseRenderer {
 	private ampTransition = 0;
 	private playTime = 0;
 	private frameTime = 0;
-	private IllIlllIlIIlllI: number[] = [-0.1, 0.0];
+	private offset: number[] = [-0.1, 0.0];
 	private onTick(tickTime: number) {
 		this.tickHandle = 0;
 		if (this.paused) return;
@@ -661,28 +661,28 @@ export class EplorRenderer extends BaseRenderer {
 		this.mainProgram.use();
 		// this.noiseTexture.active();
 		this.mainProgram.setUniform2f(
-			"IIlIlIIlIlIllI",
+			"resolution",
 			this.renderSize[0],
 			this.renderSize[1],
 		);
-		this.mainProgram.setUniform1f("lIIIlllllIllIl", tickTime / 1000);
-		this.mainProgram.setUniform1f("IIIlllllllIIIllIl", this.hasLyricValue);
+		this.mainProgram.setUniform1f("tickTimeSeconds", tickTime / 1000);
+		this.mainProgram.setUniform1f("hasLyricValue", this.hasLyricValue);
 		this.mainProgram.setUniform1f(
-			"IIIlllIlIIllll",
+			"lowFreqVolume",
 			this.hasLyric ? this._lowFreqVolume : 0.0,
 		);
 		if (window.innerWidth > 1024) {
-			this.IllIlllIlIIlllI = [-1.3, -0.9];
+			this.offset = [-1.3, -0.9];
 		} else {
-			this.IllIlllIlIIlllI = [-2.4, -1.4];
+			this.offset = [-2.4, -1.4];
 		}
 		this.mainProgram.setUniform2f(
-			"IllIlllIlIIlllI",
-			this.IllIlllIlIIlllI[0],
-			this.IllIlllIlIIlllI[1],
+			"offset",
+			this.offset[0],
+			this.offset[1],
 		);
 		this.mainProgram.setUniform1f(
-			"IIIIIllllllIll",
+			"isVeryWide",
 			window.innerWidth > 1024 ? 1 : 0,
 		);
 		const [fba, fbb] = this.fb;
@@ -696,7 +696,7 @@ export class EplorRenderer extends BaseRenderer {
 			gl.clear(this.gl.COLOR_BUFFER_BIT);
 
 			this.mainProgram.use();
-			sprite.draw("IlllIIlIlllIll");
+			sprite.draw("samplerString");
 
 			fbb.bind();
 
@@ -862,14 +862,14 @@ export class EplorRenderer extends BaseRenderer {
 		this.lastFrameTime = performance.now();
 		// const r = Number.parseInt((Math.random() * 10000).toFixed(0)) % 3;
 		// if (r === 0) {
-		// 	this.IllIlllIlIIlllI = [-1.3, -0.9];
-		// 	// this.IllIlllIlIIlllI = [-1.1, -.9];
+		// 	this.weirdNumberPair = [-1.3, -0.9];
+		// 	// this.weirdNumberPair = [-1.1, -.9];
 		// } else if (r === 1) {
-		// 	// this.IllIlllIlIIlllI = [-1.3, -0.9];
-		// 	this.IllIlllIlIIlllI = [-1.1, -0.9];
-		// 	// this.IllIlllIlIIlllI = [-0.25, -0.2];
+		// 	// this.weirdNumberPair = [-1.3, -0.9];
+		// 	this.weirdNumberPair = [-1.1, -0.9];
+		// 	// this.weirdNumberPair = [-0.25, -0.2];
 		// } else {
-		// 	this.IllIlllIlIIlllI = [-1.3, -0.9];
+		// 	this.weirdNumberPair = [-1.3, -0.9];
 		// }
 		// this.requestTick();
 	}

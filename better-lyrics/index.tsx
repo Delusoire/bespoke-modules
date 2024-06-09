@@ -3,10 +3,11 @@ import { ModuleInstance } from "/hooks/module.ts";
 
 import { React } from "/modules/official/stdlib/src/expose/React.ts";
 
-import { AbstractBaseRenderer, BackgroundRender, EplorRenderer, LyricLine, LyricPlayer } from "./core/index.ts";
+import { AbstractBaseRenderer, BackgroundRender, EplorRenderer, LyricLine, LyricPlayer } from "./amll/index.ts";
 import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
-import { findLyrics } from "./utils/LyricsProvider.ts";
+import { findLyrics } from "./src/utils/LyricsProvider.ts";
 import { getSongPositionMs } from "/modules/Delusoire/delulib/lib/util.ts";
+import { LyricLineMouseEventListener } from "./amll/lyric-player/index.ts";
 
 export let eventBus: EventBus;
 export default async function (mod: ModuleInstance) {
@@ -72,7 +73,13 @@ const LyricRenderer_ = React.memo(({ data }: { data: any }) => {
 
 	React.useEffect(() => {
 		playerRef.current = new LyricPlayer();
+
+		const clickListener: LyricLineMouseEventListener = (e) => {
+			Platform.getPlayerAPI().seekTo(e.line.lyricLine.startTime);
+		};
+		playerRef.current.addEventListener("line-click", clickListener as any);
 		return () => {
+			playerRef.current!.removeEventListener("line-click", clickListener as any);
 			playerRef.current!.dispose();
 		};
 	}, []);
@@ -82,9 +89,10 @@ const LyricRenderer_ = React.memo(({ data }: { data: any }) => {
 			return;
 		}
 
+		playerRef.current.setLyricLines([]);
+
 		const item = data?.item;
 		if (!item || item.type !== "track") {
-			playerRef.current.setLyricLines([]);
 			return;
 		}
 
@@ -124,7 +132,9 @@ const LyricRenderer_ = React.memo(({ data }: { data: any }) => {
 				};
 			});
 
-			playerRef.current?.setLyricLines(l);
+			// if playerRef was changed cancelled would have been true
+			playerRef.current!.setLyricLines(l);
+			playerRef.current!.setLyricAdvanceDynamicLyricTime(true);
 		});
 
 		return () => {

@@ -3,17 +3,16 @@
  * 一个播放歌词的组件
  * @author SteveXMH
  */ export { AbstractBaseRenderer, BaseRenderer } from "./base.js";
-export { PixiRenderer } from "./pixi-renderer.js";
 export { EplorRenderer } from "./eplor-renderer.js";
 export class BackgroundRender {
-    element;
     renderer;
-    constructor(renderer, canvas){
+    element;
+    constructor(renderer, element){
         this.renderer = renderer;
-        this.element = canvas;
-        canvas.style.pointerEvents = "none";
-        canvas.style.zIndex = "-1";
-        canvas.style.contain = "strict";
+        this.element = element;
+        element.style.pointerEvents = "none";
+        element.style.zIndex = "-1";
+        element.style.contain = "strict";
     }
     static new(type) {
         const canvas = document.createElement("canvas");
