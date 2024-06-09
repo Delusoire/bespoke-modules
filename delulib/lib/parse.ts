@@ -1,6 +1,4 @@
 import type { Track } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
-import type { fetchAlbumRes } from "./GraphQL/fetchAlbum.ts";
-import type { TopTracksItem } from "./GraphQL/sharedTypes.ts";
 
 export type TrackData = {
 	uri: string;

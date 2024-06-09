@@ -1,4 +1,4 @@
-import { fetchAlbum } from "/modules/Delusoire/delulib/lib/GraphQL/fetchAlbum.js";
+import { fetchAlbumTracks } from "../delulib/lib/GraphQL/fetchAlbumTracks.js";
 import { fetchArtistDiscography } from "/modules/Delusoire/delulib/lib/GraphQL/fetchArtistDiscography.js";
 import { fetchArtistOverview } from "/modules/Delusoire/delulib/lib/GraphQL/fetchArtistOveriew.js";
 import { _, fp } from "/modules/official/stdlib/deps.js";
@@ -9,20 +9,20 @@ import { CONFIG } from "./settings.js";
 import { is } from "/modules/official/stdlib/src/webpack/URI.js";
 import { is_LikedTracks } from "./util.js";
 export const getTracksFromAlbum = async (uri)=>{
-    const albumRes = await fetchAlbum(uri);
+    const albumRes = await fetchAlbumTracks(uri);
     const filler = {
         albumUri: uri
     };
     const tracks = albumRes.tracks.items;
-    return Promise.all(tracks.map(async (track)=>{
+    return Promise.all(tracks.map(async ({ track })=>{
         const artists = track.artists.items;
         return Object.assign({
             uri: track.uri,
             name: track.name,
             artistUris: artists.map((a)=>a.uri),
             artistName: artists[0].profile.name,
-            durationMilis: track.duration.totalMilliseconds,
-            playcount: track.playcount
+            durationMilis: Number(track.duration.totalMilliseconds),
+            playcount: Number(track.playcount)
         }, filler);
     }));
 };

@@ -1,4 +1,4 @@
-import { fetchAlbum } from "/modules/Delusoire/delulib/lib/GraphQL/fetchAlbum.ts";
+import { fetchAlbumTracks } from "../delulib/lib/GraphQL/fetchAlbumTracks.ts";
 import { fetchArtistDiscography } from "/modules/Delusoire/delulib/lib/GraphQL/fetchArtistDiscography.ts";
 import { fetchArtistOverview } from "/modules/Delusoire/delulib/lib/GraphQL/fetchArtistOveriew.ts";
 import { _, fp } from "/modules/official/stdlib/deps.ts";
@@ -22,7 +22,7 @@ import { is } from "/modules/official/stdlib/src/webpack/URI.ts";
 import { is_LikedTracks } from "./util.ts";
 
 export const getTracksFromAlbum = async (uri: string) => {
-	const albumRes = await fetchAlbum(uri);
+	const albumRes = await fetchAlbumTracks(uri);
 
 	const filler = {
 		albumUri: uri as string,
@@ -31,15 +31,15 @@ export const getTracksFromAlbum = async (uri: string) => {
 	const tracks = albumRes.tracks.items as any[];
 
 	return Promise.all(
-		tracks.map(async (track) => {
+		tracks.map(async ({ track }) => {
 			const artists = track.artists.items as any[];
 			return Object.assign({
 				uri: track.uri as string,
 				name: track.name as string,
 				artistUris: artists.map((a) => a.uri as string),
 				artistName: artists[0].profile.name as string,
-				durationMilis: track.duration.totalMilliseconds as number,
-				playcount: track.playcount as number,
+				durationMilis: Number(track.duration.totalMilliseconds),
+				playcount: Number(track.playcount),
 			}, filler);
 		}),
 	);
