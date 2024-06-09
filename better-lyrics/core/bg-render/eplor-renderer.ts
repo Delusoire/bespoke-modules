@@ -14,7 +14,7 @@ import { loadResourceFromElement, loadResourceFromUrl } from "../utils/resource.
 
 const NOISE_IMAGE_DATA = (() => {
 	const img = document.createElement("img");
-	img.src = "/modules/Delusoire/better-lyrics/src/core/assets/noise 5.png";
+	img.src = "/modules/Delusoire/better-lyrics/src/core/assets/noise5.png";
 	return img;
 })();
 

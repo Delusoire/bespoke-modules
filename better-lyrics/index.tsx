@@ -3,9 +3,15 @@ import { ModuleInstance } from "/hooks/module.ts";
 
 import { React } from "/modules/official/stdlib/src/expose/React.ts";
 
-import { LyricLine, LyricPlayer } from "./src/core/index.ts";
+import {
+	AbstractBaseRenderer,
+	BackgroundRender,
+	EplorRenderer,
+	LyricLine,
+	LyricPlayer,
+} from "./src/core/index.ts";
 import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
-import { findLyrics } from "/modules/Delusoire/better-lyrics/src.old/utils/LyricsProvider.ts";
+import { findLyrics } from "./src.old/utils/LyricsProvider.ts";
 import { getSongPositionMs } from "/modules/Delusoire/delulib/lib/util.ts";
 
 export let eventBus: EventBus;
@@ -13,29 +19,67 @@ export default async function (mod: ModuleInstance) {
 	eventBus = createEventBus(mod);
 }
 
-globalThis.__renderCinemaLyrics = () => {
-	const cinemaContainerRef = React.useRef<HTMLDivElement>(null);
+const BackgroundRenderer_ = React.memo(({ data }: { data: any }) => {
+	const backgroundWrapperRef = React.useRef<HTMLDivElement>(null);
+	const rendererRef = React.useRef<AbstractBaseRenderer>();
+	const image = data.item.metadata.image_xlarge_url ??
+		data.item.metadata.image_large_url ??
+		data.item.metadata.image_url ??
+		data.item.metadata.image_small_url;
+
+	React.useEffect(() => {
+		rendererRef.current = BackgroundRender.new(EplorRenderer);
+		rendererRef.current.setFlowSpeed(10);
+
+		return () => {
+			rendererRef.current!.dispose();
+		};
+	}, []);
+
+	React.useEffect(() => {
+		if (!rendererRef.current || !image) {
+			return;
+		}
+
+		rendererRef.current.setAlbum(
+			image.replace(/^spotify:image:(.*)$/, "https://i.scdn.co/image/$1"),
+			false,
+		);
+	}, [rendererRef.current, image]);
+
+	React.useEffect(() => {
+		if (rendererRef.current) {
+			const el = rendererRef.current.getElement();
+			el.style.width = "100%";
+			el.style.height = "100%";
+			backgroundWrapperRef.current?.appendChild(el);
+		}
+	}, [backgroundWrapperRef.current]);
+
+	return (
+		<div
+			style={{
+				position: "absolute",
+				top: "0",
+				left: "0",
+				width: "100%",
+				height: "100%",
+			}}
+			ref={backgroundWrapperRef}
+		/>
+	);
+});
+
+const LyricRenderer_ = React.memo(({ data }: { data: any }) => {
+	const lyricsWrapperRef = React.useRef<HTMLDivElement>(null);
 	const playerRef = React.useRef<LyricPlayer>();
-
-	const PlayerAPI = Platform.getPlayerAPI();
-
-	const [data, setData] = React.useState(PlayerAPI.getState());
 
 	const [rendering, setRendering] = React.useState(false);
 
 	React.useEffect(() => {
 		playerRef.current = new LyricPlayer();
-		const songListener = (e: any) => {
-			if (e.data.item.uri !== data.item.uri) {
-				setData(data);
-			}
-		};
-
-		PlayerAPI.getEvents().addListener("update", songListener);
-
 		return () => {
-			PlayerAPI.getEvents().removeListener("update", songListener);
-			playerRef.current?.dispose();
+			playerRef.current!.dispose();
 		};
 	}, []);
 
@@ -92,17 +136,17 @@ globalThis.__renderCinemaLyrics = () => {
 		return () => {
 			cancelled = true;
 		};
-	}, [playerRef.current, data]);
+	}, [playerRef.current, data.item.uri]);
 
 	React.useEffect(() => {
 		if (playerRef.current) {
-			cinemaContainerRef.current?.appendChild(playerRef.current.getElement());
+			lyricsWrapperRef.current?.appendChild(playerRef.current.getElement());
 			setRendering(true);
 			return () => {
 				setRendering(false);
 			};
 		}
-	}, [cinemaContainerRef.current]);
+	}, [lyricsWrapperRef.current]);
 
 	React.useEffect(() => {
 		if (!rendering) {
@@ -127,7 +171,18 @@ globalThis.__renderCinemaLyrics = () => {
 		return () => {
 			canceled = true;
 		};
-	}, [rendering]);
+	}, [rendering, data]);
+
+	React.useEffect(() => {
+		if (!playerRef.current) {
+			return;
+		}
+		if (data.isPaused) {
+			playerRef.current.pause();
+		} else {
+			playerRef.current.resume();
+		}
+	}, [playerRef.current, data.isPaused]);
 
 	return (
 		<div
@@ -143,7 +198,32 @@ globalThis.__renderCinemaLyrics = () => {
 				overflow: "hidden",
 				mixBlendMode: "plus-lighter",
 			}}
-			ref={cinemaContainerRef}
+			ref={lyricsWrapperRef}
 		/>
+	);
+});
+
+globalThis.__renderCinemaLyrics = () => {
+	const PlayerAPI = Platform.getPlayerAPI();
+
+	const [data, setData] = React.useState(PlayerAPI.getState());
+
+	React.useEffect(() => {
+		const songListener = (e: any) => {
+			setData(e.data);
+		};
+
+		PlayerAPI.getEvents().addListener("update", songListener);
+
+		return () => {
+			PlayerAPI.getEvents().removeListener("update", songListener);
+		};
+	}, []);
+
+	return (
+		<>
+			<BackgroundRenderer_ data={data} />
+			<LyricRenderer_ data={data} />
+		</>
 	);
 };

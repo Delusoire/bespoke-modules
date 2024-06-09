@@ -1,30 +1,62 @@
 import { createEventBus } from "/modules/official/stdlib/index.js";
 import { React } from "/modules/official/stdlib/src/expose/React.js";
-import { LyricPlayer } from "./src/core/index.js";
+import { BackgroundRender, EplorRenderer, LyricPlayer } from "./src/core/index.js";
 import { Platform } from "/modules/official/stdlib/src/expose/Platform.js";
-import { findLyrics } from "/modules/Delusoire/better-lyrics/src.old/utils/LyricsProvider.js";
+import { findLyrics } from "./src.old/utils/LyricsProvider.js";
 import { getSongPositionMs } from "/modules/Delusoire/delulib/lib/util.js";
 export let eventBus;
 export default async function(mod) {
     eventBus = createEventBus(mod);
 }
-globalThis.__renderCinemaLyrics = ()=>{
-    const cinemaContainerRef = React.useRef(null);
+const BackgroundRenderer_ = React.memo(({ data })=>{
+    const backgroundWrapperRef = React.useRef(null);
+    const rendererRef = React.useRef();
+    const image = data.item.metadata.image_xlarge_url ?? data.item.metadata.image_large_url ?? data.item.metadata.image_url ?? data.item.metadata.image_small_url;
+    React.useEffect(()=>{
+        rendererRef.current = BackgroundRender.new(EplorRenderer);
+        rendererRef.current.setFlowSpeed(10);
+        return ()=>{
+            rendererRef.current.dispose();
+        };
+    }, []);
+    React.useEffect(()=>{
+        if (!rendererRef.current || !image) {
+            return;
+        }
+        rendererRef.current.setAlbum(image.replace(/^spotify:image:(.*)$/, "https://i.scdn.co/image/$1"), false);
+    }, [
+        rendererRef.current,
+        image
+    ]);
+    React.useEffect(()=>{
+        if (rendererRef.current) {
+            const el = rendererRef.current.getElement();
+            el.style.width = "100%";
+            el.style.height = "100%";
+            backgroundWrapperRef.current?.appendChild(el);
+        }
+    }, [
+        backgroundWrapperRef.current
+    ]);
+    return /*#__PURE__*/ React.createElement("div", {
+        style: {
+            position: "absolute",
+            top: "0",
+            left: "0",
+            width: "100%",
+            height: "100%"
+        },
+        ref: backgroundWrapperRef
+    });
+});
+const LyricRenderer_ = React.memo(({ data })=>{
+    const lyricsWrapperRef = React.useRef(null);
     const playerRef = React.useRef();
-    const PlayerAPI = Platform.getPlayerAPI();
-    const [data, setData] = React.useState(PlayerAPI.getState());
     const [rendering, setRendering] = React.useState(false);
     React.useEffect(()=>{
         playerRef.current = new LyricPlayer();
-        const songListener = (e)=>{
-            if (e.data.item.uri !== data.item.uri) {
-                setData(data);
-            }
-        };
-        PlayerAPI.getEvents().addListener("update", songListener);
         return ()=>{
-            PlayerAPI.getEvents().removeListener("update", songListener);
-            playerRef.current?.dispose();
+            playerRef.current.dispose();
         };
     }, []);
     React.useEffect(()=>{
@@ -74,18 +106,18 @@ globalThis.__renderCinemaLyrics = ()=>{
         };
     }, [
         playerRef.current,
-        data
+        data.item.uri
     ]);
     React.useEffect(()=>{
         if (playerRef.current) {
-            cinemaContainerRef.current?.appendChild(playerRef.current.getElement());
+            lyricsWrapperRef.current?.appendChild(playerRef.current.getElement());
             setRendering(true);
             return ()=>{
                 setRendering(false);
             };
         }
     }, [
-        cinemaContainerRef.current
+        lyricsWrapperRef.current
     ]);
     React.useEffect(()=>{
         if (!rendering) {
@@ -109,7 +141,21 @@ globalThis.__renderCinemaLyrics = ()=>{
             canceled = true;
         };
     }, [
-        rendering
+        rendering,
+        data
+    ]);
+    React.useEffect(()=>{
+        if (!playerRef.current) {
+            return;
+        }
+        if (data.isPaused) {
+            playerRef.current.pause();
+        } else {
+            playerRef.current.resume();
+        }
+    }, [
+        playerRef.current,
+        data.isPaused
     ]);
     return /*#__PURE__*/ React.createElement("div", {
         style: {
@@ -124,6 +170,24 @@ globalThis.__renderCinemaLyrics = ()=>{
             overflow: "hidden",
             mixBlendMode: "plus-lighter"
         },
-        ref: cinemaContainerRef
+        ref: lyricsWrapperRef
     });
+});
+globalThis.__renderCinemaLyrics = ()=>{
+    const PlayerAPI = Platform.getPlayerAPI();
+    const [data, setData] = React.useState(PlayerAPI.getState());
+    React.useEffect(()=>{
+        const songListener = (e)=>{
+            setData(e.data);
+        };
+        PlayerAPI.getEvents().addListener("update", songListener);
+        return ()=>{
+            PlayerAPI.getEvents().removeListener("update", songListener);
+        };
+    }, []);
+    return /*#__PURE__*/ React.createElement(React.Fragment, null, /*#__PURE__*/ React.createElement(BackgroundRenderer_, {
+        data: data
+    }), /*#__PURE__*/ React.createElement(LyricRenderer_, {
+        data: data
+    }));
 };

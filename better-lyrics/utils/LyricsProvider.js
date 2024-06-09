@@ -19,7 +19,6 @@ export var LyricsType;
     LyricsType[LyricsType["LINE_SYNCED"] = 1] = "LINE_SYNCED";
     LyricsType[LyricsType["WORD_SYNCED"] = 2] = "WORD_SYNCED";
 })(LyricsType || (LyricsType = {}));
-export const Filler = "♪";
 export const flattenLyrics = (lyrics)=>Array.isArray(lyrics.content) ? lyrics.content.flatMap(flattenLyrics) : [
         lyrics
     ];
@@ -60,6 +59,7 @@ export const findLyrics = async (info)=>{
                 tsp: 1
             }
         ])).map(([prev, next])=>{
+            return false;
             const tsp = prev.tep;
             const tep = next.tsp;
             const duration = (tep - tsp) * track.track_length * 1000;

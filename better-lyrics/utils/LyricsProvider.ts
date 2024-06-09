@@ -49,8 +49,6 @@ export enum LyricsType {
 	WORD_SYNCED = 2,
 }
 
-export const Filler = "♪";
-
 export type NotSynced = SW<string> & { __type: LyricsType.NOT_SYNCED };
 export type LineSynced = SW<Array<S<OneUplet<S<string>>>>> & { __type: LyricsType.LINE_SYNCED };
 export type WordSynced = SW<Array<S<Array<S<string>>>>> & {
@@ -106,6 +104,7 @@ export const findLyrics = async (info: {
 			zip_n_uplets<TwoUplet<S<Array<S<string>>>>>(2)([{ tep: 0 }, ...wordSynced, { tsp: 1 }]),
 		)
 			.map(([prev, next]) => {
+				return false;
 				const tsp = prev.tep;
 				const tep = next.tsp;
 				const duration = (tep - tsp) * track.track_length * 1000;
