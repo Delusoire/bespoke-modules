@@ -1,8 +1,8 @@
 import { createEventBus } from "/modules/official/stdlib/index.js";
 import { React } from "/modules/official/stdlib/src/expose/React.js";
-import { BackgroundRender, EplorRenderer, LyricPlayer } from "./src/core/index.js";
+import { BackgroundRender, EplorRenderer, LyricPlayer } from "./core/index.js";
 import { Platform } from "/modules/official/stdlib/src/expose/Platform.js";
-import { findLyrics } from "./src.old/utils/LyricsProvider.js";
+import { findLyrics } from "./utils/LyricsProvider.js";
 import { getSongPositionMs } from "/modules/Delusoire/delulib/lib/util.js";
 export let eventBus;
 export default async function(mod) {

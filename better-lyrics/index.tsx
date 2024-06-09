@@ -3,15 +3,9 @@ import { ModuleInstance } from "/hooks/module.ts";
 
 import { React } from "/modules/official/stdlib/src/expose/React.ts";
 
-import {
-	AbstractBaseRenderer,
-	BackgroundRender,
-	EplorRenderer,
-	LyricLine,
-	LyricPlayer,
-} from "./src/core/index.ts";
+import { AbstractBaseRenderer, BackgroundRender, EplorRenderer, LyricLine, LyricPlayer } from "./core/index.ts";
 import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
-import { findLyrics } from "./src.old/utils/LyricsProvider.ts";
+import { findLyrics } from "./utils/LyricsProvider.ts";
 import { getSongPositionMs } from "/modules/Delusoire/delulib/lib/util.ts";
 
 export let eventBus: EventBus;
