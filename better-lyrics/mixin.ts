@@ -14,6 +14,11 @@ export default function (transformer: Transformer) {
 			"$1(__renderCinemaLyrics, {})",
 		);
 
+		str = str.replace(
+			/\.hasLyrics\)return null;/,
+			'.hasLyrics){d??={};d.hasLyrics=true;d.colors??={activeText:"rgb(255, 255, 255)",background:"rgb(100, 100, 100)",text:"rgb(0, 0, 0)"};}',
+		);
+
 		emit();
 
 		return str;
