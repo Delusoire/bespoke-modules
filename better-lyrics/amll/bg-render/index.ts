@@ -10,15 +10,10 @@ export { PixiRenderer } from "./pixi-renderer.ts";
 export { EplorRenderer } from "./eplor-renderer.ts";
 
 export class BackgroundRender<Renderer extends BaseRenderer> implements AbstractBaseRenderer {
-	private element: HTMLCanvasElement;
-	private renderer: Renderer;
-	constructor(renderer: Renderer, canvas: HTMLCanvasElement) {
-		this.renderer = renderer;
-
-		this.element = canvas;
-		canvas.style.pointerEvents = "none";
-		canvas.style.zIndex = "-1";
-		canvas.style.contain = "strict";
+	constructor(private renderer: Renderer, private element: HTMLCanvasElement) {
+		element.style.pointerEvents = "none";
+		element.style.zIndex = "-1";
+		element.style.contain = "strict";
 	}
 
 	static new<Renderer extends BaseRenderer>(type: {
