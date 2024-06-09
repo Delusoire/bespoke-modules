@@ -99,10 +99,8 @@ void main() {
 
       uv += .0024 * transformed * mix(5., sin(tickTimeSeconds) * 2.5 + 2.5, isVeryWide);
    }
-   colorSum /= 21.3125;
-   colorSum *= 1.3;
-   colorSum = 1. - exp(-colorSum);
-   colorSum = pow(colorSum, vec3(3));
-   colorSum *= 1.25;
+
+   colorSum = 1. - exp(-colorSum * 1.3 / 21.3125);
+   colorSum = pow(colorSum, vec3(3)) * 1.25;
    outColor = vec4(colorSum, 1);
 }
