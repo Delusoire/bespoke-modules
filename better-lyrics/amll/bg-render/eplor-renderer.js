@@ -1,13 +1,13 @@
 import { BaseRenderer } from "./base.js";
-const vertShader = await fetch("/modules/Delusoire/better-lyrics/src/core/bg-render/shaders/base.vert.glsl").then((res)=>res.text());
-const fragShader = await fetch("/modules/Delusoire/better-lyrics/src/core/bg-render/shaders/base.frag.glsl").then((res)=>res.text());
-const blendShader = await fetch("/modules/Delusoire/better-lyrics/src/core/bg-render/shaders/blend.frag.glsl").then((res)=>res.text());
-const eplorShader = await fetch("/modules/Delusoire/better-lyrics/src/core/bg-render/shaders/eplor.frag.glsl").then((res)=>res.text());
-const noiseShader = await fetch("/modules/Delusoire/better-lyrics/src/core/bg-render/shaders/noise.frag.glsl").then((res)=>res.text());
+const vertShader = await fetch("/modules/Delusoire/better-lyrics/amll/bg-render/shaders/base.vert.glsl").then((res)=>res.text());
+const fragShader = await fetch("/modules/Delusoire/better-lyrics/amll/bg-render/shaders/base.frag.glsl").then((res)=>res.text());
+const blendShader = await fetch("/modules/Delusoire/better-lyrics/amll/bg-render/shaders/blend.frag.glsl").then((res)=>res.text());
+const eplorShader = await fetch("/modules/Delusoire/better-lyrics/amll/bg-render/shaders/eplor.frag.glsl").then((res)=>res.text());
+const noiseShader = await fetch("/modules/Delusoire/better-lyrics/amll/bg-render/shaders/noise.frag.glsl").then((res)=>res.text());
 import { loadResourceFromElement, loadResourceFromUrl } from "../utils/resource.js";
 const NOISE_IMAGE_DATA = (()=>{
     const img = document.createElement("img");
-    img.src = "/modules/Delusoire/better-lyrics/src/core/assets/noise5.png";
+    img.src = "/modules/Delusoire/better-lyrics/amll/assets/noise5.png";
     return img;
 })();
 function blurImage(imageData, radius, quality) {
