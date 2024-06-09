@@ -32,7 +32,7 @@ void rotate(inout vec2 u, float angle) {
    u = cos(angle) * u + sin(angle) * vec2(u.y, -u.x);
 }
 
-float lengthTransform(vec2 u, float scale) {
+float dist1(vec2 u, float scale) {
    return (length(u / scale) - 1.) * scale;
 }
 
@@ -42,14 +42,14 @@ void applyDistortion(inout float distortion, vec2 u) {
       u.x += 5000.;
 
    vec2 cell = floor(u / 1000. + .5);
-   float noiseVal = noise1(dot(cell.xy, vec2(12.9898, 78.233)));
+   float cellularNoise = noise1(dot(cell.xy, vec2(12.9898, 78.233)));
 
    vec2 v = mod(u + 5500., 1000.) - 500.;
-   v.x *= mix(.9, .6, fract(noiseVal * 11.13 + 11.13)) * 1.2;
-   v.y *= mix(.9, .6, fract(noiseVal * 17.17 + 17.17)) * .8;
+   v.x *= mix(.9, .6, fract(cellularNoise * 11.13 + 11.13)) * 1.2;
+   v.y *= mix(.9, .6, fract(cellularNoise * 17.17 + 17.17)) * .8;
 
-   float dist = lengthTransform(v, mix(30., 70., fract(noiseVal * 7.77 + 7.77)));
-   distortion += 1. - smoothstep(0., 1., dist * .005);
+   float d = dist1(v, mix(30., 70., fract(cellularNoise * 7.77 + 7.77)));
+   distortion += 1. - smoothstep(0., 1., d * .005);
 }
 
 vec3 sampleAndBlendTextures(sampler2D sampler, vec2 uv) {
