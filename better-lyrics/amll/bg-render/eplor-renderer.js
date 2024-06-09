@@ -570,9 +570,9 @@ export class EplorRenderer extends BaseRenderer {
         this.mainProgram.use();
         // this.noiseTexture.active();
         this.mainProgram.setUniform2f("resolution", this.renderSize[0], this.renderSize[1]);
-        this.mainProgram.setUniform1f("tickTimeSeconds", tickTime / 1000);
-        this.mainProgram.setUniform1f("hasLyricValue", this.hasLyricValue);
-        this.mainProgram.setUniform1f("lowFreqVolume", this.hasLyric ? this._lowFreqVolume : 0.0);
+        this.mainProgram.setUniform1f("frameTime", tickTime / 1000);
+        this.mainProgram.setUniform1f("hasLyric", this.hasLyricValue);
+        this.mainProgram.setUniform1f("lowFreq", this.hasLyric ? this._lowFreqVolume : 0.0);
         if (window.innerWidth > 1024) {
             this.offset = [
                 -1.3,
@@ -585,7 +585,7 @@ export class EplorRenderer extends BaseRenderer {
             ];
         }
         this.mainProgram.setUniform2f("offset", this.offset[0], this.offset[1]);
-        this.mainProgram.setUniform1f("isVeryWide", window.innerWidth > 1024 ? 1 : 0);
+        this.mainProgram.setUniform1f("isHorizontal", window.innerWidth > 1024 ? 1 : 0);
         const [fba, fbb] = this.fb;
         fbb.bind();
         gl.clearColor(0, 0, 0, 0);
@@ -595,7 +595,7 @@ export class EplorRenderer extends BaseRenderer {
             gl.clearColor(0, 0, 0, 0);
             gl.clear(this.gl.COLOR_BUFFER_BIT);
             this.mainProgram.use();
-            sprite.draw("samplerString");
+            sprite.draw("sampler");
             fbb.bind();
             this.blendProgram.use();
             fba.active();
