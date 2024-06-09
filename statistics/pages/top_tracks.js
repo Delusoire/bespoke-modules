@@ -10,7 +10,7 @@ import { useDropdown } from "/modules/official/stdlib/lib/components/index.js";
 import CreatePlaylistButton from "../components/buttons/create_playlist_button.js";
 import { useQuery } from "/modules/official/stdlib/src/webpack/ReactQuery.js";
 import { Tracklist, TracklistColumnsContextProvider, TracklistRow } from "/modules/official/stdlib/src/webpack/ReactComponents.js";
-import { getPlayContext } from "/modules/official/stdlib/src/webpack/CustomHooks.js";
+import { getPlayContext, useTrackListColumns } from "/modules/official/stdlib/src/webpack/CustomHooks.js";
 const DropdownOptions = {
     "Past Month": ()=>"Past Month",
     "Past 6 Months": ()=>"Past 6 Months",
@@ -43,16 +43,8 @@ const TrackRow = React.memo(({ track, index })=>{
     });
 });
 const TracksPageContent = ({ topTracks })=>{
-    const thisRef = React.useRef(null);
-    const columns = [
-        "INDEX",
-        "TITLE_AND_ARTIST",
-        "ALBUM",
-        "DURATION"
-    ];
-    return /*#__PURE__*/ React.createElement(TracklistColumnsContextProvider, {
-        columns: columns
-    }, /*#__PURE__*/ React.createElement(Tracklist, {
+    const columns = useTrackListColumns();
+    return /*#__PURE__*/ React.createElement(Tracklist, {
         ariaLabel: "Top Tracks",
         hasHeaderRow: true,
         columns: columns,
@@ -66,11 +58,10 @@ const TracksPageContent = ({ topTracks })=>{
         nrTracks: topTracks.length,
         fetchTracks: (offset, limit)=>topTracks.slice(offset, offset + limit),
         limit: 50,
-        outerRef: thisRef,
         tracks: topTracks,
         isCompactMode: false,
         columnPersistenceKey: "stats-top-tracks"
-    }, "spotify:app:stats:tracks"));
+    }, "spotify:app:stats:tracks");
 };
 const TracksPage = ()=>{
     const [dropdown, activeOption] = useDropdown({
@@ -105,8 +96,15 @@ const TracksPage = ()=>{
             }),
             settingsButton
         ]
-    }, Status || /*#__PURE__*/ React.createElement(TracksPageContent, {
+    }, Status ?? /*#__PURE__*/ React.createElement(TracklistColumnsContextProvider, {
+        columns: [
+            "INDEX",
+            "TITLE_AND_ARTIST",
+            "ALBUM",
+            "DURATION"
+        ]
+    }, /*#__PURE__*/ React.createElement(TracksPageContent, {
         topTracks: topTracks
-    }));
+    })));
 };
 export default React.memo(TracksPage);

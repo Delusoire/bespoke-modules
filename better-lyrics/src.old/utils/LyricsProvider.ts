@@ -300,7 +300,7 @@ const fetchMxmMacroSubtitlesGet = async (
 	const res = await xfetch(url, { headers }).then((res) => res.json());
 	if (res.message.header.hint === "renew") {
 		return renewsLeft > 0
-			? fetchMxmMacroSubtitlesGet(uri, title, artist, album, durationS, 0)
+			? fetchMxmMacroSubtitlesGet(uri, title, artist, album, durationS, renewsLeft - 1)
 			: Promise.resolve({} as None<MxMMacroSubtitles>);
 	}
 	const {

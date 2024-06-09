@@ -2,9 +2,9 @@ const timeRegexp = /^(((?<hour>[0-9]+):)?(?<min>[0-9]+):)?(?<sec>[0-9]+([.:]([0-
 function parseTimespan(timeSpan) {
     const matches = timeRegexp.exec(timeSpan);
     if (matches) {
-        const hour = Number(matches.groups?.hour || "0");
-        const min = Number(matches.groups?.min || "0");
-        const sec = Number(matches.groups?.sec.replace(/:/, ".") || "0");
+        const hour = Number(matches.groups?.hour ?? "0");
+        const min = Number(matches.groups?.min ?? "0");
+        const sec = Number(matches.groups?.sec.replace(/:/, ".") ?? "0");
         return Math.floor((hour * 3600 + min * 60 + sec) * 1000);
     }
     throw new TypeError(`时间戳字符串解析失败：${timeSpan}`);

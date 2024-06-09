@@ -3,22 +3,27 @@ import { fetchArtistDiscography } from "/modules/Delusoire/delulib/lib/GraphQL/f
 import { fetchArtistOverview } from "/modules/Delusoire/delulib/lib/GraphQL/fetchArtistOveriew.js";
 import { _, fp } from "/modules/official/stdlib/deps.js";
 import { pMchain } from "/modules/Delusoire/delulib/lib/fp.js";
-import { parseAlbumTrack, parseArtistLikedTrack, parseLibraryAPILikedTracks, parsePlaylistAPITrack, parseTopTrackFromArtist } from "/modules/Delusoire/delulib/lib/parse.js";
+import { parseArtistLikedTrack, parseLibraryAPILikedTracks, parsePlaylistAPITrack, parseTopTrackFromArtist } from "/modules/Delusoire/delulib/lib/parse.js";
 import { fetchArtistLikedTracks, fetchLikedTracks, fetchPlaylistContents } from "/modules/Delusoire/delulib/lib/platform.js";
 import { CONFIG } from "./settings.js";
 import { is } from "/modules/official/stdlib/src/webpack/URI.js";
 import { is_LikedTracks } from "./util.js";
 export const getTracksFromAlbum = async (uri)=>{
     const albumRes = await fetchAlbum(uri);
-    const releaseDate = new Date(albumRes.date.isoString).getTime();
     const filler = {
-        albumUri: albumRes.uri,
-        albumName: albumRes.name,
-        releaseDate
+        albumUri: uri
     };
-    return Promise.all(albumRes.tracks.items.map(async (track)=>{
-        const parsedTrack = await parseAlbumTrack(track);
-        return Object.assign(parsedTrack, filler);
+    const tracks = albumRes.tracks.items;
+    return Promise.all(tracks.map(async (track)=>{
+        const artists = track.artists.items;
+        return Object.assign({
+            uri: track.uri,
+            name: track.name,
+            artistUris: artists.map((a)=>a.uri),
+            artistName: artists[0].profile.name,
+            durationMilis: track.duration.totalMilliseconds,
+            playcount: track.playcount
+        }, filler);
     }));
 };
 export const getLikedTracks = _.flow(fetchLikedTracks, pMchain(fp.map(parseLibraryAPILikedTracks)));

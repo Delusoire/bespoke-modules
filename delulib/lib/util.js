@@ -99,10 +99,10 @@ export const setPlayingContext = (uri)=>{
         url: `context://${uri}`
     });
 };
-export const getSongPositionMs = (item = PlayerAPI.getState().item)=>{
-    if (item === null) return null;
-    const { positionAsOfTimestamp, timestamp, duration, speed, hasContext, isPaused, isBuffering } = item;
-    if (!positionAsOfTimestamp || !duration) return null;
+export const getSongPositionMs = (state = PlayerAPI.getState())=>{
+    if (state === null) return 0;
+    const { positionAsOfTimestamp, timestamp, duration, speed, hasContext, isPaused, isBuffering } = state;
+    if (!positionAsOfTimestamp || !duration) return 0;
     if (!hasContext || isPaused || isBuffering) return positionAsOfTimestamp;
     const scaledTimeSinceTimestamp = (Date.now() - timestamp) * (speed ?? 0);
     return Math.min(positionAsOfTimestamp + scaledTimeSinceTimestamp, duration);

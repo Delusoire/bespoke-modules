@@ -24,19 +24,6 @@ export const parseArtistLikedTrack = (track)=>({
         popularity: undefined,
         releaseDate: undefined
     });
-export const parseAlbumTrack = ({ track })=>({
-        uri: track.uri,
-        uid: undefined,
-        name: track.name,
-        albumUri: "",
-        albumName: "",
-        artistUris: track.artists.items.map((artist)=>artist.uri),
-        artistName: track.artists.items[0].profile.name,
-        durationMilis: track.duration.totalMilliseconds,
-        playcount: Number(track.playcount),
-        popularity: undefined,
-        releaseDate: -1
-    });
 export const parsePlaylistAPITrack = (track)=>({
         uri: track.uri,
         uid: track.uid,

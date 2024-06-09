@@ -98,6 +98,7 @@ globalThis.__patchTracklistWrapperProps = (props)=>{
             index: index,
             renderRow: props.renderRow
         }), [
+        true,
         props.renderRow
     ]);
     return p;
@@ -121,5 +122,12 @@ globalThis.__patchTracklistColumnHeaderContextMenu = (column)=>{
 };
 globalThis.__patchTracklistColumns = (columns)=>{
     const i = -1;
-    return React.useMemo(() => [...columns.slice(0, i), COLUMN, ...columns.slice(i)], [columns]);
+    return React.useMemo(()=>[
+            ...columns.slice(0, i),
+            COLUMN,
+            ...columns.slice(i)
+        ], [
+        true,
+        columns
+    ]);
 };

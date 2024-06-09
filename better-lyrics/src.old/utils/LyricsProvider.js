@@ -127,7 +127,7 @@ const fetchMxmMacroSubtitlesGet = async (uri, title, artist, album, durationS, r
         headers
     }).then((res)=>res.json());
     if (res.message.header.hint === "renew") {
-        return renewsLeft > 0 ? fetchMxmMacroSubtitlesGet(uri, title, artist, album, durationS, 0) : Promise.resolve({});
+        return renewsLeft > 0 ? fetchMxmMacroSubtitlesGet(uri, title, artist, album, durationS, renewsLeft - 1) : Promise.resolve({});
     }
     const { "track.lyrics.get": trackLyricsGet, "track.snippet.get": trackSnippetGet, "track.subtitles.get": trackSubtitlesGet, "userblob.get": userblobGet, "matcher.track.get": matcherTrackGet } = res.message.body.macro_calls;
     return {

@@ -16,9 +16,7 @@ import {
 	TracklistColumnsContextProvider,
 	TracklistRow,
 } from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
-import { getPlayContext } from "/modules/official/stdlib/src/webpack/CustomHooks.ts";
-import { exportedFunctions } from "/modules/official/stdlib/src/webpack/index.ts";
-import { findBy } from "/hooks/util.ts";
+import { getPlayContext, useTrackListColumns } from "/modules/official/stdlib/src/webpack/CustomHooks.ts";
 
 const DropdownOptions = {
 	"Past Month": () => "Past Month",
@@ -70,7 +68,6 @@ const TracksPageContent = ({ topTracks }: TracksPageContentProps) => {
 			nrTracks={topTracks.length}
 			fetchTracks={(offset, limit) => topTracks.slice(offset, offset + limit)}
 			limit={50}
-			outerRef={thisRef}
 			tracks={topTracks}
 			isCompactMode={false}
 			columnPersistenceKey="stats-top-tracks"
