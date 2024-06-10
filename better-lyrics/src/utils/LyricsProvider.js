@@ -1,18 +1,15 @@
 import { _ } from "/modules/official/stdlib/deps.js";
 import { zip_n_uplets } from "/modules/Delusoire/delulib/lib/fp.js";
 import { xfetch } from "/modules/official/stdlib/lib/window.js";
+import { CONFIG } from "../../settings.js";
 const headers = {
     authority: "apic-desktop.musixmatch.com",
     cookie: "x-mxm-token-guid="
 };
-const CONFIG = {
-    musixmatchToken: undefined
-};
-fetch("https://cors-proxy.spicetify.app/https://apic-desktop.musixmatch.com/ws/1.1/token.get?app_id=web-desktop-app-v1.0").then((res)=>res.json()).then((json)=>{
-    if (json.message.header.status_code === 200 && json.message.body.user_token) {
-        CONFIG.musixmatchToken = json.message.body.user_token;
-    }
-});
+export async function fetchMxMToken() {
+    const json = await fetch("https://cors-proxy.spicetify.app/https://apic-desktop.musixmatch.com/ws/1.1/token.get?app_id=web-desktop-app-v1.0").then((res)=>res.json());
+    return json.message.body?.user_token;
+}
 export var LyricsType;
 (function(LyricsType) {
     LyricsType[LyricsType["NOT_SYNCED"] = 0] = "NOT_SYNCED";
@@ -72,7 +69,7 @@ export const findLyrics = async (info)=>{
                         tsp,
                         tep,
                         duration,
-                        content: Filler
+                        content: "🎵"
                     }
                 ]
             };

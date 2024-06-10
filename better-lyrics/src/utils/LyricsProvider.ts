@@ -1,23 +1,19 @@
 import { _ } from "/modules/official/stdlib/deps.ts";
 import { type OneUplet, type TwoUplet, zip_n_uplets } from "/modules/Delusoire/delulib/lib/fp.ts";
 import { xfetch } from "/modules/official/stdlib/lib/window.ts";
+import { CONFIG } from "../../settings.ts";
 
 const headers = {
 	authority: "apic-desktop.musixmatch.com",
 	cookie: "x-mxm-token-guid=",
 };
 
-const CONFIG = {
-	musixmatchToken: undefined as unknown as string,
-};
-
-fetch(
-	"https://cors-proxy.spicetify.app/https://apic-desktop.musixmatch.com/ws/1.1/token.get?app_id=web-desktop-app-v1.0",
-).then((res) => res.json()).then((json) => {
-	if (json.message.header.status_code === 200 && json.message.body.user_token) {
-		CONFIG.musixmatchToken = json.message.body.user_token;
-	}
-});
+export async function fetchMxMToken() {
+	const json = await fetch(
+		"https://cors-proxy.spicetify.app/https://apic-desktop.musixmatch.com/ws/1.1/token.get?app_id=web-desktop-app-v1.0",
+	).then((res) => res.json());
+	return json.message.body?.user_token as string | undefined;
+}
 
 export type Lyrics = {
 	notSynced?: NotSynced;
@@ -121,7 +117,7 @@ export const findLyrics = async (info: {
 								tsp,
 								tep,
 								duration,
-								content: Filler,
+								content: "🎵",
 							},
 						],
 					}
