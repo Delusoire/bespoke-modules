@@ -45,13 +45,13 @@ void applyDistortion( inout float distortion, vec2 u )
    if( mod( cell.y, 2. )==0. )
       cell.x += 5000.;
 
-   float cellularNoise = hash( dot( cell, vec2( 12.9898, 78.233 ) ) );
+   float cellularNoise = 1.+hash( dot( cell, vec2( 12.9898, 78.233 ) ) );
 
    vec2 v = mod( ( u*1000. )+500., 1000. )-500.;
-   v.x *= mix( .9, .6, fract( cellularNoise*11.13+11.13 ) )*1.2;
-   v.y *= mix( .9, .6, fract( cellularNoise*17.17+17.17 ) )*.8;
+   v.x *= mix( 1.08, .72, fract( cellularNoise*11.11 ) );
+   v.y *= mix( .72, .48, fract( cellularNoise*17.17 ) );
 
-   float d = dist( v, mix( 30., 70., fract( cellularNoise*7.77+7.77 ) ) );
+   float d = dist( v, mix( 30., 70., fract( cellularNoise*7.77 ) ) );
    distortion += 1.-smoothstep( 0., 1., d*.005 );
 }
 
