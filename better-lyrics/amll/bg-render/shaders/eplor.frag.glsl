@@ -40,7 +40,7 @@ float dist( vec2 u, float scale )
 
 void applyDistortion( inout float distortion, vec2 u )
 {
-   vec2 cell = floor( u+.5 );
+   vec2 cell = round( u );
 
    if( mod( cell.y, 2. )==0. )
       cell.x += 5000.;
