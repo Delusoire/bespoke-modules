@@ -7,7 +7,7 @@ import { CLICKABLE_ELEMENT_SELECTOR, isElementInViewPort } from "./util.ts";
 
 import { Mousetrap } from "/modules/official/stdlib/src/webpack/Mousetrap.ts";
 
-export const mousetrapInst = Mousetrap();
+export const mousetrapInst = await Promise.resolve().then(() => Mousetrap());
 export const KEY_LIST = "abcdefghijklmnopqrstuvwxyz".split("");
 
 export let listeningToSneakBinds = false;

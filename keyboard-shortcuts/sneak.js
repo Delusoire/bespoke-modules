@@ -380,7 +380,7 @@ import { map } from "https://esm.sh/lit/directives/map.js";
 import { styleMap } from "https://esm.sh/lit/directives/style-map.js";
 import { CLICKABLE_ELEMENT_SELECTOR, isElementInViewPort } from "./util.js";
 import { Mousetrap } from "/modules/official/stdlib/src/webpack/Mousetrap.js";
-export const mousetrapInst = Mousetrap();
+export const mousetrapInst = await Promise.resolve().then(()=>Mousetrap());
 export const KEY_LIST = "abcdefghijklmnopqrstuvwxyz".split("");
 export let listeningToSneakBinds = false;
 let __SneakKey;

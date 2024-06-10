@@ -7,9 +7,8 @@
 
 .playlist-labels-labels-container {
     --playlist-label-height: calc(var(--row-height) * 32/56);
-    height: var(--row-height);
-    align-items: center;
     display: flex;
+    align-items: center;
     overflow-x: scroll;
     overflow-y: hidden;
     scroll-behavior: smooth;

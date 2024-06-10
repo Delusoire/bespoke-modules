@@ -65,7 +65,7 @@ const PlaylistLabel = ({ uri, playlistUri }: { uri: string; playlistUri: string 
 					}}
 					onClick={(e) => {
 						e.stopPropagation();
-						const pathname = fromString(uri)?.toURLPath(true);
+						const pathname = fromString(playlistUri)?.toURLPath(true);
 						pathname &&
 							History.push({
 								pathname,
