@@ -38,16 +38,16 @@ float dist( vec2 u, float scale )
    return length( u )-scale;
 }
 
-void applyDistortion( inout float distortion, vec2 u )
+void affectCellDistortion( inout float distortion, vec2 uv )
 {
-   vec2 cell = round( u );
+   vec2 cell = round( uv );
 
    if( mod( cell.y, 2. )==0. )
       cell.x += 5000.;
 
    float cellularNoise = 1.+hash( dot( cell, vec2( 12.9898, 78.233 ) ) );
 
-   vec2 v = mod( ( u*1000. )+500., 1000. )-500.;
+   vec2 v = mod( ( uv*1000. )+500., 1000. )-500.;
    v.x *= mix( 1.08, .72, fract( cellularNoise*11.11 ) );
    v.y *= mix( .72, .48, fract( cellularNoise*17.17 ) );
 
@@ -68,13 +68,13 @@ vec3 sampleAndBlendTextures( sampler2D sampler, vec2 uv )
    float distortion1 = 0., distortion2 = 0.;
 
    rotate( uv, .2-frameTimeMs*3. );
-   applyDistortion( distortion1, uv+vec2( -50.*frameTimeMs, 0 ) );
+   affectCellDistortion( distortion1, uv+vec2( -50.*frameTimeMs, 0 ) );
 
    rotate( uv, .3-frameTimeMs*50. );
-   applyDistortion( distortion2, uv+vec2( -70.*frameTimeMs+33.,-33 ) );
+   affectCellDistortion( distortion2, uv+vec2( -70.*frameTimeMs+33.,-33 ) );
 
    rotate( uv, 2.-frameTimeMs*50. );
-   applyDistortion( distortion2, uv+vec2( -10.*frameTimeMs+11.,-11 ) );
+   affectCellDistortion( distortion2, uv+vec2( -10.*frameTimeMs+11.,-11 ) );
 
    return mix( mix( baseColor, shifterColor1, distortion1 ), shifterColor2, distortion2 );
 }
