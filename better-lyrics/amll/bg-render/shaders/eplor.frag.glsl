@@ -57,7 +57,7 @@ void applyDistortion( inout float distortion, vec2 u )
 
 vec3 sampleAndBlendTextures( sampler2D sampler, vec2 uv )
 {
-   uv *= mix( vec2( .6, 1 ), vec2( 1 ), isHorizontal );
+   uv.x *= mix( .6, 1., isHorizontal );
    vec3 baseColor = texture( sampler, uv*1.2*mix( vec2( .6 ), vec2( 1 ), isHorizontal )+frameTime*.02 ).xyz;
 
    float frameTimeMh = frameTime*.06;
@@ -83,9 +83,11 @@ void main( )
 {
    vec2 p = gl_FragCoord.xy/resolution.xy;
    vec2 adjustedCoord = sin( frameTime*.2 )*.01+.5+p;
-   vec2 uv = adjustedCoord*.77+offset+vec2( -.05, 0 );
 
-   uv.x *= resolution.x/resolution.y*mix( .8, 1., isHorizontal );
+   vec2 uv = adjustedCoord*.77+offset+vec2( -.05, 0 );
+   uv.x *= resolution.x/resolution.y;
+   uv.x *= mix( .8, 1., isHorizontal );
+
    vec2 centerOffset = ( uv-adjustedCoord )/2.+vec2( .2, .35 );
 
    float acc = 0.;
