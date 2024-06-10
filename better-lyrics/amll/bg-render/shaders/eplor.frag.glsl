@@ -40,15 +40,14 @@ float dist( vec2 u, float scale )
 
 void applyDistortion( inout float distortion, vec2 u )
 {
-   u *= 1000.;
-   vec2 cell = floor( u/1000.+.5 );
+   vec2 cell = floor( u+.5 );
 
    if( mod( cell.y, 2. )==0. )
       cell.x += 5000.;
 
    float cellularNoise = hash( dot( cell, vec2( 12.9898, 78.233 ) ) );
 
-   vec2 v = mod( u+5500., 1000. )-500.;
+   vec2 v = mod( ( u*1000. )+500., 1000. )-500.;
    v.x *= mix( .9, .6, fract( cellularNoise*11.13+11.13 ) )*1.2;
    v.y *= mix( .9, .6, fract( cellularNoise*17.17+17.17 ) )*.8;
 
