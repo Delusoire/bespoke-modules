@@ -15,8 +15,8 @@ export default function (transformer: Transformer) {
 		);
 
 		str = str.replace(
-			/\.hasLyrics\)return null;/,
-			'.hasLyrics){d??={};d.hasLyrics=true;d.colors??={activeText:"rgb(255, 255, 255)",background:"rgb(100, 100, 100)",text:"rgb(0, 0, 0)"};}',
+			/([a-zA-Z_\$][\w\$]*)\.hasLyrics\)return null;/,
+			'.hasLyrics){$1??={};$1.hasLyrics=true;$1.colors??={activeText:"rgb(255, 255, 255)",background:"rgb(100, 100, 100)",text:"rgb(0, 0, 0)"};}',
 		);
 
 		emit();
