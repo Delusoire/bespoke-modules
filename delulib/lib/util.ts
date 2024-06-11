@@ -1,4 +1,4 @@
-import type { ModuleInstance } from "/hooks/module.ts";
+import type { Module } from "/hooks/index.ts";
 import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
 
 const PlayerAPI = Platform.getPlayerAPI();
@@ -31,7 +31,7 @@ export class PermanentMutationObserver extends MutationObserver {
 	target: HTMLElement | null = null;
 
 	constructor(
-		mod: ModuleInstance,
+		mod: Module,
 		targetSelector: string,
 		callback: MutationCallback,
 		opts: MutationObserverInit = {

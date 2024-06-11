@@ -18,7 +18,7 @@ import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
 import { React } from "/modules/official/stdlib/src/expose/React.ts";
 import { fromString, is } from "/modules/official/stdlib/src/webpack/URI.ts";
 import { Route } from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
-import { ModuleInstance } from "/hooks/module.ts";
+import { Module } from "/hooks/index.ts";
 
 const History = Platform.getHistory();
 
@@ -27,7 +27,7 @@ export let logger: Console;
 export let settings: Settings;
 export let settingsButton: React.JSX.Element;
 
-export default function (mod: ModuleInstance) {
+export default function (mod: Module) {
 	storage = createStorage(mod);
 	logger = createLogger(mod);
 	[settings, settingsButton] = createSettings(mod);

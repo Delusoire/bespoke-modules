@@ -1,5 +1,5 @@
 import { createEventBus, type EventBus } from "/modules/official/stdlib/index.ts";
-import { ModuleInstance } from "/hooks/module.ts";
+import { Module } from "/hooks/index.ts";
 
 import { React } from "/modules/official/stdlib/src/expose/React.ts";
 
@@ -8,7 +8,7 @@ import { createSettings, Settings } from "/modules/official/stdlib/lib/settings.
 
 export let eventBus: EventBus;
 export let settings: Settings;
-export default async function (mod: ModuleInstance) {
+export default async function (mod: Module) {
 	eventBus = createEventBus(mod);
 	[settings] = createSettings(mod);
 
