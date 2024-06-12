@@ -32,8 +32,10 @@ jobs:
                   BASE="$(ls -d * | tail -n 1)"
                   cp "${BASE}/metadata.json" "${HOME}/dist/${BASE}.metadata.json"
                   7z a -bb0 -sdel "${BASE}.zip" $BASE/*
+                  rmdir $BASE
                   mv "${BASE}.zip" "${HOME}/dist/"
                   popd
+                  rmdir $DIR
                done
 
          -  name: Release
