@@ -1,0 +1,27 @@
+{
+	"name": "playlist-labels",
+	"tags": [
+		"extension",
+		"playlists",
+		"tags"
+	],
+	"preview": "./assets/PREVIEW.png",
+	"version": "0.1.0-beta+duffey--spicetify-playlist-labels--355bfabdfd68d3a98460d8e44b9bd0f9fe3d1fe9",
+	"authors": [
+		"Delusoire",
+		"duffey"
+	],
+	"description": "Adds interactive playlist labels to your tracklist",
+	"readme": "./assets/README.md",
+	"entries": {
+		"js": "index.js",
+		"css": "index.css",
+		"mixin": "mixin.js"
+	},
+	"dependencies": {
+		"official/stdlib": "0.1.0-beta",
+		"Delusoire/delulib": "0.1.0-beta",
+		"Delusoire/library-db": "0.1.0-beta",
+		"Delusoire/dexie-react-hooks": "1.1.7"
+	}
+}

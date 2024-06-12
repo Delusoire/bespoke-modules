@@ -1,0 +1,26 @@
+.marketplace-header {
+   /*-webkit-box-pack: justify;
+    -webkit-box-align: center;*/
+   color: var(--spice-text);
+   background-color: var(--spice-main);
+
+   /* To position the settings button + colour schemes */
+   position: sticky;
+
+   /* Fix positioning on readme pages */
+   .contentSpacing:has(#module-readme) & {
+      top: 0;
+   }
+}
+
+.marketplace-grid {
+   --minimumColumnWidth: 180px;
+   --column-width: minmax(var(--minimumColumnWidth), 1fr);
+   --column-count: auto-fill;
+   --grid-gap: 24px;
+}
+
+.soGhxDX6VjS7dBxX9Hbd {
+   grid-template-columns: repeat(auto-fill, var(--column-width));
+   width: calc((var(--column-count) - 1) * var(--grid-gap) + var(--column-count) * var(--column-width));
+}

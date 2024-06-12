@@ -1,0 +1,68 @@
+#module-readme {
+   --background-body: var(--spice-main);
+   --background: var(--spice-main);
+   --background-alt: var(--spice-shadow);
+   --selection: #1c76c5;
+   --text-main: var(--spice-subtext);
+   --text-bright: var(--spice-text);
+   --text-muted: #a9b1ba;
+   --links: #41adff;
+   --border: #526980;
+   --code: #ffbe85;
+   --button-base: #0c151c;
+   --button-hover: #040a0f;
+   --scrollbar-thumb: var(--button-hover);
+   --scrollbar-thumb-hover: rgb(0, 0, 0);
+   --form-placeholder: #a9a9a9;
+   --form-text: #fff;
+   --variable: #d941e2;
+   --highlight: #efdb43;
+
+   /* === Custom tweaks to water.css ===*/
+   code {
+      /*  TODO: I added this myself to try and make the code blocks look presentable*/
+      /* since I don't havea good background colour*/
+      border: 1px solid var(--spice-button-disabled);
+   }
+
+   /* Add some basic styling (Spotify has it removed)*/
+   ul,
+   li {
+      list-style-position: inside;
+
+      li {
+         margin-bottom: 8px;
+      }
+   }
+
+   ul {
+      list-style-type: disc;
+   }
+
+   ol {
+      list-style-type: auto;
+   }
+
+   /* Add some basic margin*/
+   p,
+   pre,
+   code {
+      margin: 8px 0;
+   }
+
+   /* Make single-line code blocks not trail offscreen*/
+   pre {
+      overflow-x: auto;
+   }
+
+   table {
+      /* Stop install directions "platform/path" stuff from doing the widths equally all the time*/
+      table-layout: auto;
+
+      th,
+      td {
+         /* Add borders to table cells*/
+         border: 1px solid var(--spice-button-disabled);
+      }
+   }
+}

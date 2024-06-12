@@ -1,0 +1,22 @@
+{
+	"name": "spoqify-radios",
+	"tags": [
+		"extension",
+		"radio",
+		"spoqify"
+	],
+	"preview": "./assets/PREVIEW.png",
+	"version": "0.1.0-beta",
+	"authors": [
+		"Delusoire"
+	],
+	"description": "Create anonymized radio-playlists for your favorite songs, playlists, artists and albums.",
+	"readme": "./assets/README.md",
+	"entries": {
+		"js": "index.js"
+	},
+	"dependencies": {
+		"official/stdlib": "0.1.0-beta",
+		"Delusoire/delulib": "0.1.0-beta"
+	}
+}

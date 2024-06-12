@@ -1,0 +1,24 @@
+{
+	"name": "sort-plus",
+	"tags": [
+		"extension",
+		"sort",
+		"playcount",
+		"lastfm",
+		"shuffle"
+	],
+	"preview": "./assets/PREVIEW.png",
+	"version": "0.1.0-beta",
+	"authors": [
+		"Delusoire"
+	],
+	"description": "Sort your Playlists/Albums/Artists/Liked Songs on a bunch of metrics. (You can shuffle too!)",
+	"readme": "./assets/README.md",
+	"entries": {
+		"js": "index.js"
+	},
+	"dependencies": {
+		"official/stdlib": "0.1.0-beta",
+		"Delusoire/delulib": "0.1.0-beta"
+	}
+}

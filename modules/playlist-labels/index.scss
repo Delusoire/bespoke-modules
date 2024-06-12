@@ -1,0 +1,34 @@
+:root {
+    --playlist-labels-size: 28px;
+    --playlist-labels-gap: 6px;
+    --playlist-labels-count: 5;
+
+}
+
+.playlist-labels-labels-container {
+    --playlist-label-height: calc(var(--row-height) * 32/56);
+    display: flex;
+    -webkit-box-align: center;
+    align-items: center;
+    overflow-x: scroll;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    scrollbar-width: none;
+    gap: var(--playlist-labels-gap);
+}
+
+[data-testid="tracklist-row"]>[role="gridcell"]:last-of-type .playlist-labels-labels-container {
+    flex-direction: row-reverse;
+}
+
+.playlist-labels-label-container {
+    position: relative;
+    height: var(--playlist-label-height);
+}
+
+.playlist-labels-label-container>img {
+    width: var(--playlist-label-height);
+    height: 100%;
+    object-fit: cover;
+    border-radius: calc(var(--playlist-label-height) * 0.1);
+}

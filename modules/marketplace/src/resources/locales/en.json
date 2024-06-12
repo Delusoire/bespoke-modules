@@ -1,0 +1,34 @@
+{
+	"translation": {
+		"module": {
+			"archived": "archived"
+		},
+		"pages": {
+			"marketplace": {
+				"search_modules": "Search Modules",
+				"sort": {
+					"label": "Sort by:"
+				}
+			},
+			"module": {
+				"title": "Module page",
+				"install": "Install",
+				"remove": "Remove"
+			}
+		},
+		"sort": {
+			"default": "Default",
+			"a-z": "A-Z",
+			"z-a": "Z-A",
+			"random": "Random"
+		},
+		"filter": {
+			"themes": "Themes",
+			"apps": "Apps",
+			"extensions": "Extensions",
+			"snippets": "Snippets",
+			"libs": "Libraries",
+			"enabled": "Enabled"
+		}
+	}
+}
