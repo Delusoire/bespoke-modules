@@ -52,10 +52,15 @@ jobs:
                for URL in ${{ fromJSON(steps.release.outputs.assets).*.browser_download_url }}; do
                   ARCHIVE="${URL##*/}"
                   IFS="@" read -r ID VERSION <<< "$ARCHIVE"
+                  echo $ID
+                  echo $VERSION
                   ID="$(tr . / <<< "${ID}")"
+                  echo $ID
                   VERSION="${VERSION%.zip}"
+                  echo $VERSION
                   VERSION="${VERSION/?}"
-                  yq -i ".modules.[\"${ID}\"].v[\"${VERSION}\"].artifacts += [\"${URL}\"]" vault.json
+                  echo $VERSION
+                  yq -i ".modules[\"${ID}\"].v[\"${VERSION}\"].artifacts += [\"${URL}\"]" vault.json
                done
 
          -  name: Git commit, rebase onto master

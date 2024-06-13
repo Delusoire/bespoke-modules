@@ -1,139 +1,144 @@
 {
-   "modules": {
-      "Delusoire/adblock": {
-         "enabled": "",
-         "v": {
-            "0.1.0-beta": {
-               "artifacts": [],
-               "providers": []
-            }
-         }
-      },
-      "Delusoire/better-lyrics": {
-         "enabled": "",
-         "v": {
-            "0.1.0-beta": {
-               "artifacts": [],
-               "providers": []
-            }
-         }
-      },
-      "Delusoire/delulib": {
-         "enabled": "",
-         "v": {
-            "0.1.0-beta": {
-               "artifacts": [],
-               "providers": []
-            }
-         }
-      },
-      "Delusoire/dexie-react-hooks": {
-         "enabled": "",
-         "v": {
-            "1.1.7": {
-               "artifacts": [],
-               "providers": []
-            }
-         }
-      },
-      "Delusoire/hazy": {
-         "enabled": "",
-         "v": {
-            "0.1.0-beta+Astromations--Hazy--fa443999da80ba2ee1faf7038de1a16596dacbe9": {
-               "artifacts": [],
-               "providers": []
-            }
-         }
-      },
-      "Delusoire/keyboard-shortcuts": {
-         "enabled": "",
-         "v": {
-            "0.1.0-beta": {
-               "artifacts": [],
-               "providers": []
-            }
-         }
-      },
-      "Delusoire/library-db": {
-         "enabled": "",
-         "v": {
-            "0.1.0-beta": {
-               "artifacts": [],
-               "providers": []
-            }
-         }
-      },
-      "Delusoire/marketplace": {
-         "enabled": "",
-         "v": {
-            "0.1.0-beta": {
-               "artifacts": [],
-               "providers": []
-            }
-         }
-      },
-      "Delusoire/playlist-labels": {
-         "enabled": "",
-         "v": {
-            "0.1.0-beta+duffey--spicetify-playlist-labels--355bfabdfd68d3a98460d8e44b9bd0f9fe3d1fe9": {
-               "artifacts": [],
-               "providers": []
-            }
-         }
-      },
-      "Delusoire/search-on-youtube": {
-         "enabled": "",
-         "v": {
-            "0.1.0-beta": {
-               "artifacts": [],
-               "providers": []
-            }
-         }
-      },
-      "Delusoire/show-the-genres": {
-         "enabled": "",
-         "v": {
-            "0.1.0-beta": {
-               "artifacts": [],
-               "providers": []
-            }
-         }
-      },
-      "Delusoire/sort-plus": {
-         "enabled": "",
-         "v": {
-            "0.1.0-beta": {
-               "artifacts": [],
-               "providers": []
-            }
-         }
-      },
-      "Delusoire/spoqify-radios": {
-         "enabled": "",
-         "v": {
-            "0.1.0-beta": {
-               "artifacts": [],
-               "providers": []
-            }
-         }
-      },
-      "Delusoire/statistics": {
-         "enabled": "",
-         "v": {
-            "0.1.0-beta+harbassan--spicetify-apps--a8bf02cafb661b5d9504084cdef73a1ee2572d43": {
-               "artifacts": [],
-               "providers": []
-            }
-         }
-      },
-      "Delusoire/vaultify": {
-         "enabled": "",
-         "v": {
-            "0.1.0-beta": {
-               "artifacts": [],
-               "providers": []
-            }
-         }
+  "modules": {
+    "Delusoire/adblock": {
+      "enabled": "",
+      "v": {
+        "0.1.0-beta": {
+          "artifacts": [],
+          "providers": []
+        },
+        "0.0.0-latest": {
+          "artifacts": [
+            "hello world"
+          ]
+        }
       }
-   }
+    },
+    "Delusoire/better-lyrics": {
+      "enabled": "",
+      "v": {
+        "0.1.0-beta": {
+          "artifacts": [],
+          "providers": []
+        }
+      }
+    },
+    "Delusoire/delulib": {
+      "enabled": "",
+      "v": {
+        "0.1.0-beta": {
+          "artifacts": [],
+          "providers": []
+        }
+      }
+    },
+    "Delusoire/dexie-react-hooks": {
+      "enabled": "",
+      "v": {
+        "1.1.7": {
+          "artifacts": [],
+          "providers": []
+        }
+      }
+    },
+    "Delusoire/hazy": {
+      "enabled": "",
+      "v": {
+        "0.1.0-beta+Astromations--Hazy--fa443999da80ba2ee1faf7038de1a16596dacbe9": {
+          "artifacts": [],
+          "providers": []
+        }
+      }
+    },
+    "Delusoire/keyboard-shortcuts": {
+      "enabled": "",
+      "v": {
+        "0.1.0-beta": {
+          "artifacts": [],
+          "providers": []
+        }
+      }
+    },
+    "Delusoire/library-db": {
+      "enabled": "",
+      "v": {
+        "0.1.0-beta": {
+          "artifacts": [],
+          "providers": []
+        }
+      }
+    },
+    "Delusoire/marketplace": {
+      "enabled": "",
+      "v": {
+        "0.1.0-beta": {
+          "artifacts": [],
+          "providers": []
+        }
+      }
+    },
+    "Delusoire/playlist-labels": {
+      "enabled": "",
+      "v": {
+        "0.1.0-beta+duffey--spicetify-playlist-labels--355bfabdfd68d3a98460d8e44b9bd0f9fe3d1fe9": {
+          "artifacts": [],
+          "providers": []
+        }
+      }
+    },
+    "Delusoire/search-on-youtube": {
+      "enabled": "",
+      "v": {
+        "0.1.0-beta": {
+          "artifacts": [],
+          "providers": []
+        }
+      }
+    },
+    "Delusoire/show-the-genres": {
+      "enabled": "",
+      "v": {
+        "0.1.0-beta": {
+          "artifacts": [],
+          "providers": []
+        }
+      }
+    },
+    "Delusoire/sort-plus": {
+      "enabled": "",
+      "v": {
+        "0.1.0-beta": {
+          "artifacts": [],
+          "providers": []
+        }
+      }
+    },
+    "Delusoire/spoqify-radios": {
+      "enabled": "",
+      "v": {
+        "0.1.0-beta": {
+          "artifacts": [],
+          "providers": []
+        }
+      }
+    },
+    "Delusoire/statistics": {
+      "enabled": "",
+      "v": {
+        "0.1.0-beta+harbassan--spicetify-apps--a8bf02cafb661b5d9504084cdef73a1ee2572d43": {
+          "artifacts": [],
+          "providers": []
+        }
+      }
+    },
+    "Delusoire/vaultify": {
+      "enabled": "",
+      "v": {
+        "0.1.0-beta": {
+          "artifacts": [],
+          "providers": []
+        }
+      }
+    }
+  }
 }
