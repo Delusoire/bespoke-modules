@@ -54,9 +54,10 @@ jobs:
                   VERSION="${VERSION%.zip}"
                   VERSION="${VERSION/?}"
                   URL="https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/${ARCHIVE}"
+                  M='.modules["'"${ID}"'"].v["'"${VERSION}"'"]'
                   yq -i '
-                     .modules["'"${ID}"'"].v["'"${VERSION}"'"].artifacts += ["'"${URL}"'"] |
-                     .modules["'"${ID}"'"].v["'"${VERSION}"'"].providers //= []
+                     '"${M}"'.artifacts += ["'"${URL}"'"] |
+                     '"${M}"'.providers += []
                   ' vault.json
                done
                rm -rf dist
