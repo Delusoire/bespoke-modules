@@ -6,11 +6,6 @@
         "0.1.0-beta": {
           "artifacts": [],
           "providers": []
-        },
-        "0.1.0-beta+sp-1.2.38-cm-1675203200": {
-          "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/v0.0.0-5/Delusoire.adblock@v0.1.0-beta+sp-1.2.38-cm-1675203200.zip"
-          ]
         }
       }
     },
@@ -20,11 +15,6 @@
         "0.1.0-beta": {
           "artifacts": [],
           "providers": []
-        },
-        "0.1.0-beta+sp-1.2.38-cm-1675203200": {
-          "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/v0.0.0-5/Delusoire.better-lyrics@v0.1.0-beta+sp-1.2.38-cm-1675203200.zip"
-          ]
         }
       }
     },
@@ -34,11 +24,6 @@
         "0.1.0-beta": {
           "artifacts": [],
           "providers": []
-        },
-        "0.1.0-beta+sp-1.2.38-cm-1675203200": {
-          "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/v0.0.0-5/Delusoire.delulib@v0.1.0-beta+sp-1.2.38-cm-1675203200.zip"
-          ]
         }
       }
     },
@@ -48,11 +33,6 @@
         "1.1.7": {
           "artifacts": [],
           "providers": []
-        },
-        "1.1.7+sp-1.2.38-cm-1675203200": {
-          "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/v0.0.0-5/Delusoire.dexie-react-hooks@v1.1.7+sp-1.2.38-cm-1675203200.zip"
-          ]
         }
       }
     },
@@ -62,11 +42,6 @@
         "0.1.0-beta+Astromations--Hazy--fa443999da80ba2ee1faf7038de1a16596dacbe9": {
           "artifacts": [],
           "providers": []
-        },
-        "0.1.0-beta+Astromations--Hazy--fa443999da80ba2ee1faf7038de1a16596dacbe9+sp-1.2.38-cm-1675203200": {
-          "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/v0.0.0-5/Delusoire.hazy@v0.1.0-beta+Astromations--Hazy--fa443999da80ba2ee1faf7038de1a16596dacbe9+sp-1.2.38-cm-1675203200.zip"
-          ]
         }
       }
     },
@@ -76,11 +51,6 @@
         "0.1.0-beta": {
           "artifacts": [],
           "providers": []
-        },
-        "0.1.0-beta+sp-1.2.38-cm-1675203200": {
-          "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/v0.0.0-5/Delusoire.keyboard-shortcuts@v0.1.0-beta+sp-1.2.38-cm-1675203200.zip"
-          ]
         }
       }
     },
@@ -90,11 +60,6 @@
         "0.1.0-beta": {
           "artifacts": [],
           "providers": []
-        },
-        "0.1.0-beta+sp-1.2.38-cm-1675203200": {
-          "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/v0.0.0-5/Delusoire.library-db@v0.1.0-beta+sp-1.2.38-cm-1675203200.zip"
-          ]
         }
       }
     },
@@ -104,11 +69,6 @@
         "0.1.0-beta": {
           "artifacts": [],
           "providers": []
-        },
-        "0.1.0-beta+sp-1.2.38-cm-1675203200": {
-          "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/v0.0.0-5/Delusoire.marketplace@v0.1.0-beta+sp-1.2.38-cm-1675203200.zip"
-          ]
         }
       }
     },
@@ -118,11 +78,6 @@
         "0.1.0-beta+duffey--spicetify-playlist-labels--355bfabdfd68d3a98460d8e44b9bd0f9fe3d1fe9": {
           "artifacts": [],
           "providers": []
-        },
-        "0.1.0-beta+duffey--spicetify-playlist-labels--355bfabdfd68d3a98460d8e44b9bd0f9fe3d1fe9+sp-1.2.38-cm-1675203200": {
-          "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/v0.0.0-5/Delusoire.playlist-labels@v0.1.0-beta+duffey--spicetify-playlist-labels--355bfabdfd68d3a98460d8e44b9bd0f9fe3d1fe9+sp-1.2.38-cm-1675203200.zip"
-          ]
         }
       }
     },
@@ -132,11 +87,6 @@
         "0.1.0-beta": {
           "artifacts": [],
           "providers": []
-        },
-        "0.1.0-beta+sp-1.2.38-cm-1675203200": {
-          "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/v0.0.0-5/Delusoire.search-on-youtube@v0.1.0-beta+sp-1.2.38-cm-1675203200.zip"
-          ]
         }
       }
     },
@@ -146,11 +96,6 @@
         "0.1.0-beta": {
           "artifacts": [],
           "providers": []
-        },
-        "0.1.0-beta+sp-1.2.38-cm-1675203200": {
-          "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/v0.0.0-5/Delusoire.show-the-genres@v0.1.0-beta+sp-1.2.38-cm-1675203200.zip"
-          ]
         }
       }
     },
@@ -160,11 +105,6 @@
         "0.1.0-beta": {
           "artifacts": [],
           "providers": []
-        },
-        "0.1.0-beta+sp-1.2.38-cm-1675203200": {
-          "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/v0.0.0-5/Delusoire.sort-plus@v0.1.0-beta+sp-1.2.38-cm-1675203200.zip"
-          ]
         }
       }
     },
@@ -174,11 +114,6 @@
         "0.1.0-beta": {
           "artifacts": [],
           "providers": []
-        },
-        "0.1.0-beta+sp-1.2.38-cm-1675203200": {
-          "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/v0.0.0-5/Delusoire.spoqify-radios@v0.1.0-beta+sp-1.2.38-cm-1675203200.zip"
-          ]
         }
       }
     },
@@ -188,11 +123,6 @@
         "0.1.0-beta+harbassan--spicetify-apps--a8bf02cafb661b5d9504084cdef73a1ee2572d43": {
           "artifacts": [],
           "providers": []
-        },
-        "0.1.0-beta+harbassan--spicetify-apps--a8bf02cafb661b5d9504084cdef73a1ee2572d43+sp-1.2.38-cm-1675203200": {
-          "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/v0.0.0-5/Delusoire.statistics@v0.1.0-beta+harbassan--spicetify-apps--a8bf02cafb661b5d9504084cdef73a1ee2572d43+sp-1.2.38-cm-1675203200.zip"
-          ]
         }
       }
     },
@@ -202,20 +132,6 @@
         "0.1.0-beta": {
           "artifacts": [],
           "providers": []
-        },
-        "0.1.0-beta+sp-1.2.38-cm-1675203200": {
-          "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/v0.0.0-5/Delusoire.vaultify@v0.1.0-beta+sp-1.2.38-cm-1675203200.zip"
-          ]
-        }
-      }
-    },
-    "Delusoire/filter-duplicates": {
-      "v": {
-        "prototype+sp-1.2.38-cm-1675203200": {
-          "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/v0.0.0-5/Delusoire.filter-duplicates@vprototype+sp-1.2.38-cm-1675203200.zip"
-          ]
         }
       }
     }

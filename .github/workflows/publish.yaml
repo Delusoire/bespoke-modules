@@ -50,17 +50,14 @@ jobs:
                for ZIP in dist/*.zip; do
                   ARCHIVE="${ZIP##*/}"
                   IFS="@" read -r ID VERSION <<< "$ARCHIVE"
-                  echo $ID
-                  echo $VERSION
                   ID="$(tr . / <<< "${ID}")"
-                  echo $ID
                   VERSION="${VERSION%.zip}"
-                  echo $VERSION
                   VERSION="${VERSION/?}"
-                  echo $VERSION
                   URL="https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/${ARCHIVE}"
-                  echo $URL
-                  yq -i ".modules[\"${ID}\"].v[\"${VERSION}\"].artifacts += [\"${URL}\"]" vault.json
+                  yq -i '
+                     .modules["'"${ID}"'"].v["'"${VERSION}"'"].artifacts += ["'"${URL}"'"] |
+                     .modules["'"${ID}"'"].v["'"${VERSION}"'"].providers //= []
+                  ' vault.json
                done
                rm -rf dist
 
