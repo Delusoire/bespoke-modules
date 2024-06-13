@@ -35,7 +35,6 @@ jobs:
                   BASE="$(ls -d * | tail -n 1)"
                   cp "${BASE}/metadata.json" "${OWD}/dist/${BASE}.metadata.json"
                   7z a -bb0 -sdel "${BASE}.zip" $BASE/*
-                  ls $BASE
                   rm -rf $BASE
                   mv "${BASE}.zip" "${OWD}/dist/"
                   popd
@@ -50,6 +49,7 @@ jobs:
 
          -  name: Update vault.json
             run: |
+               rm -rf dist
                set -e
                for URL in ${{ fromJSON(steps.release.outputs.assets).*.browser_download_url }}; do
                   ARCHIVE="${URL##*/}"
