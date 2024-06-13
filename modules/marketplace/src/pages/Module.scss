@@ -1,10 +1,10 @@
 #module-readme {
-   --background-body: var(--spice-main);
-   --background: var(--spice-main);
+   --background-body: var(--background-base);
+   --background: var(--background-base);
    --background-alt: var(--spice-shadow);
    --selection: #1c76c5;
-   --text-main: var(--spice-subtext);
-   --text-bright: var(--spice-text);
+   --text-main: var(--text-subdued);
+   --text-bright: var(--text-base);
    --text-muted: #a9b1ba;
    --links: #41adff;
    --border: #526980;

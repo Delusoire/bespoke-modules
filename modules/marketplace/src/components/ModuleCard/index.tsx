@@ -1,10 +1,9 @@
 import { React } from "/modules/official/stdlib/src/expose/React.ts";
 import AuthorsDiv from "./AuthorsDiv.tsx";
 import TagsDiv from "./TagsDiv.tsx";
-import type { Metadata, Module } from "/hooks/module.ts";
+import { type Metadata, type Module, RemoteModuleInstance } from "/hooks/module.ts";
 import { _, startCase } from "/modules/official/stdlib/deps.ts";
 import { useUpdate } from "../../util/index.ts";
-import { fetchJSON } from "/hooks/util.ts";
 import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
 import { Cards, SettingToggle } from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
 import { classnames } from "/modules/official/stdlib/src/webpack/ClassNames.ts";
@@ -46,15 +45,14 @@ export default function (
 	const isEnabled = React.useCallback(() => "isLoaded" in inst && inst.isLoaded(), [inst]);
 	const [enabled, setEnabled, updateEnabled] = useUpdate(isEnabled);
 
-	const installed = "isInstalled" in inst && inst.isInstalled();
+	const isRemote = inst instanceof RemoteModuleInstance;
+	const installed = !isRemote && inst.isInstalled();
 	const hasRemote = Boolean(inst.artifacts.length);
-
-	const outdated = installed && hasRemote && false;
 
 	const remoteMetadata = inst.getRemoteMetadata();
 	const { data, isSuccess } = useQuery({
 		queryKey: ["moduleCard", remoteMetadata],
-		queryFn: () => fetchJSON<Metadata>(remoteMetadata!),
+		queryFn: () => xfetch(remoteMetadata!).then((res) => res.json() as Promise<Metadata>),
 		enabled: inst.metadata === null && hasRemote,
 	});
 
@@ -71,7 +69,7 @@ export default function (
 	} = inst.metadata ?? {};
 
 	const cardClasses = classnames("LunqxlFIupJw_Dkx6mNx", {
-		"border-[var(--essential-warning)]": outdated,
+		"border-[var(--essential-warning)]": isRemote,
 		"bg-neutral-800": isSelected,
 	});
 
@@ -128,13 +126,13 @@ export default function (
 					>
 						<div className="main-type-balladBold">{startCase(name)}</div>
 					</a>
-					<div className="text-sm mx-0 whitespace-normal color-[var(--spice-subtext)] flex flex-col gap-2">
+					<div className="text-sm mx-0 whitespace-normal color-[var(--text-subdued)] flex flex-col gap-2">
 						<AuthorsDiv authors={authors} />
 					</div>
 					<p className="text-sm mx-0 overflow-hidden line-clamp-3 mb-auto">
 						{description || "No description for this package"}
 					</p>
-					<div className="text-[var(--spice-subtext)] whitespace-normal main-type-mestoBold">
+					<div className="text-[var(--text-subdued)] whitespace-normal main-type-mestoBold">
 						<TagsDiv
 							tags={tags}
 							showTags={showTags}

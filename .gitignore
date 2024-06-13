@@ -1,2 +1,5 @@
 /.swc/
 /deno.lock
+
+/dist/
+/modules/*/dist/

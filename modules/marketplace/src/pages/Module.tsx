@@ -9,16 +9,14 @@ import { logger } from "../../index.tsx";
 import {
 	LocalModuleInstance,
 	type Metadata,
-	Module,
 	ModuleIdentifier,
 	RemoteModuleInstance,
 	RootModule,
 	Version,
 } from "/hooks/module.ts";
-import { fetchJSON } from "/hooks/util.ts";
 import { useQuery, useSuspenseQuery } from "/modules/official/stdlib/src/webpack/ReactQuery.ts";
 import { module as marketplaceModuleInstance } from "/modules/Delusoire/marketplace/index.tsx";
-import { MI } from "./Marketplace.tsx";
+import { xfetch } from "/modules/official/stdlib/lib/window.ts";
 
 interface ShadowRootProps {
 	mode: "open" | "closed";
@@ -56,7 +54,7 @@ const RemoteMarkdown = React.memo(({ url }: { url: string }) => {
 	} = useQuery({
 		queryKey: ["markdown", url],
 		queryFn: () =>
-			fetch(url)
+			xfetch(url)
 				.then((res) => res.text())
 				.then((markdown) => renderMarkdown(markdown)),
 	});
@@ -133,7 +131,7 @@ export default function ({ aurl }: { aurl: string }) {
 	const murl = aurl.replace(/\.zip$/, ".metadata.json");
 	const { data: metadata } = useSuspenseQuery({
 		queryKey: ["modulePage", murl],
-		queryFn: () => fetchJSON<Metadata>(murl),
+		queryFn: () => xfetch(murl).then((res: any) => res.json() as Promise<Metadata>),
 	});
 
 	const [moduleInstance, refetchModuleInstance] = useModuleInstance(moduleIdentifier, version, aurl);

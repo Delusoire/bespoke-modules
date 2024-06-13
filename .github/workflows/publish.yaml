@@ -25,7 +25,7 @@ jobs:
          -  name: Build
             run: |
                set -e
-               deno run -A scripts/build.ts modules/*
+               deno run -A scripts/build-publish.ts modules/*
                OWD="${PWD}"
                mkdir -p dist
                for DIR in modules/*/dist/; do

@@ -84,7 +84,12 @@ const ModuleSection = (props: ModuleSectionProps) => {
 
 	return (
 		<div className="mb-4">
-			<h3 className="text-lg font-semibold mb-2 overflow-x-auto whitespace-nowrap">{heritage}</h3>
+			<h3
+				className="text-lg font-semibold mb-2 overflow-x-auto whitespace-nowrap"
+				style={{ scrollbarWidth: "none" }}
+			>
+				{heritage}
+			</h3>
 			<ul>
 				{Array.from(module.instances).map(([version, inst]) => (
 					<ModuleInstance
@@ -112,8 +117,8 @@ const ModuleInstance = (props: VersionProps) => (
 	<li
 		onClick={() => props.selectInstance(props.moduleInstance)}
 		className={classnames(
-			"p-2 rounded-md cursor-pointer flex items-center justify-between",
-			props.isSelected ? "bg-blue-500 text-white" : "bg-white hover:bg-gray-200",
+			"p-2 rounded-md cursor-pointer flex items-center justify-between hover:bg-blue-600",
+			props.isSelected ? "bg-blue-500 text-white" : "bg-blue-300",
 		)}
 	>
 		<ScrollableText>

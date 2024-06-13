@@ -1,5 +1,5 @@
 ```pwsh
-Get-ChildItem -Path modules | ForEach-Object {
+Get-ChildItem -Path dist/modules | ForEach-Object {
 	& spicetify pkg install $_.FullName
 }
 ```
