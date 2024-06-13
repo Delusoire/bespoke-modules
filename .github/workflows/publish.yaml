@@ -40,17 +40,15 @@ jobs:
                done
 
          -  name: Release
-            id: release
             uses: softprops/action-gh-release@v2
             with:
                files: dist/*
 
          -  name: Update vault.json
             run: |
-               rm -rf dist
                set -e
-               for URL in ${{ fromJSON(steps.release.outputs.assets).*.browser_download_url }}; do
-                  ARCHIVE="${URL##*/}"
+               for ZIP in dist/*.zip; do
+                  ARCHIVE="${ZIP##*/}"
                   IFS="@" read -r ID VERSION <<< "$ARCHIVE"
                   echo $ID
                   echo $VERSION
@@ -60,8 +58,11 @@ jobs:
                   echo $VERSION
                   VERSION="${VERSION/?}"
                   echo $VERSION
+                  URL="https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/${ARCHIVE}"
+                  echo $URL
                   yq -i ".modules[\"${ID}\"].v[\"${VERSION}\"].artifacts += [\"${URL}\"]" vault.json
                done
+               rm -rf dist
 
          -  name: Git commit, rebase onto master
             env:

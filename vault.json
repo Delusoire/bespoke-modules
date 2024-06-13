@@ -134,15 +134,6 @@
           "providers": []
         }
       }
-    },
-    "Array": {
-      "v": {
-        "": {
-          "artifacts": [
-            "Array"
-          ]
-        }
-      }
     }
   }
 }
