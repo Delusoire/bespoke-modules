@@ -1,5 +1,5 @@
 ```pwsh
-Get-ChildItem -Path . -Filter metadata.json -Recurse | ForEach-Object {
+Get-ChildItem -Path modules | ForEach-Object {
 	& spicetify pkg install $_.FullName
 }
 ```
