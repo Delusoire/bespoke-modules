@@ -40,16 +40,6 @@
         }
       }
     },
-    "Delusoire/filter-duplicates": {
-      "v": {
-        "prototype+sp-1.2.38-cm-1675203200": {
-          "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/v0.1.0-beta/Delusoire.filter-duplicates@vprototype+sp-1.2.38-cm-1675203200.zip"
-          ],
-          "providers": []
-        }
-      }
-    },
     "Delusoire/hazy": {
       "v": {
         "0.1.0-beta+Astromations--Hazy--fa443999da80ba2ee1faf7038de1a16596dacbe9+sp-1.2.38-cm-1675203200": {
