@@ -26,14 +26,15 @@ jobs:
             run: |
                set -e
                deno run -A scripts/build.ts modules/*
+               OWD="${PWD}"
                mkdir -p dist
                for DIR in modules/*/dist/; do
                   pushd $DIR
                   BASE="$(ls -d * | tail -n 1)"
-                  cp "${BASE}/metadata.json" "${HOME}/dist/${BASE}.metadata.json"
+                  cp "${BASE}/metadata.json" "${OWD}/dist/${BASE}.metadata.json"
                   7z a -bb0 -sdel "${BASE}.zip" $BASE/*
                   rmdir $BASE
-                  mv "${BASE}.zip" "${HOME}/dist/"
+                  mv "${BASE}.zip" "${OWD}/dist/"
                   popd
                   rmdir $DIR
                done
@@ -55,3 +56,8 @@ jobs:
                   VERSION="${VERSION/?}"
                   yq -i ".modules.[\"${ID}\"].v[\"${VERSION}\"].artifacts += [\"${URL}\"]" vault.json
                done
+
+         -  name: Commit changes
+            uses: stefanzweifel/git-auto-commit-action@v4
+            with:
+               commit_message: Update vault.json
