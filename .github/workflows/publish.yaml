@@ -33,7 +33,8 @@ jobs:
                   BASE="$(ls -d * | tail -n 1)"
                   cp "${BASE}/metadata.json" "${OWD}/dist/${BASE}.metadata.json"
                   7z a -bb0 -sdel "${BASE}.zip" $BASE/*
-                  rmdir $BASE
+                  ls $BASE
+                  rm -rf $BASE
                   mv "${BASE}.zip" "${OWD}/dist/"
                   popd
                   rmdir $DIR
