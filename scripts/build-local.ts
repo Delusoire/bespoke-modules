@@ -3,7 +3,6 @@ import { Builder, readJSON, Transpiler } from "jsr:@delu/tailor";
 import { ensureDir } from "jsr:@std/fs/ensure-dir";
 
 import path from "node:path";
-import fs from "node:fs/promises";
 
 import { classmapInfos } from "./build-shared.ts";
 
@@ -23,9 +22,9 @@ for (const inputDir of Deno.args) {
 
       try {
          await builder.build();
-         await fs.writeFile(path.join(outputDir, "metadata.json"), JSON.stringify(m));
+         await Deno.writeTextFile(path.join(outputDir, "metadata.json"), JSON.stringify(m));
       } catch (err) {
-         await fs.rm(outputDir, { recursive: true, force: true });
+         await Deno.remove(outputDir, { recursive: true });
          console.warn(`Build for ${fingerprint} failed with error: ${err}`);
       }
    }
