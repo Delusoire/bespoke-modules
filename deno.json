@@ -7,7 +7,6 @@
       "unix:watch": "./scripts/watch-dev.sh",
       "unix:enable": "./scripts/enable-dev.sh",
       "build:local": "deno run -A scripts/build-local.ts",
-      "build:local:all": "deno task build:local modules/*",
-      "echo": "echo"
+      "build:local:all": "deno task build:local modules/*"
    }
 }
