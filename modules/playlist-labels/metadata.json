@@ -20,8 +20,8 @@
 	},
 	"dependencies": {
 		"official/stdlib": "0.1.0-beta",
-		"Delusoire/delulib": "0.1.0-beta",
-		"Delusoire/library-db": "0.1.0-beta",
+		"Delusoire/delulib": "^0.0.0-0",
+		"Delusoire/library-db": "^0.0.0-0",
 		"Delusoire/dexie-react-hooks": "1.1.7"
 	}
 }

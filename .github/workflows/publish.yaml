@@ -25,19 +25,16 @@ jobs:
          -  name: Build
             run: |
                set -e
-               deno run -A scripts/build-publish.ts modules/*
-               OWD="${PWD}"
-               mkdir -p dist
-               for DIR in modules/*/dist/; do
-                  pushd $DIR
-                  BASE="$(ls -d * | tail -n 1)"
-                  cp "${BASE}/metadata.json" "${OWD}/dist/${BASE}.metadata.json"
-                  7z a -bb0 -sdel "${BASE}.zip" $BASE/*
-                  rm -rf $BASE
-                  mv "${BASE}.zip" "${OWD}/dist/"
+               deno task build:local:all
+               pushd dist
+               for DIR in *; do
+                  pushd "${DIR}"
+                  cp metadata.json "../${DIR}.metadata.json"
+                  7z a -bb0 "../${DIR}.zip" *
                   popd
-                  rmdir $DIR
+                  rm -rf "${DIR}"
                done
+               popd
 
          -  name: Release
             uses: softprops/action-gh-release@v2
@@ -47,19 +44,20 @@ jobs:
          -  name: Update vault.json
             run: |
                set -e
-               for ZIP in dist/*.zip; do
-                  ARCHIVE="${ZIP##*/}"
+               pushd dist
+               for ARCHIVE in *.zip; do
                   IFS="@" read -r ID VERSION <<< "$ARCHIVE"
                   ID="$(tr . / <<< "${ID}")"
                   VERSION="${VERSION%.zip}"
                   VERSION="${VERSION/?}"
                   URL="https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/${ARCHIVE}"
-                  M='.modules["'"${ID}"'"].v["'"${VERSION}"'"]'
+                  S='.modules["'"${ID}"'"].v["'"${VERSION}"'"]'
                   yq -i '
-                     '"${M}"'.artifacts += ["'"${URL}"'"] |
-                     '"${M}"'.providers += []
+                     '"${S}"'.artifacts += ["'"${URL}"'"] |
+                     '"${S}"'.providers += []
                   ' vault.json
                done
+               popd
                rm -rf dist
 
          -  name: Git commit, rebase onto master

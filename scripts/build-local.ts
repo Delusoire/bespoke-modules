@@ -10,8 +10,11 @@ import { classmapInfos } from "./build-shared.ts";
 for (const inputDir of Deno.args) {
    const metadata = await readJSON<any>(path.join(inputDir, "metadata.json"));
 
-   for (const { classmap } of classmapInfos) {
-      const outputDir = path.join("dist", inputDir);
+   for (const { classmap, version: spVersion, timestamp: cmTimestamp } of classmapInfos) {
+      const m = { ...metadata };
+      m.version = `${metadata.version}+sp-${spVersion}-cm-${cmTimestamp}`;
+      const fingerprint = `${m.authors[0]}.${m.name}@v${m.version}`;
+      const outputDir = path.join("dist", fingerprint);
 
       await ensureDir(outputDir);
 
@@ -20,9 +23,10 @@ for (const inputDir of Deno.args) {
 
       try {
          await builder.build();
+         await fs.writeFile(path.join(outputDir, "metadata.json"), JSON.stringify(m));
       } catch (err) {
          await fs.rm(outputDir, { recursive: true, force: true });
-         console.warn(`Build for ${inputDir} failed with error: ${err}`);
+         console.warn(`Build for ${fingerprint} failed with error: ${err}`);
       }
    }
 }
