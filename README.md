@@ -1,5 +1,20 @@
+
+## Building
+### Windows
 ```pwsh
-Get-ChildItem -Path dist/modules | ForEach-Object {
-	& spicetify pkg install $_.FullName
-}
+deno task win:build
+```
+### Unix (Linux & MacOS)
+```sh
+deno task unix:build
+```
+
+## Enabling
+### Windows
+```pwsh
+deno task win:enable
+```
+### Unix (Linux & MacOS)
+```sh
+deno task unix:enable
 ```
