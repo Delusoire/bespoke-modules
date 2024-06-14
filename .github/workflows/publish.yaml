@@ -55,7 +55,7 @@ jobs:
                   yq -i '
                      '"${S}"'.artifacts += ["'"${URL}"'"] |
                      '"${S}"'.providers += []
-                  ' vault.json
+                  ' ../vault.json
                done
                popd
                rm -rf dist
