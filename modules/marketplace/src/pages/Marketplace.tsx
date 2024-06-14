@@ -143,9 +143,9 @@ export default function () {
 
 	const panelTarget: any = document.querySelector("#MarketplacePanel");
 	let panel;
-	if (panelTarget && selectedModule) {
-		const _modules = modules[selectedModule];
-		const instance = moduleToInstance[selectedModule];
+	if (panelTarget) {
+		const _modules = modules[selectedModule] ?? [];
+		const instance = moduleToInstance[selectedModule] ?? null;
 		panel = ReactDOM.createPortal(
 			<VersionListPanel
 				modules={_modules}

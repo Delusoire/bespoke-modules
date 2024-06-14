@@ -12,7 +12,7 @@ import {
 } from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
 import { ScrollableText } from "/modules/official/stdlib/src/webpack/ReactComponents.js";
 
-export interface VersionListProps {}
+export interface VersionListProps { }
 export default function (props: VersionListProps) {
 	const [ref, setRef] = React.useState<HTMLDivElement | null>(null);
 
@@ -44,11 +44,18 @@ export interface VersionListPanelProps {
 	addModule: (module: LocalModule | RemoteModule) => void;
 	removeModule: (module: LocalModule | RemoteModule) => void;
 	updateModule: (module: LocalModule | RemoteModule) => void;
-	selectedInstance: MI;
+	selectedInstance: MI | null;
 	selectInstance: (moduleInstance: MI) => void;
 }
-export const VersionListPanel = React.memo((props: VersionListPanelProps) => (
-	<>
+export const VersionListPanel = React.memo((props: VersionListPanelProps) => {
+	if (!props.selectedInstance) {
+		return <>
+			<PanelHeader title="No module selected" />
+			Select a module to view its versions.
+		</>;
+	}
+
+	return <>
 		<PanelHeader title={props.selectedInstance.getModuleIdentifier()} />
 		<div className="p-4 flex flex-col rounded-lg shadow-md">
 			{props.modules.map((module) => (
@@ -63,8 +70,8 @@ export const VersionListPanel = React.memo((props: VersionListPanelProps) => (
 				/>
 			))}
 		</div>
-	</>
-));
+	</>;
+});
 
 interface ModuleSectionProps<M extends LocalModule | RemoteModule = LocalModule | RemoteModule> {
 	module: M;
