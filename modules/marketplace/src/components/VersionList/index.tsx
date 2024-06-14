@@ -117,8 +117,8 @@ const ModuleInstance = (props: VersionProps) => (
 	<li
 		onClick={() => props.selectInstance(props.moduleInstance)}
 		className={classnames(
-			"p-2 rounded-md cursor-pointer flex items-center justify-between hover:bg-blue-600",
-			props.isSelected ? "bg-blue-500 text-white" : "bg-blue-300",
+			"p-2 rounded-md cursor-pointer flex items-center justify-between hover:bg-blue-600 text-white",
+			props.isSelected ? "bg-blue-500" : "bg-blue-400",
 		)}
 	>
 		<ScrollableText>
