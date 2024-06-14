@@ -11,7 +11,7 @@ if ($Dirs.Count -eq 0) {
 
 foreach ($Dir in $Dirs) {
    $Id = "Delusoire/$(Split-Path -Leaf $Dir)@0.0.0-dev"
-   Write-Output "Enabling $Id"
+   Write-Host "Enabling $Id"
    spicetify pkg delete $Id
    spicetify pkg install $Id $Dir
    spicetify pkg enable $Id
