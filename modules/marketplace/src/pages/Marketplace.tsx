@@ -8,7 +8,6 @@ import {
 	ModuleIdentifier,
 	RemoteModuleInstance,
 	RootModule,
-	type Version,
 } from "/hooks/module.ts";
 import ModuleCard from "../components/ModuleCard/index.tsx";
 import { hash, settingsButton } from "../../index.tsx";
@@ -22,6 +21,10 @@ import {
 	useSearchBar,
 } from "/modules/official/stdlib/lib/components/index.tsx";
 import { usePanelAPI } from "/modules/official/stdlib/src/webpack/CustomHooks.ts";
+import { ReactDOM } from "/modules/official/stdlib/src/webpack/React.ts";
+import { VersionListPanel } from "/modules/Delusoire/marketplace/src/components/VersionList/index.tsx";
+import { LocalModule, RemoteModule } from "/hooks/module.ts";
+import module from "../../../../../bespoke-module-template/module/index.js";
 
 const SortOptions = {
 	default: () => t("sort.default"),
@@ -61,19 +64,12 @@ const filterFNs: RTree<(m: MI) => boolean> = {
 	libs: { [TreeNodeVal]: isModLib },
 };
 
-export let unselect: (() => void) | undefined;
 export let refresh: (() => void) | undefined;
 
 export type MI = LocalModuleInstance | RemoteModuleInstance;
 
 type Req<T> = {
 	[P in keyof T]-?: T[P] & {};
-};
-
-const getModuleInsts = () => {
-	const modules = RootModule.INSTANCE.getAllDescendantsByBreadth();
-	const moduleInstances = Object.groupBy(modules, (module) => module.getIdentifier());
-	return moduleInstances as Req<typeof moduleInstances>;
 };
 
 const dummy_metadata: Metadata = {
@@ -103,36 +99,13 @@ export default function () {
 		selectedFilters.map(({ key }) => getProp(filterFNs, key) as typeof filterFNs);
 	const selectedFilterFNs = React.useMemo(getSelectedFilterFNs, [selectedFilters]);
 
-	const [modules] = React.useState(getModuleInsts);
-	const getModuleToInst = (modules: Record<ModuleIdentifier, Array<Module<Module<any>>>>) =>
-		Object.fromEntries(
-			Object.entries(modules).flatMap(([identifier, modules]) => {
-				let selected: MI | null = null;
+	const { modules, addModule, removeModule, updateModule, moduleToInstance, selectInstance } =
+		useOverlySmartHook();
 
-				for (const module of modules) {
-					const version = module.getEnabledVersion() || module.instances.keys().next().value;
-					if (version) {
-						selected = module.instances.get(version) as MI;
-						break;
-					}
-				}
-
-				return selected ? [[identifier, selected]] : [];
-			}),
-		);
-
-	const [moduleToInstance, selectInstance] = React.useReducer(
-		(moduleToInst: Record<ModuleIdentifier, MI>, moduleInstance: MI) => ({
-			...moduleToInst,
-			[moduleInstance.getModuleIdentifier()]: moduleInstance,
-		}),
-		modules,
-		getModuleToInst,
-	);
-	const insts = React.useMemo(() => Array.from(Object.values(moduleToInstance)), [moduleToInstance]);
+	const instances = React.useMemo(() => Array.from(Object.values(moduleToInstance)), [moduleToInstance]);
 
 	const moduleCardProps = selectedFilterFNs
-		.reduce((acc, fn) => acc.filter(fn[TreeNodeVal]), insts)
+		.reduce((acc, fn) => acc.filter(fn[TreeNodeVal]), instances)
 		.filter((moduleInst) => {
 			const { name, tags, authors } = moduleInst.metadata ?? dummy_metadata;
 			const searchFiels = [name, ...tags, ...authors];
@@ -141,19 +114,50 @@ export default function () {
 		.sort((a, b) => sortFn?.(a.metadata ?? dummy_metadata, b.metadata ?? dummy_metadata) as number);
 
 	const [selectedModule, selectModule] = React.useState<ModuleIdentifier | null>(null);
-	const _unselect = () => selectModule(null);
-	const [, _refresh] = React.useReducer((n) => n + 1, 0);
+	const [, rerender] = React.useReducer((n) => n + 1, 0);
 
 	React.useEffect(() => {
-		unselect = _unselect;
-		refresh = _refresh;
+		refresh = rerender;
 		return () => {
-			unselect = undefined;
 			refresh = undefined;
 		};
 	}, []);
 
-	const { panelSend } = usePanelAPI();
+	const { isActive, panelSend } = usePanelAPI(hash?.state);
+	React.useEffect(() => {
+		if (!hash) {
+			return;
+		}
+		if (!isActive) {
+			panelSend(hash.event);
+		}
+	}, [isActive, hash]);
+
+	const onModuleClick = React.useCallback((module: LocalModule | RemoteModule, isSelected: boolean) => {
+		if (isSelected) {
+			selectModule(null);
+		} else {
+			selectModule(module.getIdentifier());
+		}
+	}, [panelSend, selectedModule]);
+
+	const panelTarget: any = document.querySelector("#MarketplacePanel");
+	let panel;
+	if (panelTarget && selectedModule) {
+		const _modules = modules[selectedModule];
+		const instance = moduleToInstance[selectedModule];
+		panel = ReactDOM.createPortal(
+			<VersionListPanel
+				modules={_modules}
+				addModule={addModule}
+				removeModule={removeModule}
+				updateModule={updateModule}
+				selectedInstance={instance}
+				selectInstance={selectInstance}
+			/>,
+			panelTarget,
+		);
+	}
 
 	return (
 		<>
@@ -177,25 +181,97 @@ export default function () {
 						return (
 							<ModuleCard
 								key={moduleIdentifier}
-								modules={modules[moduleIdentifier]}
 								moduleInstance={moduleInst}
 								isSelected={isSelected}
-								selectInstance={selectInstance}
-								onClick={() => {
-									if (isSelected) {
-										panelSend("panel_close_click_or_collapse");
-									} else {
-										if (!selectedModule && hash) {
-											panelSend?.(hash.event);
-										}
-										selectModule(module.getIdentifier());
-									}
-								}}
+								onClick={onModuleClick}
+								// @ts-ignore added to force rerenders
+								modules={modules[moduleIdentifier]}
 							/>
 						);
 					})}
 				</div>
+				{panel}
 			</section>
 		</>
 	);
 }
+
+const getModulesByIdentifier = () => {
+	const modules = RootModule.INSTANCE.getAllDescendantsByBreadth();
+	const modulesByIdentifier = Object.groupBy(modules, (module) => module.getIdentifier());
+	return modulesByIdentifier as Record<ModuleIdentifier, Array<LocalModule | RemoteModule>>;
+};
+
+const getModuleToInst = (modules: Record<ModuleIdentifier, Array<Module<Module<any>>>>) =>
+	Object.fromEntries(
+		Object.entries(modules).flatMap(([identifier, modules]) => {
+			let selected: MI | null = null;
+
+			for (const module of modules) {
+				const version = module.getEnabledVersion() || module.instances.keys().next().value;
+				if (version) {
+					selected = module.instances.get(version) as MI;
+					break;
+				}
+			}
+
+			return selected ? [[identifier, selected]] : [];
+		}),
+	);
+
+const useOverlySmartHook = () => {
+	const [, rerender] = React.useReducer((n) => n + 1, 0);
+
+	const [modules, setModules] = React.useState(getModulesByIdentifier);
+
+	const updateModules = React.useCallback(() => setModules(getModulesByIdentifier), [setModules]);
+
+	const setModulesForIdentifier = React.useCallback(
+		(
+			identifier: ModuleIdentifier,
+			f: (_modules: Array<LocalModule | RemoteModule>) => Array<LocalModule | RemoteModule>,
+		) => {
+			setModules((modules) => {
+				modules[identifier] = Array.from(f(modules[identifier] ?? []));
+				return modules;
+			});
+			rerender();
+		},
+		[setModules],
+	);
+
+	const addModule = React.useCallback((module: LocalModule | RemoteModule) => {
+		setModulesForIdentifier(module.getIdentifier(), (modules) => {
+			const i = modules.indexOf(module);
+			if (!~i) {
+				modules.unshift(module);
+			}
+			return modules;
+		});
+	}, [setModules]);
+
+	const removeModule = React.useCallback((module: LocalModule | RemoteModule) => {
+		setModulesForIdentifier(module.getIdentifier(), (modules) => {
+			const i = modules.indexOf(module);
+			if (~i) {
+				modules.splice(i, 1);
+			}
+			return modules;
+		});
+	}, [setModules]);
+
+	const updateModule = React.useCallback((module: LocalModule | RemoteModule) => {
+		setModulesForIdentifier(module.getIdentifier(), (modules) => modules);
+	}, [setModules]);
+
+	const [moduleToInstance, selectInstance] = React.useReducer(
+		(moduleToInst: Record<ModuleIdentifier, MI>, moduleInstance: MI) => ({
+			...moduleToInst,
+			[moduleInstance.getModuleIdentifier()]: moduleInstance,
+		}),
+		modules,
+		getModuleToInst,
+	);
+
+	return { modules, updateModules, addModule, removeModule, updateModule, moduleToInstance, selectInstance };
+};

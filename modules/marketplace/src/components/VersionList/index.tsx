@@ -1,9 +1,8 @@
 import { classnames } from "/modules/official/stdlib/src/webpack/ClassNames.ts";
 import { MI } from "../../pages/Marketplace.tsx";
 import { useUpdate } from "../../util/index.ts";
-import { LocalModuleInstance } from "/hooks/module.ts";
+import { LocalModule, LocalModuleInstance, ModuleIdentifier, RemoteModule } from "/hooks/module.ts";
 import { RemoteModuleInstance } from "/hooks/module.ts";
-import { type Module } from "/hooks/module.ts";
 import { React } from "/modules/official/stdlib/src/expose/React.ts";
 import { useLocation, usePanelAPI } from "/modules/official/stdlib/src/webpack/CustomHooks.ts";
 import {
@@ -17,10 +16,10 @@ export interface VersionListProps {}
 export default function (props: VersionListProps) {
 	const [ref, setRef] = React.useState<HTMLDivElement | null>(null);
 
-	const m = React.useMemo(() => import("../../pages/Marketplace.js"), []);
+	const m = React.useMemo(() => import("../../pages/Marketplace.tsx"), []);
 
+	// TODO: remove
 	React.useEffect(() => void m.then((m) => m.refresh?.()), [ref]);
-	React.useEffect(() => () => void m.then((m) => m.unselect?.()), []);
 
 	const location = useLocation();
 	const { panelSend } = usePanelAPI();
@@ -41,64 +40,60 @@ export default function (props: VersionListProps) {
 }
 
 export interface VersionListPanelProps {
-	modules: Array<Module<Module<any>>>;
+	modules: Array<LocalModule | RemoteModule>;
+	addModule: (module: LocalModule | RemoteModule) => void;
+	removeModule: (module: LocalModule | RemoteModule) => void;
+	updateModule: (module: LocalModule | RemoteModule) => void;
 	selectedInstance: MI;
 	selectInstance: (moduleInstance: MI) => void;
 }
 export const VersionListPanel = React.memo((props: VersionListPanelProps) => (
 	<>
 		<PanelHeader title={props.selectedInstance.getModuleIdentifier()} />
-		<VersionListContent {...props} />
-	</>
-));
-
-const VersionListContent = (props: VersionListPanelProps) => {
-	const [, rerender] = React.useReducer((x) => x + 1, 0);
-
-	return (
 		<div className="p-4 flex flex-col rounded-lg shadow-md">
 			{props.modules.map((module) => (
 				<ModuleSection
 					key={module.getHeritage().join("\x00")}
 					module={module}
+					addModule={props.addModule}
+					removeModule={props.removeModule}
+					updateModule={props.updateModule}
 					selectedInstance={props.selectedInstance}
 					selectInstance={props.selectInstance}
-					rerenderPanel={rerender}
 				/>
 			))}
 		</div>
-	);
-};
+	</>
+));
 
-interface ModuleSectionProps {
-	module: Module<Module<any>>;
-	selectedInstance: MI;
+interface ModuleSectionProps<M extends LocalModule | RemoteModule = LocalModule | RemoteModule> {
+	module: M;
+	addModule: (module: LocalModule | RemoteModule) => void;
+	removeModule: (module: LocalModule | RemoteModule) => void;
+	updateModule: (module: LocalModule | RemoteModule) => void;
+	selectedInstance: M["instances"] extends Map<ModuleIdentifier, infer I> ? I : never;
 	selectInstance: (moduleInstance: MI) => void;
-	rerenderPanel: () => void;
 }
-const ModuleSection = (props: ModuleSectionProps) => {
-	const { module, selectedInstance, selectInstance, rerenderPanel } = props;
+const ModuleSection = (props: ModuleSectionProps) =>
+	props.module instanceof LocalModule
+		? LocalModuleSection(props as ModuleSectionProps<LocalModule>)
+		: RemoteModuleSection(props as ModuleSectionProps<RemoteModule>);
 
-	const heritage = module.getHeritage().join("▶");
-	const [, rerender] = React.useReducer((x) => x + 1, 0);
+const LocalModuleSection = (props: ModuleSectionProps<LocalModule>) => {
+	const { module, selectedInstance, selectInstance } = props;
 
 	return (
 		<div className="mb-4">
-			<h3
-				className="text-lg font-semibold mb-2 overflow-x-auto whitespace-nowrap"
-				style={{ scrollbarWidth: "none" }}
-			>
-				{heritage}
-			</h3>
 			<ul>
 				{Array.from(module.instances).map(([version, inst]) => (
-					<ModuleInstance
+					<_LocalModuleInstance
 						key={version}
-						moduleInstance={inst as MI}
+						moduleInstance={inst}
 						isSelected={inst === selectedInstance}
 						selectInstance={selectInstance}
-						rerenderSection={rerender}
-						rerenderPanel={rerenderPanel}
+						addModule={props.addModule}
+						removeModule={props.removeModule}
+						updateModule={props.updateModule}
 					/>
 				))}
 			</ul>
@@ -106,14 +101,53 @@ const ModuleSection = (props: ModuleSectionProps) => {
 	);
 };
 
-interface VersionProps {
-	moduleInstance: MI;
+function cutPrefix(str: string, prefix: string) {
+	if (str.startsWith(prefix)) {
+		return str.slice(prefix.length);
+	}
+	return str;
+}
+
+const RemoteModuleSection = (props: ModuleSectionProps<RemoteModule>) => {
+	const { module, selectedInstance, selectInstance } = props;
+
+	const heritage = module.getHeritage().join("▶");
+
+	return (
+		<div className="mb-4">
+			<h3
+				className="text-lg font-semibold mb-2 overflow-x-auto whitespace-nowrap"
+				style={{ scrollbarWidth: "none" }}
+			>
+				{cutPrefix(heritage, "▶")}
+			</h3>
+			<ul>
+				{Array.from(module.instances).map(([version, inst]) => (
+					<_RemoteModuleInstance
+						key={version}
+						moduleInstance={inst}
+						isSelected={inst === selectedInstance}
+						selectInstance={selectInstance}
+						addModule={props.addModule}
+						removeModule={props.removeModule}
+						updateModule={props.updateModule}
+					/>
+				))}
+			</ul>
+		</div>
+	);
+};
+
+interface ModuleInstanceProps<I extends MI = MI> {
+	moduleInstance: I;
 	isSelected: boolean;
 	selectInstance: (moduleInstance: MI) => void;
-	rerenderSection: () => void;
-	rerenderPanel: () => void;
+	addModule: (module: LocalModule | RemoteModule) => void;
+	removeModule: (module: LocalModule | RemoteModule) => void;
+	updateModule: (module: LocalModule | RemoteModule) => void;
 }
-const ModuleInstance = (props: VersionProps) => (
+
+const _LocalModuleInstance = (props: ModuleInstanceProps<LocalModuleInstance>) => (
 	<li
 		onClick={() => props.selectInstance(props.moduleInstance)}
 		className={classnames(
@@ -124,85 +158,58 @@ const ModuleInstance = (props: VersionProps) => (
 		<ScrollableText>
 			<span className="font-medium">{props.moduleInstance.getVersion()}</span>
 		</ScrollableText>
-		<ModuleInstanceButtons
-			moduleInstance={props.moduleInstance}
-			rerenderSection={props.rerenderSection}
-			rerenderPanel={props.rerenderPanel}
-		/>
+		<div className="flex items-center gap-2">
+			<InsDelButton moduleInstance={props.moduleInstance} updateModule={props.updateModule} />
+			<RemoveButton
+				moduleInstance={props.moduleInstance}
+				removeModule={props.removeModule}
+				updateModule={props.updateModule}
+			/>
+			<EnaDisBtn moduleInstance={props.moduleInstance} updateModule={props.updateModule} />
+		</div>
 	</li>
 );
 
-interface ModuleInstanceButtonsProps {
-	moduleInstance: MI;
-	rerenderSection: () => void;
-	rerenderPanel: () => void;
-}
-const ModuleInstanceButtons = (props: ModuleInstanceButtonsProps) => {
-	const { moduleInstance, rerenderSection, rerenderPanel } = props;
-	return (
+const _RemoteModuleInstance = (props: ModuleInstanceProps<RemoteModuleInstance>) => (
+	<li
+		onClick={() => props.selectInstance(props.moduleInstance)}
+		className={classnames(
+			"p-2 rounded-md cursor-pointer flex items-center justify-between hover:bg-blue-600 text-white",
+			props.isSelected ? "bg-blue-500" : "bg-blue-400",
+		)}
+	>
+		<ScrollableText>
+			<span className="font-medium">{props.moduleInstance.getVersion()}</span>
+		</ScrollableText>
 		<div className="flex items-center gap-2">
-			{moduleInstance instanceof LocalModuleInstance &&
-				(
-					<LocalModuleInstanceButtons
-						moduleInstance={moduleInstance}
-						rerenderSection={rerenderSection}
-					/>
-				)}
-			{moduleInstance instanceof RemoteModuleInstance &&
-				<RemoteModuleInstanceButtons moduleInstance={moduleInstance} rerenderPanel={rerenderPanel} />}
-			<EnaDisBtn moduleInstance={moduleInstance} />
+			<AddButton
+				moduleInstance={props.moduleInstance}
+				addModule={props.addModule}
+			/>
+			<EnaDisBtn moduleInstance={props.moduleInstance} updateModule={props.updateModule} />
 		</div>
-	);
-};
-
-interface LocalModuleInstanceButtonsProps {
-	moduleInstance: LocalModuleInstance;
-	rerenderSection: () => void;
-}
-const LocalModuleInstanceButtons = (props: LocalModuleInstanceButtonsProps) => {
-	return (
-		<>
-			<InsDelButton moduleInstance={props.moduleInstance} rerenderSection={props.rerenderSection} />
-			<RemoveButton moduleInstance={props.moduleInstance} rerenderSection={props.rerenderSection} />
-		</>
-	);
-};
-
-interface RemoteModuleInstanceButtonsProps {
-	moduleInstance: RemoteModuleInstance;
-	rerenderPanel: () => void;
-}
-const RemoteModuleInstanceButtons = (props: RemoteModuleInstanceButtonsProps) => (
-	<AddButton
-		moduleInstance={props.moduleInstance}
-		rerenderPanel={props.rerenderPanel}
-	/>
+	</li>
 );
 
 interface InsDelButtonProps {
 	moduleInstance: LocalModuleInstance;
-	rerenderSection: () => void;
+	updateModule: (module: LocalModule | RemoteModule) => void;
 }
 const InsDelButton = (props: InsDelButtonProps) => {
-	const isInstalled = React.useCallback(() => props.moduleInstance.isInstalled(), [props.moduleInstance]);
-	const [installed, setInstalled, updateInstalled] = useUpdate(isInstalled);
+	const Button = props.moduleInstance.isInstalled() ? DeleteButton : InstallButton;
 
-	const Button = installed ? DeleteButton : InstallButton;
-
-	return <Button {...props} setInstalled={setInstalled} updateInstalled={updateInstalled} />;
+	return Button(props);
 };
 
 interface DeleteButtonProps {
 	moduleInstance: LocalModuleInstance;
-	setInstalled: (installed: boolean) => void;
-	updateInstalled: () => void;
+	updateModule: (module: LocalModule | RemoteModule) => void;
 }
 const DeleteButton = (props: DeleteButtonProps) => (
 	<button
 		onClick={async () => {
-			props.setInstalled(false);
-			if (!(await props.moduleInstance.delete())) {
-				props.updateInstalled();
+			if (await props.moduleInstance.delete()) {
+				props.updateModule(props.moduleInstance.getModule());
 			}
 		}}
 		className="px-2 py-1 text-xs font-semibold text-red-500 bg-red-100 rounded hover:bg-red-200"
@@ -213,15 +220,13 @@ const DeleteButton = (props: DeleteButtonProps) => (
 
 interface InstallButtonProps {
 	moduleInstance: LocalModuleInstance;
-	setInstalled: (installed: boolean) => void;
-	updateInstalled: () => void;
+	updateModule: (module: LocalModule | RemoteModule) => void;
 }
 const InstallButton = (props: InstallButtonProps) => (
 	<button
 		onClick={async () => {
-			props.setInstalled(true);
 			if (await props.moduleInstance.install()) {
-				props.updateInstalled();
+				props.updateModule(props.moduleInstance.getModule());
 			}
 		}}
 		className="px-2 py-1 text-xs font-semibold text-green-500 bg-green-100 rounded hover:bg-green-200"
@@ -232,13 +237,19 @@ const InstallButton = (props: InstallButtonProps) => (
 
 interface RemoveButtonProps {
 	moduleInstance: LocalModuleInstance;
-	rerenderSection: () => void;
+	removeModule: (module: LocalModule | RemoteModule) => void;
+	updateModule: (module: LocalModule | RemoteModule) => void;
 }
 const RemoveButton = (props: RemoveButtonProps) => (
 	<button
 		onClick={async () => {
 			if (await props.moduleInstance.remove()) {
-				props.rerenderSection();
+				const module = props.moduleInstance.getModule();
+				if (module.parent) {
+					props.updateModule(module);
+				} else {
+					props.removeModule(module);
+				}
 			}
 		}}
 		className="px-2 py-1 text-xs font-semibold text-red-500 bg-red-100 rounded hover:bg-red-200"
@@ -249,13 +260,14 @@ const RemoveButton = (props: RemoveButtonProps) => (
 
 interface AddButtonProps {
 	moduleInstance: RemoteModuleInstance;
-	rerenderPanel: () => void;
+	addModule: (module: LocalModule | RemoteModule) => void;
 }
 const AddButton = (props: AddButtonProps) => (
 	<button
 		onClick={async () => {
-			if (await props.moduleInstance.add()) {
-				props.rerenderPanel();
+			const localModuleInstance = await props.moduleInstance.add();
+			if (localModuleInstance) {
+				props.addModule(localModuleInstance.getModule());
 			}
 		}}
 		className="px-2 py-1 text-xs font-semibold text-green-500 bg-green-100 rounded hover:bg-green-200"
@@ -266,33 +278,24 @@ const AddButton = (props: AddButtonProps) => (
 
 interface EnabledStateButtonProps {
 	moduleInstance: MI;
+	updateModule: (module: LocalModule | RemoteModule) => void;
 }
 const EnaDisBtn = (props: EnabledStateButtonProps) => {
-	const isEnabled = React.useCallback(() => props.moduleInstance.isEnabled(), [props.moduleInstance]);
-	const [enabled, setEnabled, updateEnabled] = useUpdate(isEnabled);
-	const Button = enabled ? DisableButton : EnableButton;
+	const Button = props.moduleInstance.isEnabled() ? DisableButton : EnableButton;
 
-	return (
-		<Button
-			{...props}
-			setEnabled={(enabled: boolean) => setEnabled(enabled)}
-			updateEnabled={updateEnabled}
-		/>
-	);
+	return Button(props);
 };
 
 interface EnaDisButtonProps {
 	moduleInstance: MI;
-	setEnabled: (installed: boolean) => void;
-	updateEnabled: () => void;
+	updateModule: (module: LocalModule | RemoteModule) => void;
 }
 
 const DisableButton = (props: EnaDisButtonProps) => (
 	<button
 		onClick={async () => {
-			props.setEnabled(false);
-			if (!(await props.moduleInstance.getModule().disable())) {
-				props.updateEnabled();
+			if (await props.moduleInstance.getModule().disable()) {
+				props.updateModule(props.moduleInstance.getModule());
 			}
 		}}
 		className="px-2 py-1 text-xs font-semibold text-yellow-500 bg-yellow-100 rounded hover:bg-yellow-200"
@@ -304,9 +307,8 @@ const DisableButton = (props: EnaDisButtonProps) => (
 const EnableButton = (props: EnaDisButtonProps) => (
 	<button
 		onClick={async () => {
-			props.setEnabled(true);
-			if (!(await props.moduleInstance.enable())) {
-				props.updateEnabled();
+			if (await props.moduleInstance.enable()) {
+				props.updateModule(props.moduleInstance.getModule());
 			}
 		}}
 		className="px-2 py-1 text-xs font-semibold text-blue-500 bg-blue-100 rounded hover:bg-blue-200"

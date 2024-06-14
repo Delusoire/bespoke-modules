@@ -1,25 +1,27 @@
 import { React } from "/modules/official/stdlib/src/expose/React.ts";
 import AuthorsDiv from "./AuthorsDiv.tsx";
 import TagsDiv from "./TagsDiv.tsx";
-import { type Metadata, type Module, RemoteModuleInstance } from "/hooks/module.ts";
+import {
+	LocalModule,
+	LocalModuleInstance,
+	type Metadata,
+	RemoteModule,
+	RemoteModuleInstance,
+} from "/hooks/module.ts";
 import { _, startCase } from "/modules/official/stdlib/deps.ts";
 import { useUpdate } from "../../util/index.ts";
 import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
 import { Cards, SettingToggle } from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
 import { classnames } from "/modules/official/stdlib/src/webpack/ClassNames.ts";
 import { useQuery } from "/modules/official/stdlib/src/webpack/ReactQuery.ts";
-import { VersionListPanel } from "../VersionList/index.tsx";
-import { ReactDOM } from "/modules/official/stdlib/src/webpack/React.ts";
 import { MI } from "../../pages/Marketplace.tsx";
 
 const History = Platform.getHistory();
 
 interface ModuleCardProps {
-	modules: Array<Module<Module<any>>>;
 	moduleInstance: MI;
-	selectInstance: (v: MI) => void;
 	showTags?: boolean;
-	onClick: () => void;
+	onClick: (module: LocalModule | RemoteModule, isSelected: boolean) => void;
 	isSelected: boolean;
 }
 
@@ -37,14 +39,13 @@ const fallbackImage = () => (
 	</svg>
 );
 
-export default function (
-	props: ModuleCardProps,
-) {
-	const { modules, moduleInstance: inst, selectInstance, showTags = true, onClick, isSelected } = props;
+const ModuleCard = (props: ModuleCardProps) => {
+	const { moduleInstance: inst, showTags = true, onClick, isSelected } = props;
 
-	const isEnabled = React.useCallback(() => "isLoaded" in inst && inst.isLoaded(), [inst]);
-	const [enabled, setEnabled, updateEnabled] = useUpdate(isEnabled);
+	const isLoaded = React.useCallback(() => inst instanceof LocalModuleInstance && inst.isLoaded(), [inst]);
+	const [loaded, setLoaded, updateLoaded] = useUpdate(isLoaded);
 
+	const enabled = inst.isEnabled();
 	const isRemote = inst instanceof RemoteModuleInstance;
 	const installed = !isRemote && inst.isInstalled();
 	const hasRemote = Boolean(inst.artifacts.length);
@@ -80,27 +81,13 @@ export default function (
 	// TODO: add more important tags
 	const importantTags = [].filter(Boolean);
 
-	const panelTarget: any = document.querySelector("#MarketplacePanel");
-	let panel;
-	if (isSelected && panelTarget) {
-		panel = ReactDOM.createPortal(
-			<VersionListPanel
-				modules={modules}
-				selectedInstance={inst}
-				selectInstance={selectInstance}
-			/>,
-			panelTarget,
-		);
-	}
-
 	return (
 		<div className={cardClasses}>
-			{panel}
 			<div
 				className="border-[var(--essential-warning)] flex flex-col h-full"
 				style={{ pointerEvents: "all" }}
 				draggable="true"
-				onClick={onClick}
+				onClick={() => onClick(inst.getModule(), isSelected)}
 			>
 				<div
 					onClick={() => {
@@ -143,12 +130,12 @@ export default function (
 						{installed && enabled && SettingToggle && (
 							<SettingToggle
 								className="x-settings-button justify-end"
-								value={enabled}
+								value={loaded}
 								onSelected={async (checked: boolean) => {
-									setEnabled(checked);
+									setLoaded(checked);
 									const hasChanged = checked ? inst.load() : inst.unload();
 									if (!(await hasChanged)) {
-										updateEnabled();
+										updateLoaded();
 									}
 								}}
 							/>
@@ -158,4 +145,6 @@ export default function (
 			</div>
 		</div>
 	);
-}
+};
+
+export default React.memo(ModuleCard);
