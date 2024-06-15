@@ -22,9 +22,8 @@ import {
 } from "/modules/official/stdlib/lib/components/index.tsx";
 import { usePanelAPI } from "/modules/official/stdlib/src/webpack/CustomHooks.ts";
 import { ReactDOM } from "/modules/official/stdlib/src/webpack/React.ts";
-import { VersionListPanel } from "/modules/Delusoire/marketplace/src/components/VersionList/index.tsx";
+import { VersionListPanel } from "../components/VersionList/index.tsx";
 import { LocalModule, RemoteModule } from "/hooks/module.ts";
-import module from "../../../../../bespoke-module-template/module/index.js";
 
 const SortOptions = {
 	default: () => t("sort.default"),
@@ -141,11 +140,13 @@ export default function () {
 		}
 	}, [panelSend, selectedModule]);
 
+	const rerenderPanelRef = React.useRef<() => void>();
+
 	const panelTarget: any = document.querySelector("#MarketplacePanel");
 	let panel;
 	if (panelTarget) {
-		const _modules = modules[selectedModule] ?? [];
-		const instance = moduleToInstance[selectedModule] ?? null;
+		const _modules = modules[selectedModule!] ?? [];
+		const instance = moduleToInstance[selectedModule!] ?? null;
 		panel = ReactDOM.createPortal(
 			<VersionListPanel
 				modules={_modules}
@@ -154,6 +155,7 @@ export default function () {
 				updateModule={updateModule}
 				selectedInstance={instance}
 				selectInstance={selectInstance}
+				rerenderPanelRef={rerenderPanelRef}
 			/>,
 			panelTarget,
 		);
@@ -183,7 +185,8 @@ export default function () {
 								key={moduleIdentifier}
 								moduleInstance={moduleInst}
 								isSelected={isSelected}
-								onClick={onModuleClick}
+								onCardClick={onModuleClick}
+								rerenderPanelRef={rerenderPanelRef}
 								// @ts-ignore added to force rerenders
 								modules={modules[moduleIdentifier]}
 							/>

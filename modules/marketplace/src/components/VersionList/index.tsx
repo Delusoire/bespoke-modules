@@ -12,7 +12,7 @@ import {
 } from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
 import { ScrollableText } from "/modules/official/stdlib/src/webpack/ReactComponents.js";
 
-export interface VersionListProps { }
+export interface VersionListProps {}
 export default function (props: VersionListProps) {
 	const [ref, setRef] = React.useState<HTMLDivElement | null>(null);
 
@@ -46,31 +46,39 @@ export interface VersionListPanelProps {
 	updateModule: (module: LocalModule | RemoteModule) => void;
 	selectedInstance: MI | null;
 	selectInstance: (moduleInstance: MI) => void;
+	rerenderPanelRef: React.MutableRefObject<(() => void) | undefined>;
 }
 export const VersionListPanel = React.memo((props: VersionListPanelProps) => {
+	const [, rerender] = React.useReducer((n) => n + 1, 0);
+	props.rerenderPanelRef.current = rerender;
+
 	if (!props.selectedInstance) {
-		return <>
-			<PanelHeader title="No module selected" />
-			Select a module to view its versions.
-		</>;
+		return (
+			<>
+				<PanelHeader title="No module selected" />
+				Select a module to view its versions.
+			</>
+		);
 	}
 
-	return <>
-		<PanelHeader title={props.selectedInstance.getModuleIdentifier()} />
-		<div className="p-4 flex flex-col rounded-lg shadow-md">
-			{props.modules.map((module) => (
-				<ModuleSection
-					key={module.getHeritage().join("\x00")}
-					module={module}
-					addModule={props.addModule}
-					removeModule={props.removeModule}
-					updateModule={props.updateModule}
-					selectedInstance={props.selectedInstance}
-					selectInstance={props.selectInstance}
-				/>
-			))}
-		</div>
-	</>;
+	return (
+		<>
+			<PanelHeader title={props.selectedInstance.getModuleIdentifier()} />
+			<div className="p-4 flex flex-col rounded-lg shadow-md">
+				{props.modules.map((module) => (
+					<ModuleSection
+						key={module.getHeritage().join("\x00")}
+						module={module}
+						addModule={props.addModule}
+						removeModule={props.removeModule}
+						updateModule={props.updateModule}
+						selectedInstance={props.selectedInstance!}
+						selectInstance={props.selectInstance}
+					/>
+				))}
+			</div>
+		</>
+	);
 });
 
 interface ModuleSectionProps<M extends LocalModule | RemoteModule = LocalModule | RemoteModule> {
@@ -154,58 +162,61 @@ interface ModuleInstanceProps<I extends MI = MI> {
 	updateModule: (module: LocalModule | RemoteModule) => void;
 }
 
-const _LocalModuleInstance = (props: ModuleInstanceProps<LocalModuleInstance>) => (
-	<li
-		onClick={() => props.selectInstance(props.moduleInstance)}
-		className={classnames(
-			"p-2 rounded-md cursor-pointer flex items-center justify-between hover:bg-blue-600 text-white",
-			props.isSelected ? "bg-blue-500" : "bg-blue-400",
-		)}
-	>
-		<ScrollableText>
-			<span className="font-medium">{props.moduleInstance.getVersion()}</span>
-		</ScrollableText>
-		<div className="flex items-center gap-2">
-			<InsDelButton moduleInstance={props.moduleInstance} updateModule={props.updateModule} />
-			<RemoveButton
-				moduleInstance={props.moduleInstance}
-				removeModule={props.removeModule}
-				updateModule={props.updateModule}
-			/>
-			<EnaDisBtn moduleInstance={props.moduleInstance} updateModule={props.updateModule} />
-		</div>
-	</li>
-);
+const _LocalModuleInstance = (props: ModuleInstanceProps<LocalModuleInstance>) => {
+	const { moduleInstance } = props;
 
-const _RemoteModuleInstance = (props: ModuleInstanceProps<RemoteModuleInstance>) => (
-	<li
-		onClick={() => props.selectInstance(props.moduleInstance)}
-		className={classnames(
-			"p-2 rounded-md cursor-pointer flex items-center justify-between hover:bg-blue-600 text-white",
-			props.isSelected ? "bg-blue-500" : "bg-blue-400",
-		)}
-	>
-		<ScrollableText>
-			<span className="font-medium">{props.moduleInstance.getVersion()}</span>
-		</ScrollableText>
-		<div className="flex items-center gap-2">
-			<AddButton
-				moduleInstance={props.moduleInstance}
-				addModule={props.addModule}
-			/>
-			<EnaDisBtn moduleInstance={props.moduleInstance} updateModule={props.updateModule} />
-		</div>
-	</li>
-);
+	return (
+		<li
+			onClick={() => props.selectInstance(props.moduleInstance)}
+			className={classnames(
+				"p-2 rounded-md cursor-pointer flex items-center justify-between hover:bg-blue-600 text-white",
+				props.isSelected ? "bg-blue-500" : "bg-blue-400",
+			)}
+		>
+			<EnaDisRadio moduleInstance={props.moduleInstance} updateModule={props.updateModule} />
+			<ScrollableText>
+				<span className="font-medium">{props.moduleInstance.getVersion()}</span>
+			</ScrollableText>
+			<div className="flex items-center gap-2">
+				{moduleInstance.canInstallRemove() && (
+					<>
+						<InstallButton moduleInstance={props.moduleInstance} updateModule={props.updateModule} />
+						<RemoveButton
+							moduleInstance={props.moduleInstance}
+							removeModule={props.removeModule}
+							updateModule={props.updateModule}
+						/>
+					</>
+				)}
+				{moduleInstance.canDelete() && (
+					<DeleteButton moduleInstance={props.moduleInstance} updateModule={props.updateModule} />
+				)}
+			</div>
+		</li>
+	);
+};
 
-interface InsDelButtonProps {
-	moduleInstance: LocalModuleInstance;
-	updateModule: (module: LocalModule | RemoteModule) => void;
-}
-const InsDelButton = (props: InsDelButtonProps) => {
-	const Button = props.moduleInstance.isInstalled() ? DeleteButton : InstallButton;
-
-	return Button(props);
+const _RemoteModuleInstance = (props: ModuleInstanceProps<RemoteModuleInstance>) => {
+	return (
+		<li
+			onClick={() => props.selectInstance(props.moduleInstance)}
+			className={classnames(
+				"p-2 rounded-md cursor-pointer flex items-center justify-between hover:bg-blue-600 text-white",
+				props.isSelected ? "bg-blue-500" : "bg-blue-400",
+			)}
+		>
+			<EnaDisRadio moduleInstance={props.moduleInstance} updateModule={props.updateModule} />
+			<ScrollableText>
+				<span className="font-medium">{props.moduleInstance.getVersion()}</span>
+			</ScrollableText>
+			<div className="flex items-center gap-2">
+				<AddButton
+					moduleInstance={props.moduleInstance}
+					addModule={props.addModule}
+				/>
+			</div>
+		</li>
+	);
 };
 
 interface DeleteButtonProps {
@@ -257,6 +268,7 @@ const RemoveButton = (props: RemoveButtonProps) => (
 				} else {
 					props.removeModule(module);
 				}
+				props.updateModule(module);
 			}
 		}}
 		className="px-2 py-1 text-xs font-semibold text-red-500 bg-red-100 rounded hover:bg-red-200"
@@ -283,43 +295,38 @@ const AddButton = (props: AddButtonProps) => (
 	</button>
 );
 
-interface EnabledStateButtonProps {
+interface EnaDisRadioProps {
 	moduleInstance: MI;
 	updateModule: (module: LocalModule | RemoteModule) => void;
 }
-const EnaDisBtn = (props: EnabledStateButtonProps) => {
-	const Button = props.moduleInstance.isEnabled() ? DisableButton : EnableButton;
+const EnaDisRadio = (props: EnaDisRadioProps) => {
+	const getIsEnabled = () => props.moduleInstance.isEnabled();
+	const [isEnabled, setEnabled, updateEnabled] = useUpdate(getIsEnabled);
 
-	return Button(props);
+	return (
+		<button
+			onClick={async () => {
+				if (isEnabled) {
+					setEnabled(false);
+					if (await props.moduleInstance.getModule().disable()) {
+						props.updateModule(props.moduleInstance.getModule());
+						updateEnabled();
+					}
+				} else {
+					setEnabled(true);
+					const moduleInstance = props.moduleInstance;
+					const module = moduleInstance.getModule() as any;
+					if (await module.enable(moduleInstance)) {
+						props.updateModule(module);
+						updateEnabled();
+					}
+				}
+			}}
+			style={{ borderRadius: "1rem" }}
+			className={`px-2 py-1 w-4 h-4 ${
+				isEnabled ? "bg-emerald-400 hover:bg-emerald-500" : "bg-red-400 hover:bg-red-500"
+			}`}
+		>
+		</button>
+	);
 };
-
-interface EnaDisButtonProps {
-	moduleInstance: MI;
-	updateModule: (module: LocalModule | RemoteModule) => void;
-}
-
-const DisableButton = (props: EnaDisButtonProps) => (
-	<button
-		onClick={async () => {
-			if (await props.moduleInstance.getModule().disable()) {
-				props.updateModule(props.moduleInstance.getModule());
-			}
-		}}
-		className="px-2 py-1 text-xs font-semibold text-yellow-500 bg-yellow-100 rounded hover:bg-yellow-200"
-	>
-		dis
-	</button>
-);
-
-const EnableButton = (props: EnaDisButtonProps) => (
-	<button
-		onClick={async () => {
-			if (await props.moduleInstance.enable()) {
-				props.updateModule(props.moduleInstance.getModule());
-			}
-		}}
-		className="px-2 py-1 text-xs font-semibold text-blue-500 bg-blue-100 rounded hover:bg-blue-200"
-	>
-		ena
-	</button>
-);

@@ -15,7 +15,6 @@
 		"css": "src/app.css"
 	},
 	"dependencies": {
-		"official/stdlib": "0.1.0-beta",
-		"Delusoire/delulib": "^0.0.0-0"
+		"official/stdlib": "0.1.0-beta"
 	}
 }

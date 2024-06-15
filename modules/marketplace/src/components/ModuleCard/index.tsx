@@ -8,21 +8,22 @@ import {
 	RemoteModule,
 	RemoteModuleInstance,
 } from "/hooks/module.ts";
-import { _, startCase } from "/modules/official/stdlib/deps.ts";
+import { _ } from "/modules/official/stdlib/deps.ts";
 import { useUpdate } from "../../util/index.ts";
 import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
 import { Cards, SettingToggle } from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
 import { classnames } from "/modules/official/stdlib/src/webpack/ClassNames.ts";
 import { useQuery } from "/modules/official/stdlib/src/webpack/ReactQuery.ts";
 import { MI } from "../../pages/Marketplace.tsx";
+import { xfetch } from "/hooks/util.ts";
 
 const History = Platform.getHistory();
 
 interface ModuleCardProps {
 	moduleInstance: MI;
-	showTags?: boolean;
-	onClick: (module: LocalModule | RemoteModule, isSelected: boolean) => void;
+	onCardClick: (module: LocalModule | RemoteModule, isSelected: boolean) => void;
 	isSelected: boolean;
+	rerenderPanelRef: React.MutableRefObject<(() => void) | undefined>;
 }
 
 const fallbackImage = () => (
@@ -40,59 +41,132 @@ const fallbackImage = () => (
 );
 
 const ModuleCard = (props: ModuleCardProps) => {
-	const { moduleInstance: inst, showTags = true, onClick, isSelected } = props;
+	const { moduleInstance, isSelected } = props;
 
-	const isLoaded = React.useCallback(() => inst instanceof LocalModuleInstance && inst.isLoaded(), [inst]);
+	const isLoaded = React.useCallback(
+		() => moduleInstance instanceof LocalModuleInstance && moduleInstance.isLoaded(),
+		[moduleInstance],
+	);
 	const [loaded, setLoaded, updateLoaded] = useUpdate(isLoaded);
 
-	const enabled = inst.isEnabled();
-	const isRemote = inst instanceof RemoteModuleInstance;
-	const installed = !isRemote && inst.isInstalled();
-	const hasRemote = Boolean(inst.artifacts.length);
+	const enabled = moduleInstance.isEnabled();
+	const isRemote = moduleInstance instanceof RemoteModuleInstance;
+	const installed = !isRemote && moduleInstance.isInstalled();
+	const hasRemote = Boolean(moduleInstance.artifacts.length);
 
-	const remoteMetadata = inst.getRemoteMetadata();
+	const remoteMetadata = moduleInstance.getRemoteMetadata();
 	const { data, isSuccess } = useQuery({
 		queryKey: ["moduleCard", remoteMetadata],
 		queryFn: () => xfetch(remoteMetadata!).then((res) => res.json() as Promise<Metadata>),
-		enabled: inst.metadata === null && hasRemote,
+		enabled: moduleInstance.metadata === null && hasRemote,
 	});
 
-	if (inst.metadata === null && isSuccess) {
-		inst.updateMetadata(data);
+	if (moduleInstance.metadata === null && isSuccess) {
+		moduleInstance.updateMetadata(data);
 	}
 
 	const {
-		name = inst.getModuleIdentifier(),
-		description = inst.getVersion(),
+		name = moduleInstance.getModuleIdentifier(),
+		description = moduleInstance.getVersion(),
 		tags = ["available"],
 		authors = [],
 		preview = "./assets/preview.gif",
-	} = inst.metadata ?? {};
+	} = moduleInstance.metadata ?? {};
 
 	const cardClasses = classnames("LunqxlFIupJw_Dkx6mNx", {
-		"border-[var(--essential-warning)]": isRemote,
+		"border border-dashed border-[var(--essential-warning)]": isRemote,
 		"bg-neutral-800": isSelected,
 	});
 
-	const externalHref = inst.getRemoteArtifact();
-	const metadataURL = installed ? inst.getRelPath("metadata.json") : remoteMetadata;
+	const externalHref = moduleInstance.getRemoteArtifact();
+	const metadataURL = installed ? moduleInstance.getRelPath("metadata.json") : remoteMetadata;
 	const previewHref = metadataURL ? `${metadataURL}/../${preview}` : "";
 
 	// TODO: add more important tags
 	const importantTags = [].filter(Boolean);
 
+	const onCardClick = () => props.onCardClick(moduleInstance.getModule(), isSelected);
+	const onImageClick = () =>
+		metadataURL && History.push(`/bespoke/marketplace/${encodeURIComponent(metadataURL)}`);
+	const onToggleLoaded = async (checked: boolean) => {
+		if (!(moduleInstance instanceof LocalModuleInstance)) {
+			return;
+		}
+		setLoaded(checked);
+		const hasChanged = checked ? moduleInstance.load() : moduleInstance.unload();
+		if (await hasChanged) {
+			props.rerenderPanelRef.current?.();
+		} else {
+			updateLoaded();
+		}
+	};
+
 	return (
-		<div className={cardClasses}>
+		<ModuleCardContent
+			className={cardClasses}
+			onCardClick={onCardClick}
+			onImageClick={onImageClick}
+			previewHref={previewHref}
+			name={name}
+			externalHref={externalHref ?? "ehref"}
+			authors={authors}
+			description={description}
+			tags={tags}
+			importantTags={importantTags}
+			installed={installed}
+			enabled={enabled}
+			loaded={loaded}
+			onToggleLoaded={onToggleLoaded}
+		/>
+	);
+};
+
+interface ModuleCardContentProps {
+	className?: string;
+	onCardClick: () => void;
+	onImageClick: () => void;
+	previewHref: string;
+	name: string;
+	externalHref: string;
+	authors: string[];
+	description: string;
+	tags: string[];
+	showTags?: boolean;
+	importantTags: string[];
+	installed: boolean;
+	enabled: boolean;
+	loaded: boolean;
+	onToggleLoaded: (checked: boolean) => void;
+}
+const ModuleCardContent = (props: ModuleCardContentProps) => {
+	const {
+		className,
+		onCardClick,
+		onImageClick,
+		previewHref,
+		name,
+		externalHref,
+		authors,
+		description,
+		tags,
+		showTags = true,
+		importantTags,
+		installed,
+		enabled,
+		loaded,
+		onToggleLoaded,
+	} = props;
+
+	return (
+		<div className={className}>
 			<div
-				className="border-[var(--essential-warning)] flex flex-col h-full"
+				className="flex flex-col h-full"
 				style={{ pointerEvents: "all" }}
 				draggable="true"
-				onClick={() => onClick(inst.getModule(), isSelected)}
+				onClick={onCardClick}
 			>
 				<div
-					onClick={() => {
-						metadataURL && History.push(`/bespoke/marketplace/${encodeURIComponent(metadataURL)}`);
-					}}
+					onClick={onImageClick}
 					style={{ pointerEvents: "all", cursor: "pointer", marginBottom: "16px" }}
 				>
 					<Cards.CardImage
@@ -111,7 +185,7 @@ const ModuleCard = (props: ModuleCardProps) => {
 						rel="noopener noreferrer"
 						onClick={(e) => e.stopPropagation()}
 					>
-						<div className="main-type-balladBold">{startCase(name)}</div>
+						<div className="main-type-balladBold">{name}</div>
 					</a>
 					<div className="text-sm mx-0 whitespace-normal color-[var(--text-subdued)] flex flex-col gap-2">
 						<AuthorsDiv authors={authors} />
@@ -131,13 +205,7 @@ const ModuleCard = (props: ModuleCardProps) => {
 							<SettingToggle
 								className="x-settings-button justify-end"
 								value={loaded}
-								onSelected={async (checked: boolean) => {
-									setLoaded(checked);
-									const hasChanged = checked ? inst.load() : inst.unload();
-									if (!(await hasChanged)) {
-										updateLoaded();
-									}
-								}}
+								onSelected={onToggleLoaded}
 							/>
 						)}
 					</div>
