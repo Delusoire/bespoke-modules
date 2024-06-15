@@ -53,8 +53,8 @@ jobs:
                   URL="https://github.com/${{ github.repository }}/releases/download/${{ github.ref_name }}/${ARCHIVE}"
                   S='.modules["'"${ID}"'"].v["'"${VERSION}"'"]'
                   yq -i '
-                     '"${S}"'.artifacts += ["'"${URL}"'"] |
-                     '"${S}"'.providers += []
+                     '"${S}"'.artifacts = ["'"${URL}"'"] |
+                     '"${S}"'.providers = []
                   ' ../vault.json
                done
                popd
