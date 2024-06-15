@@ -15,7 +15,7 @@ import { Cards, SettingToggle } from "/modules/official/stdlib/src/webpack/React
 import { classnames } from "/modules/official/stdlib/src/webpack/ClassNames.ts";
 import { useQuery } from "/modules/official/stdlib/src/webpack/ReactQuery.ts";
 import { MI } from "../../pages/Marketplace.tsx";
-import { xfetch } from "/hooks/util.ts";
+import { proxy } from "/hooks/util.ts";
 
 const History = Platform.getHistory();
 
@@ -57,7 +57,7 @@ const ModuleCard = (props: ModuleCardProps) => {
 	const remoteMetadata = moduleInstance.getRemoteMetadata();
 	const { data, isSuccess } = useQuery({
 		queryKey: ["moduleCard", remoteMetadata],
-		queryFn: () => xfetch(remoteMetadata!).then((res) => res.json() as Promise<Metadata>),
+		queryFn: () => fetch(proxy(remoteMetadata!)).then((res) => res.json() as Promise<Metadata>),
 		enabled: moduleInstance.metadata === null && hasRemote,
 	});
 

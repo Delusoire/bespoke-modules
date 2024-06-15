@@ -16,7 +16,7 @@ import {
 } from "/hooks/module.ts";
 import { useQuery, useSuspenseQuery } from "/modules/official/stdlib/src/webpack/ReactQuery.ts";
 import { module as marketplaceModuleInstance } from "/modules/Delusoire/marketplace/index.tsx";
-import { xfetch } from "/modules/official/stdlib/lib/window.ts";
+import { proxy } from "/hooks/util.ts";
 
 interface ShadowRootProps {
 	mode: "open" | "closed";
@@ -131,7 +131,7 @@ export default function ({ aurl }: { aurl: string }) {
 	const murl = aurl.replace(/\.zip$/, ".metadata.json");
 	const { data: metadata } = useSuspenseQuery({
 		queryKey: ["modulePage", murl],
-		queryFn: () => xfetch(murl).then((res: any) => res.json() as Promise<Metadata>),
+		queryFn: () => fetch(proxy(murl)).then((res: any) => res.json() as Promise<Metadata>),
 	});
 
 	const [moduleInstance, refetchModuleInstance] = useModuleInstance(moduleIdentifier, version, aurl);
