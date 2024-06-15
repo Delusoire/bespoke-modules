@@ -57,7 +57,7 @@ const ModuleCard = (props: ModuleCardProps) => {
 	const remoteMetadata = moduleInstance.getRemoteMetadata();
 	const { data, isSuccess } = useQuery({
 		queryKey: ["moduleCard", remoteMetadata],
-		queryFn: () => fetch(proxy(remoteMetadata!)).then((res) => res.json() as Promise<Metadata>),
+		queryFn: () => fetch(...proxy(remoteMetadata!)).then((res) => res.json() as Promise<Metadata>),
 		enabled: moduleInstance.metadata === null && hasRemote,
 	});
 

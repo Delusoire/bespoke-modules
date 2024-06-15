@@ -54,7 +54,7 @@ const RemoteMarkdown = React.memo(({ url }: { url: string }) => {
 	} = useQuery({
 		queryKey: ["markdown", url],
 		queryFn: () =>
-			xfetch(url)
+			fetch(...proxy(url))
 				.then((res) => res.text())
 				.then((markdown) => renderMarkdown(markdown)),
 	});
@@ -131,7 +131,7 @@ export default function ({ aurl }: { aurl: string }) {
 	const murl = aurl.replace(/\.zip$/, ".metadata.json");
 	const { data: metadata } = useSuspenseQuery({
 		queryKey: ["modulePage", murl],
-		queryFn: () => fetch(proxy(murl)).then((res: any) => res.json() as Promise<Metadata>),
+		queryFn: () => fetch(...proxy(murl)).then((res: any) => res.json() as Promise<Metadata>),
 	});
 
 	const [moduleInstance, refetchModuleInstance] = useModuleInstance(moduleIdentifier, version, aurl);
