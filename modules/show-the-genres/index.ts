@@ -8,4 +8,9 @@ export default function (mod: Module) {
 	[settings] = createSettings(mod);
 	eventBus = createEventBus(mod);
 	import("./showTheGenres.ts");
+
+	return async () => {
+		const { nowPlayingGenreContainerEl } = await import("./showTheGenres.ts");
+		nowPlayingGenreContainerEl.remove();
+	};
 }

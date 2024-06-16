@@ -23,7 +23,7 @@ const fetchLastFMTagsForNowPlayingTrack = async () => {
 	return tags.filter((tag) => !deletedTagRegex.test(tag) && !blacklistedTags.includes(tag));
 };
 
-const nowPlayingGenreContainerEl = document.createElement("genre-container");
+export const nowPlayingGenreContainerEl = document.createElement("genre-container");
 nowPlayingGenreContainerEl.fetchGenres = fetchLastFMTagsForNowPlayingTrack;
 nowPlayingGenreContainerEl.className += " ellipsis-one-line main-type-finale";
 nowPlayingGenreContainerEl.style.gridArea = "genres";
