@@ -6,7 +6,7 @@
 		"tags"
 	],
 	"preview": "./assets/PREVIEW.png",
-	"version": "0.1.0-beta",
+	"version": "0.1.1",
 	"authors": [
 		"Delusoire",
 		"duffey"
@@ -19,9 +19,9 @@
 		"mixin": "mixin.js"
 	},
 	"dependencies": {
-		"official/stdlib": "0.1.0-beta",
-		"Delusoire/delulib": "^0.0.0-0",
-		"Delusoire/library-db": "^0.0.0-0",
-		"Delusoire/dexie-react-hooks": "^0.0.0-0||1.1.7"
+		"official/stdlib": "0.1.1",
+		"Delusoire/delulib": "^0.0.0-0 || 0.1.1",
+		"Delusoire/library-db": "^0.0.0-0 || 0.1.1",
+		"Delusoire/dexie-react-hooks": "^0.0.0-0 || 1.1.7"
 	}
 }

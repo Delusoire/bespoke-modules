@@ -4,7 +4,7 @@
 		"lib"
 	],
 	"preview": "./assets/PREVIEW.png",
-	"version": "0.1.0-beta",
+	"version": "0.1.1",
 	"authors": [
 		"Delusoire"
 	],
@@ -12,6 +12,6 @@
 	"readme": "./assets/README.md",
 	"entries": {},
 	"dependencies": {
-		"official/stdlib": "0.1.0-beta"
+		"official/stdlib": "0.1.1"
 	}
 }
