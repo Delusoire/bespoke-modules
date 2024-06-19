@@ -4,7 +4,7 @@
 		"theme"
 	],
 	"preview": "./assets/PREVIEW.png",
-	"version": "0.1.1--fa443999da80ba2ee1faf7038de1a16596dacbe9",
+	"version": "0.1.2--fa443999da80ba2ee1faf7038de1a16596dacbe9",
 	"authors": [
 		"Delusoire",
 		"Astromations"
@@ -16,6 +16,6 @@
 		"css": "index.css"
 	},
 	"dependencies": {
-		"official/stdlib": "0.1.1"
+		"/official/stdlib": "0.2.0"
 	}
 }

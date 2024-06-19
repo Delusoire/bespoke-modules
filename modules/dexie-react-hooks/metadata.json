@@ -15,6 +15,6 @@
 		"js": "index.js"
 	},
 	"dependencies": {
-		"official/stdlib": "0.1.1"
+		"/official/stdlib": "0.2.0"
 	}
 }

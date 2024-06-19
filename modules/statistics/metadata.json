@@ -5,7 +5,7 @@
 		"stats"
 	],
 	"preview": "./assets/PREVIEW.png",
-	"version": "0.1.1--a8bf02cafb661b5d9504084cdef73a1ee2572d43",
+	"version": "0.1.2--a8bf02cafb661b5d9504084cdef73a1ee2572d43",
 	"authors": [
 		"Delusoire",
 		"harbassan"
@@ -17,8 +17,8 @@
 		"css": "index.css"
 	},
 	"dependencies": {
-		"official/stdlib": "0.1.1",
-		"Delusoire/delulib": "^0.0.0-0 || 0.1.1",
-		"Delusoire/library-db": "^0.0.0-0 || 0.1.1"
+		"/official/stdlib": "0.2.0",
+		"/Delusoire/delulib": "^0.0.0-0 || 0.1.2",
+		"/Delusoire/library-db": "^0.0.0-0 || 0.1.2"
 	}
 }

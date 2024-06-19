@@ -6,7 +6,7 @@
 		"lastfm"
 	],
 	"preview": "./assets/PREVIEW.png",
-	"version": "0.1.1",
+	"version": "0.1.2",
 	"authors": [
 		"Delusoire"
 	],
@@ -17,7 +17,7 @@
 		"css": "index.css"
 	},
 	"dependencies": {
-		"official/stdlib": "0.1.1",
-		"Delusoire/delulib": "^0.0.0-0 || 0.1.1"
+		"/official/stdlib": "0.2.0",
+		"/Delusoire/delulib": "^0.0.0-0 || 0.1.2"
 	}
 }
