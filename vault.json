@@ -1,6 +1,6 @@
 {
   "modules": {
-    "Delusoire/adblock": {
+    "/Delusoire/adblock": {
       "v": {
         "0.1.1+sp-1.2.38-cm-1675203200": {
           "artifacts": [
@@ -10,7 +10,7 @@
         }
       }
     },
-    "Delusoire/better-lyrics": {
+    "/Delusoire/better-lyrics": {
       "v": {
         "0.1.1+sp-1.2.38-cm-1675203200": {
           "artifacts": [
@@ -20,7 +20,7 @@
         }
       }
     },
-    "Delusoire/delulib": {
+    "/Delusoire/delulib": {
       "v": {
         "0.1.1+sp-1.2.38-cm-1675203200": {
           "artifacts": [
@@ -30,7 +30,7 @@
         }
       }
     },
-    "Delusoire/dexie-react-hooks": {
+    "/Delusoire/dexie-react-hooks": {
       "v": {
         "1.1.7+sp-1.2.38-cm-1675203200": {
           "artifacts": [
@@ -40,7 +40,7 @@
         }
       }
     },
-    "Delusoire/hazy": {
+    "/Delusoire/hazy": {
       "v": {
         "0.1.1+Astromations--Hazy--fa443999da80ba2ee1faf7038de1a16596dacbe9+sp-1.2.38-cm-1675203200": {
           "artifacts": [
@@ -56,7 +56,7 @@
         }
       }
     },
-    "Delusoire/keyboard-shortcuts": {
+    "/Delusoire/keyboard-shortcuts": {
       "v": {
         "0.1.1+sp-1.2.38-cm-1675203200": {
           "artifacts": [
@@ -66,7 +66,7 @@
         }
       }
     },
-    "Delusoire/library-db": {
+    "/Delusoire/library-db": {
       "v": {
         "0.1.1+sp-1.2.38-cm-1675203200": {
           "artifacts": [
@@ -76,7 +76,7 @@
         }
       }
     },
-    "Delusoire/marketplace": {
+    "/Delusoire/marketplace": {
       "v": {
         "0.1.1+sp-1.2.38-cm-1675203200": {
           "artifacts": [
@@ -86,7 +86,7 @@
         }
       }
     },
-    "Delusoire/playlist-labels": {
+    "/Delusoire/playlist-labels": {
       "v": {
         "0.1.1+duffey--spicetify-playlist-labels--355bfabdfd68d3a98460d8e44b9bd0f9fe3d1fe9+sp-1.2.38-cm-1675203200": {
           "artifacts": [
@@ -102,7 +102,7 @@
         }
       }
     },
-    "Delusoire/search-on-youtube": {
+    "/Delusoire/search-on-youtube": {
       "v": {
         "0.1.1+sp-1.2.38-cm-1675203200": {
           "artifacts": [
@@ -112,7 +112,7 @@
         }
       }
     },
-    "Delusoire/show-the-genres": {
+    "/Delusoire/show-the-genres": {
       "v": {
         "0.1.1+sp-1.2.38-cm-1675203200": {
           "artifacts": [
@@ -122,7 +122,7 @@
         }
       }
     },
-    "Delusoire/sort-plus": {
+    "/Delusoire/sort-plus": {
       "v": {
         "0.1.1+sp-1.2.38-cm-1675203200": {
           "artifacts": [
@@ -132,7 +132,7 @@
         }
       }
     },
-    "Delusoire/spoqify-radios": {
+    "/Delusoire/spoqify-radios": {
       "v": {
         "0.1.1+sp-1.2.38-cm-1675203200": {
           "artifacts": [
@@ -142,7 +142,7 @@
         }
       }
     },
-    "Delusoire/statistics": {
+    "/Delusoire/statistics": {
       "v": {
         "0.1.1+harbassan--spicetify-apps--a8bf02cafb661b5d9504084cdef73a1ee2572d43+sp-1.2.38-cm-1675203200": {
           "artifacts": [
@@ -158,7 +158,7 @@
         }
       }
     },
-    "Delusoire/vaultify": {
+    "/Delusoire/vaultify": {
       "v": {
         "0.1.1+sp-1.2.38-cm-1675203200": {
           "artifacts": [
