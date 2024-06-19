@@ -5,6 +5,7 @@ import {
 	LocalModule,
 	LocalModuleInstance,
 	type Metadata,
+	ModuleIdentifier,
 	RemoteModule,
 	RemoteModuleInstance,
 } from "/hooks/module.ts";
@@ -18,13 +19,6 @@ import { MI } from "../../pages/Marketplace.tsx";
 import { proxy } from "/hooks/util.ts";
 
 const History = Platform.getHistory();
-
-interface ModuleCardProps {
-	moduleInstance: MI;
-	onCardClick: (module: LocalModule | RemoteModule, isSelected: boolean) => void;
-	isSelected: boolean;
-	rerenderPanelRef: React.MutableRefObject<(() => void) | undefined>;
-}
 
 const fallbackImage = () => (
 	<svg
@@ -40,8 +34,15 @@ const fallbackImage = () => (
 	</svg>
 );
 
+interface ModuleCardProps {
+	moduleInstance: MI;
+	selectModule: (moduleIdentifier: ModuleIdentifier | null) => void;
+	isSelected: boolean;
+	updateModule: (module: LocalModule | RemoteModule) => void;
+}
 const ModuleCard = (props: ModuleCardProps) => {
 	const { moduleInstance, isSelected } = props;
+	const module = moduleInstance.getModule();
 
 	const isLoaded = React.useCallback(
 		() => moduleInstance instanceof LocalModuleInstance && moduleInstance.isLoaded(),
@@ -85,9 +86,14 @@ const ModuleCard = (props: ModuleCardProps) => {
 	// TODO: add more important tags
 	const importantTags = [].filter(Boolean);
 
-	const onCardClick = () => props.onCardClick(moduleInstance.getModule(), isSelected);
+	const onCardClick = React.useCallback(() => {
+		const selectedModule = isSelected ? null : module.getIdentifier();
+		props.selectModule(selectedModule);
+	}, [isSelected, module, props.selectModule]);
+
 	const onImageClick = () =>
 		metadataURL && History.push(`/bespoke/marketplace/${encodeURIComponent(metadataURL)}`);
+
 	const onToggleLoaded = async (checked: boolean) => {
 		if (!(moduleInstance instanceof LocalModuleInstance)) {
 			return;
@@ -95,7 +101,7 @@ const ModuleCard = (props: ModuleCardProps) => {
 		setLoaded(checked);
 		const hasChanged = checked ? moduleInstance.load() : moduleInstance.unload();
 		if (await hasChanged) {
-			props.rerenderPanelRef.current?.();
+			props.updateModule(module);
 		} else {
 			updateLoaded();
 		}

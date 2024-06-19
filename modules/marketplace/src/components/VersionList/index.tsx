@@ -20,16 +20,9 @@ import {
 	MdOutlineCircle,
 } from "https://esm.sh/react-icons/md";
 import { UI } from "/modules/official/stdlib/src/webpack/ComponentLibrary.ts";
+import { useModules } from "../ModulesProvider/index.tsx";
 
-export interface VersionListProps {}
-export default function (props: VersionListProps) {
-	const [ref, setRef] = React.useState<HTMLDivElement | null>(null);
-
-	const m = React.useMemo(() => import("../../pages/Marketplace.tsx"), []);
-
-	// TODO: remove
-	React.useEffect(() => void m.then((m) => m.refresh?.()), [ref]);
-
+export default function () {
 	const location = useLocation();
 	const { panelSend } = usePanelAPI();
 	if (location.pathname !== "/bespoke/marketplace") {
@@ -39,29 +32,18 @@ export default function (props: VersionListProps) {
 	return (
 		<PanelSkeleton label="Marketplace">
 			<PanelContent>
-				<div
-					id="MarketplacePanel"
-					ref={(r) => setRef(r)}
-				/>
+				<VersionListPanelContent />
 			</PanelContent>
 		</PanelSkeleton>
 	);
 }
 
-export interface VersionListPanelProps {
-	modules: Array<LocalModule | RemoteModule>;
-	addModule: (module: LocalModule | RemoteModule) => void;
-	removeModule: (module: LocalModule | RemoteModule) => void;
-	updateModule: (module: LocalModule | RemoteModule) => void;
-	selectedInstance: MI | null;
-	selectInstance: (moduleInstance: MI) => void;
-	rerenderPanelRef: React.MutableRefObject<(() => void) | undefined>;
-}
-export const VersionListPanel = React.memo((props: VersionListPanelProps) => {
-	const [, rerender] = React.useReducer((n) => n + 1, 0);
-	props.rerenderPanelRef.current = rerender;
+const VersionListPanelContent = React.memo(() => {
+	const m = useModules();
+	const modules = m.modules[m.selectedModule!] ?? [];
+	const selectedInstance = m.moduleToInstance[m.selectedModule!] ?? null;
 
-	if (!props.selectedInstance) {
+	if (!selectedInstance) {
 		return (
 			<>
 				<PanelHeader title="No module selected" />
@@ -72,17 +54,17 @@ export const VersionListPanel = React.memo((props: VersionListPanelProps) => {
 
 	return (
 		<>
-			<PanelHeader title={props.selectedInstance.getModuleIdentifier()} />
+			<PanelHeader title={selectedInstance.getModuleIdentifier()} />
 			<div className="flex flex-col gap-4">
-				{props.modules.map((module) => (
+				{modules.map((module) => (
 					<ModuleSection
 						key={module.getHeritage().join("\x00")}
 						module={module}
-						addModule={props.addModule}
-						removeModule={props.removeModule}
-						updateModule={props.updateModule}
-						selectedInstance={props.selectedInstance!}
-						selectInstance={props.selectInstance}
+						addModule={m.addModule}
+						removeModule={m.removeModule}
+						updateModule={m.updateModule}
+						selectedInstance={selectedInstance!}
+						selectInstance={m.selectInstance}
 					/>
 				))}
 			</div>

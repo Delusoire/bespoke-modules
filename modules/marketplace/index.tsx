@@ -19,7 +19,7 @@ export let hash: { state: string; event: string } | undefined;
 
 export let module: Module;
 
-export default function (mod: Module) {
+export default async function (mod: Module) {
 	module = mod;
 	storage = createStorage(mod);
 	logger = createLogger(mod);
@@ -34,6 +34,9 @@ export default function (mod: Module) {
 	const panel = <VersionList />;
 	registrar.register("panel", panel);
 	hash = panelReg.getHash(panel)!;
+
+	const { ModulesContextProvider } = await import("./src/components/ModulesProvider/index.tsx");
+	registrar.register("rootProvider", <ModulesContextProvider />);
 }
 
 const MarketplaceLink = () => (
