@@ -1,0 +1,23 @@
+{
+	"name": "perf",
+	"tags": [
+		"extension",
+		"ads",
+		"premium"
+	],
+	"preview": "./assets/PREVIEW.png",
+	"version": "0.1.1",
+	"authors": [
+		"Delusoire"
+	],
+	"description": "🔥",
+	"readme": "./assets/README.md",
+	"entries": {
+		"js": "index.js",
+		"mixin": "mixin.js"
+	},
+	"dependencies": {
+		"official/stdlib": "0.1.1",
+		"Delusoire/delulib": "^0.0.0-0 || 0.1.1"
+	}
+}
