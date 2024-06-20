@@ -32,7 +32,7 @@ const _useModules = () => {
 
    const [modules, setModules] = React.useState(getModulesByIdentifier);
 
-   const updateModules = React.useCallback(() => setModules(getModulesByIdentifier), [setModules]);
+   const updateModules = React.useCallback(() => setModules(getModulesByIdentifier), []);
 
    const setModulesForIdentifier = React.useCallback(
       (
@@ -45,7 +45,7 @@ const _useModules = () => {
          });
          rerender();
       },
-      [setModules],
+      [],
    );
 
    const addModule = React.useCallback((module: LocalModule | RemoteModule) => {
@@ -56,7 +56,7 @@ const _useModules = () => {
          }
          return modules;
       });
-   }, [setModulesForIdentifier]);
+   }, []);
 
    const removeModule = React.useCallback((module: LocalModule | RemoteModule) => {
       setModulesForIdentifier(module.getIdentifier(), (modules) => {
@@ -66,11 +66,11 @@ const _useModules = () => {
          }
          return modules;
       });
-   }, [setModulesForIdentifier]);
+   }, []);
 
    const updateModule = React.useCallback((module: LocalModule | RemoteModule) => {
       setModulesForIdentifier(module.getIdentifier(), (modules) => modules);
-   }, [setModulesForIdentifier]);
+   }, []);
 
    const [moduleToInstance, selectInstance] = React.useReducer(
       (moduleToInst: Record<ModuleIdentifier, MI>, moduleInstance: MI) => ({
@@ -85,14 +85,15 @@ const _useModules = () => {
 
    return {
       modules,
+      moduleToInstance,
+      selectedModule,
+
       setModules,
       updateModules,
       addModule,
       removeModule,
       updateModule,
-      moduleToInstance,
       selectInstance,
-      selectedModule,
       selectModule,
    };
 };

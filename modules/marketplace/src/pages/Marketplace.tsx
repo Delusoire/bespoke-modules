@@ -69,29 +69,27 @@ const dummy_metadata: Metadata = {
 	dependencies: {},
 };
 
-export default function () {
-	const { updateModules } = useModules();
+export default React.memo(() => {
+	const {
+		modules,
+		moduleToInstance,
+		selectedModule,
+
+		updateModules,
+		updateModule,
+		selectModule,
+	} = useModules();
+
 	React.useEffect(() => {
 		updateModules();
 	}, []);
-	return <MarketplaceContainer />;
-}
-
-const MarketplaceContainer = React.memo(() => {
-	const {
-		modules,
-		updateModule,
-		moduleToInstance,
-		selectedModule,
-		selectModule,
-	} = useModules();
 
 	return (
 		<MarketplaceContent
 			modules={modules}
-			updateModule={updateModule}
 			moduleToInstance={moduleToInstance}
 			selectedModule={selectedModule}
+			updateModule={updateModule}
 			selectModule={selectModule}
 		/>
 	);
@@ -99,9 +97,9 @@ const MarketplaceContainer = React.memo(() => {
 
 interface MarketplaceContentProps {
 	modules: Record<string, Array<LocalModule | RemoteModule>>;
-	updateModule: (module: LocalModule | RemoteModule) => void;
 	moduleToInstance: Record<string, MI>;
 	selectedModule: ModuleIdentifier | null;
+	updateModule: (module: LocalModule | RemoteModule) => void;
 	selectModule: (moduleIdentifier: ModuleIdentifier | null) => void;
 }
 const MarketplaceContent = React.memo((props: MarketplaceContentProps) => {
