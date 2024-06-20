@@ -102,7 +102,7 @@ interface MarketplaceContentProps {
 	updateModule: (module: LocalModule | RemoteModule) => void;
 	selectModule: (moduleIdentifier: ModuleIdentifier | null) => void;
 }
-const MarketplaceContent = React.memo((props: MarketplaceContentProps) => {
+const MarketplaceContent = (props: MarketplaceContentProps) => {
 	const [searchbar, search] = useSearchBar({
 		placeholder: t("pages.marketplace.search_modules"),
 		expanded: true,
@@ -175,4 +175,4 @@ const MarketplaceContent = React.memo((props: MarketplaceContentProps) => {
 			</section>
 		</>
 	);
-});
+};
