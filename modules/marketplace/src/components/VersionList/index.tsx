@@ -164,7 +164,7 @@ const _LocalModuleInstance = (props: ModuleInstanceProps<LocalModuleInstance>) =
 			<div className="flex items-center">
 				<EnabledDisabledRad moduleInstance={props.moduleInstance} updateModule={props.updateModule} />
 			</div>
-			<div className="flex-grow">
+			<div className="flex-1 min-w-0">
 				<ScrollableText>
 					<span className="font-medium">{props.moduleInstance.getVersion()}</span>
 				</ScrollableText>
@@ -199,7 +199,7 @@ const _RemoteModuleInstance = (props: ModuleInstanceProps<RemoteModuleInstance>)
 			<div className="flex items-center">
 				<EnabledDisabledRad moduleInstance={props.moduleInstance} updateModule={props.updateModule} />
 			</div>
-			<div className="flex-grow">
+			<div className="flex-1 min-w-0">
 				<ScrollableText>
 					<span className="font-medium">{props.moduleInstance.getVersion()}</span>
 				</ScrollableText>

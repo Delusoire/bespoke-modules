@@ -7,7 +7,7 @@ import {
 	type Metadata,
 	ModuleIdentifier,
 	RemoteModule,
-	RemoteModuleInstance,
+	RootModule,
 } from "/hooks/module.ts";
 import { _ } from "/modules/official/stdlib/deps.ts";
 import { useUpdate } from "../../util/index.ts";
@@ -44,47 +44,37 @@ const ModuleCard = (props: ModuleCardProps) => {
 	const { moduleInstance, isSelected } = props;
 	const module = moduleInstance.getModule();
 
-	const isLoaded = React.useCallback(
-		() => moduleInstance instanceof LocalModuleInstance && moduleInstance.isLoaded(),
-		[moduleInstance],
-	);
-	const [loaded, setLoaded, updateLoaded] = useUpdate(isLoaded);
+	const noMetadata = moduleInstance.metadata === null;
 
-	const enabled = moduleInstance.isEnabled();
-	const isRemote = moduleInstance instanceof RemoteModuleInstance;
-	const installed = !isRemote && moduleInstance.isInstalled();
-	const hasRemote = Boolean(moduleInstance.artifacts.length);
-
-	const remoteMetadata = moduleInstance.getRemoteMetadata();
+	const metadataURL = moduleInstance.getMetadataURL();
 	const { data, isSuccess } = useQuery({
-		queryKey: ["moduleCard", remoteMetadata],
-		queryFn: () => fetch(...proxy(remoteMetadata!)).then((res) => res.json() as Promise<Metadata>),
-		enabled: moduleInstance.metadata === null && hasRemote,
+		queryKey: ["moduleCard", metadataURL],
+		queryFn: () => fetch(...proxy(metadataURL!)).then((res) => res.json() as Promise<Metadata>),
+		enabled: noMetadata && !!metadataURL,
 	});
 
-	if (moduleInstance.metadata === null && isSuccess) {
+	if (noMetadata && isSuccess) {
 		moduleInstance.updateMetadata(data);
 	}
 
 	const {
 		name = moduleInstance.getModuleIdentifier(),
 		description = moduleInstance.getVersion(),
-		tags = ["available"],
+		tags = [],
 		authors = [],
 		preview = "./assets/preview.gif",
 	} = moduleInstance.metadata ?? {};
 
 	const cardClasses = classnames("LunqxlFIupJw_Dkx6mNx", {
-		"border border-dashed border-[var(--essential-warning)]": isRemote,
+		"border border-dashed border-[var(--essential-warning)]": noMetadata,
 		"bg-neutral-800": isSelected,
 	});
 
-	const externalHref = moduleInstance.getRemoteArtifact();
-	const metadataURL = installed ? moduleInstance.getRelPath("metadata.json") : remoteMetadata;
-	const previewHref = metadataURL ? `${metadataURL}/../${preview}` : "";
+	const externalHref = moduleInstance.getRemoteArtifactURL() ?? null;
+	const previewHref = metadataURL ? `${metadataURL}/../${preview}` : null;
 
 	// TODO: add more important tags
-	const importantTags = [].filter(Boolean);
+	const importantTags = [];
 
 	const onCardClick = React.useCallback(() => {
 		const selectedModule = isSelected ? null : module.getIdentifier();
@@ -93,6 +83,17 @@ const ModuleCard = (props: ModuleCardProps) => {
 
 	const onImageClick = () =>
 		metadataURL && History.push(`/bespoke/marketplace/${encodeURIComponent(metadataURL)}`);
+
+	const localModule = RootModule.INSTANCE.getChild(module.getIdentifier());
+	const enabledLocalInstance = localModule?.getEnabledInstance();
+	const showLoaded = enabledLocalInstance?.isInstalled() ?? false;
+
+	const isLoaded = React.useCallback(
+		() => moduleInstance instanceof LocalModuleInstance && moduleInstance.isLoaded(),
+		[moduleInstance],
+	);
+
+	const [loaded, setLoaded, updateLoaded] = useUpdate(isLoaded);
 
 	const onToggleLoaded = async (checked: boolean) => {
 		if (!(moduleInstance instanceof LocalModuleInstance)) {
@@ -107,6 +108,19 @@ const ModuleCard = (props: ModuleCardProps) => {
 		}
 	};
 
+	// TODO: implement (add, install, enable) and (disable, delete, remove) buttons
+	const buttons = (
+		<>
+			{showLoaded && SettingToggle && (
+				<SettingToggle
+					className="x-settings-button justify-end"
+					value={loaded}
+					onSelected={onToggleLoaded}
+				/>
+			)}
+		</>
+	);
+
 	return (
 		<ModuleCardContent
 			className={cardClasses}
@@ -119,48 +133,40 @@ const ModuleCard = (props: ModuleCardProps) => {
 			description={description}
 			tags={tags}
 			importantTags={importantTags}
-			installed={installed}
-			enabled={enabled}
-			loaded={loaded}
-			onToggleLoaded={onToggleLoaded}
-		/>
+		>
+			{buttons}
+		</ModuleCardContent>
 	);
 };
 
 interface ModuleCardContentProps {
 	className?: string;
 	onCardClick: () => void;
+	previewHref: string | null;
 	onImageClick: () => void;
-	previewHref: string;
 	name: string;
 	externalHref: string;
 	authors: string[];
 	description: string;
-	tags: string[];
 	showTags?: boolean;
+	tags: string[];
 	importantTags: string[];
-	installed: boolean;
-	enabled: boolean;
-	loaded: boolean;
-	onToggleLoaded: (checked: boolean) => void;
+	children?: React.ReactNode;
 }
 const ModuleCardContent = (props: ModuleCardContentProps) => {
 	const {
 		className,
 		onCardClick,
-		onImageClick,
 		previewHref,
+		onImageClick,
 		name,
 		externalHref,
 		authors,
 		description,
-		tags,
 		showTags = true,
+		tags,
 		importantTags,
-		installed,
-		enabled,
-		loaded,
-		onToggleLoaded,
+		children,
 	} = props;
 
 	return (
@@ -176,7 +182,7 @@ const ModuleCardContent = (props: ModuleCardContentProps) => {
 					style={{ pointerEvents: "all", cursor: "pointer", marginBottom: "16px" }}
 				>
 					<Cards.CardImage
-						images={[{ url: previewHref }]}
+						images={previewHref ? [{ url: previewHref }] : []}
 						FallbackComponent={fallbackImage}
 					/>
 				</div>
@@ -207,13 +213,7 @@ const ModuleCardContent = (props: ModuleCardContentProps) => {
 						/>
 					</div>
 					<div className="flex justify-between">
-						{installed && enabled && SettingToggle && (
-							<SettingToggle
-								className="x-settings-button justify-end"
-								value={loaded}
-								onSelected={onToggleLoaded}
-							/>
-						)}
+						{children}
 					</div>
 				</div>
 			</div>

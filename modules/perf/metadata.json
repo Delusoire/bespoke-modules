@@ -13,7 +13,6 @@
 	"description": "🔥",
 	"readme": "./assets/README.md",
 	"entries": {
-		"js": "index.js",
 		"mixin": "mixin.js"
 	},
 	"dependencies": {

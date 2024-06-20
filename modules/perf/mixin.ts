@@ -39,7 +39,7 @@ export default function (transformer: Transformer) {
 	transformer((emit) => (str) => {
 		str = str.replace(/&&[a-zA-Z_\$][\w\$]*\.current\.style\.setProperty\(("--top-bar-opacity"),(.+?)\)(?=})/, `&&__patchTbo($1,$2)`);
 
-		str = str.replace(/e!==[a-zA-Z_\$][\w\$]*\.current&&(\(document.documentElement.style.setProperty\(([a-zA-Z_\$][\w\$]*),(.+?)\))(?=,)/, "__patchLswPw($2,$3)||$1");
+		// str = str.replace(/e!==[a-zA-Z_\$][\w\$]*\.current&&(\(document.documentElement.style.setProperty\(([a-zA-Z_\$][\w\$]*),(.+?)\))(?=,)/, "__patchLswPw($2,$3)||$1");
 
 		emit();
 

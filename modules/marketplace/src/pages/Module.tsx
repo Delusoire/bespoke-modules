@@ -2,7 +2,6 @@ import { React } from "/modules/official/stdlib/src/expose/React.ts";
 import { ReactDOM } from "/modules/official/stdlib/src/webpack/React.ts";
 import Button from "../components/Button/index.tsx";
 import LoadingIcon from "../components/icons/LoadingIcon.tsx";
-import TrashIcon from "../components/icons/TrashIcon.tsx";
 import { t } from "../i18n.ts";
 import { renderMarkdown } from "../api/github.ts";
 import { logger } from "../../index.tsx";
@@ -17,6 +16,7 @@ import {
 import { useQuery, useSuspenseQuery } from "/modules/official/stdlib/src/webpack/ReactQuery.ts";
 import { module as marketplaceModuleInstance } from "/modules/Delusoire/marketplace/index.tsx";
 import { proxy } from "/hooks/util.ts";
+import { MdCloudDownload, MdDeleteForever } from "https://esm.sh/react-icons/md";
 
 interface ShadowRootProps {
 	mode: "open" | "closed";
@@ -124,11 +124,12 @@ export default function ({ aurl }: { aurl: string }) {
 	const basnename = aurl.slice(aurl.lastIndexOf("/") + 1);
 	const match = basnename.match(/^(<moduleIdentifier>[^@]+)@(<version>[^@]+)\.zip$/);
 	if (!match || !match.groups) {
-		return <div>Invalid module URL</div>;
+		return "Invalid module URL";
 	}
-	const { moduleIdentifier, version } = match.groups;
-
+	const version = match.groups.version;
+	const moduleIdentifier = "/" + match.groups.moduleIdentifier.replaceAll(".", "/");
 	const murl = aurl.replace(/\.zip$/, ".metadata.json");
+
 	const { data: metadata } = useSuspenseQuery({
 		queryKey: ["modulePage", murl],
 		queryFn: () => fetch(...proxy(murl)).then((res: any) => res.json() as Promise<Metadata>),
@@ -151,8 +152,8 @@ export default function ({ aurl }: { aurl: string }) {
 	};
 
 	const Button = isLocal
-		? <TrashButton {...sharedButtonProps} moduleInstance={moduleInstance} />
-		: <DownloadButton {...sharedButtonProps} moduleInstance={moduleInstance} />;
+		? <RemoveButton {...sharedButtonProps} moduleInstance={moduleInstance} />
+		: <AddButton {...sharedButtonProps} moduleInstance={moduleInstance} />;
 
 	return (
 		<section className="contentSpacing">
@@ -174,7 +175,7 @@ interface TrashButtonProps {
 	moduleInstance: LocalModuleInstance;
 	onUpdate: () => void;
 }
-const TrashButton = (props: TrashButtonProps) => {
+const RemoveButton = (props: TrashButtonProps) => {
 	return (
 		<Button
 			label={props.label}
@@ -186,7 +187,7 @@ const TrashButton = (props: TrashButtonProps) => {
 				}
 			}}
 		>
-			<TrashIcon />
+			<MdDeleteForever />
 			{props.label}
 		</Button>
 	);
@@ -197,7 +198,7 @@ interface DownloadButtonProps {
 	moduleInstance: RemoteModuleInstance;
 	onUpdate: () => void;
 }
-const DownloadButton = (props: DownloadButtonProps) => {
+const AddButton = (props: DownloadButtonProps) => {
 	return (
 		<Button
 			label={props.label}
@@ -209,7 +210,7 @@ const DownloadButton = (props: DownloadButtonProps) => {
 				}
 			}}
 		>
-			<TrashIcon />
+			<MdCloudDownload />
 			{props.label}
 		</Button>
 	);
