@@ -65,7 +65,7 @@ const ModuleCard = (props: ModuleCardProps) => {
 		preview = "./assets/preview.gif",
 	} = moduleInstance.metadata ?? {};
 
-	const cardClasses = classnames("LunqxlFIupJw_Dkx6mNx", {
+	const cardClasses = classnames("rounded-lg bg-neutral-900 p-4 transition duration-300 ease-in-out", {
 		"border border-dashed border-[var(--essential-warning)]": noMetadata,
 		"bg-neutral-800": isSelected,
 	});

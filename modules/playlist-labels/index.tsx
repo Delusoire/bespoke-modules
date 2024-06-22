@@ -125,7 +125,7 @@ globalThis.__patchRenderTracklistRowColumn = (column) => {
 globalThis.__patchTracklistColumnHeaderContextMenu = (column) => {
 	if (column === COLUMN) {
 		return (props) => (
-			<button className={classnames("rGujAXjCLKEd_N6yTwds", props.className)}>
+			<button className={classnames(MAP.tracklist.column_header, props.className)}>
 				<UI.Text
 					variant="bodySmall"
 					className={classnames("standalone-ellipsis-one-line", props.className)}
