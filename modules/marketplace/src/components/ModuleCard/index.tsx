@@ -12,7 +12,7 @@ import {
 import { _ } from "/modules/official/stdlib/deps.ts";
 import { useUpdate } from "../../util/index.ts";
 import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
-import { Cards, SettingToggle } from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
+import { Cards, SettingsToggle } from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
 import { classnames } from "/modules/official/stdlib/src/webpack/ClassNames.ts";
 import { useQuery } from "/modules/official/stdlib/src/webpack/ReactQuery.ts";
 import { MI } from "../../pages/Marketplace.tsx";
@@ -111,8 +111,8 @@ const ModuleCard = (props: ModuleCardProps) => {
 	// TODO: implement (add, install, enable) and (disable, delete, remove) buttons
 	const buttons = (
 		<>
-			{showLoaded && SettingToggle && (
-				<SettingToggle
+			{showLoaded && SettingsToggle && (
+				<SettingsToggle
 					className="x-settings-button justify-end"
 					value={loaded}
 					onSelected={onToggleLoaded}
