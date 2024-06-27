@@ -43,19 +43,17 @@ interface ModuleCardProps {
 const ModuleCard = (props: ModuleCardProps) => {
 	const { moduleInstance, isSelected } = props;
 	const module = moduleInstance.getModule();
-
 	const noMetadata = moduleInstance.metadata === null;
 
 	const metadataURL = moduleInstance.getMetadataURL();
-	const { data, isSuccess } = useQuery({
+	useQuery({
 		queryKey: ["moduleCard", metadataURL],
-		queryFn: () => fetch(...proxy(metadataURL!)).then((res) => res.json() as Promise<Metadata>),
+		queryFn: () =>
+			fetch(metadataURL!)
+				.then((res) => res.json() as Promise<Metadata>)
+				.then((metadata) => moduleInstance.updateMetadata(metadata)),
 		enabled: noMetadata && !!metadataURL,
 	});
-
-	if (noMetadata && isSuccess) {
-		moduleInstance.updateMetadata(data);
-	}
 
 	const {
 		name = moduleInstance.getModuleIdentifier(),

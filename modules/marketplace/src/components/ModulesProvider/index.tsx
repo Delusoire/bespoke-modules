@@ -5,7 +5,7 @@ import { LocalModule, RemoteModule } from "/hooks/module.ts";
 import { MI } from "/modules/Delusoire/marketplace/src/pages/Marketplace.tsx";
 
 const getModulesByIdentifier = () => {
-   const modules = RootModule.INSTANCE.getAllDescendantsByBreadth();
+   const modules = Array.from(RootModule.INSTANCE.getAllDescendantsByBreadth());
    const modulesByIdentifier = Object.groupBy(modules, (module) => module.getIdentifier());
    return modulesByIdentifier as Record<ModuleIdentifier, Array<LocalModule | RemoteModule>>;
 };
