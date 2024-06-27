@@ -16,8 +16,9 @@
 	"entries": {
 		"js": "index.js",
 		"css": "index.css",
-		"mixin": "mixin.js"
+		"importMap": "import_map.json"
 	},
+	"hasMixins": true,
 	"dependencies": {
 		"/official/stdlib": "0.2.0",
 		"/Delusoire/delulib": "^0.0.0-0 || 0.1.2",

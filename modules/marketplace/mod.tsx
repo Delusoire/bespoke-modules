@@ -1,4 +1,4 @@
-import { createLogger, createRegistrar, createStorage } from "/modules/official/stdlib/index.ts";
+import { createLogger, createRegistrar, createStorage } from "/modules/official/stdlib/mod.ts";
 import { createSettings } from "/modules/official/stdlib/lib/settings.tsx";
 import { React } from "/modules/official/stdlib/src/expose/React.ts";
 
@@ -15,7 +15,7 @@ export let logger: Console;
 export let settings: Settings;
 export let settingsButton: React.JSX.Element;
 
-export let hash: { state: string; event: string } | undefined;
+export let hash: { state: string; event: string; } | undefined;
 
 export let module: Module;
 

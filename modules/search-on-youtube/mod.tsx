@@ -1,4 +1,4 @@
-import { createRegistrar } from "/modules/official/stdlib/index.ts";
+import { createRegistrar } from "/modules/official/stdlib/mod.ts";
 import { createSettings } from "/modules/official/stdlib/lib/settings.tsx";
 import type { Module } from "/hooks/index.ts";
 import type { Settings } from "/modules/official/stdlib/lib/settings.tsx";

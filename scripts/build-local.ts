@@ -1,4 +1,4 @@
-import { Builder, readJSON, Transpiler } from "jsr:@delu/tailor";
+import { Builder, readJSON, Transpiler } from "jsr:@delu/tailor@0.9.0";
 
 import { ensureDir } from "jsr:@std/fs/ensure-dir";
 
@@ -12,13 +12,15 @@ for (const inputDir of Deno.args) {
    for (const { classmap, version: spVersion, timestamp: cmTimestamp } of classmapInfos) {
       const m = { ...metadata };
       m.version = `${metadata.version}+sp-${spVersion}-cm-${cmTimestamp}`;
+
+      const identifier = `/${m.authors[0]}/${m.name}`;
       const fingerprint = `${m.authors[0]}.${m.name}@v${m.version}`;
       const outputDir = path.join("dist", fingerprint);
-
+      const copyUnknown = true;
       await ensureDir(outputDir);
 
       const transpiler = new Transpiler(classmap);
-      const builder = new Builder(transpiler, { metadata, inputDir, outputDir, copyUnknown: true });
+      const builder = new Builder(transpiler, { metadata, identifier, inputDir, outputDir, copyUnknown });
 
       try {
          await builder.build();

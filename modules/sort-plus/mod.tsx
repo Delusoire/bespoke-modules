@@ -1,4 +1,4 @@
-import { createRegistrar } from "/modules/official/stdlib/index.ts";
+import { createRegistrar } from "/modules/official/stdlib/mod.ts";
 import { createSettings } from "/modules/official/stdlib/lib/settings.tsx";
 
 import { TopbarLeftButton } from "/modules/official/stdlib/src/registers/topbarLeftButton.tsx";

@@ -1,5 +1,5 @@
-import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
+import type { Module } from "/hooks/index.ts";
 
-const ProductStateAPI = Platform.getProductStateAPI();
-
-ProductStateAPI.putOverridesValues({ pairs: { ads: "0", catalogue: "premium", name: "Spotify", product: "premium" } });
+export async function load(mod: Module) {
+   return await (await import("./mod.ts")).default(mod);
+}

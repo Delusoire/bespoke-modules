@@ -9,7 +9,7 @@ import Shelf from "../components/shelf.tsx";
 import RefreshButton from "../components/buttons/refresh_button.tsx";
 import { SpotifyTimeRange } from "../api/spotify.ts";
 import { getTracksFromURIs } from "/modules/Delusoire/library-db/lib/db.ts";
-import { PlaylistItems, SavedPlaylists } from "/modules/Delusoire/library-db/index.ts";
+import { PlaylistItems, SavedPlaylists } from "/modules/Delusoire/library-db/mod.ts";
 import { fp } from "/modules/official/stdlib/deps.ts";
 import { fetchAlbumsMeta, fetchArtistsMeta, fetchAudioFeaturesMeta } from "./playlist.tsx";
 import { calculateTracksMeta } from "./top_genres.tsx";

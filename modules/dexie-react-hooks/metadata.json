@@ -11,7 +11,9 @@
 	],
 	"description": "dexie-react-hooks from npm",
 	"readme": "./assets/README.md",
-	"entries": {},
+	"entries": {
+		"importMap": "import_map.json"
+	},
 	"dependencies": {
 		"/official/stdlib": "0.2.0"
 	}

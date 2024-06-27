@@ -13,7 +13,8 @@ $jobs = @()
 
 foreach ($Dir in $Dirs) {
    Write-Host "Building $Dir"
-   $jobs += Start-Process -FilePath "deno" -ArgumentList "run -A jsr:@delu/tailor/cli -i $Dir -o $Dir -c classmap.json -b" -NoNewWindow -PassThru
+   $Id = $Dir -replace ".*\\modules\\", "/Delusoire/"
+   $jobs += Start-Process -FilePath "deno" -ArgumentList "run -A jsr:@delu/tailor/cli --module $Id -i $Dir -o $Dir -c classmap.json -b" -NoNewWindow -PassThru
 }
 
 $jobs | Wait-Process

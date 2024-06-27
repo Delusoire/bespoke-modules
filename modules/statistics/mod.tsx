@@ -3,7 +3,7 @@ import {
 	createLogger,
 	createRegistrar,
 	createStorage,
-} from "/modules/official/stdlib/index.ts";
+} from "/modules/official/stdlib/mod.ts";
 import { createSettings } from "/modules/official/stdlib/lib/settings.tsx";
 
 import { NavLink } from "/modules/official/stdlib/src/registers/navlink.tsx";

@@ -4,7 +4,7 @@ import Button from "../components/Button/index.tsx";
 import LoadingIcon from "../components/icons/LoadingIcon.tsx";
 import { t } from "../i18n.ts";
 import { renderMarkdown } from "../api/github.ts";
-import { logger } from "../../index.tsx";
+import { logger } from "../../mod.tsx";
 import {
 	LocalModuleInstance,
 	type Metadata,
@@ -14,7 +14,7 @@ import {
 	Version,
 } from "/hooks/module.ts";
 import { useQuery, useSuspenseQuery } from "/modules/official/stdlib/src/webpack/ReactQuery.ts";
-import { module as marketplaceModuleInstance } from "/modules/Delusoire/marketplace/index.tsx";
+import { module as marketplaceModuleInstance } from "../../mod.tsx";
 import { proxy } from "/hooks/util.ts";
 import { MdCloudDownload, MdDeleteForever } from "https://esm.sh/react-icons/md";
 
@@ -46,7 +46,7 @@ const ShadowRoot = ({ mode, delegatesFocus, styleSheets, children }: ShadowRootP
 	return <div ref={node}>{content}</div>;
 };
 
-const RemoteMarkdown = React.memo(({ url }: { url: string }) => {
+const RemoteMarkdown = React.memo(({ url }: { url: string; }) => {
 	const {
 		status,
 		error,
@@ -120,7 +120,7 @@ function useModuleInstance(moduleIdentifier: ModuleIdentifier, version: Version,
 	return [local.data ?? remote.data, local.refetch] as const;
 }
 
-export default function ({ aurl }: { aurl: string }) {
+export default function ({ aurl }: { aurl: string; }) {
 	const basnename = aurl.slice(aurl.lastIndexOf("/") + 1);
 	const match = basnename.match(/^(<moduleIdentifier>[^@]+)@(<version>[^@]+)\.zip$/);
 	if (!match || !match.groups) {

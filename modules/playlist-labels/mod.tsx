@@ -1,5 +1,5 @@
 import { _ } from "/modules/official/stdlib/deps.ts";
-import { useLivePlaylistItems } from "/modules/Delusoire/library-db/index.ts";
+import { useLivePlaylistItems } from "/modules/Delusoire/library-db/mod.ts";
 import { createIconComponent } from "/modules/official/stdlib/lib/createIconComponent.tsx";
 import { useLiveQuery } from "/modules/Delusoire/dexie-react-hooks/index.ts";
 import { db } from "/modules/Delusoire/library-db/lib/db.ts";
@@ -16,7 +16,7 @@ import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
 import { classnames } from "/modules/official/stdlib/src/webpack/ClassNames.ts";
 import { UI } from "/modules/official/stdlib/src/webpack/ComponentLibrary.ts";
 
-const PlaylistLabels = React.memo(({ uri }: { uri: string }) => {
+const PlaylistLabels = React.memo(({ uri }: { uri: string; }) => {
 	const playlists = useLivePlaylistItems(uri);
 	return (
 		<div className="playlist-labels-labels-container">
@@ -28,7 +28,7 @@ const PlaylistLabels = React.memo(({ uri }: { uri: string }) => {
 const History = Platform.getHistory();
 const PlaylistAPI = Platform.getPlaylistAPI();
 
-const PlaylistLabel = ({ uri, playlistUri }: { uri: string; playlistUri: string }) => {
+const PlaylistLabel = ({ uri, playlistUri }: { uri: string; playlistUri: string; }) => {
 	const playlist = useLiveQuery(async () => {
 		const t = await db.playlists.get(playlistUri);
 		return t;

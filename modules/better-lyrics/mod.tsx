@@ -1,4 +1,4 @@
-import { createEventBus, type EventBus } from "/modules/official/stdlib/index.ts";
+import { createEventBus, type EventBus } from "/modules/official/stdlib/mod.ts";
 import { Module } from "/hooks/index.ts";
 
 import { React } from "/modules/official/stdlib/src/expose/React.ts";
