@@ -1,5 +1,5 @@
 import { createFolder } from "/modules/Delusoire/delulib/lib/platform.ts";
-import { settings } from "./index.tsx";
+import { settings } from "./mod.tsx";
 
 const SORTED_PLAYLISTS_FOLDER_NAME = "📀 Sorted Playlists";
 

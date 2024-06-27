@@ -15,7 +15,7 @@ import { getURI, toID } from "../util/parse.ts";
 import { SpotifyTimeRange } from "../api/spotify.ts";
 import { DEFAULT_TRACK_IMG } from "../static.ts";
 import { useStatus } from "../components/status/useStatus.tsx";
-import { logger, settingsButton, storage } from "../index.tsx";
+import { logger, settingsButton, storage } from "../mod.tsx";
 import { useDropdown } from "/modules/official/stdlib/lib/components/index.tsx";
 import { useQuery } from "/modules/official/stdlib/src/webpack/ReactQuery.ts";
 import { getPlayContext } from "/modules/official/stdlib/src/webpack/CustomHooks.ts";
@@ -61,7 +61,7 @@ export const calculateTracksMeta = (tracks: Track[]) => {
 	};
 };
 
-const GenresTrackRow = ({ track, index }: { track: Track; index: number }) => {
+const GenresTrackRow = ({ track, index }: { track: Track; index: number; }) => {
 	const { usePlayContextItem } = getPlayContext({ uri: "" }, { featureIdentifier: "queue" });
 
 	return (

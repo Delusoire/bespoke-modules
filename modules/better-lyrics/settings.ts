@@ -1,4 +1,4 @@
-import { settings } from "./index.tsx";
+import { settings } from "./mod.tsx";
 import { fetchMxMToken } from "./src/utils/LyricsProvider.ts";
 
 export const CONFIG = settings

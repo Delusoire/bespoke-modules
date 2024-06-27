@@ -6,7 +6,7 @@ import { CONFIG } from "./settings.ts";
 import { fetchArtistRelated } from "/modules/Delusoire/delulib/lib/GraphQL/fetchArtistRelated.ts";
 import { _ } from "/modules/official/stdlib/deps.ts";
 import "./components.ts";
-import { eventBus } from "./index.ts";
+import { eventBus } from "./mod.ts";
 import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
 import { fromString, is } from "/modules/official/stdlib/src/webpack/URI.ts";
 
@@ -88,5 +88,5 @@ eventBus.History.updated.subscribe(({ pathname }) => {
 		if (is.Artist(uri)) {
 			updateArtistPage(uri);
 		}
-	} catch (_) {}
+	} catch (_) { }
 });

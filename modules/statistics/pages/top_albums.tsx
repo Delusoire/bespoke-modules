@@ -10,7 +10,7 @@ import { CONFIG } from "../settings.ts";
 
 import { SpotifyTimeRange } from "../api/spotify.ts";
 import { useStatus } from "../components/status/useStatus.tsx";
-import { logger, settingsButton, storage } from "../index.tsx";
+import { logger, settingsButton, storage } from "../mod.tsx";
 import { useDropdown } from "/modules/official/stdlib/lib/components/index.tsx";
 import { useQuery } from "/modules/official/stdlib/src/webpack/ReactQuery.ts";
 

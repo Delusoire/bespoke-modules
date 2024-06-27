@@ -3,7 +3,7 @@ import { _ } from "/modules/official/stdlib/deps.ts";
 import { t } from "../i18n.ts";
 import { LocalModuleInstance, type Metadata, ModuleIdentifier, RemoteModuleInstance } from "/hooks/module.ts";
 import ModuleCard from "../components/ModuleCard/index.tsx";
-import { hash, settingsButton } from "../../index.tsx";
+import { hash, settingsButton } from "../../mod.tsx";
 import { CONFIG } from "../settings.ts";
 import {
 	getProp,

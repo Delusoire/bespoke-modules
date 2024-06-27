@@ -1,4 +1,4 @@
-import { settings } from "./index.tsx";
+import { settings } from "./mod.tsx";
 import { createFolder } from "/modules/Delusoire/delulib/lib/platform.ts";
 
 const ANONIMYZED_RADIOS_FOLDER_NAME = "🎭 Anonymized Radios";

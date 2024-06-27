@@ -7,7 +7,7 @@ import { spotifyApi } from "/modules/Delusoire/delulib/lib/api.ts";
 import type { Track } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
 import { SpotifyTimeRange } from "../api/spotify.ts";
 import { useStatus } from "../components/status/useStatus.tsx";
-import { logger, settingsButton, storage } from "../index.tsx";
+import { logger, settingsButton, storage } from "../mod.tsx";
 import { useDropdown } from "/modules/official/stdlib/lib/components/index.tsx";
 import CreatePlaylistButton from "../components/buttons/create_playlist_button.tsx";
 import { useQuery } from "/modules/official/stdlib/src/webpack/ReactQuery.ts";
@@ -34,7 +34,7 @@ const allowedDropTypes = new Array<never>();
 export const fetchTopTracks = (timeRange: SpotifyTimeRange) =>
 	spotifyApi.currentUser.topItems("tracks", timeRange, 50, 0);
 
-const TrackRow = React.memo(({ track, index }: { track: Track; index: number }) => {
+const TrackRow = React.memo(({ track, index }: { track: Track; index: number; }) => {
 	const { usePlayContextItem } = getPlayContext({ uri: track.uri }, { featureIdentifier: "queue" });
 
 	return (

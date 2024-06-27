@@ -1,4 +1,4 @@
-import { settings } from "./index.tsx";
+import { settings } from "./mod.tsx";
 
 export const CONFIG = settings
 	.addInput(

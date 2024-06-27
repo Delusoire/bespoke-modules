@@ -12,7 +12,7 @@ import { DEFAULT_TRACK_IMG } from "../static.ts";
 import { getURI, toID } from "../util/parse.ts";
 import type { Artist } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
 import { useStatus } from "../components/status/useStatus.tsx";
-import { logger } from "../index.tsx";
+import { logger } from "../mod.tsx";
 import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
 import { useQuery } from "/modules/official/stdlib/src/webpack/ReactQuery.ts";
 
@@ -106,7 +106,7 @@ export const fetchAlbumsMeta = async (ids: string[]) => {
 	return { albums, releaseYears };
 };
 
-const PlaylistPage = ({ uri }: { uri: string }) => {
+const PlaylistPage = ({ uri }: { uri: string; }) => {
 	const { status, error, data } = useQuery({
 		queryKey: ["playlistAnalysis"],
 		queryFn: async () => {

@@ -1,4 +1,4 @@
-import { settings } from "./index.ts";
+import { settings } from "./mod.ts";
 
 export const CONFIG = settings
 	.addInput(
