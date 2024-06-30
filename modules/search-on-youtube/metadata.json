@@ -13,8 +13,7 @@
 	"description": "Search/Play the music video of the selected track on YouTube. Setting your own API Key allows you to bypass the search and directly open the first result.",
 	"readme": "./assets/README.md",
 	"entries": {
-		"js": "index.js",
-		"importMap": "import_map.json"
+		"js": "index.js"
 	},
 	"dependencies": {
 		"/official/stdlib": "0.2.0",

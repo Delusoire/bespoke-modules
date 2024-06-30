@@ -12,7 +12,7 @@
 	"description": "dexie-react-hooks from npm",
 	"readme": "./assets/README.md",
 	"entries": {
-		"importMap": "import_map.json"
+		"js": "index.js"
 	},
 	"dependencies": {
 		"/official/stdlib": "0.2.0"

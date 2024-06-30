@@ -13,8 +13,7 @@
 	"description": "Vim-like keyboard shortcuts for spotify. Now with sneak mode.",
 	"readme": "./assets/README.md",
 	"entries": {
-		"js": "index.js",
-		"importMap": "import_map.json"
+		"js": "index.js"
 	},
 	"dependencies": {
 		"/official/stdlib": "0.2.0",

@@ -13,8 +13,7 @@
 	"description": "Vault for your playlists and settings (Backup/Restore)",
 	"readme": "./assets/README.md",
 	"entries": {
-		"js": "index.js",
-		"importMap": "import_map.json"
+		"js": "index.js"
 	},
 	"dependencies": {
 		"/official/stdlib": "0.2.0",

@@ -15,8 +15,7 @@
 	"description": "Sort your Playlists/Albums/Artists/Liked Songs on a bunch of metrics. (You can shuffle too!)",
 	"readme": "./assets/README.md",
 	"entries": {
-		"js": "index.js",
-		"importMap": "import_map.json"
+		"js": "index.js"
 	},
 	"dependencies": {
 		"/official/stdlib": "0.2.0",

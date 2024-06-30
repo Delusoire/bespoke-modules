@@ -6,7 +6,8 @@ fi
 
 for DIR; do
    echo "Building ${DIR}"
-   deno run -A jsr:@delu/tailor/cli --module "/Delusoire/${DIR#*/}" -i "${DIR}" -o "${DIR}" -c classmap.json -b &
+   ID="/Delusoire/$(basename "$1")"
+   deno run -A jsr:@delu/tailor/cli --module "${ID}" -i "${DIR}" -o "${DIR}" -c classmap.json -b &
 done
 
 wait
