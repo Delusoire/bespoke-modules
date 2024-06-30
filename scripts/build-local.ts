@@ -1,4 +1,4 @@
-import { Builder, readJSON, Transpiler } from "jsr:@delu/tailor@0.9.0";
+import { Builder, readJSON, Transpiler } from "jsr:@delu/tailor@0.9.5";
 
 import { ensureDir } from "jsr:@std/fs/ensure-dir";
 
@@ -19,7 +19,7 @@ for (const inputDir of Deno.args) {
       const copyUnknown = true;
       await ensureDir(outputDir);
 
-      const transpiler = new Transpiler(classmap);
+      const transpiler = new Transpiler(classmap, false);
       const builder = new Builder(transpiler, { metadata, identifier, inputDir, outputDir, copyUnknown });
 
       try {
