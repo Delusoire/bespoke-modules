@@ -9,14 +9,12 @@ import {
 	RemoteModule,
 	RootModule,
 } from "/hooks/module.ts";
-import { _ } from "/modules/official/stdlib/deps.ts";
 import { useUpdate } from "../../util/index.ts";
 import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
 import { Cards, SettingsToggle } from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
 import { classnames } from "/modules/official/stdlib/src/webpack/ClassNames.ts";
 import { useQuery } from "/modules/official/stdlib/src/webpack/ReactQuery.ts";
 import { MI } from "../../pages/Marketplace.tsx";
-import { proxy } from "/hooks/util.ts";
 
 const History = Platform.getHistory();
 
@@ -72,7 +70,7 @@ const ModuleCard = (props: ModuleCardProps) => {
 	const previewHref = metadataURL ? `${metadataURL}/../${preview}` : null;
 
 	// TODO: add more important tags
-	const importantTags = [];
+	const importantTags: string[] = [];
 
 	const onCardClick = React.useCallback(() => {
 		const selectedModule = isSelected ? null : module.getIdentifier();
