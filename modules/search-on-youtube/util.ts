@@ -13,9 +13,11 @@ const yt = await Innertube.create({
    fetch: (input, init) => {
       const [_request, _init] = proxy(input, init);
       const headers = _init.headers as Headers;
-      if (!headers.has("Origin")) {
-         headers.set("Origin", "https://www.youtube.com");
+      const h = new Headers(JSON.parse(headers.get("X-Set-Headers")!));
+      if (!h.has("Origin")) {
+         h.set("Origin", "https://www.youtube.com");
       }
+      headers.set("X-Set-Headers", JSON.stringify(Object.fromEntries(h)));
       return fetch(_request, _init);
    },
 });
