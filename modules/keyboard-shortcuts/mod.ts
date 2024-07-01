@@ -1,10 +1,10 @@
 import { toggleInLibrary } from "/modules/Delusoire/delulib/lib/platform.ts";
 
-import { KEY_LIST, type _SneakOverlay, mousetrapInst } from "./sneak.ts";
-import { Bind, appScroll, appScrollY, openPage, rotateSidebar } from "./util.ts";
+import { type _SneakOverlay, KEY_LIST, mousetrapInst } from "./sneak.ts";
+import { appScroll, appScrollY, Bind, openPage, rotateSidebar } from "./util.ts";
 import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
 
-const UserAPI = Platform.getUserAPI();
+const ProductStateAPI = Platform.getProductStateAPI();
 const UpdateAPI = Platform.getUpdateAPI();
 const History = Platform.getHistory();
 const PlayerAPI = Platform.getPlayerAPI();
@@ -17,7 +17,7 @@ const binds = [
 		document.body.append(sneakOverlay);
 	}),
 	new Bind("shift+i", async () => {
-		await UserAPI._product_state_service.putValues({ pairs: { "app-developer": "2" } });
+		await ProductStateAPI.productStateApi.putValues({ pairs: { "app-developer": "2" } });
 		UpdateAPI.applyUpdate();
 	}),
 	new Bind("tab", () => rotateSidebar(1)),
@@ -29,16 +29,15 @@ const binds = [
 	new Bind("g", () => appScrollY(0)),
 	new Bind("shift+g", () => appScrollY(Number.MAX_SAFE_INTEGER)),
 	new Bind("m", () => PlayerAPI._state.item?.uri && toggleInLibrary([PlayerAPI._state.item?.uri])),
-	new Bind("/", e => {
+	new Bind("/", (e) => {
 		e.preventDefault();
 		openPage("/search");
 	}),
 ];
 
-binds.map(bind => bind.register());
+binds.map((bind) => bind.register());
 
 mousetrapInst.bind(KEY_LIST, (e: KeyboardEvent) => sneakOverlay?.updateProps(e.key), "keypress");
 mousetrapInst.bind("esc", () => sneakOverlay?.remove());
 
-
-export default async function () { }
+export default async function () {}
