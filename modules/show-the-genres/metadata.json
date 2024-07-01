@@ -17,7 +17,7 @@
 		"css": "index.css"
 	},
 	"dependencies": {
-		"/official/stdlib": "0.2.0",
-		"/Delusoire/delulib": "^0.0.0-0 || 0.1.2"
+		"/official/stdlib": "0.2.2",
+		"/Delusoire/delulib": "0.1.3"
 	}
 }

@@ -647,7 +647,7 @@ async function synchronizePlayer(player: HTMLMediaElement, offsetMs = 0) {
 	const forceResync = resync("mitigating currentTime playback delta: %s", Number.MAX_VALUE);
 
 	let state: PlayerState = {};
-	const onPlayerUpdate = ({ data: _state }: { data: PlayerState }) => {
+	const onPlayerUpdate = ({ data: _state }: { data: PlayerState; }) => {
 		const oldUri = state.item?.uri;
 		const newUri = _state.item?.uri;
 		if ((oldUri || newUri) && newUri !== oldUri) {
@@ -696,7 +696,7 @@ function gauss(x: number, sigma = 1, mu = 0) {
 }
 
 interface SoundProcessorOptions {
-	filterParams?: { mu?: number; sigma?: number; radius?: number };
+	filterParams?: { mu?: number; sigma?: number; radius?: number; };
 	sampleRate: number;
 	fftSize: number;
 	endFrequency?: number;
@@ -720,7 +720,7 @@ class SoundProcessor {
 		filterRadius: number;
 	};
 	aWeights = new Array<number>();
-	bands = new Array<{ l: number; h: number }>();
+	bands = new Array<{ l: number; h: number; }>();
 	gKernel = new Array<number>();
 	historyLimit = 5;
 	history = new Array<Uint8Array>();
@@ -1014,7 +1014,7 @@ class Bar {
 	heightScale = 0.3;
 	smoothing = 0;
 	normedAmp = 0;
-	constructor(public x = 0, public y = 0, public w = 0, public h = 0) {}
+	constructor(public x = 0, public y = 0, public w = 0, public h = 0) { }
 
 	set(x: number, y: number, w: number, h: number) {
 		this.x = x;
