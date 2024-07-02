@@ -77,8 +77,12 @@ const ModuleCard = (props: ModuleCardProps) => {
 		props.selectModule(selectedModule);
 	}, [isSelected, module, props.selectModule]);
 
-	const onImageClick = () =>
-		metadataURL && {/* TODO: open preview popup */ };
+	const onImageClick = (e: MouseEvent) => {
+		e.stopPropagation();
+		if (metadataURL) {
+			// TODO: open preview popup
+		}
+	};
 
 	const localModule = RootModule.INSTANCE.getChild(module.getIdentifier());
 	const enabledLocalInstance = localModule?.getEnabledInstance();
@@ -137,9 +141,9 @@ const ModuleCard = (props: ModuleCardProps) => {
 
 interface ModuleCardContentProps {
 	className?: string;
-	onCardClick: () => void;
+	onCardClick: React.HTMLAttributes<HTMLDivElement>["onClick"];
 	previewHref: string | null;
-	onImageClick: () => void;
+	onImageClick: React.HTMLAttributes<HTMLDivElement>["onClick"];
 	name: string;
 	externalHref: string;
 	authors: string[];

@@ -121,16 +121,16 @@ function useModuleInstance(moduleIdentifier: ModuleIdentifier, version: Version,
 }
 
 export default function ({ aurl }: { aurl?: string; }) {
-	const match = useMatch("/bespoke/marketplace/module/:aurl");
-	aurl ??= decodeURIComponent(match?.params?.aurl);
+	const routeMatch = useMatch("/bespoke/marketplace/module/:aurl");
+	aurl ??= decodeURIComponent(routeMatch?.params?.aurl);
 
 	const basename = aurl.slice(aurl.lastIndexOf("/") + 1);
-	const match = basename.match(/^(?<moduleIdentifier>[^@]+)@(?<version>[^@]+)\.zip$/);
-	if (!match || !match.groups) {
+	const artifactNameMatch = basename.match(/^(?<moduleIdentifier>[^@]+)@(?<version>[^@]+)\.zip$/);
+	if (!artifactNameMatch || !artifactNameMatch.groups) {
 		return "Invalid module URL";
 	}
-	const version = match.groups.version;
-	const moduleIdentifier = "/" + match.groups.moduleIdentifier.replaceAll(".", "/");
+	const version = artifactNameMatch.groups.version;
+	const moduleIdentifier = "/" + artifactNameMatch.groups.moduleIdentifier.replaceAll(".", "/");
 	const murl = aurl.replace(/\.zip$/, ".metadata.json");
 
 	const { data: metadata } = useSuspenseQuery({
