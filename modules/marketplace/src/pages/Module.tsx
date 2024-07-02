@@ -1,10 +1,9 @@
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
-import { ReactDOM } from "/modules/official/stdlib/src/webpack/React.ts";
+import { MdCloudDownload, MdDeleteForever } from "https://esm.sh/react-icons/md";
+import { logger, module as marketplaceModuleInstance } from "../../mod.tsx";
+import { renderMarkdown } from "../api/github.ts";
 import Button from "../components/Button/index.tsx";
 import LoadingIcon from "../components/icons/LoadingIcon.tsx";
 import { t } from "../i18n.ts";
-import { renderMarkdown } from "../api/github.ts";
-import { logger } from "../../mod.tsx";
 import {
 	LocalModuleInstance,
 	type Metadata,
@@ -13,10 +12,11 @@ import {
 	RootModule,
 	Version,
 } from "/hooks/module.ts";
-import { useQuery, useSuspenseQuery } from "/modules/official/stdlib/src/webpack/ReactQuery.ts";
-import { module as marketplaceModuleInstance } from "../../mod.tsx";
 import { proxy } from "/hooks/util.ts";
-import { MdCloudDownload, MdDeleteForever } from "https://esm.sh/react-icons/md";
+import { React } from "/modules/official/stdlib/src/expose/React.ts";
+import { ReactDOM } from "/modules/official/stdlib/src/webpack/React.ts";
+import { useQuery, useSuspenseQuery } from "/modules/official/stdlib/src/webpack/ReactQuery.ts";
+import { useMatch } from "/modules/official/stdlib/src/webpack/ReactRouter.ts";
 
 interface ShadowRootProps {
 	mode: "open" | "closed";
@@ -120,9 +120,12 @@ function useModuleInstance(moduleIdentifier: ModuleIdentifier, version: Version,
 	return [local.data ?? remote.data, local.refetch] as const;
 }
 
-export default function ({ aurl }: { aurl: string; }) {
-	const basnename = aurl.slice(aurl.lastIndexOf("/") + 1);
-	const match = basnename.match(/^(<moduleIdentifier>[^@]+)@(<version>[^@]+)\.zip$/);
+export default function ({ aurl }: { aurl?: string; }) {
+	const match = useMatch("/bespoke/marketplace/module/:aurl");
+	aurl ??= decodeURIComponent(match?.params?.aurl);
+
+	const basename = aurl.slice(aurl.lastIndexOf("/") + 1);
+	const match = basename.match(/^(?<moduleIdentifier>[^@]+)@(?<version>[^@]+)\.zip$/);
 	if (!match || !match.groups) {
 		return "Invalid module URL";
 	}

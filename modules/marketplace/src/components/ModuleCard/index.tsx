@@ -63,7 +63,7 @@ const ModuleCard = (props: ModuleCardProps) => {
 
 	const cardClasses = classnames("rounded-lg bg-neutral-900 p-4 transition duration-300 ease-in-out", {
 		"border border-dashed border-[var(--essential-warning)]": noMetadata,
-		"bg-neutral-800": isSelected,
+		"!bg-neutral-800": isSelected,
 	});
 
 	const externalHref = moduleInstance.getRemoteArtifactURL() ?? null;
@@ -78,7 +78,7 @@ const ModuleCard = (props: ModuleCardProps) => {
 	}, [isSelected, module, props.selectModule]);
 
 	const onImageClick = () =>
-		metadataURL && History.push(`/bespoke/marketplace/${encodeURIComponent(metadataURL)}`);
+		metadataURL && {/* TODO: open preview popup */ };
 
 	const localModule = RootModule.INSTANCE.getChild(module.getIdentifier());
 	const enabledLocalInstance = localModule?.getEnabledInstance();
