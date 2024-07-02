@@ -10,13 +10,12 @@ import {
 	RootModule,
 } from "/hooks/module.ts";
 import { useUpdate } from "../../util/index.ts";
-import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
 import { Cards, SettingsToggle } from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
 import { classnames } from "/modules/official/stdlib/src/webpack/ClassNames.ts";
 import { useQuery } from "/modules/official/stdlib/src/webpack/ReactQuery.ts";
 import { MI } from "../../pages/Marketplace.tsx";
-
-const History = Platform.getHistory();
+import { display } from "/modules/official/stdlib/lib/modal.tsx";
+import { RemoteMarkdown } from "../../pages/Module.tsx";
 
 const fallbackImage = () => (
 	<svg
@@ -55,10 +54,11 @@ const ModuleCard = (props: ModuleCardProps) => {
 
 	const {
 		name = moduleInstance.getModuleIdentifier(),
-		description = moduleInstance.getVersion(),
 		tags = [],
-		authors = [],
 		preview = "./assets/preview.gif",
+		authors = [],
+		description = moduleInstance.getVersion(),
+		readme,
 	} = moduleInstance.metadata ?? {};
 
 	const cardClasses = classnames("rounded-lg bg-neutral-900 p-4 transition duration-300 ease-in-out", {
@@ -68,6 +68,7 @@ const ModuleCard = (props: ModuleCardProps) => {
 
 	const externalHref = moduleInstance.getRemoteArtifactURL() ?? null;
 	const previewHref = metadataURL ? `${metadataURL}/../${preview}` : null;
+	const readmeHref = metadataURL ? `${metadataURL}/../${readme}` : null;
 
 	// TODO: add more important tags
 	const importantTags: string[] = [];
@@ -77,10 +78,10 @@ const ModuleCard = (props: ModuleCardProps) => {
 		props.selectModule(selectedModule);
 	}, [isSelected, module, props.selectModule]);
 
-	const onImageClick = (e: MouseEvent) => {
+	const onImageClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
-		if (metadataURL) {
-			// TODO: open preview popup
+		if (readmeHref) {
+			display({ title: "Preview", content: <RemoteMarkdown url={readmeHref} />, isLarge: true });
 		}
 	};
 

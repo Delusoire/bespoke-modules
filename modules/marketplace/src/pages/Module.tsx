@@ -46,17 +46,19 @@ const ShadowRoot = ({ mode, delegatesFocus, styleSheets, children }: ShadowRootP
 	return <div ref={node}>{content}</div>;
 };
 
-const RemoteMarkdown = React.memo(({ url }: { url: string; }) => {
+export const RemoteMarkdown = React.memo(({ url }: { url: string }) => {
 	const {
 		status,
 		error,
 		data: markdown,
 	} = useQuery({
 		queryKey: ["markdown", url],
-		queryFn: () =>
-			fetch(...proxy(url))
+		queryFn: () => {
+			const proxiedUrl = url.startsWith("/") ? url : proxy(url)[0];
+			return fetch(proxiedUrl)
 				.then((res) => res.text())
-				.then((markdown) => renderMarkdown(markdown)),
+				.then((markdown) => renderMarkdown(markdown));
+		},
 	});
 
 	const fixRelativeImports = (markdown: string) => markdown.replace(/(src|href)="\.\//g, `$1="${url}/../`);
@@ -120,7 +122,7 @@ function useModuleInstance(moduleIdentifier: ModuleIdentifier, version: Version,
 	return [local.data ?? remote.data, local.refetch] as const;
 }
 
-export default function ({ aurl }: { aurl?: string; }) {
+export default function ({ aurl }: { aurl?: string }) {
 	const routeMatch = useMatch("/bespoke/marketplace/module/:aurl");
 	aurl ??= decodeURIComponent(routeMatch?.params?.aurl);
 
