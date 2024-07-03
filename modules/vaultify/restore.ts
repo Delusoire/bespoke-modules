@@ -1,8 +1,17 @@
-import { addPlaylist, createFolder, createPlaylistFromTracks } from "/modules/Delusoire/delulib/lib/platform.ts";
+import {
+	addPlaylist,
+	createFolder,
+	createPlaylistFromTracks,
+} from "/modules/Delusoire/delulib/lib/platform.ts";
 import { SpotifyLoc } from "/modules/Delusoire/delulib/lib/util.ts";
 
 import type { LibraryBackup, LocalStorageBackup, SettingBackup } from "./backup.ts";
-import { type LikedPlaylist, type PersonalFolder, type PersonalPlaylist, isContentOfPersonalPlaylist } from "./util.ts";
+import {
+	isContentOfPersonalPlaylist,
+	type LikedPlaylist,
+	type PersonalFolder,
+	type PersonalPlaylist,
+} from "./util.ts";
 
 import { _ } from "/modules/official/stdlib/deps.ts";
 import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
@@ -28,23 +37,23 @@ export const restoreLocalStorage = (vault: LocalStorageBackup, silent = true) =>
 	!silent && Snackbar.enqueueSnackbar("Restored LocalStorage");
 };
 
-const Prefs = Platform.getPlayerAPI()._prefs;
-const ProductState = Platform.getUserAPI()._product_state_service;
+const PrefsAPI = Platform.getSettingsAPI().quality.volumeLevel.prefsApi;
+const ProductStateAPI = Platform.getProductStateAPI();
 
 export const restoreSettings = async (data: SettingBackup, silent = true) => {
-	const entries = _.mapValues(data.prefs, value => {
+	const entries = _.mapValues(data.prefs, (value) => {
 		value.number = eval(value.number);
 		return value;
 	});
 	const pairs = data.productState;
-	await Prefs.set({ entries });
-	await ProductState.putValues({ pairs });
+	await PrefsAPI.set({ entries });
+	await ProductStateAPI.setValues(pairs);
 	!silent && Snackbar.enqueueSnackbar("Restored Settings");
 };
 
 const restoreRootlistRecur = async (leaf: PersonalFolder | PersonalPlaylist | LikedPlaylist, folder = "") =>
 	await Promise.all(
-		Object.keys(leaf).map(async name => {
+		Object.keys(leaf).map(async (name) => {
 			const subleaf = leaf[name];
 
 			// isPlaylist
