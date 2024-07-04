@@ -58,17 +58,30 @@ interface TracksPageContentProps {
 }
 const TracksPageContent = ({ topTracks }: TracksPageContentProps) => {
 	const columns = useTrackListColumns();
+
+	// const itemsCache = useItemsCache({
+	// 	nrItems: topTracks.length,
+	// 	fetch: (offset, limit) => topTracks.slice(offset, offset + limit),
+	// 	limit: 50,
+	// 	initialItems: topTracks,
+	// });
+
+	const itemsCache = {
+		getItems: (offset, limit) => topTracks.slice(offset, offset + limit),
+		nrValidItems: topTracks.length,
+		invalidateCache: () => { },
+		cacheAll: () => { },
+		hasItems: true,
+	};
+
 	return (
 		<Tracklist
-			ariaLabel="Top Tracks"
+			resolveItem={(track) => ({ uri: track.uri })}
+			itemsCache={itemsCache}
 			hasHeaderRow={true}
 			columns={columns}
 			renderRow={(track: Track, index: number) => <TrackRow track={track} index={index} />}
-			resolveItem={(track) => ({ uri: track.uri })}
-			nrTracks={topTracks.length}
-			fetchTracks={(offset, limit) => topTracks.slice(offset, offset + limit)}
-			limit={50}
-			tracks={topTracks}
+			ariaLabel="Top Tracks"
 			isCompactMode={false}
 			columnPersistenceKey="stats-top-tracks"
 		>

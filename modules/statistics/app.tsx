@@ -6,7 +6,7 @@ import AlbumsPage from "./pages/top_albums.tsx";
 
 import { React } from "/modules/official/stdlib/src/expose/React.ts";
 import { InstrumentedRedirect, Route, Routes } from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
-import { useMatch } from "/modules/official/stdlib/src/webpack/ReactRouter.ts";
+import { useMatch } from "/modules/official/stdlib/src/webpack/ReactRouter.xpui.ts";
 
 const Pages = {
 	tracks: <TracksPage />,
