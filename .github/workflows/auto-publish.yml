@@ -20,6 +20,9 @@ jobs:
             with:
                deno-version: v1.x
 
+         -  name: Cache Deno dependencies
+            uses: ./.github/actions/deno-cache
+
          -  name: Build
             run: deno task ci:cron
             env:
