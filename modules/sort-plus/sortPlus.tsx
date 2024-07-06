@@ -1,6 +1,6 @@
-import type { TrackData } from "/modules/Delusoire/delulib/lib/parse.ts";
-import { createQueueItem, setQueue as _setQueue } from "/modules/Delusoire/delulib/lib/util.ts";
-import { _, fp } from "/modules/official/stdlib/deps.ts";
+import type { TrackData } from "/modules/Delusoire.delulib/lib/parse.ts";
+import { createQueueItem, setQueue as _setQueue } from "/modules/Delusoire.delulib/lib/util.ts";
+import { _, fp } from "/modules/stdlib/deps.ts";
 
 import { fillTracksFromLastFM, fillTracksFromSpotify } from "./populate.ts";
 import { CONFIG } from "./settings.ts";
@@ -14,7 +14,7 @@ import {
 } from "./util.ts";
 import { getTracksFromUri } from "./fetch.ts";
 
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
+import { React } from "/modules/stdlib/src/expose/React.ts";
 
 export * from "./playlistsInterop.ts";
 
@@ -56,20 +56,20 @@ const setQueue = (tracks: TrackData[]) => {
 
 const sortTracksBy =
 	(sortAction: typeof lastSortAction, sortFn: AsyncTracksOperation, descending: boolean) =>
-	async (uri: string) => {
-		lastSortAction = sortAction;
-		lastFetchedUri = uri;
-		const tracks = await getTracksFromUri(uri);
-		let sortedTracks = await sortFn(tracks);
-		if (CONFIG.preventDuplicates) {
-			sortedTracks = _.uniqBy(sortedTracks, "name");
-		}
-		descending && sortedTracks.reverse();
-		return await setQueue(sortedTracks);
-	};
+		async (uri: string) => {
+			lastSortAction = sortAction;
+			lastFetchedUri = uri;
+			const tracks = await getTracksFromUri(uri);
+			let sortedTracks = await sortFn(tracks);
+			if (CONFIG.preventDuplicates) {
+				sortedTracks = _.uniqBy(sortedTracks, "name");
+			}
+			descending && sortedTracks.reverse();
+			return await setQueue(sortedTracks);
+		};
 
-type SortBySubMenuItemProps = { descending: boolean };
-type GenericSortBySubMenuItemProps = SortBySubMenuItemProps & { sortAction: SortAction };
+type SortBySubMenuItemProps = { descending: boolean; };
+type GenericSortBySubMenuItemProps = SortBySubMenuItemProps & { sortAction: SortAction; };
 const GenericSortBySubMenuItem = ({ descending, sortAction }: GenericSortBySubMenuItemProps) => {
 	const { props } = useMenuItem();
 	const uri = props.uri;
@@ -99,13 +99,13 @@ const SubMenuItems = Object.values(SortAction).map(
 	),
 );
 
-import { createIconComponent } from "/modules/official/stdlib/lib/createIconComponent.js";
-import { useMenuItem } from "/modules/official/stdlib/src/registers/menu.js";
-import { is } from "/modules/official/stdlib/src/webpack/URI.ts";
-import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
-import { MenuItem, MenuItemSubMenu } from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
-import { useContextMenuState } from "/modules/official/stdlib/src/webpack/CustomHooks.ts";
-import { Snackbar } from "/modules/official/stdlib/src/expose/Snackbar.ts";
+import { createIconComponent } from "/modules/stdlib/lib/createIconComponent.js";
+import { useMenuItem } from "/modules/stdlib/src/registers/menu.js";
+import { is } from "/modules/stdlib/src/webpack/URI.ts";
+import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
+import { MenuItem, MenuItemSubMenu } from "/modules/stdlib/src/webpack/ReactComponents.ts";
+import { useContextMenuState } from "/modules/stdlib/src/webpack/CustomHooks.ts";
+import { Snackbar } from "/modules/stdlib/src/expose/Snackbar.ts";
 
 const SortByShuffleSubMenuItem = ({ descending }: SortBySubMenuItemProps) => {
 	const { props } = useMenuItem();

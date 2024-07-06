@@ -1,12 +1,12 @@
-import { createRegistrar } from "/modules/official/stdlib/mod.ts";
-import { createSettings } from "/modules/official/stdlib/lib/settings.tsx";
+import { createRegistrar } from "/modules/stdlib/mod.ts";
+import { createSettings } from "/modules/stdlib/lib/settings.tsx";
 
-import { TopbarLeftButton } from "/modules/official/stdlib/src/registers/topbarLeftButton.tsx";
+import { TopbarLeftButton } from "/modules/stdlib/src/registers/topbarLeftButton.tsx";
 
-import type { Settings } from "/modules/official/stdlib/lib/settings.tsx";
+import type { Settings } from "/modules/stdlib/lib/settings.tsx";
 import type { Module } from "/hooks/index.ts";
 
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
+import { React } from "/modules/stdlib/src/expose/React.ts";
 
 export let settings: Settings;
 export default async function (mod: Module) {

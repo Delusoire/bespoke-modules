@@ -1,7 +1,7 @@
-import { Tooltip } from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
-import { createIconComponent } from "/modules/official/stdlib/lib/createIconComponent.tsx";
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
-import { UI } from "/modules/official/stdlib/src/webpack/ComponentLibrary.ts";
+import { Tooltip } from "/modules/stdlib/src/webpack/ReactComponents.ts";
+import { createIconComponent } from "/modules/stdlib/lib/createIconComponent.tsx";
+import { React } from "/modules/stdlib/src/expose/React.ts";
+import { UI } from "/modules/stdlib/src/webpack/ComponentLibrary.ts";
 
 interface RefreshButtonProps {
 	refresh: () => void;

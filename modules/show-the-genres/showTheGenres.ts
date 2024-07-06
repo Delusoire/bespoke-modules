@@ -1,14 +1,14 @@
-import { fetchLastFMTrack, spotifyApi } from "/modules/Delusoire/delulib/lib/api.ts";
-import { waitForElement } from "/modules/official/stdlib/lib/dom.ts";
+import { fetchLastFMTrack, spotifyApi } from "/modules/Delusoire.delulib/lib/api.ts";
+import { waitForElement } from "/modules/stdlib/lib/dom.ts";
 
 import { CONFIG } from "./settings.ts";
 
-import { fetchArtistRelated } from "/modules/Delusoire/delulib/lib/GraphQL/fetchArtistRelated.ts";
-import { _ } from "/modules/official/stdlib/deps.ts";
+import { fetchArtistRelated } from "/modules/Delusoire.delulib/lib/GraphQL/fetchArtistRelated.ts";
+import { _ } from "/modules/stdlib/deps.ts";
 import "./components.ts";
 import { eventBus } from "./mod.ts";
-import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
-import { fromString, is } from "/modules/official/stdlib/src/webpack/URI.ts";
+import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
+import { fromString, is } from "/modules/stdlib/src/webpack/URI.ts";
 
 const PlayerAPI = Platform.getPlayerAPI();
 

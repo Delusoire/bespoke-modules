@@ -1,20 +1,20 @@
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
+import { React } from "/modules/stdlib/src/expose/React.ts";
 
 import StatCard from "../components/cards/stat_card.tsx";
 import ContributionChart from "../components/cards/contribution_chart.tsx";
 import SpotifyCard from "../components/shared/spotify_card.tsx";
 import InlineGrid from "../components/inline_grid.tsx";
 import Shelf from "../components/shelf.tsx";
-import { spotifyApi } from "/modules/Delusoire/delulib/lib/api.ts";
-import { chunkify20, chunkify50 } from "/modules/Delusoire/delulib/lib/fp.ts";
-import { _, fp } from "/modules/official/stdlib/deps.ts";
+import { spotifyApi } from "/modules/Delusoire.delulib/lib/api.ts";
+import { chunkify20, chunkify50 } from "/modules/Delusoire.delulib/lib/fp.ts";
+import { _, fp } from "/modules/stdlib/deps.ts";
 import { DEFAULT_TRACK_IMG } from "../static.ts";
 import { getURI, toID } from "../util/parse.ts";
 import type { Artist } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
 import { useStatus } from "../components/status/useStatus.tsx";
 import { logger } from "../mod.tsx";
-import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
-import { useQuery } from "/modules/official/stdlib/src/webpack/ReactQuery.ts";
+import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
+import { useQuery } from "/modules/stdlib/src/webpack/ReactQuery.ts";
 
 const PlaylistAPI = Platform.getPlaylistAPI();
 

@@ -1,4 +1,4 @@
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
+import { React } from "/modules/stdlib/src/expose/React.ts";
 
 import StatCard from "../components/cards/stat_card.tsx";
 import ContributionChart from "../components/cards/contribution_chart.tsx";
@@ -8,16 +8,16 @@ import PageContainer from "../components/shared/page_container.tsx";
 import Shelf from "../components/shelf.tsx";
 import RefreshButton from "../components/buttons/refresh_button.tsx";
 import { SpotifyTimeRange } from "../api/spotify.ts";
-import { getTracksFromURIs } from "/modules/Delusoire/library-db/lib/db.ts";
-import { PlaylistItems, SavedPlaylists } from "/modules/Delusoire/library-db/mod.ts";
-import { fp } from "/modules/official/stdlib/deps.ts";
+import { getTracksFromURIs } from "/modules/Delusoire.library-db/lib/db.ts";
+import { PlaylistItems, SavedPlaylists } from "/modules/Delusoire.library-db/mod.ts";
+import { fp } from "/modules/stdlib/deps.ts";
 import { fetchAlbumsMeta, fetchArtistsMeta, fetchAudioFeaturesMeta } from "./playlist.tsx";
 import { calculateTracksMeta } from "./top_genres.tsx";
 import { getURI, toID } from "../util/parse.ts";
 import { useStatus } from "../components/status/useStatus.tsx";
 import { logger, settingsButton, storage } from "../mod.tsx";
-import { useDropdown } from "/modules/official/stdlib/lib/components/index.tsx";
-import { useQuery } from "/modules/official/stdlib/src/webpack/ReactQuery.ts";
+import { useDropdown } from "/modules/stdlib/lib/components/index.tsx";
+import { useQuery } from "/modules/stdlib/src/webpack/ReactQuery.ts";
 
 const DropdownOptions = {
 	"Past Month": () => "Past Month",

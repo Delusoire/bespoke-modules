@@ -1,8 +1,8 @@
-import { toggleInLibrary } from "/modules/Delusoire/delulib/lib/platform.ts";
+import { toggleInLibrary } from "/modules/Delusoire.delulib/lib/platform.ts";
 
 import { type _SneakOverlay, KEY_LIST, mousetrapInst } from "./sneak.ts";
 import { appScroll, appScrollY, Bind, openPage, rotateSidebar } from "./util.ts";
-import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
+import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
 
 const ProductStateAPI = Platform.getProductStateAPI();
 const UpdateAPI = Platform.getUpdateAPI();
@@ -40,4 +40,4 @@ binds.map((bind) => bind.register());
 mousetrapInst.bind(KEY_LIST, (e: KeyboardEvent) => sneakOverlay?.updateProps(e.key), "keypress");
 mousetrapInst.bind("esc", () => sneakOverlay?.remove());
 
-export default async function () {}
+export default async function () { }

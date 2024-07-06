@@ -1,5 +1,5 @@
 import { Transformer } from "/hooks/transform.ts";
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
+import { React } from "/modules/stdlib/src/expose/React.ts";
 
 type RenderRow = (data: any, index: number) => React.ReactElement;
 

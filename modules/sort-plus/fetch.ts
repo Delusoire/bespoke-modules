@@ -1,24 +1,24 @@
 import { fetchAlbumTracks } from "../delulib/lib/GraphQL/fetchAlbumTracks.ts";
-import { fetchArtistDiscography } from "/modules/Delusoire/delulib/lib/GraphQL/fetchArtistDiscography.ts";
-import { fetchArtistOverview } from "/modules/Delusoire/delulib/lib/GraphQL/fetchArtistOveriew.ts";
-import { _, fp } from "/modules/official/stdlib/deps.ts";
-import { pMchain } from "/modules/Delusoire/delulib/lib/fp.ts";
+import { fetchArtistDiscography } from "/modules/Delusoire.delulib/lib/GraphQL/fetchArtistDiscography.ts";
+import { fetchArtistOverview } from "/modules/Delusoire.delulib/lib/GraphQL/fetchArtistOveriew.ts";
+import { _, fp } from "/modules/stdlib/deps.ts";
+import { pMchain } from "/modules/Delusoire.delulib/lib/fp.ts";
 import {
 	parseArtistLikedTrack,
 	parseLibraryAPILikedTracks,
 	parsePlaylistAPITrack,
 	parseTopTrackFromArtist,
 	type TrackData,
-} from "/modules/Delusoire/delulib/lib/parse.ts";
+} from "/modules/Delusoire.delulib/lib/parse.ts";
 import {
 	fetchArtistLikedTracks,
 	fetchLikedTracks,
 	fetchPlaylistContents,
-} from "/modules/Delusoire/delulib/lib/platform.ts";
+} from "/modules/Delusoire.delulib/lib/platform.ts";
 
 import { CONFIG } from "./settings.ts";
 
-import { is } from "/modules/official/stdlib/src/webpack/URI.ts";
+import { is } from "/modules/stdlib/src/webpack/URI.ts";
 import { is_LikedTracks } from "./util.ts";
 
 export const getTracksFromAlbum = async (uri: string) => {

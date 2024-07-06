@@ -1,5 +1,5 @@
 import type { Module } from "/hooks/index.ts";
-import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
+import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
 
 const PlayerAPI = Platform.getPlayerAPI();
 

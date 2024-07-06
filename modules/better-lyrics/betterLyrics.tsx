@@ -1,12 +1,12 @@
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
+import { React } from "/modules/stdlib/src/expose/React.ts";
 
 import { AbstractBaseRenderer, BackgroundRender, EplorRenderer, LyricLine, LyricPlayer } from "./amll/index.ts";
-import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
-import { getSongPositionMs } from "/modules/Delusoire/delulib/lib/util.ts";
+import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
+import { getSongPositionMs } from "/modules/Delusoire.delulib/lib/util.ts";
 import { LyricLineMouseEventListener } from "./amll/lyric-player/index.ts";
 import { findLyrics } from "./src/utils/LyricsProvider.ts";
 
-export const BackgroundRenderer = React.memo(({ data }: { data: any }) => {
+export const BackgroundRenderer = React.memo(({ data }: { data: any; }) => {
 	const backgroundWrapperRef = React.useRef<HTMLDivElement>(null);
 	const rendererRef = React.useRef<AbstractBaseRenderer>();
 	const image = data.item.metadata.image_xlarge_url ??
@@ -57,7 +57,7 @@ export const BackgroundRenderer = React.memo(({ data }: { data: any }) => {
 	);
 });
 
-export const LyricRenderer = React.memo(({ data }: { data: any }) => {
+export const LyricRenderer = React.memo(({ data }: { data: any; }) => {
 	const lyricsWrapperRef = React.useRef<HTMLDivElement>(null);
 	const playerRef = React.useRef<LyricPlayer>();
 

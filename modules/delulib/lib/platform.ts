@@ -1,5 +1,5 @@
 import { SpotifyLoc } from "./util.ts";
-import { Cosmos, Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
+import { Cosmos, Platform } from "/modules/stdlib/src/expose/Platform.ts";
 
 const LibraryAPI = Platform.getLibraryAPI();
 const PlaylistAPI = Platform.getPlaylistAPI();

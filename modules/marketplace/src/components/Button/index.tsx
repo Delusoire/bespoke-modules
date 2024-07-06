@@ -1,5 +1,5 @@
-import { classnames } from "/modules/official/stdlib/src/webpack/ClassNames.ts";
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
+import { classnames } from "/modules/stdlib/src/webpack/ClassNames.ts";
+import { React } from "/modules/stdlib/src/expose/React.ts";
 
 type ButtonType = "round" | "circle";
 

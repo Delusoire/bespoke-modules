@@ -1,5 +1,5 @@
-import { Status } from "/modules/Delusoire/statistics/components/status/Status.tsx";
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
+import { Status } from "/modules/Delusoire.statistics/components/status/Status.tsx";
+import { React } from "/modules/stdlib/src/expose/React.ts";
 
 export type QueryStatus = "error" | "success" | "pending";
 

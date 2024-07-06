@@ -1,4 +1,4 @@
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
+import { React } from "/modules/stdlib/src/expose/React.ts";
 
 import StatCard from "../components/cards/stat_card.tsx";
 import ContributionChart from "../components/cards/contribution_chart.tsx";
@@ -16,14 +16,14 @@ import { SpotifyTimeRange } from "../api/spotify.ts";
 import { DEFAULT_TRACK_IMG } from "../static.ts";
 import { useStatus } from "../components/status/useStatus.tsx";
 import { logger, settingsButton, storage } from "../mod.tsx";
-import { useDropdown } from "/modules/official/stdlib/lib/components/index.tsx";
-import { useQuery } from "/modules/official/stdlib/src/webpack/ReactQuery.ts";
-import { getPlayContext } from "/modules/official/stdlib/src/webpack/CustomHooks.ts";
+import { useDropdown } from "/modules/stdlib/lib/components/index.tsx";
+import { useQuery } from "/modules/stdlib/src/webpack/ReactQuery.ts";
+import { getPlayContext } from "/modules/stdlib/src/webpack/CustomHooks.ts";
 import {
 	Tracklist,
 	TracklistColumnsContextProvider,
 	TracklistRow,
-} from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
+} from "/modules/stdlib/src/webpack/ReactComponents.ts";
 
 const DropdownOptions = {
 	"Past Month": () => "Past Month",

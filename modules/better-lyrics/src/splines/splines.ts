@@ -1,5 +1,5 @@
-import { _ } from "/modules/official/stdlib/deps.js";
-import { type TwoUplet, type Triplet, zip_n_uplets } from "/modules/Delusoire/delulib/lib/fp.js";
+import { _ } from "/modules/stdlib/deps.js";
+import { type TwoUplet, type Triplet, zip_n_uplets } from "/modules/Delusoire.delulib/lib/fp.js";
 import {
 	type matrix,
 	matrixMultMatrix,
@@ -12,7 +12,7 @@ import {
 	vectorDivScalar,
 	vectorMultVector,
 	vectorSubVector,
-} from "/modules/Delusoire/delulib/lib/math.js";
+} from "/modules/Delusoire.delulib/lib/math.js";
 
 enum EndCondition {
 	NATURAL = 0,
@@ -25,7 +25,7 @@ class Monomial {
 	constructor(
 		private segments: matrix[],
 		private grid = _.range(segments.length + 1),
-	) {}
+	) { }
 
 	at(t: number, n = 0) {
 		t = _.clamp(t, this.grid[0], this.grid.at(-1)! - 1e-7);

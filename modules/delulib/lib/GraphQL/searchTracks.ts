@@ -1,4 +1,4 @@
-import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
+import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
 
 type TrackResponseWrapper = {
 	data: any;

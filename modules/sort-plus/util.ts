@@ -1,7 +1,7 @@
-import { _, fp } from "/modules/official/stdlib/deps.ts";
-import { spotifyApi } from "/modules/Delusoire/delulib/lib/api.ts";
-import type { TrackData } from "/modules/Delusoire/delulib/lib/parse.ts";
-import { Types, URIClass, fromString } from "/modules/official/stdlib/src/webpack/URI.ts";
+import { _, fp } from "/modules/stdlib/deps.ts";
+import { spotifyApi } from "/modules/Delusoire.delulib/lib/api.ts";
+import type { TrackData } from "/modules/Delusoire.delulib/lib/parse.ts";
+import { Types, URIClass, fromString } from "/modules/stdlib/src/webpack/URI.ts";
 
 export const SEPARATOR_URI = "spotify:separator";
 

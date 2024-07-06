@@ -1,4 +1,4 @@
-import { _, fp } from "/modules/official/stdlib/deps.ts";
+import { _, fp } from "/modules/stdlib/deps.ts";
 
 export type vector = number[];
 export type matrix = vector[];

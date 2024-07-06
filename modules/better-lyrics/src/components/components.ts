@@ -7,8 +7,8 @@ import { when } from "https://esm.sh/lit/directives/when.js";
 // import { PropertyValueMap } from "https://esm.sh/@lit/reactive-element/development/reactive-element.js";
 // import { hermite } from "https://esm.sh/@thi.ng/ramp"
 
-import { _ } from "/modules/official/stdlib/deps.ts";
-import { remapScalar, vectorLerp } from "/modules/Delusoire/delulib/lib/math.ts";
+import { _ } from "/modules/stdlib/deps.ts";
+import { remapScalar, vectorLerp } from "/modules/Delusoire.delulib/lib/math.ts";
 import { MonotoneNormalSpline } from "../splines/monotoneNormalSpline.ts";
 import { type Lyrics, LyricsType } from "../utils/LyricsProvider.ts";
 import { Player } from "../utils/Player.ts";
@@ -301,58 +301,52 @@ export class LyricsWrapper extends LitElement {
                         }
                     </style>
                     <lyrics-container>
-                        ${
-					when(
-						isWordSync,
-						() =>
-							html`${
-								map(
-									lyrics.content,
-									(l) =>
-										html`<timeline-provider tsp=${l.tsp} tep=${l.tep}
-                                            >${
-											map(
-												l.content,
-												(w) =>
-													html`<detail-timeline-provider tsp=${w.tsp} tep=${w.tep}
-                                                        >${
-														map(
-															w.content.split(""),
-															(c) =>
-																html`<animated-text
+                        ${when(
+					isWordSync,
+					() =>
+						html`${map(
+							lyrics.content,
+							(l) =>
+								html`<timeline-provider tsp=${l.tsp} tep=${l.tep}
+                                            >${map(
+									l.content,
+									(w) =>
+										html`<detail-timeline-provider tsp=${w.tsp} tep=${w.tep}
+                                                        >${map(
+											w.content.split(""),
+											(c) =>
+												html`<animated-text
                                                                     tsp=${w.tsp}
                                                                     content=${c === " " ? " " : c}
                                                                 ></animated-text>`,
-														)
-													}</detail-timeline-provider
+										)
+											}</detail-timeline-provider
                                                     >`,
-											)
-										}</timeline-provider
-                                        >`,
 								)
+									}</timeline-provider
+                                        >`,
+						)
 							}`,
-						() =>
-							html`${
-								map(
-									lyrics.content,
-									(l) =>
-										html`<timeline-provider tsp=${l.tsp} tep=${l.tep}
-                                            >${
-											map(
-												l.content,
-												(wl) =>
-													html`<animated-text
+					() =>
+						html`${map(
+							lyrics.content,
+							(l) =>
+								html`<timeline-provider tsp=${l.tsp} tep=${l.tep}
+                                            >${map(
+									l.content,
+									(wl) =>
+										html`<animated-text
                                                         tsp=${wl.tsp}
                                                         tep=${wl.tep}
                                                         content=${wl.content}
                                                     ></animated-text>`,
-											)
-										}</timeline-provider
-                                        >`,
 								)
+									}</timeline-provider
+                                        >`,
+						)
 							}`,
-					)
-				}</lyrics-container
+				)
+					}</lyrics-container
                     >,
                 `;
 			},

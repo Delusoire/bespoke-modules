@@ -1,4 +1,4 @@
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
+import { React } from "/modules/stdlib/src/expose/React.ts";
 import AuthorsDiv from "./AuthorsDiv.tsx";
 import TagsDiv from "./TagsDiv.tsx";
 import {
@@ -10,11 +10,11 @@ import {
 	RootModule,
 } from "/hooks/module.ts";
 import { useUpdate } from "../../util/index.ts";
-import { Cards, SettingsToggle } from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
-import { classnames } from "/modules/official/stdlib/src/webpack/ClassNames.ts";
-import { useQuery } from "/modules/official/stdlib/src/webpack/ReactQuery.ts";
+import { Cards, SettingsToggle } from "/modules/stdlib/src/webpack/ReactComponents.ts";
+import { classnames } from "/modules/stdlib/src/webpack/ClassNames.ts";
+import { useQuery } from "/modules/stdlib/src/webpack/ReactQuery.ts";
 import { MI } from "../../pages/Marketplace.tsx";
-import { display } from "/modules/official/stdlib/lib/modal.tsx";
+import { display } from "/modules/stdlib/lib/modal.tsx";
 import { RemoteMarkdown } from "../../pages/Module.tsx";
 
 const fallbackImage = () => (

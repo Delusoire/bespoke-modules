@@ -1,4 +1,4 @@
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
+import { React } from "/modules/stdlib/src/expose/React.ts";
 
 // updates state using latest updater if updater changed or if update is called
 export const useUpdate = <S>(updater: () => S) => {

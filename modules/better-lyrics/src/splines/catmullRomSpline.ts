@@ -1,12 +1,12 @@
-import { _ } from "/modules/official/stdlib/deps.ts";
-import { type TwoUplet, zip_n_uplets } from "/modules/Delusoire/delulib/lib/fp.ts";
+import { _ } from "/modules/stdlib/deps.ts";
+import { type TwoUplet, zip_n_uplets } from "/modules/Delusoire.delulib/lib/fp.ts";
 import {
 	remapScalar,
 	scalarLerp,
 	type vector,
 	vectorDist,
 	vectorLerp,
-} from "/modules/Delusoire/delulib/lib/math.ts";
+} from "/modules/Delusoire.delulib/lib/math.ts";
 
 export type vectorWithTime = readonly [number, vector];
 
@@ -18,7 +18,7 @@ class CatmullRomCurve {
 	private constructor(
 		private P: PointQuadruplet,
 		private T: TimeQuadruplet,
-	) {}
+	) { }
 
 	static fromPointsAndAlpha(P: PointQuadruplet, alpha: number) {
 		const T = zip_n_uplets<TwoUplet<vector>>(2)(P as unknown as vector[])

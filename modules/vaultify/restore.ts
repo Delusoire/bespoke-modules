@@ -2,8 +2,8 @@ import {
 	addPlaylist,
 	createFolder,
 	createPlaylistFromTracks,
-} from "/modules/Delusoire/delulib/lib/platform.ts";
-import { SpotifyLoc } from "/modules/Delusoire/delulib/lib/util.ts";
+} from "/modules/Delusoire.delulib/lib/platform.ts";
+import { SpotifyLoc } from "/modules/Delusoire.delulib/lib/util.ts";
 
 import type { LibraryBackup, LocalStorageBackup, SettingBackup } from "./backup.ts";
 import {
@@ -13,9 +13,9 @@ import {
 	type PersonalPlaylist,
 } from "./util.ts";
 
-import { _ } from "/modules/official/stdlib/deps.ts";
-import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
-import { Snackbar } from "/modules/official/stdlib/src/expose/Snackbar.ts";
+import { _ } from "/modules/stdlib/deps.ts";
+import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
+import { Snackbar } from "/modules/stdlib/src/expose/Snackbar.ts";
 
 const LocalStorageAPI = Platform.getLocalStorageAPI();
 

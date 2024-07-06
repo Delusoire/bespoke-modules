@@ -1,8 +1,8 @@
-import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
+import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
 import { getPlaylistsFromURIs, getTracksFromURIs } from "./lib/db.ts";
 
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
-import { is } from "/modules/official/stdlib/src/webpack/URI.ts";
+import { React } from "/modules/stdlib/src/expose/React.ts";
+import { is } from "/modules/stdlib/src/webpack/URI.ts";
 
 const RootlistAPI = Platform.getRootlistAPI();
 const PlaylistAPI = Platform.getPlaylistAPI();

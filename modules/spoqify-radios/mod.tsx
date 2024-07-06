@@ -1,11 +1,11 @@
-import { _ } from "/modules/official/stdlib/deps.ts";
+import { _ } from "/modules/stdlib/deps.ts";
 
-import { createRegistrar } from "/modules/official/stdlib/mod.ts";
-import { createSettings } from "/modules/official/stdlib/lib/settings.tsx";
+import { createRegistrar } from "/modules/stdlib/mod.ts";
+import { createSettings } from "/modules/stdlib/lib/settings.tsx";
 
 import type { Module } from "/hooks/index.ts";
-import type { Settings } from "/modules/official/stdlib/lib/settings.tsx";
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
+import type { Settings } from "/modules/stdlib/lib/settings.tsx";
+import { React } from "/modules/stdlib/src/expose/React.ts";
 
 export let settings: Settings;
 export default async function (mod: Module) {

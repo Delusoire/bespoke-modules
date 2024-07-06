@@ -1,8 +1,8 @@
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
-import { _ } from "/modules/official/stdlib/deps.ts";
+import { React } from "/modules/stdlib/src/expose/React.ts";
+import { _ } from "/modules/stdlib/deps.ts";
 import { Module, ModuleIdentifier, RootModule } from "/hooks/module.ts";
 import { LocalModule, RemoteModule } from "/hooks/module.ts";
-import { MI } from "/modules/Delusoire/marketplace/src/pages/Marketplace.tsx";
+import { MI } from "/modules/Delusoire.marketplace/src/pages/Marketplace.tsx";
 
 const getModulesByIdentifier = () => {
    const modules = Array.from(RootModule.INSTANCE.getAllDescendantsByBreadth());
@@ -99,7 +99,7 @@ const _useModules = () => {
 };
 
 export const ModulesContext = React.createContext<ReturnType<typeof _useModules> | null>(null);
-export const ModulesContextProvider = ({ children }: { children: React.ReactNode }) => {
+export const ModulesContextProvider = ({ children }: { children: React.ReactNode; }) => {
    const value = _useModules();
    return <ModulesContext.Provider value={value}>{children}</ModulesContext.Provider>;
 };

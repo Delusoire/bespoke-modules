@@ -1,8 +1,8 @@
-import { _ } from "/modules/official/stdlib/deps.ts";
+import { _ } from "/modules/stdlib/deps.ts";
 
 import { listeningToSneakBinds } from "./sneak.ts";
-import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
-import { Mousetrap } from "/modules/official/stdlib/src/webpack/Mousetrap.xpui.ts";
+import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
+import { Mousetrap } from "/modules/stdlib/src/webpack/Mousetrap.xpui.ts";
 
 const History = Platform.getHistory();
 

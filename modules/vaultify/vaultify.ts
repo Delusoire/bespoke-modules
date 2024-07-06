@@ -1,4 +1,4 @@
-import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
+import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
 import {
 	type LibraryBackup,
 	type LocalStorageBackup,
@@ -9,7 +9,7 @@ import {
 	getSettings,
 } from "./backup.ts";
 import { restoreLocalStorage, restoreLibrary, restoreSettings } from "./restore.ts";
-import { Snackbar } from "/modules/official/stdlib/src/expose/Snackbar.ts";
+import { Snackbar } from "/modules/stdlib/src/expose/Snackbar.ts";
 
 const ClipboardAPI = Platform.getClipboardAPI();
 

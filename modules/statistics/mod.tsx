@@ -3,21 +3,21 @@ import {
 	createLogger,
 	createRegistrar,
 	createStorage,
-} from "/modules/official/stdlib/mod.ts";
-import { createSettings } from "/modules/official/stdlib/lib/settings.tsx";
+} from "/modules/stdlib/mod.ts";
+import { createSettings } from "/modules/stdlib/lib/settings.tsx";
 
-import { NavLink } from "/modules/official/stdlib/src/registers/navlink.tsx";
+import { NavLink } from "/modules/stdlib/src/registers/navlink.tsx";
 import { ACTIVE_ICON, ICON } from "./static.ts";
 
 import PlaylistPage from "./pages/playlist.tsx";
-import { display } from "/modules/official/stdlib/lib/modal.tsx";
-import { TopbarLeftButton } from "/modules/official/stdlib/src/registers/topbarLeftButton.tsx";
-import type { Settings } from "/modules/official/stdlib/lib/settings.tsx";
-import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
+import { display } from "/modules/stdlib/lib/modal.tsx";
+import { TopbarLeftButton } from "/modules/stdlib/src/registers/topbarLeftButton.tsx";
+import type { Settings } from "/modules/stdlib/lib/settings.tsx";
+import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
 
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
-import { fromString, is } from "/modules/official/stdlib/src/webpack/URI.ts";
-import { Route } from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
+import { React } from "/modules/stdlib/src/expose/React.ts";
+import { fromString, is } from "/modules/stdlib/src/webpack/URI.ts";
+import { Route } from "/modules/stdlib/src/webpack/ReactComponents.ts";
 import { Module } from "/hooks/index.ts";
 
 const History = Platform.getHistory();

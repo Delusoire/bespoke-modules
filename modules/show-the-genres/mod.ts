@@ -1,6 +1,6 @@
-import { createSettings, type Settings } from "/modules/official/stdlib/lib/settings.tsx";
+import { createSettings, type Settings } from "/modules/stdlib/lib/settings.tsx";
 import type { Module } from "/hooks/index.ts";
-import { createEventBus, type EventBus } from "/modules/official/stdlib/mod.ts";
+import { createEventBus, type EventBus } from "/modules/stdlib/mod.ts";
 
 export let settings: Settings;
 export let eventBus: EventBus;

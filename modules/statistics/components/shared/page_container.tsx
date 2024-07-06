@@ -1,9 +1,9 @@
-import { UI } from "/modules/official/stdlib/src/webpack/ComponentLibrary.ts";
+import { UI } from "/modules/stdlib/src/webpack/ComponentLibrary.ts";
 import { categories, selectedCategoryCtx } from "../../app.tsx";
 
-import { TopNavBar } from "/modules/official/stdlib/lib/components/MountedNavBar.tsx";
+import { TopNavBar } from "/modules/stdlib/lib/components/MountedNavBar.tsx";
 
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
+import { React } from "/modules/stdlib/src/expose/React.ts";
 
 interface PageContainerProps {
 	title: string;

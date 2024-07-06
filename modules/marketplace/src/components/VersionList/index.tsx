@@ -1,16 +1,16 @@
-import { classnames } from "/modules/official/stdlib/src/webpack/ClassNames.ts";
+import { classnames } from "/modules/stdlib/src/webpack/ClassNames.ts";
 import { MI } from "../../pages/Marketplace.tsx";
 import { useUpdate } from "../../util/index.ts";
 import { LocalModule, LocalModuleInstance, ModuleIdentifier, RemoteModule } from "/hooks/module.ts";
 import { RemoteModuleInstance } from "/hooks/module.ts";
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
-import { useLocation, usePanelAPI } from "/modules/official/stdlib/src/webpack/CustomHooks.ts";
+import { React } from "/modules/stdlib/src/expose/React.ts";
+import { useLocation, usePanelAPI } from "/modules/stdlib/src/webpack/CustomHooks.ts";
 import {
 	PanelContent,
 	PanelHeader,
 	PanelSkeleton,
-} from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
-import { ScrollableText } from "/modules/official/stdlib/src/webpack/ReactComponents.js";
+} from "/modules/stdlib/src/webpack/ReactComponents.ts";
+import { ScrollableText } from "/modules/stdlib/src/webpack/ReactComponents.js";
 import {
 	MdCircle,
 	MdCloudDownload,
@@ -19,7 +19,7 @@ import {
 	MdInstallDesktop,
 	MdOutlineCircle,
 } from "https://esm.sh/react-icons/md";
-import { UI } from "/modules/official/stdlib/src/webpack/ComponentLibrary.ts";
+import { UI } from "/modules/stdlib/src/webpack/ComponentLibrary.ts";
 import { useModules } from "../ModulesProvider/index.tsx";
 
 export default function () {

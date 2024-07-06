@@ -1,4 +1,4 @@
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
+import { React } from "/modules/stdlib/src/expose/React.ts";
 
 import { MAX_TAGS } from "../../static.ts";
 import { t } from "../../i18n.ts";

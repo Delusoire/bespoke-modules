@@ -1,5 +1,5 @@
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
-import { _ } from "/modules/official/stdlib/deps.ts";
+import { React } from "/modules/stdlib/src/expose/React.ts";
+import { _ } from "/modules/stdlib/deps.ts";
 import { t } from "../i18n.ts";
 import { LocalModuleInstance, type Metadata, ModuleIdentifier, RemoteModuleInstance } from "/hooks/module.ts";
 import ModuleCard from "../components/ModuleCard/index.tsx";
@@ -12,8 +12,8 @@ import {
 	useChipFilter,
 	useDropdown,
 	useSearchBar,
-} from "/modules/official/stdlib/lib/components/index.tsx";
-import { usePanelAPI } from "/modules/official/stdlib/src/webpack/CustomHooks.ts";
+} from "/modules/stdlib/lib/components/index.tsx";
+import { usePanelAPI } from "/modules/stdlib/src/webpack/CustomHooks.ts";
 import { LocalModule, RemoteModule } from "/hooks/module.ts";
 import { useModules } from "../components/ModulesProvider/index.tsx";
 

@@ -1,4 +1,4 @@
-import { is } from "/modules/official/stdlib/src/webpack/URI.ts";
+import { is } from "/modules/stdlib/src/webpack/URI.ts";
 
 export type PoF = Playlist | Folder;
 

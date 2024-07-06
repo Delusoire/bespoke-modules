@@ -1,14 +1,14 @@
-import { _ } from "/modules/official/stdlib/deps.js";
-import { SpotifyLoc } from "/modules/Delusoire/delulib/lib/util.js";
+import { _ } from "/modules/stdlib/deps.js";
+import { SpotifyLoc } from "/modules/Delusoire.delulib/lib/util.js";
 
 import { CONFIG } from "./settings.js";
 
-import { useMenuItem } from "/modules/official/stdlib/src/registers/menu.js";
-import { createIconComponent } from "/modules/official/stdlib/lib/createIconComponent.js";
-import { fromString, is } from "/modules/official/stdlib/src/webpack/URI.ts";
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
-import { MenuItem } from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
-import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
+import { useMenuItem } from "/modules/stdlib/src/registers/menu.js";
+import { createIconComponent } from "/modules/stdlib/lib/createIconComponent.js";
+import { fromString, is } from "/modules/stdlib/src/webpack/URI.ts";
+import { React } from "/modules/stdlib/src/expose/React.ts";
+import { MenuItem } from "/modules/stdlib/src/webpack/ReactComponents.ts";
+import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
 
 const History = Platform.getHistory();
 const RootlistAPI = Platform.getRootlistAPI();

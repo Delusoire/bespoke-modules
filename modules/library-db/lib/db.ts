@@ -1,10 +1,10 @@
 import Dexie, { type Table } from "https://esm.sh/dexie";
 import type { Track } from "https://esm.sh/v135/@fostertheweb/spotify-web-api-ts-sdk/dist/mjs/types.js";
-import { chunkify50 } from "/modules/Delusoire/delulib/lib/fp.ts";
-import { spotifyApi } from "/modules/Delusoire/delulib/lib/api.ts";
-import { _ } from "/modules/official/stdlib/deps.ts";
-import { fromString, Types } from "/modules/official/stdlib/src/webpack/URI.ts";
-import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
+import { chunkify50 } from "/modules/Delusoire.delulib/lib/fp.ts";
+import { spotifyApi } from "/modules/Delusoire.delulib/lib/api.ts";
+import { _ } from "/modules/stdlib/deps.ts";
+import { fromString, Types } from "/modules/stdlib/src/webpack/URI.ts";
+import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
 
 export const db = new (class extends Dexie {
 	tracks!: Table<Track, string>;
@@ -97,7 +97,7 @@ const labelSizes = {
 const getPlaylist = async (uri: string) => {
 	const playlist = await PlaylistAPI.getPlaylist(uri);
 
-	const images: Array<{ url: string; label: keyof typeof labelSizes }> = playlist.metadata.images ?? [];
+	const images: Array<{ url: string; label: keyof typeof labelSizes; }> = playlist.metadata.images ?? [];
 	const image = images.sort((image) => labelSizes[image.label])[0];
 
 	if (image) {

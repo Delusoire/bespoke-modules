@@ -1,6 +1,6 @@
 import type { Module } from "/hooks/module.ts";
-import { createEventBus } from "/modules/official/stdlib/mod.ts";
-import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
+import { createEventBus } from "/modules/stdlib/mod.ts";
+import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
 
 const BACKGROUND_URL = "";
 

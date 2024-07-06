@@ -1,4 +1,4 @@
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
+import { React } from "/modules/stdlib/src/expose/React.ts";
 
 const ErrorIcon = () => (
 	<svg data-encore-id="icon" role="img" aria-hidden="true" viewBox="0 0 24 24" className="status-icon">

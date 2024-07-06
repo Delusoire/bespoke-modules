@@ -1,5 +1,5 @@
-import { _ } from "/modules/official/stdlib/deps.ts";
-import { Snackbar } from "/modules/official/stdlib/src/expose/Snackbar.ts";
+import { _ } from "/modules/stdlib/deps.ts";
+import { Snackbar } from "/modules/stdlib/src/expose/Snackbar.ts";
 
 type async = {
 	<A, B>(f: (a: A) => Promise<B>): (fa: Promise<A>) => Promise<B>;

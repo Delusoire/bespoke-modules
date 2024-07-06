@@ -1,18 +1,18 @@
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
+import { React } from "/modules/stdlib/src/expose/React.ts";
 
 import SpotifyCard from "../components/shared/spotify_card.tsx";
 import PageContainer from "../components/shared/page_container.tsx";
 import RefreshButton from "../components/buttons/refresh_button.tsx";
 import { fetchLFMTopAlbums } from "../api/lastfm.ts";
-import { spotifyApi } from "/modules/Delusoire/delulib/lib/api.ts";
+import { spotifyApi } from "/modules/Delusoire.delulib/lib/api.ts";
 import { DEFAULT_TRACK_IMG } from "../static.ts";
 import { CONFIG } from "../settings.ts";
 
 import { SpotifyTimeRange } from "../api/spotify.ts";
 import { useStatus } from "../components/status/useStatus.tsx";
 import { logger, settingsButton, storage } from "../mod.tsx";
-import { useDropdown } from "/modules/official/stdlib/lib/components/index.tsx";
-import { useQuery } from "/modules/official/stdlib/src/webpack/ReactQuery.ts";
+import { useDropdown } from "/modules/stdlib/lib/components/index.tsx";
+import { useQuery } from "/modules/stdlib/src/webpack/ReactQuery.ts";
 
 const DropdownOptions = {
 	"Past Month": () => "Past Month",

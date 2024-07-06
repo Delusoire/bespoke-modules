@@ -1,20 +1,20 @@
-import { _ } from "/modules/official/stdlib/deps.ts";
-import { useLivePlaylistItems } from "/modules/Delusoire/library-db/mod.ts";
-import { createIconComponent } from "/modules/official/stdlib/lib/createIconComponent.tsx";
-import { useLiveQuery } from "/modules/Delusoire/dexie-react-hooks/index.ts";
-import { db } from "/modules/Delusoire/library-db/lib/db.ts";
+import { _ } from "/modules/stdlib/deps.ts";
+import { useLivePlaylistItems } from "/modules/Delusoire.library-db/mod.ts";
+import { createIconComponent } from "/modules/stdlib/lib/createIconComponent.tsx";
+import { useLiveQuery } from "/modules/Delusoire.dexie-react-hooks/index.ts";
+import { db } from "/modules/Delusoire.library-db/lib/db.ts";
 import type { Module } from "/hooks/module.ts";
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
+import { React } from "/modules/stdlib/src/expose/React.ts";
 import {
 	Menu,
 	MenuItem,
 	RightClickMenu,
 	Tooltip,
-} from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
-import { fromString } from "/modules/official/stdlib/src/webpack/URI.ts";
-import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
-import { classnames } from "/modules/official/stdlib/src/webpack/ClassNames.ts";
-import { UI } from "/modules/official/stdlib/src/webpack/ComponentLibrary.ts";
+} from "/modules/stdlib/src/webpack/ReactComponents.ts";
+import { fromString } from "/modules/stdlib/src/webpack/URI.ts";
+import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
+import { classnames } from "/modules/stdlib/src/webpack/ClassNames.ts";
+import { UI } from "/modules/stdlib/src/webpack/ComponentLibrary.ts";
 
 const PlaylistLabels = React.memo(({ uri }: { uri: string; }) => {
 	const playlists = useLivePlaylistItems(uri);

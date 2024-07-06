@@ -1,22 +1,22 @@
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
+import { React } from "/modules/stdlib/src/expose/React.ts";
 
 import PageContainer from "../components/shared/page_container.tsx";
 import { DEFAULT_TRACK_IMG } from "../static.ts";
 import RefreshButton from "../components/buttons/refresh_button.tsx";
-import { spotifyApi } from "/modules/Delusoire/delulib/lib/api.ts";
+import { spotifyApi } from "/modules/Delusoire.delulib/lib/api.ts";
 import type { Track } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
 import { SpotifyTimeRange } from "../api/spotify.ts";
 import { useStatus } from "../components/status/useStatus.tsx";
 import { logger, settingsButton, storage } from "../mod.tsx";
-import { useDropdown } from "/modules/official/stdlib/lib/components/index.tsx";
+import { useDropdown } from "/modules/stdlib/lib/components/index.tsx";
 import CreatePlaylistButton from "../components/buttons/create_playlist_button.tsx";
-import { useQuery } from "/modules/official/stdlib/src/webpack/ReactQuery.ts";
+import { useQuery } from "/modules/stdlib/src/webpack/ReactQuery.ts";
 import {
 	Tracklist,
 	TracklistColumnsContextProvider,
 	TracklistRow,
-} from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
-import { getPlayContext, useTrackListColumns } from "/modules/official/stdlib/src/webpack/CustomHooks.ts";
+} from "/modules/stdlib/src/webpack/ReactComponents.ts";
+import { getPlayContext, useTrackListColumns } from "/modules/stdlib/src/webpack/CustomHooks.ts";
 
 const DropdownOptions = {
 	"Past Month": () => "Past Month",

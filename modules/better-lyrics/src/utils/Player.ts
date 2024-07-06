@@ -8,11 +8,11 @@ import {
 	Subscription,
 	takeUntil,
 } from "https://esm.sh/rxjs";
-import { getSongPositionMs } from "/modules/Delusoire/delulib/lib/util.ts";
+import { getSongPositionMs } from "/modules/Delusoire.delulib/lib/util.ts";
 
 import { eventBus } from "../../mod.tsx";
 import { findLyrics } from "./LyricsProvider.ts";
-import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
+import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
 
 const PlayerAPI = Platform.getPlayerAPI();
 

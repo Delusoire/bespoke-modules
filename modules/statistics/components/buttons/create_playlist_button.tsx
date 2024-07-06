@@ -1,8 +1,8 @@
-import { Tooltip } from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
-import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
-import { UI } from "/modules/official/stdlib/src/webpack/ComponentLibrary.ts";
-import { Snackbar } from "/modules/official/stdlib/src/expose/Snackbar.ts";
+import { Tooltip } from "/modules/stdlib/src/webpack/ReactComponents.ts";
+import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
+import { React } from "/modules/stdlib/src/expose/React.ts";
+import { UI } from "/modules/stdlib/src/webpack/ComponentLibrary.ts";
+import { Snackbar } from "/modules/stdlib/src/expose/Snackbar.ts";
 
 export interface CreatePlaylistButtonProps {
 	name: string;

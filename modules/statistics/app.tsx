@@ -4,9 +4,9 @@ import GenresPage from "./pages/top_genres.tsx";
 import LibraryPage from "./pages/library.tsx";
 import AlbumsPage from "./pages/top_albums.tsx";
 
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
-import { InstrumentedRedirect, Route, Routes } from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
-import { useMatch } from "/modules/official/stdlib/src/webpack/ReactRouter.xpui.ts";
+import { React } from "/modules/stdlib/src/expose/React.ts";
+import { InstrumentedRedirect, Route, Routes } from "/modules/stdlib/src/webpack/ReactComponents.ts";
+import { useMatch } from "/modules/stdlib/src/webpack/ReactRouter.xpui.ts";
 
 const Pages = {
 	tracks: <TracksPage />,

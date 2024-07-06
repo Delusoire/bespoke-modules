@@ -1,5 +1,5 @@
-import { _ } from "/modules/official/stdlib/deps.ts";
-import { progressify } from "/modules/Delusoire/delulib/lib/fp.ts";
+import { _ } from "/modules/stdlib/deps.ts";
+import { progressify } from "/modules/Delusoire.delulib/lib/fp.ts";
 import {
 	createPlaylistFromTracks,
 	fetchFolder,
@@ -7,14 +7,14 @@ import {
 	fetchRootFolder,
 	movePlaylistTracks,
 	setPlaylistVisibility,
-} from "/modules/Delusoire/delulib/lib/platform.ts";
-import { SpotifyLoc } from "/modules/Delusoire/delulib/lib/util.ts";
+} from "/modules/Delusoire.delulib/lib/platform.ts";
+import { SpotifyLoc } from "/modules/Delusoire.delulib/lib/util.ts";
 
 import { lastFetchedUri, lastSortAction } from "./sortPlus.tsx";
 import { CONFIG } from "./settings.ts";
 import { ERROR, getNameFromUri } from "./util.ts";
-import { Snackbar } from "/modules/official/stdlib/src/expose/Snackbar.ts";
-import { fromString, is } from "/modules/official/stdlib/src/webpack/URI.ts";
+import { Snackbar } from "/modules/stdlib/src/expose/Snackbar.ts";
+import { fromString, is } from "/modules/stdlib/src/webpack/URI.ts";
 
 export const createPlaylistFromLastSortedQueue = async () => {
 	if (globalThis.lastSortedQueue.length === 0) {

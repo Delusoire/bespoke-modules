@@ -1,8 +1,8 @@
-import { _ } from "/modules/official/stdlib/deps.ts";
-import { fetchPlaylistContents, fetchRootFolder } from "/modules/Delusoire/delulib/lib/platform.ts";
+import { _ } from "/modules/stdlib/deps.ts";
+import { fetchPlaylistContents, fetchRootFolder } from "/modules/Delusoire.delulib/lib/platform.ts";
 
 import type { LikedPlaylist, PersonalFolder, PersonalPlaylist, PoF } from "./util.ts";
-import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
+import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
 
 const LibraryAPI = Platform.getLibraryAPI();
 const LocalStorageAPI = Platform.getLocalStorageAPI();

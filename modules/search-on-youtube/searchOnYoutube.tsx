@@ -1,9 +1,9 @@
-import { is } from "/modules/official/stdlib/src/webpack/URI.ts";
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
-import { useMenuItem } from "/modules/official/stdlib/src/registers/menu.ts";
-import { MenuItem } from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
-import { showOnYouTube } from "/modules/Delusoire/search-on-youtube/util.ts";
-import { createIconComponent } from "/modules/official/stdlib/lib/createIconComponent.tsx";
+import { is } from "/modules/stdlib/src/webpack/URI.ts";
+import { React } from "/modules/stdlib/src/expose/React.ts";
+import { useMenuItem } from "/modules/stdlib/src/registers/menu.ts";
+import { MenuItem } from "/modules/stdlib/src/webpack/ReactComponents.ts";
+import { showOnYouTube } from "/modules/Delusoire.search-on-youtube/util.ts";
+import { createIconComponent } from "/modules/stdlib/lib/createIconComponent.tsx";
 
 export const SearchOnYoutubeMenuItem = () => {
 	const { props } = useMenuItem();

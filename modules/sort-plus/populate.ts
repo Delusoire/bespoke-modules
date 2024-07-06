@@ -1,12 +1,12 @@
-import { fetchLastFMTrack, spotifyApi } from "/modules/Delusoire/delulib/lib/api.ts";
-import { _, fp } from "/modules/official/stdlib/deps.ts";
-import { chunkify50, progressify } from "/modules/Delusoire/delulib/lib/fp.ts";
-import { TrackData, parseWebAPITrack } from "/modules/Delusoire/delulib/lib/parse.ts";
+import { fetchLastFMTrack, spotifyApi } from "/modules/Delusoire.delulib/lib/api.ts";
+import { _, fp } from "/modules/stdlib/deps.ts";
+import { chunkify50, progressify } from "/modules/Delusoire.delulib/lib/fp.ts";
+import { TrackData, parseWebAPITrack } from "/modules/Delusoire.delulib/lib/parse.ts";
 
 import { getTracksFromAlbum } from "./fetch.ts";
 import { CONFIG } from "./settings.ts";
 import { SortAction, SortActionProp, joinByUri } from "./util.ts";
-import { fromString } from "/modules/official/stdlib/src/webpack/URI.ts";
+import { fromString } from "/modules/stdlib/src/webpack/URI.ts";
 
 const fillTracksFromWebAPI = async (tracks: TrackData[]) => {
 	const ids = tracks.map(track => fromString(track.uri)!.id!);

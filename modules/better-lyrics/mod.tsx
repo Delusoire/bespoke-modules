@@ -1,10 +1,10 @@
-import { createEventBus, type EventBus } from "/modules/official/stdlib/mod.ts";
+import { createEventBus, type EventBus } from "/modules/stdlib/mod.ts";
 import { Module } from "/hooks/index.ts";
 
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
+import { React } from "/modules/stdlib/src/expose/React.ts";
 
-import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
-import { createSettings, Settings } from "/modules/official/stdlib/lib/settings.tsx";
+import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
+import { createSettings, Settings } from "/modules/stdlib/lib/settings.tsx";
 
 export let eventBus: EventBus;
 export let settings: Settings;

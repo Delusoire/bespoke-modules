@@ -1,6 +1,6 @@
 import { MonotoneCubicHermitInterpolation } from "https://esm.sh/v135/@adaskothebeast/splines/es2022/splines.mjs";
 
-import { _ } from "/modules/official/stdlib/deps.ts";
+import { _ } from "/modules/stdlib/deps.ts";
 
 export class MonotoneNormalSpline extends MonotoneCubicHermitInterpolation {
 	at(t: number) {

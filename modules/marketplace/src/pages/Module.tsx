@@ -13,10 +13,10 @@ import {
 	Version,
 } from "/hooks/module.ts";
 import { proxy } from "/hooks/util.ts";
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
-import { ReactDOM } from "/modules/official/stdlib/src/webpack/React.ts";
-import { useQuery, useSuspenseQuery } from "/modules/official/stdlib/src/webpack/ReactQuery.ts";
-import { useMatch } from "/modules/official/stdlib/src/webpack/ReactRouter.ts";
+import { React } from "/modules/stdlib/src/expose/React.ts";
+import { ReactDOM } from "/modules/stdlib/src/webpack/React.ts";
+import { useQuery, useSuspenseQuery } from "/modules/stdlib/src/webpack/ReactQuery.ts";
+import { useMatch } from "/modules/stdlib/src/webpack/ReactRouter.ts";
 
 interface ShadowRootProps {
 	mode: "open" | "closed";
@@ -46,7 +46,7 @@ const ShadowRoot = ({ mode, delegatesFocus, styleSheets, children }: ShadowRootP
 	return <div ref={node}>{content}</div>;
 };
 
-export const RemoteMarkdown = React.memo(({ url }: { url: string }) => {
+export const RemoteMarkdown = React.memo(({ url }: { url: string; }) => {
 	const {
 		status,
 		error,
@@ -122,7 +122,7 @@ function useModuleInstance(moduleIdentifier: ModuleIdentifier, version: Version,
 	return [local.data ?? remote.data, local.refetch] as const;
 }
 
-export default function ({ aurl }: { aurl?: string }) {
+export default function ({ aurl }: { aurl?: string; }) {
 	const routeMatch = useMatch("/bespoke/marketplace/module/:aurl");
 	aurl ??= decodeURIComponent(routeMatch?.params?.aurl);
 

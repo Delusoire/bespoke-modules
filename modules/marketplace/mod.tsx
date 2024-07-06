@@ -1,13 +1,13 @@
-import { createLogger, createRegistrar, createStorage } from "/modules/official/stdlib/mod.ts";
-import { createSettings } from "/modules/official/stdlib/lib/settings.tsx";
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
+import { createLogger, createRegistrar, createStorage } from "/modules/stdlib/mod.ts";
+import { createSettings } from "/modules/stdlib/lib/settings.tsx";
+import { React } from "/modules/stdlib/src/expose/React.ts";
 
-import { NavLink } from "/modules/official/stdlib/src/registers/navlink.tsx";
+import { NavLink } from "/modules/stdlib/src/registers/navlink.tsx";
 import type { Module } from "/hooks/index.ts";
-import type { Settings } from "/modules/official/stdlib/lib/settings.tsx";
+import type { Settings } from "/modules/stdlib/lib/settings.tsx";
 import { ACTIVE_ICON, ICON } from "./src/static.ts";
-import { Route } from "/modules/official/stdlib/src/webpack/ReactComponents.ts";
-import panelReg from "/modules/official/stdlib/src/registers/panel.ts";
+import { Route } from "/modules/stdlib/src/webpack/ReactComponents.ts";
+import panelReg from "/modules/stdlib/src/registers/panel.ts";
 import VersionList from "./src/components/VersionList/index.tsx";
 
 export let storage: Storage;

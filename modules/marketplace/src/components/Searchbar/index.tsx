@@ -1,5 +1,5 @@
-import { _ } from "/modules/official/stdlib/deps.ts";
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
+import { _ } from "/modules/stdlib/deps.ts";
+import { React } from "/modules/stdlib/src/expose/React.ts";
 
 export interface SearchbarProps {
 	value: string;

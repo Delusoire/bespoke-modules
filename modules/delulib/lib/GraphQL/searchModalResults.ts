@@ -1,5 +1,5 @@
-import { GraphQLDefs } from "/modules/official/stdlib/src/expose/GraphQL.ts";
-import { Platform } from "/modules/official/stdlib/src/expose/Platform.ts";
+import { GraphQLDefs } from "/modules/stdlib/src/expose/GraphQL.ts";
+import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
 
 type TrackResponseWrapper = {
 	__typename: "TrackResponseWrapper";

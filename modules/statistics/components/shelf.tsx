@@ -1,5 +1,5 @@
-import { UI } from "/modules/official/stdlib/src/webpack/ComponentLibrary.ts";
-import { React } from "/modules/official/stdlib/src/expose/React.ts";
+import { UI } from "/modules/stdlib/src/webpack/ComponentLibrary.ts";
+import { React } from "/modules/stdlib/src/expose/React.ts";
 
 interface ShelfProps {
 	title: string;
