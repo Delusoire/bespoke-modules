@@ -8,7 +8,7 @@ function Get-Id {
 	$json = Get-Content -Path "modules\$module\metadata.json" -Raw | ConvertFrom-Json
 	$Author = $json.authors[0]
 
-	return "/$Author/$module"
+	return "$Author.$module"
 }
 
 function Get-FullId {
@@ -20,5 +20,5 @@ function Get-FullId {
 	$Author = $json.authors[0]
 	$Version = $json.version
 
-	return "/$Author/$module@$Version"
+	return "$Author.$module@$Version"
 }

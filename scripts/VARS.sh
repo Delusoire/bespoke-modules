@@ -5,7 +5,7 @@ get_id() {
 
 	json=$(cat "modules/${module}/metadata.json")
 	author=$(echo "${json}" | jq -r '.authors[0]')
-	echo "/$author/$module"
+	echo "$author.$module"
 }
 
 get_fullId() {
@@ -14,5 +14,5 @@ get_fullId() {
 	json=$(cat "modules/${module}/metadata.json")
 	author=$(echo "${json}" | jq -r '.authors[0]')
 	version=$(echo "${json}" | jq -r '.version')
-	echo "/$author/$module@$version"
+	echo "$author.$module@$version"
 }

@@ -16,11 +16,6 @@ runs:
             done
             popd
 
-      -  name: Release
-         uses: softprops/action-gh-release@v2
-         with:
-            files: dist/*
-
       -  name: Update vault.json
          shell: bash
          run: |
@@ -39,7 +34,15 @@ runs:
                ' ../vault.json
             done
             popd
-            rm -rf dist
+
+      -  name: Package provider
+         shell: bash
+         run: 7z a -bb0 "dist/${{ github.repository_owner }}.zip" LICENSE README.md metadata.json vault.json
+
+      -  name: Release
+         uses: softprops/action-gh-release@v2
+         with:
+            files: dist/*
 
       -  name: Git commit, rebase onto master
          shell: bash

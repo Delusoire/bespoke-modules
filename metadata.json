@@ -1,0 +1,16 @@
+{
+	"name": "Delusoire's modules",
+	"tags": [
+		"provider"
+	],
+	"preview": "./PREVIEW.png",
+	"version": "0.0.0",
+	"authors": [
+		"Delusoire"
+	],
+	"description": "Third party modules by Delusoire",
+	"readme": "./README.md",
+	"entries": {},
+	"hasMixins": false,
+	"dependencies": []
+}
