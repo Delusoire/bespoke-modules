@@ -1,4 +1,4 @@
-import { fetchAlbumTracks } from "../delulib/lib/GraphQL/fetchAlbumTracks.ts";
+import { fetchAlbumTracks } from "/modules/Delusoire.delulib/lib/GraphQL/fetchAlbumTracks.ts";
 import { fetchArtistDiscography } from "/modules/Delusoire.delulib/lib/GraphQL/fetchArtistDiscography.ts";
 import { fetchArtistOverview } from "/modules/Delusoire.delulib/lib/GraphQL/fetchArtistOveriew.ts";
 import { _, fp } from "/modules/stdlib/deps.ts";
