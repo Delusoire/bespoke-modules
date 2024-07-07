@@ -5,12 +5,11 @@ import Button from "../components/Button/index.tsx";
 import LoadingIcon from "../components/icons/LoadingIcon.tsx";
 import { t } from "../i18n.ts";
 import {
-	LocalModuleInstance,
 	type Metadata,
-	ModuleIdentifier,
-	RemoteModuleInstance,
+	type ModuleIdentifier,
+	type ModuleInstance,
 	RootModule,
-	Version,
+	type Version,
 } from "/hooks/module.ts";
 import { proxy } from "/hooks/util.ts";
 import { React } from "/modules/stdlib/src/expose/React.ts";
@@ -46,7 +45,7 @@ const ShadowRoot = ({ mode, delegatesFocus, styleSheets, children }: ShadowRootP
 	return <div ref={node}>{content}</div>;
 };
 
-export const RemoteMarkdown = React.memo(({ url }: { url: string; }) => {
+export const RemoteMarkdown = React.memo(({ url }: { url: string }) => {
 	const {
 		status,
 		error,
@@ -102,7 +101,7 @@ async function createRemoteModuleInstance(moduleIdentifier: ModuleIdentifier, ve
 	const remoteModuleInstance = await remoteModule.newInstance(version, {
 		installed: false,
 		artifacts: [aurl],
-		providers: [],
+		checksum: "",
 	});
 	return remoteModuleInstance;
 }
@@ -122,7 +121,7 @@ function useModuleInstance(moduleIdentifier: ModuleIdentifier, version: Version,
 	return [local.data ?? remote.data, local.refetch] as const;
 }
 
-export default function ({ aurl }: { aurl?: string; }) {
+export default function ({ aurl }: { aurl?: string }) {
 	const routeMatch = useMatch("/bespoke/marketplace/module/:aurl");
 	aurl ??= decodeURIComponent(routeMatch?.params?.aurl);
 
@@ -146,7 +145,7 @@ export default function ({ aurl }: { aurl?: string; }) {
 		return;
 	}
 
-	const isLocal = moduleInstance instanceof LocalModuleInstance;
+	const isLocal = moduleInstance.isLocal();
 
 	const label = t(isLocal ? "pages.module.remove" : "pages.module.install");
 
@@ -177,7 +176,7 @@ export default function ({ aurl }: { aurl?: string; }) {
 
 interface TrashButtonProps {
 	label: string;
-	moduleInstance: LocalModuleInstance;
+	moduleInstance: ModuleInstance;
 	onUpdate: () => void;
 }
 const RemoveButton = (props: TrashButtonProps) => {
@@ -200,7 +199,7 @@ const RemoveButton = (props: TrashButtonProps) => {
 
 interface DownloadButtonProps {
 	label: string;
-	moduleInstance: RemoteModuleInstance;
+	moduleInstance: ModuleInstance;
 	onUpdate: () => void;
 }
 const AddButton = (props: DownloadButtonProps) => {

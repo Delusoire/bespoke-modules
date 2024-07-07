@@ -1,15 +1,9 @@
 import { classnames } from "/modules/stdlib/src/webpack/ClassNames.ts";
-import { MI } from "../../pages/Marketplace.tsx";
 import { useUpdate } from "../../util/index.ts";
-import { LocalModule, LocalModuleInstance, ModuleIdentifier, RemoteModule } from "/hooks/module.ts";
-import { RemoteModuleInstance } from "/hooks/module.ts";
+import { Module, ModuleInstance } from "/hooks/module.ts";
 import { React } from "/modules/stdlib/src/expose/React.ts";
 import { useLocation, usePanelAPI } from "/modules/stdlib/src/webpack/CustomHooks.ts";
-import {
-	PanelContent,
-	PanelHeader,
-	PanelSkeleton,
-} from "/modules/stdlib/src/webpack/ReactComponents.ts";
+import { PanelContent, PanelHeader, PanelSkeleton } from "/modules/stdlib/src/webpack/ReactComponents.ts";
 import { ScrollableText } from "/modules/stdlib/src/webpack/ReactComponents.js";
 import {
 	MdCircle,
@@ -21,6 +15,8 @@ import {
 } from "https://esm.sh/react-icons/md";
 import { UI } from "/modules/stdlib/src/webpack/ComponentLibrary.ts";
 import { useModules } from "../ModulesProvider/index.tsx";
+import { RootModule } from "/hooks/module.js";
+import { module } from "/modules/Delusoire.marketplace/mod.js";
 
 export default function () {
 	const location = useLocation();
@@ -72,26 +68,26 @@ const VersionListPanelContent = React.memo(() => {
 	);
 });
 
-interface ModuleSectionProps<M extends LocalModule | RemoteModule = LocalModule | RemoteModule> {
-	module: M;
-	addModule: (module: LocalModule | RemoteModule) => void;
-	removeModule: (module: LocalModule | RemoteModule) => void;
-	updateModule: (module: LocalModule | RemoteModule) => void;
-	selectedInstance: M["instances"] extends Map<ModuleIdentifier, infer I> ? I : never;
-	selectInstance: (moduleInstance: MI) => void;
+interface ModuleSectionProps {
+	module: Module;
+	addModule: (module: Module) => void;
+	removeModule: (module: Module) => void;
+	updateModule: (module: Module) => void;
+	selectedInstance: ModuleInstance;
+	selectInstance: (moduleInstance: ModuleInstance) => void;
 }
 const ModuleSection = (props: ModuleSectionProps) =>
-	props.module instanceof LocalModule
-		? LocalModuleSection(props as ModuleSectionProps<LocalModule>)
-		: RemoteModuleSection(props as ModuleSectionProps<RemoteModule>);
+	props.module.parent === RootModule.INSTANCE
+		? RealModuleSection(props as ModuleSectionProps)
+		: VirtualModuleSection(props as ModuleSectionProps);
 
-const LocalModuleSection = (props: ModuleSectionProps<LocalModule>) => {
+const RealModuleSection = (props: ModuleSectionProps) => {
 	const { module, selectedInstance, selectInstance } = props;
 
 	return (
 		<div className="bg-[var(--background-tinted-base)] rounded-lg px-4 pt-2">
 			{Array.from(module.instances).map(([version, inst]) => (
-				<_LocalModuleInstance
+				<RealModuleInstance
 					key={version}
 					moduleInstance={inst}
 					isSelected={inst === selectedInstance}
@@ -112,7 +108,7 @@ function cutPrefix(str: string, prefix: string) {
 	return str;
 }
 
-const RemoteModuleSection = (props: ModuleSectionProps<RemoteModule>) => {
+const VirtualModuleSection = (props: ModuleSectionProps) => {
 	const { module, selectedInstance, selectInstance } = props;
 
 	const heritage = module.getHeritage().join("▶");
@@ -125,7 +121,7 @@ const RemoteModuleSection = (props: ModuleSectionProps<RemoteModule>) => {
 				</div>
 			</UI.Text>
 			{Array.from(module.instances).map(([version, inst]) => (
-				<_RemoteModuleInstance
+				<VirtualModuleInstance
 					key={version}
 					moduleInstance={inst}
 					isSelected={inst === selectedInstance}
@@ -139,22 +135,21 @@ const RemoteModuleSection = (props: ModuleSectionProps<RemoteModule>) => {
 	);
 };
 
-interface ModuleInstanceProps<I extends MI = MI> {
-	moduleInstance: I;
+interface ModuleInstanceProps {
+	moduleInstance: ModuleInstance;
 	isSelected: boolean;
-	selectInstance: (moduleInstance: MI) => void;
-	addModule: (module: LocalModule | RemoteModule) => void;
-	removeModule: (module: LocalModule | RemoteModule) => void;
-	updateModule: (module: LocalModule | RemoteModule) => void;
+	selectInstance: (moduleInstance: ModuleInstance) => void;
+	addModule: (module: Module) => void;
+	removeModule: (module: Module) => void;
+	updateModule: (module: Module) => void;
 }
 
-const _LocalModuleInstance = (props: ModuleInstanceProps<LocalModuleInstance>) => {
+const RealModuleInstance = (props: ModuleInstanceProps) => {
 	const { moduleInstance } = props;
 
 	return (
 		<div
 			onClick={() => props.selectInstance(props.moduleInstance)}
-			style={{}}
 			className={classnames(
 				"flex items-center gap-2 justify-between group",
 				"rounded-md -mx-2 mt-0 mb-2 p-2 hover:bg-[var(--background-tinted-highlight)]",
@@ -169,6 +164,12 @@ const _LocalModuleInstance = (props: ModuleInstanceProps<LocalModuleInstance>) =
 					<span className="font-medium">{props.moduleInstance.getVersion()}</span>
 				</ScrollableText>
 			</div>
+			{moduleInstance.canAdd() && (
+				<AddButton
+					moduleInstance={props.moduleInstance}
+					addModule={props.addModule}
+				/>
+			)}
 			{moduleInstance.canInstallRemove() && (
 				<>
 					<InstallButton moduleInstance={props.moduleInstance} updateModule={props.updateModule} />
@@ -186,7 +187,7 @@ const _LocalModuleInstance = (props: ModuleInstanceProps<LocalModuleInstance>) =
 	);
 };
 
-const _RemoteModuleInstance = (props: ModuleInstanceProps<RemoteModuleInstance>) => {
+const VirtualModuleInstance = (props: ModuleInstanceProps) => {
 	return (
 		<div
 			className={classnames(
@@ -196,83 +197,24 @@ const _RemoteModuleInstance = (props: ModuleInstanceProps<RemoteModuleInstance>)
 			)}
 			onClick={() => props.selectInstance(props.moduleInstance)}
 		>
-			<div className="flex items-center">
-				<EnabledDisabledRad moduleInstance={props.moduleInstance} updateModule={props.updateModule} />
-			</div>
 			<div className="flex-1 min-w-0">
 				<ScrollableText>
 					<span className="font-medium">{props.moduleInstance.getVersion()}</span>
 				</ScrollableText>
 			</div>
-			<AddButton
-				moduleInstance={props.moduleInstance}
-				addModule={props.addModule}
-			/>
+			{props.moduleInstance.canAdd() && (
+				<AddButton
+					moduleInstance={props.moduleInstance}
+					addModule={props.addModule}
+				/>
+			)}
 		</div>
 	);
 };
 
-interface DeleteButtonProps {
-	moduleInstance: LocalModuleInstance;
-	updateModule: (module: LocalModule | RemoteModule) => void;
-}
-const DeleteButton = (props: DeleteButtonProps) => (
-	<button
-		className="bg-transparent cursor-pointer border-0 rounded inline-flex items-center"
-		onClick={async () => {
-			if (await props.moduleInstance.delete()) {
-				props.updateModule(props.moduleInstance.getModule());
-			}
-		}}
-	>
-		<MdDelete title="Delete" className="w-4 h-4 fill-red-500" />
-	</button>
-);
-
-interface InstallButtonProps {
-	moduleInstance: LocalModuleInstance;
-	updateModule: (module: LocalModule | RemoteModule) => void;
-}
-const InstallButton = (props: InstallButtonProps) => (
-	<button
-		className="bg-transparent cursor-pointer border-0 rounded inline-flex items-center"
-		onClick={async () => {
-			if (await props.moduleInstance.install()) {
-				props.updateModule(props.moduleInstance.getModule());
-			}
-		}}
-	>
-		<MdInstallDesktop title="Install" className="w-4 h-4 fill-green-500" />
-	</button>
-);
-
-interface RemoveButtonProps {
-	moduleInstance: LocalModuleInstance;
-	removeModule: (module: LocalModule | RemoteModule) => void;
-	updateModule: (module: LocalModule | RemoteModule) => void;
-}
-const RemoveButton = (props: RemoveButtonProps) => (
-	<button
-		className="bg-transparent cursor-pointer border-0 rounded inline-flex items-center"
-		onClick={async () => {
-			if (await props.moduleInstance.remove()) {
-				const module = props.moduleInstance.getModule();
-				if (module.parent) {
-					props.updateModule(module);
-				} else {
-					props.removeModule(module);
-				}
-				props.updateModule(module);
-			}
-		}}
-	>
-		<MdDeleteForever title="Remove" className="w-4 h-4 fill-red-500" />
-	</button>
-);
-
 interface AddButtonProps {
-	moduleInstance: RemoteModuleInstance;
-	addModule: (module: LocalModule | RemoteModule) => void;
+	moduleInstance: ModuleInstance;
+	addModule: (module: Module) => void;
 }
 const AddButton = (props: AddButtonProps) => (
 	<button
@@ -288,22 +230,26 @@ const AddButton = (props: AddButtonProps) => (
 	</button>
 );
 
-interface EnaDisRadioProps {
-	moduleInstance: MI;
-	updateModule: (module: LocalModule | RemoteModule) => void;
+interface InstallButtonProps {
+	moduleInstance: ModuleInstance;
+	updateModule: (module: Module) => void;
 }
-const EnabledDisabledRad = (props: EnaDisRadioProps) => {
-	const getIsEnabled = () => props.moduleInstance.isEnabled();
-	const [isEnabled, setEnabled, updateEnabled] = useUpdate(getIsEnabled);
-
-	const enabledDisabledButtonProps = { ...props, setEnabled, updateEnabled };
-
-	return isEnabled ? EnabledButton(enabledDisabledButtonProps) : DisabledButton(enabledDisabledButtonProps);
-};
+const InstallButton = (props: InstallButtonProps) => (
+	<button
+		className="bg-transparent cursor-pointer border-0 rounded inline-flex items-center"
+		onClick={async () => {
+			if (await props.moduleInstance.install()) {
+				props.updateModule(props.moduleInstance.getModule());
+			}
+		}}
+	>
+		<MdInstallDesktop title="Install" className="w-4 h-4 fill-green-500" />
+	</button>
+);
 
 interface EnabledDisabledButtonProps {
-	moduleInstance: MI;
-	updateModule: (module: LocalModule | RemoteModule) => void;
+	moduleInstance: ModuleInstance;
+	updateModule: (module: Module) => void;
 	setEnabled: (enabled: boolean) => void;
 	updateEnabled: () => void;
 }
@@ -342,4 +288,58 @@ const DisabledButton = (props: EnabledDisabledButtonProps) => {
 			<MdOutlineCircle title="Disabled" className="w-4 h-4 fill-red-500" />
 		</button>
 	);
+};
+
+interface DeleteButtonProps {
+	moduleInstance: ModuleInstance;
+	updateModule: (module: Module) => void;
+}
+const DeleteButton = (props: DeleteButtonProps) => (
+	<button
+		className="bg-transparent cursor-pointer border-0 rounded inline-flex items-center"
+		onClick={async () => {
+			if (await props.moduleInstance.delete()) {
+				props.updateModule(props.moduleInstance.getModule());
+			}
+		}}
+	>
+		<MdDelete title="Delete" className="w-4 h-4 fill-red-500" />
+	</button>
+);
+
+interface RemoveButtonProps {
+	moduleInstance: ModuleInstance;
+	removeModule: (module: Module) => void;
+	updateModule: (module: Module) => void;
+}
+const RemoveButton = (props: RemoveButtonProps) => (
+	<button
+		className="bg-transparent cursor-pointer border-0 rounded inline-flex items-center"
+		onClick={async () => {
+			if (await props.moduleInstance.remove()) {
+				const module = props.moduleInstance.getModule();
+				if (module.parent) {
+					props.updateModule(module);
+				} else {
+					props.removeModule(module);
+				}
+				props.updateModule(module);
+			}
+		}}
+	>
+		<MdDeleteForever title="Remove" className="w-4 h-4 fill-red-500" />
+	</button>
+);
+
+interface EnaDisRadioProps {
+	moduleInstance: ModuleInstance;
+	updateModule: (module: Module) => void;
+}
+const EnabledDisabledRad = (props: EnaDisRadioProps) => {
+	const getIsEnabled = () => props.moduleInstance.isEnabled();
+	const [isEnabled, setEnabled, updateEnabled] = useUpdate(getIsEnabled);
+
+	const enabledDisabledButtonProps = { ...props, setEnabled, updateEnabled };
+
+	return isEnabled ? EnabledButton(enabledDisabledButtonProps) : DisabledButton(enabledDisabledButtonProps);
 };

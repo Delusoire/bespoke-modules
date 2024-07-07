@@ -1,7 +1,7 @@
 import { React } from "/modules/stdlib/src/expose/React.ts";
 import { _ } from "/modules/stdlib/deps.ts";
 import { t } from "../i18n.ts";
-import { LocalModuleInstance, type Metadata, ModuleIdentifier, RemoteModuleInstance } from "/hooks/module.ts";
+import { type Metadata, type Module, type ModuleIdentifier, type ModuleInstance } from "/hooks/module.ts";
 import ModuleCard from "../components/ModuleCard/index.tsx";
 import { hash, settingsButton } from "../../mod.tsx";
 import { CONFIG } from "../settings.ts";
@@ -14,7 +14,6 @@ import {
 	useSearchBar,
 } from "/modules/stdlib/lib/components/index.tsx";
 import { usePanelAPI } from "/modules/stdlib/src/webpack/CustomHooks.ts";
-import { LocalModule, RemoteModule } from "/hooks/module.ts";
 import { useModules } from "../components/ModulesProvider/index.tsx";
 
 const SortOptions = {
@@ -43,10 +42,10 @@ const getFilters = () =>
 	}), [CONFIG.showLibs]);
 
 const libTags = new Set(["lib", "npm", "internal"]);
-const isModLib = (m: MI) => new Set(m.metadata?.tags).intersection(libTags).size > 0;
-const enabledFn = { enabled: { [TreeNodeVal]: (m: MI) => "isLoaded" in m && m.isLoaded() } };
+const isModLib = (m: ModuleInstance) => new Set(m.metadata?.tags).intersection(libTags).size > 0;
+const enabledFn = { enabled: { [TreeNodeVal]: (m: ModuleInstance) => "isLoaded" in m && m.isLoaded() } };
 
-const filterFNs: RTree<(m: MI) => boolean> = {
+const filterFNs: RTree<(m: ModuleInstance) => boolean> = {
 	[TreeNodeVal]: (mi) => CONFIG.showLibs || !isModLib(mi),
 	themes: { [TreeNodeVal]: (mi) => mi.metadata?.tags.includes("theme") ?? false, ...enabledFn },
 	apps: { [TreeNodeVal]: (mi) => mi.metadata?.tags.includes("app") ?? false, ...enabledFn },
@@ -54,8 +53,6 @@ const filterFNs: RTree<(m: MI) => boolean> = {
 	snippets: { [TreeNodeVal]: (mi) => mi.metadata?.tags.includes("snippet") ?? false, ...enabledFn },
 	libs: { [TreeNodeVal]: isModLib },
 };
-
-export type MI = LocalModuleInstance | RemoteModuleInstance;
 
 const dummy_metadata: Metadata = {
 	name: "",
@@ -96,10 +93,10 @@ export default React.memo(() => {
 });
 
 interface MarketplaceContentProps {
-	modules: Record<string, Array<LocalModule | RemoteModule>>;
-	moduleToInstance: Record<string, MI>;
+	modules: Record<string, Array<Module>>;
+	moduleToInstance: Record<string, ModuleInstance>;
 	selectedModule: ModuleIdentifier | null;
-	updateModule: (module: LocalModule | RemoteModule) => void;
+	updateModule: (module: Module) => void;
 	selectModule: (moduleIdentifier: ModuleIdentifier | null) => void;
 }
 const MarketplaceContent = (props: MarketplaceContentProps) => {

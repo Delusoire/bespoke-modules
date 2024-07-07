@@ -2,18 +2,16 @@ import { React } from "/modules/stdlib/src/expose/React.ts";
 import AuthorsDiv from "./AuthorsDiv.tsx";
 import TagsDiv from "./TagsDiv.tsx";
 import {
-	LocalModule,
-	LocalModuleInstance,
 	type Metadata,
-	ModuleIdentifier,
-	RemoteModule,
+	type Module,
+	type ModuleIdentifier,
+	type ModuleInstance,
 	RootModule,
 } from "/hooks/module.ts";
 import { useUpdate } from "../../util/index.ts";
 import { Cards, SettingsToggle } from "/modules/stdlib/src/webpack/ReactComponents.ts";
 import { classnames } from "/modules/stdlib/src/webpack/ClassNames.ts";
 import { useQuery } from "/modules/stdlib/src/webpack/ReactQuery.ts";
-import { MI } from "../../pages/Marketplace.tsx";
 import { display } from "/modules/stdlib/lib/modal.tsx";
 import { RemoteMarkdown } from "../../pages/Module.tsx";
 
@@ -32,10 +30,10 @@ const fallbackImage = () => (
 );
 
 interface ModuleCardProps {
-	moduleInstance: MI;
+	moduleInstance: ModuleInstance;
 	selectModule: (moduleIdentifier: ModuleIdentifier | null) => void;
 	isSelected: boolean;
-	updateModule: (module: LocalModule | RemoteModule) => void;
+	updateModule: (module: Module) => void;
 }
 const ModuleCard = (props: ModuleCardProps) => {
 	const { moduleInstance, isSelected } = props;
@@ -90,14 +88,15 @@ const ModuleCard = (props: ModuleCardProps) => {
 	const showLoaded = enabledLocalInstance?.isInstalled() ?? false;
 
 	const isLoaded = React.useCallback(
-		() => moduleInstance instanceof LocalModuleInstance && moduleInstance.isLoaded(),
+		() => moduleInstance.isLoaded(),
 		[moduleInstance],
 	);
 
 	const [loaded, setLoaded, updateLoaded] = useUpdate(isLoaded);
 
 	const onToggleLoaded = async (checked: boolean) => {
-		if (!(moduleInstance instanceof LocalModuleInstance)) {
+		// TODO: rewrite this
+		if (!moduleInstance.canLoad() || !moduleInstance.canUnload()) {
 			return;
 		}
 		setLoaded(checked);

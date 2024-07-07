@@ -1,24 +1,22 @@
 import { React } from "/modules/stdlib/src/expose/React.ts";
 import { _ } from "/modules/stdlib/deps.ts";
-import { Module, ModuleIdentifier, RootModule } from "/hooks/module.ts";
-import { LocalModule, RemoteModule } from "/hooks/module.ts";
-import { MI } from "/modules/Delusoire.marketplace/src/pages/Marketplace.tsx";
+import { type Module, type ModuleIdentifier, type ModuleInstance, RootModule } from "/hooks/module.ts";
 
 const getModulesByIdentifier = () => {
    const modules = Array.from(RootModule.INSTANCE.getAllDescendantsByBreadth());
    const modulesByIdentifier = Object.groupBy(modules, (module) => module.getIdentifier());
-   return modulesByIdentifier as Record<ModuleIdentifier, Array<LocalModule | RemoteModule>>;
+   return modulesByIdentifier as Record<ModuleIdentifier, Array<Module>>;
 };
 
-const getModuleToInst = (modules: Record<ModuleIdentifier, Array<Module<Module<any>>>>) =>
+const getModuleToInst = (modules: Record<ModuleIdentifier, Array<Module>>) =>
    Object.fromEntries(
       Object.entries(modules).flatMap(([identifier, modules]) => {
-         let selected: MI | null = null;
+         let selected: ModuleInstance | null = null;
 
          for (const module of modules) {
             const version = module.getEnabledVersion() || module.instances.keys().next().value;
             if (version) {
-               selected = module.instances.get(version) as MI;
+               selected = module.instances.get(version) as ModuleInstance;
                break;
             }
          }
@@ -37,7 +35,7 @@ const _useModules = () => {
    const setModulesForIdentifier = React.useCallback(
       (
          identifier: ModuleIdentifier,
-         f: (_modules: Array<LocalModule | RemoteModule>) => Array<LocalModule | RemoteModule>,
+         f: (_modules: Array<Module>) => Array<Module>,
       ) => {
          setModules((modules) => {
             modules[identifier] = Array.from(f(modules[identifier] ?? []));
@@ -48,7 +46,7 @@ const _useModules = () => {
       [],
    );
 
-   const addModule = React.useCallback((module: LocalModule | RemoteModule) => {
+   const addModule = React.useCallback((module: Module) => {
       setModulesForIdentifier(module.getIdentifier(), (modules) => {
          const i = modules.indexOf(module);
          if (!~i) {
@@ -58,7 +56,7 @@ const _useModules = () => {
       });
    }, []);
 
-   const removeModule = React.useCallback((module: LocalModule | RemoteModule) => {
+   const removeModule = React.useCallback((module: Module) => {
       setModulesForIdentifier(module.getIdentifier(), (modules) => {
          const i = modules.indexOf(module);
          if (~i) {
@@ -68,12 +66,12 @@ const _useModules = () => {
       });
    }, []);
 
-   const updateModule = React.useCallback((module: LocalModule | RemoteModule) => {
+   const updateModule = React.useCallback((module: Module) => {
       setModulesForIdentifier(module.getIdentifier(), (modules) => modules);
    }, []);
 
    const [moduleToInstance, selectInstance] = React.useReducer(
-      (moduleToInst: Record<ModuleIdentifier, MI>, moduleInstance: MI) => ({
+      (moduleToInst: Record<ModuleIdentifier, ModuleInstance>, moduleInstance: ModuleInstance) => ({
          ...moduleToInst,
          [moduleInstance.getModuleIdentifier()]: moduleInstance,
       }),
@@ -99,7 +97,7 @@ const _useModules = () => {
 };
 
 export const ModulesContext = React.createContext<ReturnType<typeof _useModules> | null>(null);
-export const ModulesContextProvider = ({ children }: { children: React.ReactNode; }) => {
+export const ModulesContextProvider = ({ children }: { children?: React.ReactNode }) => {
    const value = _useModules();
    return <ModulesContext.Provider value={value}>{children}</ModulesContext.Provider>;
 };

@@ -15,7 +15,7 @@ export let logger: Console;
 export let settings: Settings;
 export let settingsButton: React.JSX.Element;
 
-export let hash: { state: string; event: string; } | undefined;
+export let hash: { state: string; event: string } | undefined;
 
 export let module: Module;
 
