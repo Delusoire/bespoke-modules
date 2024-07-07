@@ -95,13 +95,22 @@ const ModuleCard = (props: ModuleCardProps) => {
 	const [loaded, setLoaded, updateLoaded] = useUpdate(isLoaded);
 
 	const onToggleLoaded = async (checked: boolean) => {
-		// TODO: rewrite this
-		if (!moduleInstance.canLoad() || !moduleInstance.canUnload()) {
-			return;
+		let hasChanged: boolean | undefined;
+		if (checked) {
+			if (moduleInstance.canLoad()) {
+				setLoaded(true);
+				hasChanged = await moduleInstance.load();
+
+			}
+		} else {
+			if (moduleInstance.canUnload()) {
+				setLoaded(false);
+				hasChanged = await moduleInstance.unload();
+
+			}
 		}
-		setLoaded(checked);
-		const hasChanged = checked ? moduleInstance.load() : moduleInstance.unload();
-		if (await hasChanged) {
+
+		if (hasChanged) {
 			props.updateModule(module);
 		} else {
 			updateLoaded();
