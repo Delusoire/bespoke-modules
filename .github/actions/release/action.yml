@@ -35,7 +35,10 @@ runs:
 
       -  name: Package provider
          shell: bash
-         run: 7z a -bb0 "dist/${{ github.repository_owner }}.zip" README.md metadata.json vault.json
+         run: |
+            set -e
+            cp metadata.json "dist/${{ github.repository_owner }}.metadata.json"
+            7z a -bb0 "dist/${{ github.repository_owner }}.zip" README.md metadata.json vault.json
 
       -  name: Release
          uses: softprops/action-gh-release@v2
