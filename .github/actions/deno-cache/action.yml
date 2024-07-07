@@ -10,7 +10,7 @@ runs:
          id: cache-deno
          uses: actions/cache@v4.0.2
          with:
-            key: ${{ hashFiles("./deno.lock") }}
+            key: ${{ hashFiles('./deno.lock') }}
             path: ${{ env.DENO_DIR }}
 
       -  name: Restore Deno dependencies
