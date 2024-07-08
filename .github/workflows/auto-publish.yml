@@ -29,4 +29,5 @@ jobs:
                GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
          -  name: Release
+            if: ${{ hashFiles('dist/') != '' }}
             uses: ./.github/actions/release
