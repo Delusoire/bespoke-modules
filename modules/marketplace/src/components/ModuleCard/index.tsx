@@ -1,6 +1,8 @@
 import { React } from "/modules/stdlib/src/expose/React.ts";
+import { MdDeleteForever } from "https://esm.sh/react-icons/md";
 import AuthorsDiv from "./AuthorsDiv.tsx";
 import TagsDiv from "./TagsDiv.tsx";
+import Button from "../Button/index.tsx";
 import {
 	type Metadata,
 	type Module,
@@ -87,10 +89,7 @@ const ModuleCard = (props: ModuleCardProps) => {
 	const enabledLocalInstance = localModule?.getEnabledInstance();
 	const showLoaded = enabledLocalInstance?.isInstalled() ?? false;
 
-	const isLoaded = React.useCallback(
-		() => moduleInstance.isLoaded(),
-		[moduleInstance],
-	);
+	const isLoaded = React.useCallback(() => moduleInstance.isLoaded(), [moduleInstance]);
 
 	const [loaded, setLoaded, updateLoaded] = useUpdate(isLoaded);
 
@@ -100,13 +99,11 @@ const ModuleCard = (props: ModuleCardProps) => {
 			if (moduleInstance.canLoad()) {
 				setLoaded(true);
 				hasChanged = await moduleInstance.load();
-
 			}
 		} else {
 			if (moduleInstance.canUnload()) {
 				setLoaded(false);
 				hasChanged = await moduleInstance.unload();
-
 			}
 		}
 
@@ -114,6 +111,31 @@ const ModuleCard = (props: ModuleCardProps) => {
 			props.updateModule(module);
 		} else {
 			updateLoaded();
+		}
+	};
+
+	const isEnabled = React.useCallback(() => moduleInstance.isEnabled(), [moduleInstance]);
+
+	const [enabled, setEnabled, updateEnabled] = useUpdate(isEnabled);
+
+	const onToggleEnable = async (checked: boolean) => {
+		let hasChanged: boolean | undefined;
+		if (checked) {
+			if (module.canEnable(moduleInstance)) {
+				setEnabled(true);
+				hasChanged = await module.enable(moduleInstance);
+			}
+		} else {
+			if (module.canDisable(moduleInstance)) {
+				setEnabled(false);
+				hasChanged = await module.disable();
+			}
+		}
+
+		if (hasChanged) {
+			props.updateModule(module);
+		} else {
+			updateEnabled();
 		}
 	};
 
@@ -127,6 +149,26 @@ const ModuleCard = (props: ModuleCardProps) => {
 					onSelected={onToggleLoaded}
 				/>
 			)}
+			<Button
+				label={"HarryTest"}
+				onClick={async (e) => {
+					e.preventDefault();
+
+					try {
+						await onToggleEnable(false);
+						//await props.moduleInstance.delete();
+						//props.updateModule(module);
+
+						//await props.moduleInstance.remove();
+						//props.updateModule(module);
+					} catch (error) {
+						console.error("An error occurred:", error);
+					}
+				}}
+			>
+				<MdDeleteForever />
+				{"HarryTest"}
+			</Button>
 		</>
 	);
 
@@ -215,15 +257,9 @@ const ModuleCardContent = (props: ModuleCardContentProps) => {
 						{description || "No description for this package"}
 					</p>
 					<div className="text-[var(--text-subdued)] whitespace-normal main-type-mestoBold">
-						<TagsDiv
-							tags={tags}
-							showTags={showTags}
-							importantTags={importantTags}
-						/>
+						<TagsDiv tags={tags} showTags={showTags} importantTags={importantTags} />
 					</div>
-					<div className="flex justify-between">
-						{children}
-					</div>
+					<div className="flex justify-between">{children}</div>
 				</div>
 			</div>
 		</div>
