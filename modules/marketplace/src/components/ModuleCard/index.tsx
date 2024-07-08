@@ -139,6 +139,31 @@ const ModuleCard = (props: ModuleCardProps) => {
 		}
 	};
 
+	const isInstalled = React.useCallback(() => moduleInstance.isInstalled(), [moduleInstance]);
+
+	const [installed, setInstalled, updateInstalled] = useUpdate(isInstalled);
+
+	const onToggleInstall = async (checked: boolean) => {
+		let success: ModuleInstance | null = null;
+		if (checked) {
+			if (moduleInstance.canInstallRemove()) {
+				setInstalled(true);
+				success = await moduleInstance.install();
+			}
+		} else {
+			if (moduleInstance.canDelete()) {
+				setInstalled(false);
+				success = await moduleInstance.delete();
+			}
+		}
+
+		if (success) {
+			props.updateModule(module);
+		} else {
+			updateInstalled();
+		}
+	};
+
 	// TODO: implement (add, install, enable) and (disable, delete, remove) buttons
 	const buttons = (
 		<>
@@ -156,6 +181,7 @@ const ModuleCard = (props: ModuleCardProps) => {
 
 					try {
 						await onToggleEnable(false);
+						await onToggleInstall(false);
 						//await props.moduleInstance.delete();
 						//props.updateModule(module);
 
