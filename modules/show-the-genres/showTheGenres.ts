@@ -33,7 +33,7 @@ nowPlayingGenreContainerEl.style.gridArea = "genres";
 })();
 
 eventBus.Player.song_changed.subscribe((state) => {
-	nowPlayingGenreContainerEl.uri = state.item?.uri;
+	nowPlayingGenreContainerEl.uri = state?.item?.uri;
 });
 
 const getArtistsGenresOrRelated = async (artistsUris: string[]) => {
