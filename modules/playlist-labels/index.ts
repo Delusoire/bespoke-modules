@@ -1,6 +1,6 @@
 import type { Module, Transformer } from "/hooks/index.ts";
 
-export async function loadMixins(tr: Transformer) {
+export async function mixin(tr: Transformer) {
    return await (await import("./mix.ts")).default(tr);
 }
 
