@@ -5,7 +5,7 @@ export type QueryStatus = "error" | "success" | "pending";
 
 interface StatusProps {
 	status: QueryStatus;
-	error: Error;
+	error: Error | null;
 	logger: Console;
 }
 
@@ -21,7 +21,7 @@ export const useStatus = ({ status, error, logger }: StatusProps) => {
 			);
 		}
 		case "error": {
-			logger.error(error);
+			logger.error(error!);
 			return (
 				<Status
 					icon="error"

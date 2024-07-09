@@ -16,7 +16,10 @@ import {
 	TracklistColumnsContextProvider,
 	TracklistRow,
 } from "/modules/stdlib/src/webpack/ReactComponents.ts";
-import { getPlayContext, useTrackListColumns } from "/modules/stdlib/src/webpack/CustomHooks.ts";
+import {
+	getPlayContext,
+	useTrackListColumns,
+} from "/modules/stdlib/src/webpack/CustomHooks.ts";
 
 const DropdownOptions = {
 	"Past Month": () => "Past Month",
@@ -34,24 +37,29 @@ const allowedDropTypes = new Array<never>();
 export const fetchTopTracks = (timeRange: SpotifyTimeRange) =>
 	spotifyApi.currentUser.topItems("tracks", timeRange, 50, 0);
 
-const TrackRow = React.memo(({ track, index }: { track: Track; index: number; }) => {
-	const { usePlayContextItem } = getPlayContext({ uri: track.uri }, { featureIdentifier: "queue" });
+const TrackRow = React.memo(
+	({ track, index }: { track: Track; index: number }) => {
+		const { usePlayContextItem } = getPlayContext({ uri: track.uri }, {
+			featureIdentifier: "queue",
+		});
 
-	return (
-		<TracklistRow
-			index={index}
-			uri={track.uri}
-			name={track.name}
-			artists={track.artists}
-			imgUrl={track.album.images.at(-1)?.url ?? DEFAULT_TRACK_IMG}
-			isExplicit={track.explicit}
-			albumOrShow={track.album}
-			duration_ms={track.duration_ms}
-			usePlayContextItem={usePlayContextItem}
-			allowedDropTypes={allowedDropTypes}
-		/>
-	);
-});
+		return (
+			<TracklistRow
+				index={index}
+				uri={track.uri}
+				name={track.name}
+				artists={track.artists}
+				imgUrl={track.album.images.at(-1)?.url ?? DEFAULT_TRACK_IMG}
+				isExplicit={track.explicit}
+				albumOrShow={track.album}
+				duration_ms={track.duration_ms}
+				usePlayContextItem={usePlayContextItem}
+				allowedDropTypes={allowedDropTypes}
+			/>
+		);
+	},
+	(prev, next) => prev.track.uri === next.track.uri,
+);
 
 interface TracksPageContentProps {
 	topTracks: any;
@@ -67,20 +75,23 @@ const TracksPageContent = ({ topTracks }: TracksPageContentProps) => {
 	// });
 
 	const itemsCache = {
-		getItems: (offset, limit) => topTracks.slice(offset, offset + limit),
+		getItems: (offset: number, limit: number) =>
+			topTracks.slice(offset, offset + limit),
 		nrValidItems: topTracks.length,
-		invalidateCache: () => { },
-		cacheAll: () => { },
+		invalidateCache: () => {},
+		cacheAll: () => {},
 		hasItems: true,
 	};
 
 	return (
 		<Tracklist
-			resolveItem={(track) => ({ uri: track.uri })}
+			resolveItem={(track: any) => ({ uri: track.uri })}
 			itemsCache={itemsCache}
 			hasHeaderRow={true}
 			columns={columns}
-			renderRow={(track: Track, index: number) => <TrackRow track={track} index={index} />}
+			renderRow={(track: Track, index: number) => (
+				<TrackRow track={track} index={index} key={index} />
+			)}
 			ariaLabel="Top Tracks"
 			isCompactMode={false}
 			columnPersistenceKey="stats-top-tracks"
@@ -113,13 +124,19 @@ const TracksPage = () => {
 			headerLeft={status === "success" && (
 				<CreatePlaylistButton
 					name={`Top Songs - ${activeOption}`}
-					tracks={topTracks.map((track) => track.uri)}
+					tracks={topTracks!.map((track) => track.uri)}
 				/>
 			)}
-			headerRight={[dropdown, status !== "pending" && <RefreshButton refresh={refetch} />, settingsButton]}
+			headerRight={[
+				dropdown,
+				status !== "pending" && <RefreshButton refresh={refetch} />,
+				settingsButton,
+			]}
 		>
 			{Status ?? (
-				<TracklistColumnsContextProvider columns={["INDEX", "TITLE_AND_ARTIST", "ALBUM", "DURATION"]}>
+				<TracklistColumnsContextProvider
+					columns={["INDEX", "TITLE_AND_ARTIST", "ALBUM", "DURATION"]}
+				>
 					<TracksPageContent topTracks={topTracks} />
 				</TracklistColumnsContextProvider>
 			)}
