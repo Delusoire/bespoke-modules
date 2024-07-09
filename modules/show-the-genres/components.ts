@@ -1,5 +1,9 @@
 import { css, html, LitElement, PropertyValues } from "https://esm.sh/lit";
-import { customElement, property, state } from "https://esm.sh/lit/decorators.js";
+import {
+	customElement,
+	property,
+	state,
+} from "https://esm.sh/lit/decorators.js";
 import { join } from "https://esm.sh/lit/directives/join.js";
 import { map } from "https://esm.sh/lit/directives/map.js";
 
@@ -32,7 +36,9 @@ class _GenreLink extends LitElement {
 	}
 
 	protected render() {
-		return html`<a href="#" @click=${this.openPlaylistsSearch}>${_.startCase(this.genre)}</a>`;
+		return html`<a href="#" @click=${this.openPlaylistsSearch}>${
+			_.startCase(this.genre)
+		}</a>`;
 	}
 }
 
@@ -51,16 +57,19 @@ class _ArtistGenreContainer extends LitElement {
 	accessor isSmall = true;
 
 	@property()
-	accessor fetchGenres = () => Promise.resolve([]);
+	accessor fetchGenres = (_uri: string) => Promise.resolve([] as string[]);
 
 	protected async willUpdate(changedProperties: PropertyValues<this>) {
 		if (changedProperties.has("uri") && this.uri) {
-			this.genres = await this.fetchGenres();
+			this.genres = await this.fetchGenres(this.uri);
 		}
 	}
 
 	protected render() {
-		const artistGenreLinks = map(this.genres, (genre) => html`<genre-link genre=${genre} />`);
+		const artistGenreLinks = map(
+			this.genres,
+			(genre) => html`<genre-link genre=${genre} />`,
+		);
 		const divider = () => html`<span>, </span>`;
 
 		return html`<style>
@@ -69,7 +78,9 @@ class _ArtistGenreContainer extends LitElement {
                 }
             </style>
             <div className="main-entityHeader-detailsText genre-container">
-                ${this.name && html`<span>${this.name} : </span>`} ${join(artistGenreLinks, divider)}
+                ${this.name && html`<span>${this.name} : </span>`} ${
+			join(artistGenreLinks, divider)
+		}
             </div>`;
 	}
 }
