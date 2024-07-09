@@ -1,7 +1,7 @@
 import { _ } from "/modules/stdlib/deps.ts";
 import { useLivePlaylistItems } from "/modules/Delusoire.library-db/mod.ts";
 import { createIconComponent } from "/modules/stdlib/lib/createIconComponent.tsx";
-import { useLiveQuery } from "/modules/Delusoire.dexie-react-hooks/index.ts";
+import { useLiveQuery } from "/modules/Delusoire.dexie-react-hooks/mod.ts";
 import { db } from "/modules/Delusoire.library-db/lib/db.ts";
 import type { Module } from "/hooks/module.ts";
 import { React } from "/modules/stdlib/src/expose/React.ts";
@@ -16,11 +16,13 @@ import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
 import { classnames } from "/modules/stdlib/src/webpack/ClassNames.ts";
 import { UI } from "/modules/stdlib/src/webpack/ComponentLibrary.ts";
 
-const PlaylistLabels = React.memo(({ uri }: { uri: string; }) => {
+const PlaylistLabels = React.memo(({ uri }: { uri: string }) => {
 	const playlists = useLivePlaylistItems(uri);
 	return (
 		<div className="playlist-labels-labels-container">
-			{playlists.map((playlist) => <PlaylistLabel key={playlist} uri={uri} playlistUri={playlist} />)}
+			{playlists.map((playlist) => (
+				<PlaylistLabel key={playlist} uri={uri} playlistUri={playlist} />
+			))}
 		</div>
 	);
 });
@@ -28,7 +30,9 @@ const PlaylistLabels = React.memo(({ uri }: { uri: string; }) => {
 const History = Platform.getHistory();
 const PlaylistAPI = Platform.getPlaylistAPI();
 
-const PlaylistLabel = ({ uri, playlistUri }: { uri: string; playlistUri: string; }) => {
+const PlaylistLabel = (
+	{ uri, playlistUri }: { uri: string; playlistUri: string },
+) => {
 	const playlist = useLiveQuery(async () => {
 		const t = await db.playlists.get(playlistUri);
 		return t;
@@ -103,13 +107,24 @@ const PlaylistLabelsWrapper = React.memo(() => {
 const COLUMN = "Playlist labels";
 
 const Row = React.memo(({ data, index, renderRow }) => {
-	return React.createElement(ctx().Provider, { value: data }, renderRow(data, index));
+	return React.createElement(
+		ctx().Provider,
+		{ value: data },
+		renderRow(data, index),
+	);
 });
 
 globalThis.__patchTracklistWrapperProps = (props) => {
 	const p = Object.assign({}, props);
 	p.renderRow = React.useCallback(
-		(data, index) => <Row key={index} data={data} index={index} renderRow={props.renderRow} />,
+		(data, index) => (
+			<Row
+				key={index}
+				data={data}
+				index={index}
+				renderRow={props.renderRow}
+			/>
+		),
 		[true, props.renderRow],
 	);
 	return p;
@@ -125,10 +140,15 @@ globalThis.__patchRenderTracklistRowColumn = (column) => {
 globalThis.__patchTracklistColumnHeaderContextMenu = (column) => {
 	if (column === COLUMN) {
 		return (props) => (
-			<button className={classnames(MAP.tracklist.column_header, props.className)}>
+			<button
+				className={classnames(MAP.tracklist.column_header, props.className)}
+			>
 				<UI.Text
 					variant="bodySmall"
-					className={classnames("standalone-ellipsis-one-line", props.className)}
+					className={classnames(
+						"standalone-ellipsis-one-line",
+						props.className,
+					)}
 				>
 					Playlist labels
 				</UI.Text>
@@ -141,5 +161,8 @@ globalThis.__patchTracklistColumnHeaderContextMenu = (column) => {
 
 globalThis.__patchTracklistColumns = (columns) => {
 	const i = -1;
-	return React.useMemo(() => [...columns.slice(0, i), COLUMN, ...columns.slice(i)], [true, columns]);
+	return React.useMemo(
+		() => [...columns.slice(0, i), COLUMN, ...columns.slice(i)],
+		[true, columns],
+	);
 };
