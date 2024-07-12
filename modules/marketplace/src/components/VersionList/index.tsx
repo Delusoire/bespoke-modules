@@ -2,8 +2,15 @@ import { classnames } from "/modules/stdlib/src/webpack/ClassNames.ts";
 import { useUpdate } from "../../util/index.ts";
 import { Module, ModuleInstance } from "/hooks/module.ts";
 import { React } from "/modules/stdlib/src/expose/React.ts";
-import { useLocation, usePanelAPI } from "/modules/stdlib/src/webpack/CustomHooks.ts";
-import { PanelContent, PanelHeader, PanelSkeleton } from "/modules/stdlib/src/webpack/ReactComponents.ts";
+import {
+	useLocation,
+	usePanelAPI,
+} from "/modules/stdlib/src/webpack/CustomHooks.ts";
+import {
+	PanelContent,
+	PanelHeader,
+	PanelSkeleton,
+} from "/modules/stdlib/src/webpack/ReactComponents.ts";
 import { ScrollableText } from "/modules/stdlib/src/webpack/ReactComponents.js";
 import {
 	MdCircle,
@@ -16,7 +23,6 @@ import {
 import { UI } from "/modules/stdlib/src/webpack/ComponentLibrary.ts";
 import { useModules } from "../ModulesProvider/index.tsx";
 import { RootModule } from "/hooks/module.js";
-import { module } from "/modules/Delusoire.marketplace/mod.js";
 
 export default function () {
 	const location = useLocation();
@@ -116,7 +122,10 @@ const VirtualModuleSection = (props: ModuleSectionProps) => {
 	return (
 		<div className="flex flex-col bg-[var(--background-tinted-base)] rounded-lg px-4 pt-4 gap-2">
 			<UI.Text as="div" variant="bodyMediumBold" semanticColor="textBase">
-				<div className="overflow-x-auto whitespace-nowrap" style={{ scrollbarWidth: "none" }}>
+				<div
+					className="overflow-x-auto whitespace-nowrap"
+					style={{ scrollbarWidth: "none" }}
+				>
 					{cutPrefix(heritage, "▶")}
 				</div>
 			</UI.Text>
@@ -157,11 +166,16 @@ const RealModuleInstance = (props: ModuleInstanceProps) => {
 			)}
 		>
 			<div className="flex items-center">
-				<EnabledDisabledRad moduleInstance={props.moduleInstance} updateModule={props.updateModule} />
+				<EnabledDisabledRad
+					moduleInstance={props.moduleInstance}
+					updateModule={props.updateModule}
+				/>
 			</div>
 			<div className="flex-1 min-w-0">
 				<ScrollableText>
-					<span className="font-medium">{props.moduleInstance.getVersion()}</span>
+					<span className="font-medium">
+						{props.moduleInstance.getVersion()}
+					</span>
 				</ScrollableText>
 			</div>
 			{moduleInstance.canAdd() && (
@@ -172,7 +186,10 @@ const RealModuleInstance = (props: ModuleInstanceProps) => {
 			)}
 			{moduleInstance.canInstallRemove() && (
 				<>
-					<InstallButton moduleInstance={props.moduleInstance} updateModule={props.updateModule} />
+					<InstallButton
+						moduleInstance={props.moduleInstance}
+						updateModule={props.updateModule}
+					/>
 					<RemoveButton
 						moduleInstance={props.moduleInstance}
 						removeModule={props.removeModule}
@@ -181,7 +198,10 @@ const RealModuleInstance = (props: ModuleInstanceProps) => {
 				</>
 			)}
 			{moduleInstance.canDelete() && (
-				<DeleteButton moduleInstance={props.moduleInstance} updateModule={props.updateModule} />
+				<DeleteButton
+					moduleInstance={props.moduleInstance}
+					updateModule={props.updateModule}
+				/>
 			)}
 		</div>
 	);
@@ -199,7 +219,9 @@ const VirtualModuleInstance = (props: ModuleInstanceProps) => {
 		>
 			<div className="flex-1 min-w-0">
 				<ScrollableText>
-					<span className="font-medium">{props.moduleInstance.getVersion()}</span>
+					<span className="font-medium">
+						{props.moduleInstance.getVersion()}
+					</span>
 				</ScrollableText>
 			</div>
 			{props.moduleInstance.canAdd() && (
@@ -254,23 +276,6 @@ interface EnabledDisabledButtonProps {
 	updateEnabled: () => void;
 }
 
-const EnabledButton = (props: EnabledDisabledButtonProps) => {
-	return (
-		<button
-			className="bg-transparent cursor-pointer border-0 rounded inline-flex items-center"
-			onClick={async () => {
-				props.setEnabled(false);
-				if (await props.moduleInstance.getModule().disable()) {
-					props.updateModule(props.moduleInstance.getModule());
-					props.updateEnabled();
-				}
-			}}
-		>
-			<MdCircle title="Enabled" className="w-4 h-4 fill-green-500" />
-		</button>
-	);
-};
-
 const DisabledButton = (props: EnabledDisabledButtonProps) => {
 	return (
 		<button
@@ -278,7 +283,7 @@ const DisabledButton = (props: EnabledDisabledButtonProps) => {
 			onClick={async () => {
 				props.setEnabled(true);
 				const moduleInstance = props.moduleInstance;
-				const module = moduleInstance.getModule() as any;
+				const module = moduleInstance.getModule();
 				if (await module.enable(moduleInstance)) {
 					props.updateModule(module);
 					props.updateEnabled();
@@ -286,6 +291,25 @@ const DisabledButton = (props: EnabledDisabledButtonProps) => {
 			}}
 		>
 			<MdOutlineCircle title="Disabled" className="w-4 h-4 fill-red-500" />
+		</button>
+	);
+};
+
+const EnabledButton = (props: EnabledDisabledButtonProps) => {
+	return (
+		<button
+			className="bg-transparent cursor-pointer border-0 rounded inline-flex items-center"
+			onClick={async () => {
+				props.setEnabled(false);
+				const moduleInstance = props.moduleInstance;
+				const module = moduleInstance.getModule();
+				if (await module.disable()) {
+					props.updateModule(module);
+					props.updateEnabled();
+				}
+			}}
+		>
+			<MdCircle title="Enabled" className="w-4 h-4 fill-green-500" />
 		</button>
 	);
 };
@@ -341,5 +365,7 @@ const EnabledDisabledRad = (props: EnaDisRadioProps) => {
 
 	const enabledDisabledButtonProps = { ...props, setEnabled, updateEnabled };
 
-	return isEnabled ? EnabledButton(enabledDisabledButtonProps) : DisabledButton(enabledDisabledButtonProps);
+	return isEnabled
+		? EnabledButton(enabledDisabledButtonProps)
+		: DisabledButton(enabledDisabledButtonProps);
 };
