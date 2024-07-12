@@ -74,7 +74,9 @@ export default React.memo(() => {
 
 		updateModules,
 		updateModule,
+		removeModule,
 		selectModule,
+		addModule,
 	} = useModules();
 
 	React.useEffect(() => {
@@ -87,7 +89,9 @@ export default React.memo(() => {
 			moduleToInstance={moduleToInstance}
 			selectedModule={selectedModule}
 			updateModule={updateModule}
+			removeModule={removeModule}
 			selectModule={selectModule}
+			addModule={addModule}
 		/>
 	);
 });
@@ -97,7 +101,9 @@ interface MarketplaceContentProps {
 	moduleToInstance: Record<string, ModuleInstance>;
 	selectedModule: ModuleIdentifier | null;
 	updateModule: (module: Module) => void;
+	removeModule: (module: Module) => void;
 	selectModule: (moduleIdentifier: ModuleIdentifier | null) => void;
+	addModule: (module: Module) => void;
 }
 const MarketplaceContent = (props: MarketplaceContentProps) => {
 	const [searchbar, search] = useSearchBar({
@@ -114,7 +120,7 @@ const MarketplaceContent = (props: MarketplaceContentProps) => {
 		selectedFilters.map(({ key }) => getProp(filterFNs, key) as typeof filterFNs);
 	const selectedFilterFNs = React.useMemo(getSelectedFilterFNs, [selectedFilters]);
 
-	const { modules, updateModule, moduleToInstance, selectedModule, selectModule } = props;
+	const { modules, updateModule, addModule, removeModule, moduleToInstance, selectedModule, selectModule } = props;
 
 	const instances = React.useMemo(() => Array.from(Object.values(moduleToInstance)), [moduleToInstance]);
 
@@ -163,6 +169,8 @@ const MarketplaceContent = (props: MarketplaceContentProps) => {
 								isSelected={isSelected}
 								selectModule={selectModule}
 								updateModule={updateModule}
+								removeModule={removeModule}
+								addModule={addModule}
 								// @ts-ignore ensures rerender
 								modules={modules[moduleIdentifier]}
 							/>

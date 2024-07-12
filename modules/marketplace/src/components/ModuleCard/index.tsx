@@ -1,8 +1,7 @@
 import { React } from "/modules/stdlib/src/expose/React.ts";
-import { MdDeleteForever } from "https://esm.sh/react-icons/md";
+import { MdDeleteSweep, MdAddCircleOutline } from "https://esm.sh/react-icons/md";
 import AuthorsDiv from "./AuthorsDiv.tsx";
 import TagsDiv from "./TagsDiv.tsx";
-import Button from "../Button/index.tsx";
 import {
 	type Metadata,
 	type Module,
@@ -35,7 +34,9 @@ interface ModuleCardProps {
 	moduleInstance: ModuleInstance;
 	selectModule: (moduleIdentifier: ModuleIdentifier | null) => void;
 	isSelected: boolean;
+	removeModule: (module: Module) => void;
 	updateModule: (module: Module) => void;
+	addModule: (module: Module) => void;
 }
 const ModuleCard = (props: ModuleCardProps) => {
 	const { moduleInstance, isSelected } = props;
@@ -116,54 +117,92 @@ const ModuleCard = (props: ModuleCardProps) => {
 
 	const isEnabled = React.useCallback(() => moduleInstance.isEnabled(), [moduleInstance]);
 
-	const [enabled, setEnabled, updateEnabled] = useUpdate(isEnabled);
+	const isInstalled = React.useCallback(() => moduleInstance.isInstalled(), [moduleInstance]);
 
-	const onToggleEnable = async (checked: boolean) => {
+	const isAdded = React.useCallback(() => moduleInstance.isLocal(), [moduleInstance]);
+
+	const enableModule = async (checked: boolean) => {
 		let hasChanged: boolean | undefined;
 		if (checked) {
 			if (module.canEnable(moduleInstance)) {
-				setEnabled(true);
 				hasChanged = await module.enable(moduleInstance);
 			}
 		} else {
 			if (module.canDisable(moduleInstance)) {
-				setEnabled(false);
 				hasChanged = await module.disable();
 			}
 		}
 
 		if (hasChanged) {
-			props.updateModule(module);
-		} else {
-			updateEnabled();
+			props.updateModule(moduleInstance.getModule());
 		}
 	};
 
-	const isInstalled = React.useCallback(() => moduleInstance.isInstalled(), [moduleInstance]);
-
-	const [installed, setInstalled, updateInstalled] = useUpdate(isInstalled);
-
-	const onToggleInstall = async (checked: boolean) => {
+	const installModule = async (checked: boolean) => {
 		let success: ModuleInstance | null = null;
 		if (checked) {
 			if (moduleInstance.canInstallRemove()) {
-				setInstalled(true);
 				success = await moduleInstance.install();
 			}
 		} else {
 			if (moduleInstance.canDelete()) {
-				setInstalled(false);
 				success = await moduleInstance.delete();
 			}
 		}
 
 		if (success) {
-			props.updateModule(module);
-		} else {
-			updateInstalled();
+			props.updateModule(moduleInstance.getModule());
 		}
 	};
 
+	const addModuleLocally = async (checked: boolean) => {
+		let success: ModuleInstance | null = null;
+		if (checked) {
+			if (moduleInstance.canAdd()) {
+				success = await moduleInstance.add();
+
+				if (success) {
+					props.addModule(success.getModule());
+				}
+			}
+		} else {
+			if (moduleInstance.canInstallRemove()) {
+				success = await moduleInstance.remove();
+
+				if (success) {
+					const temp_module = props.moduleInstance.getModule();
+					if (temp_module.parent) {
+						props.updateModule(temp_module);
+					} else {
+						props.removeModule(temp_module);
+					}
+				}
+			}
+		}
+		if (success) {
+			props.updateModule(success.getModule());
+		}
+	};
+
+	const full_install = async (install: boolean) => {
+		if (install) {
+			await addModuleLocally(install);
+			await installModule(install);
+			await enableModule(install);
+		} else {
+			await enableModule(install);
+			await installModule(install);
+			await addModuleLocally(install);
+		}
+
+		props.updateModule(moduleInstance.getModule());
+	};
+
+	const [fullInstallable, setFullInstallable, updateFullInstallable] = useUpdate(() => 
+		isEnabled() && isInstalled() && isAdded()
+	  );
+
+	
 	// TODO: implement (add, install, enable) and (disable, delete, remove) buttons
 	const buttons = (
 		<>
@@ -174,27 +213,27 @@ const ModuleCard = (props: ModuleCardProps) => {
 					onSelected={onToggleLoaded}
 				/>
 			)}
-			<Button
-				label={"HarryTest"}
-				onClick={async (e) => {
-					e.preventDefault();
+			<button
+				className={`cursor-pointer border-0 rounded inline-flex items-center justify-between ${
+					fullInstallable ? "bg-gray-500" : "bg-green-500"
+				} text-white px-4 py-2`}
+				onClick={async () => {
 
-					try {
-						await onToggleEnable(false);
-						await onToggleInstall(false);
-						//await props.moduleInstance.delete();
-						//props.updateModule(module);
-
-						//await props.moduleInstance.remove();
-						//props.updateModule(module);
-					} catch (error) {
-						console.error("An error occurred:", error);
-					}
+					await full_install(!fullInstallable);
 				}}
 			>
-				<MdDeleteForever />
-				{"HarryTest"}
-			</Button>
+				{fullInstallable ? (
+					<>
+						<MdDeleteSweep />
+						{"Full Uninstall"}
+					</>
+				) : (
+					<>
+						<MdAddCircleOutline />
+						{"Full Install"}
+					</>
+				)}
+			</button>
 		</>
 	);
 
