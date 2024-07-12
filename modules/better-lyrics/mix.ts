@@ -15,7 +15,7 @@ export default function (transformer: Transformer) {
 
 		str = str.replace(
 			/([a-zA-Z_\$][\w\$]*)\??\.hasLyrics\)return null;/,
-			'$1?.hasLyrics){$1??={};$1.hasLyrics=true;$1.colors??={activeText:"rgb(255, 255, 255)",background:"rgb(100, 100, 100)",text:"rgb(0, 0, 0)"};}',
+			'$1?.hasLyrics){if(!$1) return null;$1.hasLyrics=true;$1.colors??={activeText:"rgb(255, 255, 255)",background:"rgb(100, 100, 100)",text:"rgb(0, 0, 0)"};}',
 		);
 
 		emit();
