@@ -29,8 +29,9 @@ interface ArtistsPageContentProps {
 	topArtists: any[];
 }
 const ArtistsPageContent = ({ topArtists }: ArtistsPageContentProps) => {
+	// TODO: CLASSMAP iKwGKEfAfW7Rkx2_Ba4E gridContainer
 	return (
-		<div className={"main-gridContainer-gridContainer grid"}>
+		<div className={`${"iKwGKEfAfW7Rkx2_Ba4E"} grid`}>
 			{topArtists.map((artist, index) => (
 				<SpotifyCard
 					type={"artist"}
@@ -62,7 +63,11 @@ const ArtistsPage = () => {
 	return (
 		<PageContainer
 			title="Top Artists"
-			headerRight={[dropdown, status !== "pending" && <RefreshButton refresh={refetch} />, settingsButton]}
+			headerRight={[
+				dropdown,
+				status !== "pending" && <RefreshButton refresh={refetch} />,
+				settingsButton,
+			]}
 		>
 			{Status || <ArtistsPageContent topArtists={data.items} />}
 		</PageContainer>
