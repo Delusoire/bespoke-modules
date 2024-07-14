@@ -37,6 +37,7 @@ interface ModuleCardProps {
 	removeModule: (module: Module) => void;
 	updateModule: (module: Module) => void;
 	addModule: (module: Module) => void;
+	selectInstance: (moduleInstance: ModuleInstance) => void;
 }
 const ModuleCard = (props: ModuleCardProps) => {
 	const { moduleInstance, isSelected } = props;
@@ -121,16 +122,10 @@ const ModuleCard = (props: ModuleCardProps) => {
 
 	const isAdded = React.useCallback(() => moduleInstance.isLocal(), [moduleInstance]);
 
-	const enableModule = async (checked: boolean) => {
+	const enableModule = async () => {
 		let hasChanged: boolean | undefined;
-		if (checked) {
-			if (module.canEnable(moduleInstance)) {
-				hasChanged = await module.enable(moduleInstance);
-			}
-		} else {
-			if (module.canDisable(moduleInstance)) {
-				hasChanged = await module.disable();
-			}
+		if (module.canEnable(moduleInstance)) {
+			hasChanged = await module.enable(moduleInstance);
 		}
 
 		if (hasChanged) {
@@ -138,16 +133,32 @@ const ModuleCard = (props: ModuleCardProps) => {
 		}
 	};
 
-	const installModule = async (checked: boolean) => {
+	const disableModule = async () => {
+		let hasChanged: boolean | undefined;
+		if (module.canDisable(moduleInstance)) {
+			hasChanged = await module.disable();
+		}
+
+		if (hasChanged) {
+			props.updateModule(moduleInstance.getModule());
+		}
+	}
+
+	const installModule = async () => {
 		let success: ModuleInstance | null = null;
-		if (checked) {
-			if (moduleInstance.canInstallRemove()) {
-				success = await moduleInstance.install();
-			}
-		} else {
-			if (moduleInstance.canDelete()) {
-				success = await moduleInstance.delete();
-			}
+		if (moduleInstance.canInstallRemove()) {
+			success = await moduleInstance.install();
+		}
+
+		if (success) {
+			props.updateModule(success.getModule());
+		}
+	};
+
+	const deleteModule = async () => {
+		let success: ModuleInstance | null = null;
+		if (moduleInstance.canDelete()) {
+			success = await moduleInstance.delete();
 		}
 
 		if (success) {
@@ -155,52 +166,54 @@ const ModuleCard = (props: ModuleCardProps) => {
 		}
 	};
 
-	const addModuleLocally = async (checked: boolean) => {
+	const addModuleLocally = async () => {
 		let success: ModuleInstance | null = null;
-		if (checked) {
-			if (moduleInstance.canAdd()) {
-				success = await moduleInstance.add();
 
-				if (success) {
-					props.addModule(success.getModule());
-				}
-			}
-		} else {
-			if (moduleInstance.canInstallRemove()) {
-				success = await moduleInstance.remove();
+		if (moduleInstance.canAdd()) {
+			success = await moduleInstance.add();
 
-				if (success) {
-					const temp_module = props.moduleInstance.getModule();
-					if (temp_module.parent) {
-						props.updateModule(temp_module);
-					} else {
-						props.removeModule(temp_module);
-					}
-				}
+			if (success) {
+				props.addModule(success.getModule());
+				props.selectInstance(success);
 			}
-		}
-		if (success) {
-			props.updateModule(success.getModule());
 		}
 	};
 
+	const removeModule = async () => {
+		let success: ModuleInstance | null = null;
+		if (moduleInstance.canInstallRemove()) {
+			success = await moduleInstance.remove();
+
+			if (success) {
+				const temp_module = props.moduleInstance.getModule();
+				if (temp_module.parent) {
+					props.updateModule(temp_module);
+				} else {
+					props.removeModule(temp_module);
+				}
+			}
+		}
+
+		if (success) {
+			props.updateModule(moduleInstance.getModule());
+		}
+	}
+
 	const full_install = async (install: boolean) => {
 		if (install) {
-			await addModuleLocally(install);
-			await installModule(install);
-			await enableModule(install);
+			await addModuleLocally();
+			await installModule();
+			await enableModule();
 		} else {
-			await enableModule(install);
-			await installModule(install);
-			await addModuleLocally(install);
+			await disableModule();
+			await deleteModule();
+			await removeModule();
 		}
 
 		props.updateModule(moduleInstance.getModule());
 	};
 
-	const [fullInstallable, setFullInstallable, updateFullInstallable] = useUpdate(() => 
-		isEnabled() && isInstalled() && isAdded()
-	  );
+	const fullInstalled = isEnabled() && isInstalled() && isAdded();
 
 	
 	// TODO: implement (add, install, enable) and (disable, delete, remove) buttons
@@ -215,14 +228,14 @@ const ModuleCard = (props: ModuleCardProps) => {
 			)}
 			<button
 				className={`cursor-pointer border-0 rounded inline-flex items-center justify-between ${
-					fullInstallable ? "bg-gray-500" : "bg-green-500"
+					fullInstalled ? "bg-gray-500" : "bg-green-500"
 				} text-white px-4 py-2`}
 				onClick={async () => {
 
-					await full_install(!fullInstallable);
+					await full_install(!fullInstalled);
 				}}
 			>
-				{fullInstallable ? (
+				{fullInstalled ? (
 					<>
 						<MdDeleteSweep />
 						{"Full Uninstall"}

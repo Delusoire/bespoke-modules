@@ -77,6 +77,7 @@ export default React.memo(() => {
 		removeModule,
 		selectModule,
 		addModule,
+		selectInstance,
 	} = useModules();
 
 	React.useEffect(() => {
@@ -92,6 +93,7 @@ export default React.memo(() => {
 			removeModule={removeModule}
 			selectModule={selectModule}
 			addModule={addModule}
+			selectInstance={selectInstance}
 		/>
 	);
 });
@@ -104,6 +106,7 @@ interface MarketplaceContentProps {
 	removeModule: (module: Module) => void;
 	selectModule: (moduleIdentifier: ModuleIdentifier | null) => void;
 	addModule: (module: Module) => void;
+	selectInstance: (moduleInstance: ModuleInstance) => void;
 }
 const MarketplaceContent = (props: MarketplaceContentProps) => {
 	const [searchbar, search] = useSearchBar({
@@ -120,7 +123,7 @@ const MarketplaceContent = (props: MarketplaceContentProps) => {
 		selectedFilters.map(({ key }) => getProp(filterFNs, key) as typeof filterFNs);
 	const selectedFilterFNs = React.useMemo(getSelectedFilterFNs, [selectedFilters]);
 
-	const { modules, updateModule, addModule, removeModule, moduleToInstance, selectedModule, selectModule } = props;
+	const { modules, updateModule, selectInstance, addModule, removeModule, moduleToInstance, selectedModule, selectModule } = props;
 
 	const instances = React.useMemo(() => Array.from(Object.values(moduleToInstance)), [moduleToInstance]);
 
@@ -173,6 +176,7 @@ const MarketplaceContent = (props: MarketplaceContentProps) => {
 								addModule={addModule}
 								// @ts-ignore ensures rerender
 								modules={modules[moduleIdentifier]}
+								selectInstance={selectInstance}
 							/>
 						);
 					})}
