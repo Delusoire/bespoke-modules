@@ -213,7 +213,7 @@ const ModuleCard = (props: ModuleCardProps) => {
 		props.updateModule(moduleInstance.getModule());
 	};
 
-	const fullInstalled = isEnabled() && isInstalled() && isAdded();
+	const fullInstalled = isEnabled() || isInstalled() || isAdded();
 
 	
 	// TODO: implement (add, install, enable) and (disable, delete, remove) buttons
