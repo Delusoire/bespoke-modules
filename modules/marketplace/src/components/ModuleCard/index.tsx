@@ -41,7 +41,9 @@ interface ModuleCardProps {
 }
 const ModuleCard = (props: ModuleCardProps) => {
 	const { moduleInstance, isSelected } = props;
+	
 	const module = moduleInstance.getModule();
+
 	const noMetadata = moduleInstance.metadata === null;
 
 	const metadataURL = moduleInstance.getMetadataURL();
@@ -122,18 +124,7 @@ const ModuleCard = (props: ModuleCardProps) => {
 
 	const isAdded = React.useCallback(() => moduleInstance.isLocal(), [moduleInstance]);
 
-	const enableModule = async () => {
-		let hasChanged: boolean | undefined;
-		if (module.canEnable(moduleInstance)) {
-			hasChanged = await module.enable(moduleInstance);
-		}
-
-		if (hasChanged) {
-			props.updateModule(moduleInstance.getModule());
-		}
-	};
-
-	const disableModule = async () => {
+	const fullReset = async () => {
 		let hasChanged: boolean | undefined;
 		if (module.canDisable(moduleInstance)) {
 			hasChanged = await module.disable();
@@ -142,20 +133,7 @@ const ModuleCard = (props: ModuleCardProps) => {
 		if (hasChanged) {
 			props.updateModule(moduleInstance.getModule());
 		}
-	}
 
-	const installModule = async () => {
-		let success: ModuleInstance | null = null;
-		if (moduleInstance.canInstallRemove()) {
-			success = await moduleInstance.install();
-		}
-
-		if (success) {
-			props.updateModule(success.getModule());
-		}
-	};
-
-	const deleteModule = async () => {
 		let success: ModuleInstance | null = null;
 		if (moduleInstance.canDelete()) {
 			success = await moduleInstance.delete();
@@ -164,23 +142,8 @@ const ModuleCard = (props: ModuleCardProps) => {
 		if (success) {
 			props.updateModule(moduleInstance.getModule());
 		}
-	};
+		success = null;
 
-	const addModuleLocally = async () => {
-		let success: ModuleInstance | null = null;
-
-		if (moduleInstance.canAdd()) {
-			success = await moduleInstance.add();
-
-			if (success) {
-				props.addModule(success.getModule());
-				props.selectInstance(success);
-			}
-		}
-	};
-
-	const removeModule = async () => {
-		let success: ModuleInstance | null = null;
 		if (moduleInstance.canInstallRemove()) {
 			success = await moduleInstance.remove();
 
@@ -197,17 +160,46 @@ const ModuleCard = (props: ModuleCardProps) => {
 		if (success) {
 			props.updateModule(moduleInstance.getModule());
 		}
+		
 	}
+
+	const fullInstall = async () => {
+		let localInstance: ModuleInstance | null = null;
+
+		if (moduleInstance.canAdd()) {
+			localInstance = await moduleInstance.add();
+
+			if (localInstance) {
+				props.addModule(localInstance.getModule());
+				props.selectInstance(localInstance);
+			}
+		}
+
+		let success: ModuleInstance | null = null;
+		if (localInstance?.canInstallRemove()) {
+			success = await localInstance.install();
+		}
+
+		if (success) {
+			props.updateModule(success.getModule());
+		}
+
+		let hasChanged: boolean | undefined;
+		if (localInstance?.getModule().canEnable(localInstance)) {
+			hasChanged = await localInstance?.getModule().enable(localInstance);
+		}
+
+		if (hasChanged && localInstance) {
+			props.updateModule(localInstance.getModule());
+		}
+	}
+
 
 	const full_install = async (install: boolean) => {
 		if (install) {
-			await addModuleLocally();
-			await installModule();
-			await enableModule();
+			await fullInstall();
 		} else {
-			await disableModule();
-			await deleteModule();
-			await removeModule();
+			await fullReset();
 		}
 
 		props.updateModule(moduleInstance.getModule());
@@ -218,7 +210,7 @@ const ModuleCard = (props: ModuleCardProps) => {
 	
 	// TODO: implement (add, install, enable) and (disable, delete, remove) buttons
 	const buttons = (
-		<>
+		<div className="flex justify-between w-full">			
 			{showLoaded && SettingsToggle && (
 				<SettingsToggle
 					className="x-settings-button justify-end"
@@ -229,7 +221,7 @@ const ModuleCard = (props: ModuleCardProps) => {
 			<button
 				className={`cursor-pointer border-0 rounded inline-flex items-center justify-between ${
 					fullInstalled ? "bg-gray-500" : "bg-green-500"
-				} text-white px-4 py-2`}
+				} text-white px-2 py-2 w-1/2 h-8`}
 				onClick={async () => {
 
 					await full_install(!fullInstalled);
@@ -238,16 +230,17 @@ const ModuleCard = (props: ModuleCardProps) => {
 				{fullInstalled ? (
 					<>
 						<MdDeleteSweep />
-						{"Full Uninstall"}
+						{"Reset"}
 					</>
 				) : (
 					<>
 						<MdAddCircleOutline />
-						{"Full Install"}
+						{"Install"}
 					</>
 				)}
 			</button>
-		</>
+		</div>
+
 	);
 
 	return (
