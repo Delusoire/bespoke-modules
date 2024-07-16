@@ -45,12 +45,17 @@ export const getTracksFromAlbum = async (uri: string) => {
 	);
 };
 
-export const getLikedTracks = _.flow(fetchLikedTracks, pMchain(fp.map(parseLibraryAPILikedTracks)));
+export const getLikedTracks = _.flow(
+	fetchLikedTracks,
+	pMchain(fp.map(parseLibraryAPILikedTracks)),
+);
 
 export const getTracksFromPlaylist = _.flow(
 	fetchPlaylistContents,
 	pMchain(fp.map(parsePlaylistAPITrack)),
-	pMchain(fp.filter((track) => !is.LocalTrack(track.uri))),
+	pMchain(
+		fp.filter((track) => is.Track(track.uri) && !is.LocalTrack(track.uri)),
+	),
 );
 
 export const getTracksFromArtist = async (uri: string) => {
@@ -67,28 +72,43 @@ export const getTracksFromArtist = async (uri: string) => {
 		const { discography, relatedContent } = await fetchArtistOverview(uri);
 
 		CONFIG.artistLikedTracks &&
-			allTracks.push(...(await fetchArtistLikedTracks(uri)).map(parseArtistLikedTrack));
-		CONFIG.artistTopTracks && allTracks.push(...discography.topTracks.items.map(parseTopTrackFromArtist));
-		CONFIG.artistPopularReleases && itemsWithCountAr.push(discography.popularReleasesAlbums);
+			allTracks.push(
+				...(await fetchArtistLikedTracks(uri)).map(parseArtistLikedTrack),
+			);
+		CONFIG.artistTopTracks &&
+			allTracks.push(
+				...discography.topTracks.items.map(parseTopTrackFromArtist),
+			);
+		CONFIG.artistPopularReleases &&
+			itemsWithCountAr.push(discography.popularReleasesAlbums);
 		CONFIG.artistSingles && itemsReleasesAr.push(discography.singles);
 		CONFIG.artistAlbums && itemsReleasesAr.push(discography.albums);
-		CONFIG.artistCompilations && itemsReleasesAr.push(discography.compilations);
+		CONFIG.artistCompilations &&
+			itemsReleasesAr.push(discography.compilations);
 		CONFIG.artistAppearsOn && appearsOnAr.push(relatedContent.appearsOn);
 	}
 
 	const items1 = itemsWithCountAr.flatMap((iwc) => iwc.items);
-	const items2 = itemsReleasesAr.flatMap((ir) => ir.items.flatMap((i) => i.releases.items));
-	const albumLikeUris = items1.concat(items2).map((item) => item.uri);
-	const albumsTracks = await Promise.all(albumLikeUris.map(getTracksFromAlbum));
-
-	const appearsOnUris = appearsOnAr.flatMap((ir) => ir.items.flatMap((i) => i.releases.items)).map((item) =>
-		item.uri
+	const items2 = itemsReleasesAr.flatMap((ir) =>
+		ir.items.flatMap((i) => i.releases.items)
 	);
-	const appearsOnTracks = await Promise.all(appearsOnUris.map(getTracksFromAlbum));
+	const albumLikeUris = items1.concat(items2).map((item) => item.uri);
+	const albumsTracks = await Promise.all(
+		albumLikeUris.map(getTracksFromAlbum),
+	);
+
+	const appearsOnUris = appearsOnAr.flatMap((ir) =>
+		ir.items.flatMap((i) => i.releases.items)
+	).map((item) => item.uri);
+	const appearsOnTracks = await Promise.all(
+		appearsOnUris.map(getTracksFromAlbum),
+	);
 
 	allTracks.push(
 		...albumsTracks.flat(),
-		...appearsOnTracks.flat().filter((track) => track.artistUris.includes(uri)),
+		...appearsOnTracks.flat().filter((track) =>
+			track.artistUris.includes(uri)
+		),
 	);
 	return await Promise.all(allTracks);
 };
