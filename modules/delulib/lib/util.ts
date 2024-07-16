@@ -61,20 +61,22 @@ export class PermanentMutationObserver extends MutationObserver {
 	}
 }
 
-export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+export const sleep = (ms: number) =>
+	new Promise((resolve) => setTimeout(resolve, ms));
 
-export const createQueueItem = (queued: boolean) => ({ uri, uid = "" }: { uri: string; uid?: string }) => ({
-	contextTrack: {
-		uri,
-		uid,
-		metadata: {
-			is_queued: queued.toString(),
+export const createQueueItem =
+	(queued: boolean) => ({ uri, uid = "" }: { uri: string; uid?: string }) => ({
+		contextTrack: {
+			uri,
+			uid,
+			metadata: {
+				is_queued: queued.toString(),
+			},
 		},
-	},
-	removed: [],
-	blocked: [],
-	provider: queued ? ("queue" as const) : ("context" as const),
-});
+		removed: [],
+		blocked: [],
+		provider: queued ? ("queue" as const) : ("context" as const),
+	});
 
 export const setQueue = async (
 	nextTracks: Array<ReturnType<ReturnType<typeof createQueueItem>>>,
@@ -93,7 +95,9 @@ export const setQueue = async (
 
 	if (contextUri) {
 		await new Promise<void>((resolve) => {
-			PlayerAPI.getEvents().addListener("queue_update", () => resolve(), { once: true });
+			PlayerAPI.getEvents().addListener("queue_update", () => resolve(), {
+				once: true,
+			});
 		});
 		await setPlayingContext(contextUri);
 	}
@@ -108,9 +112,24 @@ export const setPlayingContext = (uri: string) => {
 
 export const getSongPositionMs = (state = PlayerAPI.getState()) => {
 	if (state === null) return 0;
-	const { positionAsOfTimestamp, timestamp, duration, speed, hasContext, isPaused, isBuffering } = state;
+	const {
+		positionAsOfTimestamp,
+		timestamp,
+		duration,
+		speed,
+		hasContext,
+		isPaused,
+		isBuffering,
+	} = state;
 	if (!positionAsOfTimestamp || !duration) return 0;
 	if (!hasContext || isPaused || isBuffering) return positionAsOfTimestamp;
 	const scaledTimeSinceTimestamp = (Date.now() - timestamp) * (speed ?? 0);
 	return Math.min(positionAsOfTimestamp + scaledTimeSinceTimestamp, duration);
 };
+
+export const getNBalancedPairRegex = (pair: string, n: number) =>
+	`${pair[0]}(?:[^${pair}]*` +
+	`(?:${pair[0]}(?:[^${pair}]*`.repeat(n - 1) +
+	`(?:${pair[0]}[^${pair}]*${pair[1]})?` +
+	`[^${pair}]*)*${pair[1]})?`.repeat(n - 1) +
+	`[^${pair}]*)*${pair[1]}`;

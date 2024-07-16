@@ -3,7 +3,7 @@ import { useLivePlaylistItems } from "/modules/Delusoire.library-db/mod.ts";
 import { createIconComponent } from "/modules/stdlib/lib/createIconComponent.tsx";
 import { useLiveQuery } from "/modules/Delusoire.dexie-react-hooks/mod.ts";
 import { db } from "/modules/Delusoire.library-db/lib/db.ts";
-import type { Module } from "/hooks/module.ts";
+import type { Module } from "/hooks/index.ts";
 import { React } from "/modules/stdlib/src/expose/React.ts";
 import {
 	Menu,

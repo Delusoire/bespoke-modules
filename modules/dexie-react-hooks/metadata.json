@@ -11,7 +11,9 @@
 	],
 	"description": "dexie-react-hooks from npm",
 	"readme": "./assets/README.md",
-	"entries": {},
+	"entries": {
+		"js": "index.js"
+	},
 	"dependencies": {
 		"stdlib": "0.2.2"
 	}

@@ -4,9 +4,13 @@ import { React } from "/modules/stdlib/src/expose/React.ts";
 type RenderRow = (data: any, index: number) => React.ReactElement;
 
 declare global {
-	var __patchTracklistWrapperProps: <A extends { renderRow: RenderRow; columns: string[] }>(props: A) => A;
+	var __patchTracklistWrapperProps: <
+		A extends { renderRow: RenderRow; columns: string[] },
+	>(props: A) => A;
 	var __patchRenderTracklistRowColumn: (column: string) => React.ReactNode;
-	var __patchTracklistColumnHeaderContextMenu: (column: string) => React.FC<{}>;
+	var __patchTracklistColumnHeaderContextMenu: (
+		column: string,
+	) => React.FC<{}>;
 	var __patchTracklistColumns: (columns: string[]) => string[];
 }
 
@@ -23,7 +27,10 @@ globalThis.__patchTracklistColumns = (x) => {
 
 export default function (transformer: Transformer) {
 	transformer((emit) => (str) => {
-		str = str.replace(/(tracks,[^;]*nrTracks),/, "$1,e=__patchTracklistWrapperProps(e),");
+		str = str.replace(
+			/(\(0,([a-zA-Z_\$][\w\$]*)\.jsx\)\([a-zA-Z_\$][\w\$]*\.[a-zA-Z_\$][\w\$]*,{resolveItem:[a-zA-Z_\$][\w\$]*,getItems:[a-zA-Z_\$][\w\$]*,nrTracks:[a-zA-Z_\$][\w\$]*),children:\(0,\2\.jsx\)/,
+			"$1,children:((type,props)=>($2.jsx(type,__patchTracklistWrapperProps(props))))",
+		);
 
 		str = str.replaceAll(
 			/(switch\(([a-zA-Z_\$][\w\$]*)\){case [a-zA-Z_\$][\w\$]*\.[a-zA-Z_\$][\w\$]*\.INDEX:.*?default):/g,
@@ -36,8 +43,8 @@ export default function (transformer: Transformer) {
 		);
 
 		str = str.replace(
-			/=e\.columns,(.{0,100}),toggleable:([^,}]+)/,
-			"=__patchTracklistColumns(e.columns),$1,toggleable:$2??true",
+			/\(\{(columnType:[a-zA-Z_\$][\w\$]*,visible:!0),toggleable:([^,})]+),/,
+			"({$1,toggleable:$2??true,",
 		);
 
 		emit();
