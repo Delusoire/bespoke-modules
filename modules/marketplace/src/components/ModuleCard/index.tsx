@@ -1,4 +1,5 @@
 import { React } from "/modules/stdlib/src/expose/React.ts";
+import { MdDeleteSweep, MdAddCircleOutline } from "https://esm.sh/react-icons/md";
 import AuthorsDiv from "./AuthorsDiv.tsx";
 import TagsDiv from "./TagsDiv.tsx";
 import {
@@ -33,11 +34,16 @@ interface ModuleCardProps {
 	moduleInstance: ModuleInstance;
 	selectModule: (moduleIdentifier: ModuleIdentifier | null) => void;
 	isSelected: boolean;
+	removeModule: (module: Module) => void;
 	updateModule: (module: Module) => void;
+	addModule: (module: Module) => void;
+	selectInstance: (moduleInstance: ModuleInstance) => void;
 }
 const ModuleCard = (props: ModuleCardProps) => {
 	const { moduleInstance, isSelected } = props;
+
 	const module = moduleInstance.getModule();
+
 	const noMetadata = moduleInstance.metadata === null;
 
 	const metadataURL = moduleInstance.getMetadataURL();
@@ -87,10 +93,7 @@ const ModuleCard = (props: ModuleCardProps) => {
 	const enabledLocalInstance = localModule?.getEnabledInstance();
 	const showLoaded = enabledLocalInstance?.isInstalled() ?? false;
 
-	const isLoaded = React.useCallback(
-		() => moduleInstance.isLoaded(),
-		[moduleInstance],
-	);
+	const isLoaded = React.useCallback(() => moduleInstance.isLoaded(), [moduleInstance]);
 
 	const [loaded, setLoaded, updateLoaded] = useUpdate(isLoaded);
 
@@ -100,13 +103,11 @@ const ModuleCard = (props: ModuleCardProps) => {
 			if (moduleInstance.canLoad()) {
 				setLoaded(true);
 				hasChanged = await moduleInstance.load();
-
 			}
 		} else {
 			if (moduleInstance.canUnload()) {
 				setLoaded(false);
 				hasChanged = await moduleInstance.unload();
-
 			}
 		}
 
@@ -117,9 +118,98 @@ const ModuleCard = (props: ModuleCardProps) => {
 		}
 	};
 
-	// TODO: implement (add, install, enable) and (disable, delete, remove) buttons
-	const buttons = (
+	const fastDelete = async () => {
+		const module = moduleInstance.getModule();
+
+		dis: if (moduleInstance.isEnabled()) {
+			if (module.canDisable(moduleInstance)) {
+				if (await module.disable()) {
+					props.updateModule(module);
+					break dis;
+				}
+			}
+			return false;
+		}
+
+		del: if (moduleInstance.isInstalled()) {
+			if (moduleInstance.canDelete()) {
+				if (await moduleInstance.delete()) {
+					props.updateModule(module);
+					break del;
+				}
+			}
+			return false;
+		}
+
+		rem: if (moduleInstance.isLocal()) {
+			if (moduleInstance.canInstallRemove()) {
+				if (await moduleInstance.remove()) {
+					if (module.parent) {
+						props.updateModule(module);
+					} else {
+						props.removeModule(module);
+					}
+					break rem;
+				}
+			}
+			return false;
+		}
+		return true;
+	};
+	const fastInstall = async () => {
+		let localModuleInstance = moduleInstance;
+		let localModule = localModuleInstance.getModule();
+
+		add: if (!moduleInstance.isLocal()) {
+			if (moduleInstance.canAdd()) {
+				localModuleInstance = await moduleInstance.add();
+				if (localModuleInstance) {
+					localModule = localModuleInstance.getModule();
+					props.addModule(localModule);
+					props.selectInstance(localModuleInstance);
+					break add;
+				}
+			}
+			return false;
+		}
+
+		ins: if (!localModuleInstance.isInstalled()) {
+			if (localModuleInstance.canInstallRemove()) {
+				if (await localModuleInstance.install()) {
+					props.updateModule(localModule);
+					break ins;
+				}
+			}
+			return false;
+		}
+
+		ena: if (!localModuleInstance.isEnabled()) {
+			if (localModule.canEnable(localModuleInstance)) {
+				if (await localModule.enable(localModuleInstance)) {
+					props.updateModule(localModule);
+					break ena;
+				}
+			}
+			return false;
+		}
+		return true;
+	};
+
+	const isInstalled = moduleInstance.isInstalled();
+	const fastInstallDeleteButton = isInstalled ? (
 		<>
+			<MdDeleteSweep />
+			Reset
+		</>
+	) : (
+		<>
+			<MdAddCircleOutline />
+			Install
+		</>
+	);
+
+	const footer = (
+		<div className="flex justify-between w-full">
 			{showLoaded && SettingsToggle && (
 				<SettingsToggle
 					className="x-settings-button justify-end"
@@ -127,7 +217,21 @@ const ModuleCard = (props: ModuleCardProps) => {
 					onSelected={onToggleLoaded}
 				/>
 			)}
-		</>
+			<button
+				className={`cursor-pointer border-0 rounded inline-flex items-center justify-between ${
+					isInstalled ? "bg-gray-500" : "bg-green-500"
+				} text-white px-2 py-2 w-1/2 h-8`}
+				onClick={async () => {
+					if (isInstalled) {
+						await fastDelete();
+					} else {
+						await fastInstall();
+					}
+				}}
+			>
+				{fastInstallDeleteButton}
+			</button>
+		</div>
 	);
 
 	return (
@@ -143,7 +247,7 @@ const ModuleCard = (props: ModuleCardProps) => {
 			tags={tags}
 			importantTags={importantTags}
 		>
-			{buttons}
+			{footer}
 		</ModuleCardContent>
 	);
 };
@@ -215,15 +319,9 @@ const ModuleCardContent = (props: ModuleCardContentProps) => {
 						{description || "No description for this package"}
 					</p>
 					<div className="text-[var(--text-subdued)] whitespace-normal main-type-mestoBold">
-						<TagsDiv
-							tags={tags}
-							showTags={showTags}
-							importantTags={importantTags}
-						/>
+						<TagsDiv tags={tags} showTags={showTags} importantTags={importantTags} />
 					</div>
-					<div className="flex justify-between">
-						{children}
-					</div>
+					<div className="flex justify-between">{children}</div>
 				</div>
 			</div>
 		</div>
