@@ -50,9 +50,17 @@ export const getLikedTracks = _.flow(
 	pMchain(fp.map(parseLibraryAPILikedTracks)),
 );
 
+const catchOrEmpty = <A, B>(fn: (a: A) => B, empty: NoInfer<B>) => (a: A) => {
+	try {
+		return fn(a);
+	} catch (e) {
+		return empty;
+	}
+};
+
 export const getTracksFromPlaylist = _.flow(
 	fetchPlaylistContents,
-	pMchain(fp.map(parsePlaylistAPITrack)),
+	pMchain(fp.map(catchOrEmpty(parsePlaylistAPITrack, { uri: null }))),
 	pMchain(
 		fp.filter((track) => is.Track(track.uri) && !is.LocalTrack(track.uri)),
 	),
