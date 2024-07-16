@@ -41,7 +41,7 @@ interface ModuleCardProps {
 }
 const ModuleCard = (props: ModuleCardProps) => {
 	const { moduleInstance, isSelected } = props;
-	
+
 	const module = moduleInstance.getModule();
 
 	const noMetadata = moduleInstance.metadata === null;
@@ -118,99 +118,98 @@ const ModuleCard = (props: ModuleCardProps) => {
 		}
 	};
 
-	const isEnabled = React.useCallback(() => moduleInstance.isEnabled(), [moduleInstance]);
+	const fastDelete = async () => {
+		const module = moduleInstance.getModule();
 
-	const isInstalled = React.useCallback(() => moduleInstance.isInstalled(), [moduleInstance]);
-
-	const isAdded = React.useCallback(() => moduleInstance.isLocal(), [moduleInstance]);
-
-	const fullReset = async () => {
-		let hasChanged: boolean | undefined;
-		if (module.canDisable(moduleInstance)) {
-			hasChanged = await module.disable();
-		}
-
-		if (hasChanged) {
-			props.updateModule(moduleInstance.getModule());
-		}
-
-		let success: ModuleInstance | null = null;
-		if (moduleInstance.canDelete()) {
-			success = await moduleInstance.delete();
-		}
-
-		if (success) {
-			props.updateModule(moduleInstance.getModule());
-		}
-		success = null;
-
-		if (moduleInstance.canInstallRemove()) {
-			success = await moduleInstance.remove();
-
-			if (success) {
-				const temp_module = props.moduleInstance.getModule();
-				if (temp_module.parent) {
-					props.updateModule(temp_module);
-				} else {
-					props.removeModule(temp_module);
+		dis: if (moduleInstance.isEnabled()) {
+			if (module.canDisable(moduleInstance)) {
+				if (await module.disable()) {
+					props.updateModule(module);
+					break dis;
 				}
 			}
+			return false;
 		}
 
-		if (success) {
-			props.updateModule(moduleInstance.getModule());
-		}
-		
-	}
-
-	const fullInstall = async () => {
-		let localInstance: ModuleInstance | null = null;
-
-		if (moduleInstance.canAdd()) {
-			localInstance = await moduleInstance.add();
-
-			if (localInstance) {
-				props.addModule(localInstance.getModule());
-				props.selectInstance(localInstance);
+		del: if (moduleInstance.isInstalled()) {
+			if (moduleInstance.canDelete()) {
+				if (await moduleInstance.delete()) {
+					props.updateModule(module);
+					break del;
+				}
 			}
+			return false;
 		}
 
-		let success: ModuleInstance | null = null;
-		if (localInstance?.canInstallRemove()) {
-			success = await localInstance.install();
+		rem: if (moduleInstance.isLocal()) {
+			if (moduleInstance.canInstallRemove()) {
+				if (await moduleInstance.remove()) {
+					if (module.parent) {
+						props.updateModule(module);
+					} else {
+						props.removeModule(module);
+					}
+					break rem;
+				}
+			}
+			return false;
+		}
+		return true;
+	};
+	const fastInstall = async () => {
+		let localModuleInstance = moduleInstance;
+		let localModule = localModuleInstance.getModule();
+
+		add: if (!moduleInstance.isLocal()) {
+			if (moduleInstance.canAdd()) {
+				localModuleInstance = await moduleInstance.add();
+				if (localModuleInstance) {
+					localModule = localModuleInstance.getModule();
+					props.addModule(localModule);
+					props.selectInstance(localModuleInstance);
+					break add;
+				}
+			}
+			return false;
 		}
 
-		if (success) {
-			props.updateModule(success.getModule());
+		ins: if (!localModuleInstance.isInstalled()) {
+			if (localModuleInstance.canInstallRemove()) {
+				if (await localModuleInstance.install()) {
+					props.updateModule(localModule);
+					break ins;
+				}
+			}
+			return false;
 		}
 
-		let hasChanged: boolean | undefined;
-		if (localInstance?.getModule().canEnable(localInstance)) {
-			hasChanged = await localInstance?.getModule().enable(localInstance);
+		ena: if (!localModuleInstance.isEnabled()) {
+			if (localModule.canEnable(localModuleInstance)) {
+				if (await localModule.enable(localModuleInstance)) {
+					props.updateModule(localModule);
+					break ena;
+				}
+			}
+			return false;
 		}
-
-		if (hasChanged && localInstance) {
-			props.updateModule(localInstance.getModule());
-		}
-	}
-
-
-	const full_install = async (install: boolean) => {
-		if (install) {
-			await fullInstall();
-		} else {
-			await fullReset();
-		}
-
-		props.updateModule(moduleInstance.getModule());
+		return true;
 	};
 
-	const fullInstalled = isEnabled() || isInstalled() || isAdded();
+	const isInstalled = moduleInstance.isInstalled();
+	const fastInstallDeleteButton = isInstalled ? (
+		<>
+			<MdDeleteSweep />
+			Reset
+		</>
+	) : (
+		<>
+			<MdAddCircleOutline />
+			Install
+		</>
+	);
 
-	
-	// TODO: implement (add, install, enable) and (disable, delete, remove) buttons
-	const buttons = (
-		<div className="flex justify-between w-full">			
+	const footer = (
+		<div className="flex justify-between w-full">
 			{showLoaded && SettingsToggle && (
 				<SettingsToggle
 					className="x-settings-button justify-end"
@@ -220,27 +219,19 @@ const ModuleCard = (props: ModuleCardProps) => {
 			)}
 			<button
 				className={`cursor-pointer border-0 rounded inline-flex items-center justify-between ${
-					fullInstalled ? "bg-gray-500" : "bg-green-500"
+					isInstalled ? "bg-gray-500" : "bg-green-500"
 				} text-white px-2 py-2 w-1/2 h-8`}
 				onClick={async () => {
-
-					await full_install(!fullInstalled);
+					if (isInstalled) {
+						await fastDelete();
+					} else {
+						await fastInstall();
+					}
 				}}
 			>
-				{fullInstalled ? (
-					<>
-						<MdDeleteSweep />
-						{"Reset"}
-					</>
-				) : (
-					<>
-						<MdAddCircleOutline />
-						{"Install"}
-					</>
-				)}
+				{fastInstallDeleteButton}
 			</button>
 		</div>
-
 	);
 
 	return (
@@ -256,7 +247,7 @@ const ModuleCard = (props: ModuleCardProps) => {
 			tags={tags}
 			importantTags={importantTags}
 		>
-			{buttons}
+			{footer}
 		</ModuleCardContent>
 	);
 };
