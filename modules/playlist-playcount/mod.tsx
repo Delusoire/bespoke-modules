@@ -110,43 +110,42 @@ async function sortPlaylistContents(contents: any, opts: any) {
 }
 
 const getPlaylist = PlaylistAPI.getPlaylist;
-if (!getPlaylist[Symbol.for("patched")]) {
-	PlaylistAPI.getPlaylist = async function (uri: string, _, opts) {
-		const _opts = {
-			...opts,
-			offset: 0,
-			limit: 1e9,
-		};
-		if (_opts?.sort?.field === SORT_FIELD_COLUMN) {
-			_opts.sort = undefined;
-		}
-		const playlist = await getPlaylist.call(PlaylistAPI, uri, _, _opts);
-
-		await sortPlaylistContents(playlist.contents, opts);
-
-		return playlist;
+PlaylistAPI.getPlaylist = async function (uri: string, _, opts) {
+	const _opts = {
+		...opts,
+		offset: 0,
+		limit: 1e9,
 	};
-	getPlaylist[Symbol.for("patched")] = true;
-}
+	if (_opts?.sort?.field === SORT_FIELD_COLUMN) {
+		_opts.sort = undefined;
+	}
+	const playlist = await getPlaylist.call(PlaylistAPI, uri, _, _opts);
+
+	await sortPlaylistContents(playlist.contents, opts);
+
+	return playlist;
+};
 
 const getContents = PlaylistAPI.getContents;
-if (!getContents[Symbol.for("patched")]) {
-	PlaylistAPI.getContents = async function (uri: string, opts) {
-		const _opts = {
-			...opts,
-			offset: 0,
-			limit: 1e9,
-		};
-		if (_opts?.sort?.field === SORT_FIELD_COLUMN) {
-			_opts.sort = undefined;
-		}
-		const contents = await getContents.call(PlaylistAPI, uri, _opts);
-
-		await sortPlaylistContents(contents, opts);
-
-		return contents;
+PlaylistAPI.getContents = async function (uri: string, opts) {
+	const _opts = {
+		...opts,
+		offset: 0,
+		limit: 1e9,
 	};
-	getContents[Symbol.for("patched")] = true;
-}
+	if (_opts?.sort?.field === SORT_FIELD_COLUMN) {
+		_opts.sort = undefined;
+	}
+	const contents = await getContents.call(PlaylistAPI, uri, _opts);
 
-export default async function (mod: Module) {}
+	await sortPlaylistContents(contents, opts);
+
+	return contents;
+};
+
+export default async function (mod: Module) {
+	return () => {
+		PlaylistAPI.getPlaylist = getPlaylist;
+		PlaylistAPI.getContents = getContents;
+	};
+}
