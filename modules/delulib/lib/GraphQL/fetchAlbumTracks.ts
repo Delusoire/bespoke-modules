@@ -5,12 +5,15 @@ import { getConcurrentExecutionLimiterWrapper } from "/modules/Delusoire.delulib
 
 export const fetchAlbumTracks = getConcurrentExecutionLimiterWrapper(1000)(
 	async (uri: string, offset = 0, limit = 415, retries = 2): Promise<any> => {
-		const res = await Platform.getGraphQLLoader()(GraphQLDefs.query.queryAlbumTracks, {
-			uri,
-			locale: Locale.getLocaleForURLPath(),
-			offset,
-			limit,
-		});
+		const res = await Platform.getGraphQLLoader()(
+			GraphQLDefs.query.getAlbum,
+			{
+				uri,
+				locale: Locale.getLocaleForURLPath(),
+				offset,
+				limit,
+			},
+		);
 
 		if (!res.data) {
 			if (retries > 0) {
@@ -18,8 +21,6 @@ export const fetchAlbumTracks = getConcurrentExecutionLimiterWrapper(1000)(
 			}
 			return null;
 		}
-
-		res.data.albumUnion.uri = uri;
 
 		return res.data.albumUnion as any;
 	},
