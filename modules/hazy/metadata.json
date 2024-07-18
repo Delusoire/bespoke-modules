@@ -11,10 +11,7 @@
 	],
 	"description": "The Hazy theme from spicetify",
 	"readme": "./assets/README.md",
-	"entries": {
-		"js": "index.js",
-		"css": "index.css"
-	},
+	"entries": {},
 	"dependencies": {
 		"stdlib": "0.2.2"
 	}

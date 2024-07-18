@@ -127,9 +127,8 @@ export const getSongPositionMs = (state = PlayerAPI.getState()) => {
 	return Math.min(positionAsOfTimestamp + scaledTimeSinceTimestamp, duration);
 };
 
-export const getNBalancedPairRegex = (pair: string, n: number) =>
-	`${pair[0]}(?:[^${pair}]*` +
-	`(?:${pair[0]}(?:[^${pair}]*`.repeat(n - 1) +
-	`(?:${pair[0]}[^${pair}]*${pair[1]})?` +
-	`[^${pair}]*)*${pair[1]})?`.repeat(n - 1) +
-	`[^${pair}]*)*${pair[1]}`;
+// n > 0
+export const getNBalancedPairRegex = ([p, q]: string, n: number) =>
+	`${p}[^${p}${q}]*(?:`.repeat(n - 1) +
+	`${p}[^${p}${q}]*${q}` +
+	`[^${p}${q}]*)*${q}`.repeat(n - 1);

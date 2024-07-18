@@ -19,6 +19,8 @@ export const fetchAlbumTracks = getConcurrentExecutionLimiterWrapper(1000)(
 			return null;
 		}
 
+		res.data.albumUnion.uri = uri;
+
 		return res.data.albumUnion as any;
 	},
 );

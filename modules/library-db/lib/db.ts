@@ -5,43 +5,59 @@ import { spotifyApi } from "/modules/Delusoire.delulib/lib/api.ts";
 import { _ } from "/modules/stdlib/deps.ts";
 import { fromString, Types } from "/modules/stdlib/src/webpack/URI.ts";
 import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
+import { fetchAlbumTracks } from "/modules/Delusoire.delulib/lib/GraphQL/fetchAlbumTracks.ts";
 
 export const db = new (class extends Dexie {
 	tracks!: Table<Track, string>;
 	playlists!: Table<any, string>;
+	albums!: Table<any, string>;
 
 	constructor() {
 		super("library-db");
 		this.version(1).stores({
 			tracks: "&uri, external_ids.isrc",
 			playlists: "&metadata.uri",
+			albums: "&uri",
 		});
 	}
 })();
 
 // TODO: execute this in a worker
-const fetchOrPopulateDB =
-	<A, B>(table: Table<A, B>, fetcher: (primaryKeys: B[]) => Promise<A[]>) => async (primaryKeys: B[]) => {
-		const objs = await table.bulkGet(primaryKeys);
-		const missed = objs.reduce((missed, obj, i) => {
-			obj ?? missed.push(i);
-			return missed;
-		}, [] as number[]);
+const fetchOrPopulateDB = <A, B extends string>(
+	table: Table<A, B>,
+	fetcher: (primaryKeys: B[]) => Promise<A[]>,
+) =>
+async (primaryKeys: B[]) => {
+	const objs = await table.bulkGet(primaryKeys);
+	const missed = objs.reduce((missed, obj, i) => {
+		obj ?? missed.push(i);
+		return missed;
+	}, [] as number[]);
 
-		if (missed.length) {
-			const fillers = await fetcher(missed.map((i) => primaryKeys[i]));
-			table.bulkAdd(fillers);
-			missed.forEach((i, j) => {
-				objs[i] = fillers[j];
-			});
-		}
+	const missedUniq = Object.groupBy(missed, (i) => primaryKeys[i]);
+	const missedUniqKeys = Object.keys(missedUniq) as B[];
 
-		return objs;
-	};
+	if (missedUniqKeys.length) {
+		const fillers = await fetcher(missedUniqKeys);
+		table.bulkAdd(fillers);
+		missedUniqKeys.forEach((k, i) => {
+			const js = missedUniq[k]!;
+			for (const j of js) {
+				objs[j] = fillers[i];
+			}
+		});
+	}
+
+	return objs;
+};
 
 export const getTracksFromURIs = fetchOrPopulateDB(db.tracks, (uris) => {
 	const ids = uris.map((uri) => fromString(uri).id);
 	return chunkify50((is) => spotifyApi.tracks.get(is))(ids);
+});
+
+export const getAlbumsFromURIs = fetchOrPopulateDB(db.albums, (uris) => {
+	return Promise.all(uris.map((uri) => fetchAlbumTracks(uri)));
 });
 
 const PlaylistAPI = Platform.getPlaylistAPI();
@@ -97,7 +113,7 @@ const labelSizes = {
 const getPlaylist = async (uri: string) => {
 	const playlist = await PlaylistAPI.getPlaylist(uri);
 
-	const images: Array<{ url: string; label: keyof typeof labelSizes; }> = playlist.metadata.images ?? [];
+	const images: Array<{ url: string; label: keyof typeof labelSizes }> = playlist.metadata.images ?? [];
 	const image = images.sort((image) => labelSizes[image.label])[0];
 
 	if (image) {
