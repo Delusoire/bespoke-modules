@@ -13,7 +13,7 @@ import {
 import { fromString } from "/modules/stdlib/src/webpack/URI.ts";
 import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
 import {
-	COLUMN_KEYS_EVERYWHERE,
+	COLUMN_TYPES_EVERYWHERE,
 	CUSTOM_COLUMNS,
 } from "/modules/Delusoire.tracklist-columns/mix.ts";
 
@@ -96,11 +96,11 @@ const PlaylistLabelsWrapper = React.memo(({ data }: any) => {
 });
 
 const COLUMN = {
-	key: "playlist-labels",
+	type: "playlist-labels",
 	label: "Playlist labels",
 	render: PlaylistLabelsWrapper,
 	cond: () => false,
 };
 
-CUSTOM_COLUMNS[COLUMN.key] = COLUMN;
-COLUMN_KEYS_EVERYWHERE.add(COLUMN.key);
+CUSTOM_COLUMNS[COLUMN.type] = COLUMN;
+COLUMN_TYPES_EVERYWHERE.add(COLUMN.type);

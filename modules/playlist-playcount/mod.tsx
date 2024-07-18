@@ -1,11 +1,11 @@
 import { CUSTOM_COLUMNS } from "/modules/Delusoire.tracklist-columns/mix.ts";
 import {
-	CUSTOM_COLUMN_KEY_TO_SORT_PROPS_MAP,
-	CUSTOM_SORT_KEY_TO_COLUMN_KEY_MAP,
+	CUSTOM_COLUMN_TYPE_TO_SORT_PROPS_MAP,
+	CUSTOM_SORT_KEY_TO_COLUMN_TYPE_MAP,
 	CUSTOM_SORT_KEY_TO_DEFAULT_SORT_OPTIONS_MAP,
 	SortOrder,
 } from "./mix.ts";
-import { CUSTOM_COLUMN_KEY_TO_SORT_FIELD_MAP } from "./mix.ts";
+import { CUSTOM_COLUMN_TYPE_TO_SORT_FIELD_MAP } from "./mix.ts";
 import { React } from "/modules/stdlib/src/expose/React.ts";
 import { UI } from "/modules/stdlib/src/webpack/ComponentLibrary.xpui.js";
 import { db } from "/modules/Delusoire.library-db/lib/db.ts";
@@ -41,34 +41,34 @@ const PlaycountWrapper = React.memo(({ data }: any) => {
 });
 
 const COLUMN = {
-	key: "playcount",
+	type: "PLAYCOUNT",
 	label: "Playcount",
 	render: PlaycountWrapper,
 	cond: () => true,
 };
 
-CUSTOM_COLUMNS[COLUMN.key] = COLUMN;
+CUSTOM_COLUMNS[COLUMN.type] = COLUMN;
 
 const SORT = {
 	key: "playcount",
 	label: "Playcount",
 };
 
-const SORT_FIELD_COLUMN = "PLAYCOUNT";
+const SORT_FIELD = "PLAYCOUNT";
 
-CUSTOM_COLUMN_KEY_TO_SORT_PROPS_MAP[COLUMN.key] = {
+CUSTOM_COLUMN_TYPE_TO_SORT_PROPS_MAP[COLUMN.type] = {
 	key: SORT.key,
 	value: SORT.label,
 };
 
-CUSTOM_SORT_KEY_TO_COLUMN_KEY_MAP[SORT.key] = COLUMN.key;
+CUSTOM_SORT_KEY_TO_COLUMN_TYPE_MAP[SORT.key] = COLUMN.type;
 
 CUSTOM_SORT_KEY_TO_DEFAULT_SORT_OPTIONS_MAP[SORT.key] = {
-	column: COLUMN.key,
+	column: COLUMN.type,
 	order: SortOrder.DESC,
 };
 
-CUSTOM_COLUMN_KEY_TO_SORT_FIELD_MAP[COLUMN.key] = SORT_FIELD_COLUMN;
+CUSTOM_COLUMN_TYPE_TO_SORT_FIELD_MAP[COLUMN.type] = SORT_FIELD;
 
 const PlaylistAPI = Platform.getPlaylistAPI();
 
@@ -79,7 +79,7 @@ async function sortPlaylistContents(contents: any, opts: any) {
 	const albumUris = items.map((track) => track.album.uri);
 	const albums = await getAlbumsFromURIs(albumUris);
 
-	if (opts?.sort?.field === SORT_FIELD_COLUMN) {
+	if (opts?.sort?.field === SORT_FIELD) {
 		const albumTracks = albums.flatMap((album) =>
 			album.tracks.items.map((w) => w.track)
 		);
@@ -116,7 +116,7 @@ PlaylistAPI.getPlaylist = async function (uri: string, _, opts) {
 		offset: 0,
 		limit: 1e9,
 	};
-	if (_opts?.sort?.field === SORT_FIELD_COLUMN) {
+	if (_opts?.sort?.field === SORT_FIELD) {
 		_opts.sort = undefined;
 	}
 	const playlist = await getPlaylist.call(PlaylistAPI, uri, _, _opts);
@@ -133,7 +133,7 @@ PlaylistAPI.getContents = async function (uri: string, opts) {
 		offset: 0,
 		limit: 1e9,
 	};
-	if (_opts?.sort?.field === SORT_FIELD_COLUMN) {
+	if (_opts?.sort?.field === SORT_FIELD) {
 		_opts.sort = undefined;
 	}
 	const contents = await getContents.call(PlaylistAPI, uri, _opts);

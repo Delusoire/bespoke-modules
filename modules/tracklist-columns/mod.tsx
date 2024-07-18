@@ -3,7 +3,7 @@ import { Module } from "/hooks/index.ts";
 import { React } from "/modules/stdlib/src/expose/React.ts";
 import { classnames } from "/modules/stdlib/src/webpack/ClassNames.ts";
 import { UI } from "/modules/stdlib/src/webpack/ComponentLibrary.ts";
-import { COLUMN_KEYS_EVERYWHERE, CUSTOM_COLUMNS, Data } from "./mix.ts";
+import { COLUMN_TYPES_EVERYWHERE, CUSTOM_COLUMNS, Data } from "./mix.ts";
 
 function createContext<A>(def: A) {
 	let ctx: React.Context<A> | null = null;
@@ -43,36 +43,41 @@ globalThis.__patchTracklistWrapperProps = (props) => {
 	return p;
 };
 
-globalThis.__patchRenderTracklistRowColumn = (columnKey) => {
+globalThis.__patchRenderTracklistRowColumn = (columnType) => {
 	const data = React.useContext(ctx());
-	return React.createElement(CUSTOM_COLUMNS[columnKey].render, {
-		key: columnKey,
+	return React.createElement(CUSTOM_COLUMNS[columnType].render, {
+		key: columnType,
 		data,
 	});
 };
 
 globalThis.__patchTracklistColumnHeaderContextMenu =
-	(columnKey) => (props: any) => {
-		const column = CUSTOM_COLUMNS[columnKey];
+	(columnType) => ({ className, children, onSort, columnIndex }: any) => {
+		const column = CUSTOM_COLUMNS[columnType];
 		if (!column) {
 			return;
 		}
 
-		return (
-			<button
-				className={classnames(MAP.tracklist.column_header, props.className)}
+		//!
+		const isSortable = false &&
+			CUSTOM_COLUMN_TYPE_TO_SORT_PROPS_MAP[columnType];
+
+		return React.createElement(
+			isSortable ? "button" : "div",
+			{
+				className: classnames(MAP.tracklist.column_header, className),
+				onClick: () => isSortable && onSort(column.type, columnIndex),
+			},
+			<UI.Text
+				variant="bodySmall"
+				className={classnames(
+					"standalone-ellipsis-one-line",
+					className,
+				)}
 			>
-				<UI.Text
-					variant="bodySmall"
-					className={classnames(
-						"standalone-ellipsis-one-line",
-						props.className,
-					)}
-				>
-					{column.label}
-				</UI.Text>
-				{props.children}
-			</button>
+				{column.label}
+			</UI.Text>,
+			children,
 		);
 	};
 
@@ -109,7 +114,7 @@ export default async function (mod: Module) {
 						...columns.slice(0, i),
 						...Object.values(CUSTOM_COLUMNS).filter((c) =>
 							c.cond(options)
-						).map((c) => c.key),
+						).map((c) => c.type),
 						...columns.slice(i),
 					];
 				},
@@ -121,6 +126,6 @@ export default async function (mod: Module) {
 		for (const k of Object.keys(CUSTOM_COLUMNS)) {
 			delete CUSTOM_COLUMNS[k];
 		}
-		COLUMN_KEYS_EVERYWHERE.clear();
+		COLUMN_TYPES_EVERYWHERE.clear();
 	};
 }

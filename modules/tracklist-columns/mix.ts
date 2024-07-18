@@ -3,7 +3,7 @@ import type { Transformer } from "/hooks/index.ts";
 import { React } from "/modules/stdlib/src/expose/React.ts";
 
 export interface Column {
-	key: string;
+	type: string;
 	label: string;
 	render: React.FC<{ data: Data }>;
 	cond: (options: Options) => boolean;
@@ -15,19 +15,19 @@ type Options = any;
 type Identity<T> = (x: T) => T;
 type RenderRow = (data: Data, index: number) => React.ReactNode;
 
-export const CUSTOM_COLUMNS: Record<Column["key"], Column> = {};
-export const COLUMN_KEYS_EVERYWHERE = new Set<Column["key"]>();
+export const CUSTOM_COLUMNS: Record<Column["type"], Column> = {};
+export const COLUMN_TYPES_EVERYWHERE = new Set<Column["type"]>();
 
 declare global {
 	var __patchTracklistWrapperProps: Identity<
 		{ renderRow: RenderRow; columns: string[] }
 	>;
-	var __patchRenderTracklistRowColumn: (columnKey: string) => React.ReactNode;
+	var __patchRenderTracklistRowColumn: (columnType: string) => React.ReactNode;
 	var __patchTracklistColumnHeaderContextMenu: (
-		columnKey: string,
+		columnType: string,
 	) => React.FC<{}>;
-	var __patchTracklistColumns: Identity<string[]>;
-	var __patchColumnKeyToColumnLabelMap: Identity<Record<string, string>>;
+	var __patchTracklistColumnsProvider: Identity<string[]>;
+	var __patchColumnTypeToColumnLabelMap: Identity<Record<string, string>>;
 }
 
 globalThis.__patchTracklistWrapperProps = (x) => {
@@ -36,21 +36,22 @@ globalThis.__patchTracklistWrapperProps = (x) => {
 };
 globalThis.__patchRenderTracklistRowColumn = () => undefined;
 globalThis.__patchTracklistColumnHeaderContextMenu = () => () => undefined;
-globalThis.__patchTracklistColumns = (columns) => {
+globalThis.__patchTracklistColumnsProvider = (columns) => {
 	const i = -1;
 	return React.useMemo(
 		() => [
 			...columns.slice(0, i),
-			...COLUMN_KEYS_EVERYWHERE,
+			...COLUMN_TYPES_EVERYWHERE,
 			...columns.slice(i),
 		],
 		[columns],
 	);
 };
 
-export const CUSTOM_COLUMN_KEY_TO_COLUMN_LABEL_MAP: Record<string, string> = {};
-globalThis.__patchColumnKeyToColumnLabelMap = (x) => {
-	Object.setPrototypeOf(x, CUSTOM_COLUMN_KEY_TO_COLUMN_LABEL_MAP);
+export const CUSTOM_COLUMN_TYPE_TO_COLUMN_LABEL_MAP: Record<string, string> =
+	{};
+globalThis.__patchColumnTypeToColumnLabelMap = (x) => {
+	Object.setPrototypeOf(x, CUSTOM_COLUMN_TYPE_TO_COLUMN_LABEL_MAP);
 	return new Proxy(x, {
 		get: (target, p, receiver) => {
 			return Reflect.get(target, p, receiver) ?? CUSTOM_COLUMNS[p].label;
@@ -82,7 +83,7 @@ export default function (transformer: Transformer) {
 
 		str = str.replace(
 			/({\[[a-zA-Z_\$][\w\$]*\.[a-zA-Z_\$][\w\$]*\.INDEX\]:[^{}]*(?:{[^{}]*(?:{[^{}]*}[^{}]*)*}[^{}]*)*})/,
-			"globalThis.__patchColumnKeyToColumnLabelMap($1)",
+			"globalThis.__patchColumnTypeToColumnLabelMap($1)",
 		);
 
 		emit();

@@ -34,7 +34,9 @@ export async function preload(mod: Module) {
 				function (props) {
 					return v({
 						...props,
-						columns: globalThis.__patchTracklistColumns(props.columns),
+						columns: globalThis.__patchTracklistColumnsProvider(
+							props.columns,
+						),
 					});
 				},
 		});
