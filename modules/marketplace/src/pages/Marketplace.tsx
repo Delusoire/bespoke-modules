@@ -1,7 +1,12 @@
 import { React } from "/modules/stdlib/src/expose/React.ts";
 import { _ } from "/modules/stdlib/deps.ts";
 import { t } from "../i18n.ts";
-import { type Metadata, type Module, type ModuleIdentifier, type ModuleInstance } from "/hooks/module.ts";
+import {
+	type Metadata,
+	type Module,
+	type ModuleIdentifier,
+	type ModuleInstance,
+} from "/hooks/module.ts";
 import ModuleCard from "../components/ModuleCard/index.tsx";
 import { hash, settingsButton } from "../../mod.tsx";
 import { CONFIG } from "../settings.ts";
@@ -22,7 +27,10 @@ const SortOptions = {
 	"z-a": () => t("sort.z-a"),
 	random: () => t("sort.random"),
 };
-const SortFns: Record<keyof typeof SortOptions, null | ((a: Metadata, b: Metadata) => number | boolean)> = {
+const SortFns: Record<
+	keyof typeof SortOptions,
+	null | ((a: Metadata, b: Metadata) => number | boolean)
+> = {
 	default: null,
 	"a-z": (a, b) => (b.name > a.name ? 1 : a.name > b.name ? -1 : 0),
 	"z-a": (a, b) => (a.name > b.name ? 1 : b.name > a.name ? -1 : 0),
@@ -42,15 +50,32 @@ const getFilters = () =>
 	}), [CONFIG.showLibs]);
 
 const libTags = new Set(["lib", "npm", "internal"]);
-const isModLib = (m: ModuleInstance) => new Set(m.metadata?.tags).intersection(libTags).size > 0;
-const enabledFn = { enabled: { [TreeNodeVal]: (m: ModuleInstance) => "isLoaded" in m && m.isLoaded() } };
+const isModLib = (m: ModuleInstance) =>
+	new Set(m.metadata?.tags).intersection(libTags).size > 0;
+const enabledFn = {
+	enabled: {
+		[TreeNodeVal]: (m: ModuleInstance) => "isLoaded" in m && m.isLoaded(),
+	},
+};
 
 const filterFNs: RTree<(m: ModuleInstance) => boolean> = {
 	[TreeNodeVal]: (mi) => CONFIG.showLibs || !isModLib(mi),
-	themes: { [TreeNodeVal]: (mi) => mi.metadata?.tags.includes("theme") ?? false, ...enabledFn },
-	apps: { [TreeNodeVal]: (mi) => mi.metadata?.tags.includes("app") ?? false, ...enabledFn },
-	extensions: { [TreeNodeVal]: (mi) => mi.metadata?.tags.includes("extension") ?? false, ...enabledFn },
-	snippets: { [TreeNodeVal]: (mi) => mi.metadata?.tags.includes("snippet") ?? false, ...enabledFn },
+	themes: {
+		[TreeNodeVal]: (mi) => mi.metadata?.tags.includes("theme") ?? false,
+		...enabledFn,
+	},
+	apps: {
+		[TreeNodeVal]: (mi) => mi.metadata?.tags.includes("app") ?? false,
+		...enabledFn,
+	},
+	extensions: {
+		[TreeNodeVal]: (mi) => mi.metadata?.tags.includes("extension") ?? false,
+		...enabledFn,
+	},
+	snippets: {
+		[TreeNodeVal]: (mi) => mi.metadata?.tags.includes("snippet") ?? false,
+		...enabledFn,
+	},
 	libs: { [TreeNodeVal]: isModLib },
 };
 
@@ -89,6 +114,7 @@ export default React.memo(() => {
 			modules={modules}
 			moduleToInstance={moduleToInstance}
 			selectedModule={selectedModule}
+			updateModules={updateModules}
 			updateModule={updateModule}
 			removeModule={removeModule}
 			selectModule={selectModule}
@@ -102,6 +128,7 @@ interface MarketplaceContentProps {
 	modules: Record<string, Array<Module>>;
 	moduleToInstance: Record<string, ModuleInstance>;
 	selectedModule: ModuleIdentifier | null;
+	updateModules: () => void;
 	updateModule: (module: Module) => void;
 	removeModule: (module: Module) => void;
 	selectModule: (moduleIdentifier: ModuleIdentifier | null) => void;
@@ -120,21 +147,45 @@ const MarketplaceContent = (props: MarketplaceContentProps) => {
 	const [chipFilter, selectedFilters] = useChipFilter(getFilters());
 
 	const getSelectedFilterFNs = () =>
-		selectedFilters.map(({ key }) => getProp(filterFNs, key) as typeof filterFNs);
-	const selectedFilterFNs = React.useMemo(getSelectedFilterFNs, [selectedFilters]);
+		selectedFilters.map(({ key }) =>
+			getProp(filterFNs, key) as typeof filterFNs
+		);
+	const selectedFilterFNs = React.useMemo(getSelectedFilterFNs, [
+		selectedFilters,
+	]);
 
-	const { modules, updateModule, selectInstance, addModule, removeModule, moduleToInstance, selectedModule, selectModule } = props;
+	const {
+		modules,
+		updateModule,
+		updateModules,
+		selectInstance,
+		addModule,
+		removeModule,
+		moduleToInstance,
+		selectedModule,
+		selectModule,
+	} = props;
 
-	const instances = React.useMemo(() => Array.from(Object.values(moduleToInstance)), [moduleToInstance]);
+	const instances = React.useMemo(
+		() => Array.from(Object.values(moduleToInstance)),
+		[moduleToInstance],
+	);
 
 	const moduleCardProps = selectedFilterFNs
 		.reduce((acc, fn) => acc.filter(fn[TreeNodeVal]), instances)
 		.filter((moduleInst) => {
 			const { name, tags, authors } = moduleInst.metadata ?? dummy_metadata;
 			const searchFiels = [name, ...tags, ...authors];
-			return searchFiels.some((f) => f.toLowerCase().includes(search.toLowerCase()));
+			return searchFiels.some((f) =>
+				f.toLowerCase().includes(search.toLowerCase())
+			);
 		})
-		.sort((a, b) => sortFn?.(a.metadata ?? dummy_metadata, b.metadata ?? dummy_metadata) as number);
+		.sort((a, b) =>
+			sortFn?.(
+				a.metadata ?? dummy_metadata,
+				b.metadata ?? dummy_metadata,
+			) as number
+		);
 
 	const { isActive, panelSend } = usePanelAPI(hash?.state);
 	React.useEffect(() => {
@@ -150,7 +201,9 @@ const MarketplaceContent = (props: MarketplaceContentProps) => {
 		<>
 			<section className="contentSpacing">
 				<div className="marketplace-header items-center flex justify-between pb-2 flex-row z-10">
-					<div className="marketplace-header__left flex gap-2">{chipFilter}</div>
+					<div className="marketplace-header__left flex gap-2">
+						{chipFilter}
+					</div>
 					<div className="marketplace-header__right flex gap-2 items-center">
 						<p className="inline-flex self-center font-bold text-sm">
 							{t("pages.marketplace.sort.label")}
@@ -171,6 +224,7 @@ const MarketplaceContent = (props: MarketplaceContentProps) => {
 								moduleInstance={moduleInst}
 								isSelected={isSelected}
 								selectModule={selectModule}
+								updateModules={updateModules}
 								updateModule={updateModule}
 								removeModule={removeModule}
 								addModule={addModule}

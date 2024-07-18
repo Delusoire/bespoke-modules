@@ -64,6 +64,7 @@ const VersionListPanelContent = React.memo(() => {
 						module={module}
 						addModule={m.addModule}
 						removeModule={m.removeModule}
+						updateModules={m.updateModules}
 						updateModule={m.updateModule}
 						selectedInstance={selectedInstance!}
 						selectInstance={m.selectInstance}
@@ -78,6 +79,7 @@ interface ModuleSectionProps {
 	module: Module;
 	addModule: (module: Module) => void;
 	removeModule: (module: Module) => void;
+	updateModules: () => void;
 	updateModule: (module: Module) => void;
 	selectedInstance: ModuleInstance;
 	selectInstance: (moduleInstance: ModuleInstance) => void;
@@ -100,6 +102,7 @@ const RealModuleSection = (props: ModuleSectionProps) => {
 					selectInstance={selectInstance}
 					addModule={props.addModule}
 					removeModule={props.removeModule}
+					updateModules={props.updateModules}
 					updateModule={props.updateModule}
 				/>
 			))}
@@ -138,6 +141,7 @@ const VirtualModuleSection = (props: ModuleSectionProps) => {
 					addModule={props.addModule}
 					removeModule={props.removeModule}
 					updateModule={props.updateModule}
+					updateModules={props.updateModules}
 				/>
 			))}
 		</div>
@@ -151,6 +155,7 @@ interface ModuleInstanceProps {
 	addModule: (module: Module) => void;
 	removeModule: (module: Module) => void;
 	updateModule: (module: Module) => void;
+	updateModules: () => void;
 }
 
 const RealModuleInstance = (props: ModuleInstanceProps) => {
@@ -158,40 +163,43 @@ const RealModuleInstance = (props: ModuleInstanceProps) => {
 
 	return (
 		<div
-			onClick={() => props.selectInstance(props.moduleInstance)}
+			onClick={() => props.selectInstance(moduleInstance)}
 			className={classnames(
 				"flex items-center gap-2 justify-between group",
 				"rounded-md -mx-2 mt-0 mb-2 p-2 hover:bg-[var(--background-tinted-highlight)]",
 				props.isSelected && "!bg-white !bg-opacity-30",
 			)}
 		>
-			<div className="flex items-center">
-				<EnabledDisabledRad
-					moduleInstance={props.moduleInstance}
-					updateModule={props.updateModule}
-				/>
+			<div className="flex items-center w-4">
+				{moduleInstance.isInstalled() && (
+					<EnabledDisabledRad
+						moduleInstance={moduleInstance}
+						updateModules={props.updateModules}
+					/>
+				)}
 			</div>
+
 			<div className="flex-1 min-w-0">
 				<ScrollableText>
 					<span className="font-medium">
-						{props.moduleInstance.getVersion()}
+						{moduleInstance.getVersion()}
 					</span>
 				</ScrollableText>
 			</div>
 			{moduleInstance.canAdd() && (
 				<AddButton
-					moduleInstance={props.moduleInstance}
+					moduleInstance={moduleInstance}
 					addModule={props.addModule}
 				/>
 			)}
 			{moduleInstance.canInstallRemove() && (
 				<>
 					<InstallButton
-						moduleInstance={props.moduleInstance}
+						moduleInstance={moduleInstance}
 						updateModule={props.updateModule}
 					/>
 					<RemoveButton
-						moduleInstance={props.moduleInstance}
+						moduleInstance={moduleInstance}
 						removeModule={props.removeModule}
 						updateModule={props.updateModule}
 					/>
@@ -199,7 +207,7 @@ const RealModuleInstance = (props: ModuleInstanceProps) => {
 			)}
 			{moduleInstance.canDelete() && (
 				<DeleteButton
-					moduleInstance={props.moduleInstance}
+					moduleInstance={moduleInstance}
 					updateModule={props.updateModule}
 				/>
 			)}
@@ -271,7 +279,7 @@ const InstallButton = (props: InstallButtonProps) => (
 
 interface EnabledDisabledButtonProps {
 	moduleInstance: ModuleInstance;
-	updateModule: (module: Module) => void;
+	updateModules: () => void;
 	setEnabled: (enabled: boolean) => void;
 	updateEnabled: () => void;
 }
@@ -285,7 +293,7 @@ const DisabledButton = (props: EnabledDisabledButtonProps) => {
 				const moduleInstance = props.moduleInstance;
 				const module = moduleInstance.getModule();
 				if (await module.enable(moduleInstance)) {
-					props.updateModule(module);
+					props.updateModules();
 					props.updateEnabled();
 				}
 			}}
@@ -304,7 +312,7 @@ const EnabledButton = (props: EnabledDisabledButtonProps) => {
 				const moduleInstance = props.moduleInstance;
 				const module = moduleInstance.getModule();
 				if (await module.disable()) {
-					props.updateModule(module);
+					props.updateModules();
 					props.updateEnabled();
 				}
 			}}
@@ -357,7 +365,7 @@ const RemoveButton = (props: RemoveButtonProps) => (
 
 interface EnaDisRadioProps {
 	moduleInstance: ModuleInstance;
-	updateModule: (module: Module) => void;
+	updateModules: () => void;
 }
 const EnabledDisabledRad = (props: EnaDisRadioProps) => {
 	const getIsEnabled = () => props.moduleInstance.isEnabled();

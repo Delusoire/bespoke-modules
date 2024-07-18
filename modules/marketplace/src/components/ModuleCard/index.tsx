@@ -1,5 +1,8 @@
 import { React } from "/modules/stdlib/src/expose/React.ts";
-import { MdDeleteSweep, MdAddCircleOutline } from "https://esm.sh/react-icons/md";
+import {
+	MdAddCircleOutline,
+	MdDeleteSweep,
+} from "https://esm.sh/react-icons/md";
 import AuthorsDiv from "./AuthorsDiv.tsx";
 import TagsDiv from "./TagsDiv.tsx";
 import {
@@ -10,7 +13,10 @@ import {
 	RootModule,
 } from "/hooks/module.ts";
 import { useUpdate } from "../../util/index.ts";
-import { Cards, SettingsToggle } from "/modules/stdlib/src/webpack/ReactComponents.ts";
+import {
+	Cards,
+	SettingsToggle,
+} from "/modules/stdlib/src/webpack/ReactComponents.ts";
 import { classnames } from "/modules/stdlib/src/webpack/ClassNames.ts";
 import { useQuery } from "/modules/stdlib/src/webpack/ReactQuery.ts";
 import { display } from "/modules/stdlib/lib/modal.tsx";
@@ -35,6 +41,7 @@ interface ModuleCardProps {
 	selectModule: (moduleIdentifier: ModuleIdentifier | null) => void;
 	isSelected: boolean;
 	removeModule: (module: Module) => void;
+	updateModules: () => void;
 	updateModule: (module: Module) => void;
 	addModule: (module: Module) => void;
 	selectInstance: (moduleInstance: ModuleInstance) => void;
@@ -65,10 +72,13 @@ const ModuleCard = (props: ModuleCardProps) => {
 		readme,
 	} = moduleInstance.metadata ?? {};
 
-	const cardClasses = classnames("rounded-lg bg-neutral-900 p-4 transition duration-300 ease-in-out", {
-		"border border-dashed border-[var(--essential-warning)]": noMetadata,
-		"!bg-neutral-800": isSelected,
-	});
+	const cardClasses = classnames(
+		"rounded-lg bg-neutral-900 p-4 transition duration-300 ease-in-out",
+		{
+			"border border-dashed border-[var(--essential-warning)]": noMetadata,
+			"!bg-neutral-800": isSelected,
+		},
+	);
 
 	const externalHref = moduleInstance.getRemoteArtifactURL() ?? null;
 	const previewHref = metadataURL ? `${metadataURL}/../${preview}` : null;
@@ -85,7 +95,11 @@ const ModuleCard = (props: ModuleCardProps) => {
 	const onImageClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
 		if (readmeHref) {
-			display({ title: "Preview", content: <RemoteMarkdown url={readmeHref} />, isLarge: true });
+			display({
+				title: "Preview",
+				content: <RemoteMarkdown url={readmeHref} />,
+				isLarge: true,
+			});
 		}
 	};
 
@@ -93,7 +107,9 @@ const ModuleCard = (props: ModuleCardProps) => {
 	const enabledLocalInstance = localModule?.getEnabledInstance();
 	const showLoaded = enabledLocalInstance?.isInstalled() ?? false;
 
-	const isLoaded = React.useCallback(() => moduleInstance.isLoaded(), [moduleInstance]);
+	const isLoaded = React.useCallback(() => moduleInstance.isLoaded(), [
+		moduleInstance,
+	]);
 
 	const [loaded, setLoaded, updateLoaded] = useUpdate(isLoaded);
 
@@ -124,7 +140,7 @@ const ModuleCard = (props: ModuleCardProps) => {
 		dis: if (moduleInstance.isEnabled()) {
 			if (module.canDisable(moduleInstance)) {
 				if (await module.disable()) {
-					props.updateModule(module);
+					props.updateModules();
 					break dis;
 				}
 			}
@@ -154,8 +170,10 @@ const ModuleCard = (props: ModuleCardProps) => {
 			}
 			return false;
 		}
+
 		return true;
 	};
+
 	const fastInstall = async () => {
 		let localModuleInstance = moduleInstance;
 		let localModule = localModuleInstance.getModule();
@@ -186,27 +204,30 @@ const ModuleCard = (props: ModuleCardProps) => {
 		ena: if (!localModuleInstance.isEnabled()) {
 			if (localModule.canEnable(localModuleInstance)) {
 				if (await localModule.enable(localModuleInstance)) {
-					props.updateModule(localModule);
+					props.updateModules();
 					break ena;
 				}
 			}
 			return false;
 		}
+
 		return true;
 	};
 
 	const isInstalled = moduleInstance.isInstalled();
-	const fastInstallDeleteButton = isInstalled ? (
-		<>
-			<MdDeleteSweep />
-			Reset
-		</>
-	) : (
-		<>
-			<MdAddCircleOutline />
-			Install
-		</>
-	);
+	const fastInstallDeleteButton = isInstalled
+		? (
+			<>
+				<MdDeleteSweep />
+				Reset
+			</>
+		)
+		: (
+			<>
+				<MdAddCircleOutline />
+				Install
+			</>
+		);
 
 	const footer = (
 		<div className="flex justify-between w-full">
@@ -292,7 +313,11 @@ const ModuleCardContent = (props: ModuleCardContentProps) => {
 			>
 				<div
 					onClick={onImageClick}
-					style={{ pointerEvents: "all", cursor: "pointer", marginBottom: "16px" }}
+					style={{
+						pointerEvents: "all",
+						cursor: "pointer",
+						marginBottom: "16px",
+					}}
 				>
 					<Cards.CardImage
 						images={previewHref ? [{ url: previewHref }] : []}
@@ -319,7 +344,11 @@ const ModuleCardContent = (props: ModuleCardContentProps) => {
 						{description || "No description for this package"}
 					</p>
 					<div className="text-[var(--text-subdued)] whitespace-normal main-type-mestoBold">
-						<TagsDiv tags={tags} showTags={showTags} importantTags={importantTags} />
+						<TagsDiv
+							tags={tags}
+							showTags={showTags}
+							importantTags={importantTags}
+						/>
 					</div>
 					<div className="flex justify-between">{children}</div>
 				</div>

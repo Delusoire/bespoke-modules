@@ -11,15 +11,15 @@ export enum SortOrder {
 	SECONDARY_DESC,
 }
 
-type SortProps = { key: SortKey; value: string };
+type SortProps = { key: SortKey; value: string; };
 type ColumnTypeToSortPropsMap = Record<ColumnType, SortProps>;
 
-export type SortState = { column: ColumnType; order: SortOrder };
+export type SortState = { column: ColumnType; order: SortOrder; };
 type SortKeyToDefaultSortOptionsMap = Record<SortKey, SortState>;
 
 type SortKeyToColumnTypeMap = Record<SortKey, ColumnType>;
 
-type SortField = { column: string; order: string };
+type SortField = { column: string; order: string; };
 type ColumnTypeToSortFieldColumnMap = Record<ColumnType, SortField["column"]>;
 
 type Identity<T> = (x: T) => T;
@@ -80,6 +80,7 @@ export default async function (transformer: Transformer) {
 		return str;
 	}, {
 		glob: /^\/5150\.js$/,
+		noAwait: true,
 	});
 
 	transformer((emit) => (str) => {
