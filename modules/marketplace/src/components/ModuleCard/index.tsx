@@ -66,7 +66,7 @@ const ModuleCard = (props: ModuleCardProps) => {
 	const {
 		name = moduleInstance.getModuleIdentifier(),
 		tags = [],
-		preview = "./assets/preview.gif",
+		preview,
 		authors = [],
 		description = moduleInstance.getVersion(),
 		readme,
@@ -80,9 +80,27 @@ const ModuleCard = (props: ModuleCardProps) => {
 		},
 	);
 
+	function parseUrl(url: string | undefined): string | null {
+		if (url) {
+			if (url.startsWith("/")) {
+				return url;
+			}
+			if (url.startsWith("http://") || url.startsWith("https://")) {
+				return url;
+			}
+			if (url.startsWith("data:")) {
+				return url;
+			}
+			if (metadataURL && url.startsWith("./")) {
+				return `${metadataURL}/../${url}`;
+			}
+		}
+		return null;
+	}
+
 	const externalHref = moduleInstance.getRemoteArtifactURL() ?? null;
-	const previewHref = metadataURL ? `${metadataURL}/../${preview}` : null;
-	const readmeHref = metadataURL ? `${metadataURL}/../${readme}` : null;
+	const previewHref = parseUrl(preview);
+	const readmeHref = parseUrl(readme);
 
 	// TODO: add more important tags
 	const importantTags: string[] = [];
@@ -242,7 +260,8 @@ const ModuleCard = (props: ModuleCardProps) => {
 				className={`cursor-pointer border-0 rounded inline-flex items-center justify-between ${
 					isInstalled ? "bg-gray-500" : "bg-green-500"
 				} text-white px-2 py-2 w-1/2 h-8`}
-				onClick={async () => {
+				onClick={async (e) => {
+					e.stopPropagation();
 					if (isInstalled) {
 						await fastDelete();
 					} else {
@@ -262,7 +281,7 @@ const ModuleCard = (props: ModuleCardProps) => {
 			onImageClick={onImageClick}
 			previewHref={previewHref}
 			name={name}
-			externalHref={externalHref ?? "ehref"}
+			externalHref={externalHref}
 			authors={authors}
 			description={description}
 			tags={tags}
@@ -279,7 +298,7 @@ interface ModuleCardContentProps {
 	previewHref: string | null;
 	onImageClick: React.HTMLAttributes<HTMLDivElement>["onClick"];
 	name: string;
-	externalHref: string;
+	externalHref: string | null;
 	authors: string[];
 	description: string;
 	showTags?: boolean;
@@ -320,6 +339,7 @@ const ModuleCardContent = (props: ModuleCardContentProps) => {
 					}}
 				>
 					<Cards.CardImage
+						key={previewHref}
 						images={previewHref ? [{ url: previewHref }] : []}
 						FallbackComponent={fallbackImage}
 					/>
