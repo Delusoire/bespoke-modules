@@ -3,7 +3,12 @@ import { Module } from "/hooks/index.ts";
 import { React } from "/modules/stdlib/src/expose/React.ts";
 import { classnames } from "/modules/stdlib/src/webpack/ClassNames.ts";
 import { UI } from "/modules/stdlib/src/webpack/ComponentLibrary.ts";
-import { COLUMN_TYPES_EVERYWHERE, CUSTOM_COLUMNS, Data } from "./mix.ts";
+import {
+	COLUMN_TYPES_EVERYWHERE,
+	CUSTOM_COLUMN_TYPE_TO_SORT_PROPS_MAP,
+	CUSTOM_COLUMNS,
+	Data,
+} from "./mix.ts";
 
 function createContext<A>(def: A) {
 	let ctx: React.Context<A> | null = null;
@@ -58,9 +63,7 @@ globalThis.__patchTracklistColumnHeaderContextMenu =
 			return;
 		}
 
-		//!
-		const isSortable = false &&
-			CUSTOM_COLUMN_TYPE_TO_SORT_PROPS_MAP[columnType];
+		const isSortable = CUSTOM_COLUMN_TYPE_TO_SORT_PROPS_MAP[columnType];
 
 		return React.createElement(
 			isSortable ? "button" : "div",

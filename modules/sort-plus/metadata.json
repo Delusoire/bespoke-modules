@@ -19,7 +19,6 @@
 	},
 	"dependencies": {
 		"stdlib": "0.2.2",
-		"Delusoire.delulib": "0.1.3",
-		"Delusoire.tracklist-columns": "0.1.3"
+		"Delusoire.delulib": "0.1.3"
 	}
 }

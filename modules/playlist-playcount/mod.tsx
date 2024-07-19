@@ -1,11 +1,11 @@
 import { CUSTOM_COLUMNS } from "/modules/Delusoire.tracklist-columns/mix.ts";
 import {
+	CUSTOM_COLUMN_TYPE_TO_SORT_FIELD_MAP,
 	CUSTOM_COLUMN_TYPE_TO_SORT_PROPS_MAP,
 	CUSTOM_SORT_KEY_TO_COLUMN_TYPE_MAP,
 	CUSTOM_SORT_KEY_TO_DEFAULT_SORT_OPTIONS_MAP,
 	SortOrder,
-} from "./mix.ts";
-import { CUSTOM_COLUMN_TYPE_TO_SORT_FIELD_MAP } from "./mix.ts";
+} from "/modules/Delusoire.tracklist-columns/mix.ts";
 import { React } from "/modules/stdlib/src/expose/React.ts";
 import { UI } from "/modules/stdlib/src/webpack/ComponentLibrary.xpui.js";
 import { db } from "/modules/Delusoire.library-db/lib/db.ts";
