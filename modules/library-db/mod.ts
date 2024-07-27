@@ -20,7 +20,8 @@ const extractPlaylists = (leaf: any): Array<Record<string, any>> => {
 };
 
 const extractItemsUris = ({ items }: any) => items.map((item) => item.uri);
-const getPlaylistTracks = (playlist) => PlaylistAPI.getContents(playlist).then(extractItemsUris);
+const getPlaylistTracks = (playlist) =>
+	PlaylistAPI.getContents(playlist, undefined, true).then(extractItemsUris);
 
 export const mapAssocs = (uris: string[], fn: (assocs: Map<string, number>) => void) => {
 	for (const uri of uris) {
@@ -86,7 +87,7 @@ RootlistAPI.getEvents().addListener("operation_complete", async ({ data }) => {
 export const PlaylistItems = new Map<string, Map<string, number>>();
 
 for (const playlist of SavedPlaylists) {
-	const uris = await PlaylistAPI.getContents(playlist).then(extractItemsUris);
+	const uris = await PlaylistAPI.getContents(playlist, undefined, true).then(extractItemsUris);
 	onTracksAddedToPlaylist(playlist, uris);
 }
 
@@ -128,4 +129,4 @@ export const useLivePlaylistItems = (uri: string) => {
 	) => (count > 0 ? [playlist] : []));
 };
 
-export default async function () { }
+export default async function () {}

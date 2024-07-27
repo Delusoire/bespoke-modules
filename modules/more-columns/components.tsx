@@ -60,7 +60,7 @@ const Scrobbles = React.memo(
 	({ uri }: { uri: string }) => {
 		const lfmTrack = lfmTracksCache.get(uri);
 
-		const scrobbles = lfmTrack?.scrobbles ?? -1;
+		const scrobbles = lfmTrack?.userplaycount ?? -1;
 
 		return (
 			<UI.Text as="div" variant="bodySmall" className="HxDMwNr5oCxTOyqt85gi">

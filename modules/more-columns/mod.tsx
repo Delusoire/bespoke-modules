@@ -25,7 +25,11 @@ export default async function (mod: Module) {
 	load();
 
 	const getPlaylist = PlaylistAPI.getPlaylist;
-	PlaylistAPI.getPlaylist = async function (uri: string, _: any, opts: any) {
+	PlaylistAPI.getPlaylist = async function (uri: string, _: any, opts: any, bypass = false) {
+		if (bypass) {
+			return await getPlaylist.call(PlaylistAPI, uri, _, opts);
+		}
+
 		const _opts = {
 			...opts,
 			offset: 0,
@@ -42,7 +46,11 @@ export default async function (mod: Module) {
 	};
 
 	const getContents = PlaylistAPI.getContents;
-	PlaylistAPI.getContents = async function (uri: string, opts: any) {
+	PlaylistAPI.getContents = async function (uri: string, opts: any, bypass = false) {
+		if (bypass) {
+			return await getContents.call(PlaylistAPI, uri, opts);
+		}
+
 		const _opts = {
 			...opts,
 			offset: 0,

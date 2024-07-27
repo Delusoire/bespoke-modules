@@ -16,10 +16,7 @@ import {
 	TracklistColumnsContextProvider,
 	TracklistRow,
 } from "/modules/stdlib/src/webpack/ReactComponents.ts";
-import {
-	getPlayContext,
-	useTrackListColumns,
-} from "/modules/stdlib/src/webpack/CustomHooks.ts";
+import { getPlayContext, useTrackListColumns } from "/modules/stdlib/src/webpack/CustomHooks.ts";
 
 const DropdownOptions = {
 	"Past Month": () => "Past Month",
@@ -75,8 +72,7 @@ const TracksPageContent = ({ topTracks }: TracksPageContentProps) => {
 	// });
 
 	const itemsCache = {
-		getItems: (offset: number, limit: number) =>
-			topTracks.slice(offset, offset + limit),
+		getItems: (offset: number, limit: number) => topTracks.slice(offset, offset + limit),
 		nrValidItems: topTracks.length,
 		invalidateCache: () => {},
 		cacheAll: () => {},
@@ -89,12 +85,10 @@ const TracksPageContent = ({ topTracks }: TracksPageContentProps) => {
 			itemsCache={itemsCache}
 			hasHeaderRow={true}
 			columns={columns}
-			renderRow={(track: Track, index: number) => (
-				<TrackRow track={track} index={index} key={index} />
-			)}
+			renderRow={(track: Track, index: number) => <TrackRow track={track} index={index} key={index} />}
 			ariaLabel="Top Tracks"
 			isCompactMode={false}
-			columnPersistenceKey="stats-top-tracks"
+			columnPersistenceKey="stats-top-tracks-tracklist"
 		>
 			spotify:app:stats:tracks
 		</Tracklist>

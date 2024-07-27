@@ -86,7 +86,7 @@ export async function patchPlaylistContents(contents: any, opts: any) {
 		const lfmTracks = await getLFMTracks(items);
 		if (isScrobblesSort) {
 			const urisToScrobbles = Object.fromEntries(
-				items.map((track, i) => [track.uri, Number(lfmTracks[i].scrobbles ?? -1)]),
+				items.map((track, i) => [track.uri, Number(lfmTracks[i].userplaycount ?? -1)]),
 			);
 			order = (a, b) => urisToScrobbles[a.uri] - urisToScrobbles[b.uri];
 		}
