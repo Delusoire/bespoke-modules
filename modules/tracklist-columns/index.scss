@@ -1,0 +1,22 @@
+.oIeuP60w1eYpFaXESRSg.oYS_3GP9pvVjqbFlh9tq[aria-colcount="6"] ._TH6YAXEzJtzSxhkGSqu~._TH6YAXEzJtzSxhkGSqu~._TH6YAXEzJtzSxhkGSqu~._TH6YAXEzJtzSxhkGSqu {
+	display: none;
+}
+
+.oIeuP60w1eYpFaXESRSg.oYS_3GP9pvVjqbFlh9tq[aria-colcount="7"] ._TH6YAXEzJtzSxhkGSqu~._TH6YAXEzJtzSxhkGSqu~._TH6YAXEzJtzSxhkGSqu~._TH6YAXEzJtzSxhkGSqu~._TH6YAXEzJtzSxhkGSqu {
+	display: none;
+}
+
+
+/*
+$tracklist-selector: ".oIeuP60w1eYpFaXESRSg.oYS_3GP9pvVjqbFlh9tq";
+$column-selector: "._TH6YAXEzJtzSxhkGSqu";
+
+@each $colcount in (6, 7) {
+	#{$tracklist-selector}[aria-colcount="#{$colcount}"] {
+		#{$column-selector}#{repeat("~#{$column-selector}", $sibling-count - 3)} {
+			display: none;
+		}
+	}
+}
+}
+*/

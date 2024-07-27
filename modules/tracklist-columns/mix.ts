@@ -6,17 +6,17 @@ export interface Column {
 	type: string;
 	label: string;
 	render: React.FC<{ data: Data }>;
-	cond: (options: Options) => boolean;
 }
 
 export type Data = any;
-type Options = any;
+export type Options = any;
 
 type Identity<T> = (x: T) => T;
 type RenderRow = (data: Data, index: number) => React.ReactNode;
 
 export const CUSTOM_COLUMNS: Record<Column["type"], Column> = {};
 export const COLUMN_TYPES_EVERYWHERE = new Set<Column["type"]>();
+export const COLUMN_TYPES_PLAYLISTS = new Map<Column["type"], (options: Options) => boolean>();
 
 declare global {
 	var __patchTracklistWrapperProps: Identity<
@@ -48,10 +48,7 @@ globalThis.__patchTracklistColumnsProvider = (columns) => {
 	);
 };
 
-export const CUSTOM_COLUMN_TYPE_TO_COLUMN_LABEL_MAP: Record<string, string> =
-	{};
 globalThis.__patchColumnTypeToColumnLabelMap = (x) => {
-	Object.setPrototypeOf(x, CUSTOM_COLUMN_TYPE_TO_COLUMN_LABEL_MAP);
 	return new Proxy(x, {
 		get: (target, p, receiver) => {
 			return Reflect.get(target, p, receiver) ?? CUSTOM_COLUMNS[p].label;
@@ -128,13 +125,10 @@ declare global {
 		ColumnTypeToSortFieldColumnMap
 	>;
 }
-export const CUSTOM_COLUMN_TYPE_TO_SORT_PROPS_MAP: ColumnTypeToSortPropsMap =
-	{};
-export const CUSTOM_SORT_KEY_TO_DEFAULT_SORT_OPTIONS_MAP:
-	SortKeyToDefaultSortOptionsMap = {};
+export const CUSTOM_COLUMN_TYPE_TO_SORT_PROPS_MAP: ColumnTypeToSortPropsMap = {};
+export const CUSTOM_SORT_KEY_TO_DEFAULT_SORT_OPTIONS_MAP: SortKeyToDefaultSortOptionsMap = {};
 export const CUSTOM_SORT_KEY_TO_COLUMN_TYPE_MAP: SortKeyToColumnTypeMap = {};
-export const CUSTOM_COLUMN_TYPE_TO_SORT_FIELD_MAP:
-	ColumnTypeToSortFieldColumnMap = {};
+export const CUSTOM_COLUMN_TYPE_TO_SORT_FIELD_MAP: ColumnTypeToSortFieldColumnMap = {};
 
 globalThis.__patchColumnTypeToSortPropsMap = (x) => {
 	Object.setPrototypeOf(x, CUSTOM_COLUMN_TYPE_TO_SORT_PROPS_MAP);
@@ -173,7 +167,7 @@ function tracklistSort(transformer: Transformer) {
 		emit();
 		return str;
 	}, {
-		glob: /^\/5150\.js$/,
+		glob: /^\/7271\.js$/,
 		noAwait: true,
 	});
 

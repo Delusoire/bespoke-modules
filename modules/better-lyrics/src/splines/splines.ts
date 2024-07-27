@@ -1,5 +1,5 @@
-import { _ } from "/modules/stdlib/deps.js";
-import { type TwoUplet, type Triplet, zip_n_uplets } from "/modules/Delusoire.delulib/lib/fp.js";
+import { _ } from "/modules/stdlib/deps.ts";
+import { slideN, type Triplet, type TwoUplet } from "/modules/Delusoire.delulib/lib/fp.ts";
 import {
 	type matrix,
 	matrixMultMatrix,
@@ -12,7 +12,7 @@ import {
 	vectorDivScalar,
 	vectorMultVector,
 	vectorSubVector,
-} from "/modules/Delusoire.delulib/lib/math.js";
+} from "/modules/Delusoire.delulib/lib/math.ts";
 
 enum EndCondition {
 	NATURAL = 0,
@@ -25,7 +25,7 @@ class Monomial {
 	constructor(
 		private segments: matrix[],
 		private grid = _.range(segments.length + 1),
-	) { }
+	) {}
 
 	at(t: number, n = 0) {
 		t = _.clamp(t, this.grid[0], this.grid.at(-1)! - 1e-7);
@@ -36,11 +36,11 @@ class Monomial {
 		const powers = _.range(coefficients.length).reverse();
 		const weights = vectorDivScalar(
 			_.range(n)
-				.map(i => scalarAddVector(i + 1, powers))
+				.map((i) => scalarAddVector(i + 1, powers))
 				.reduce((u, v) => u.map((_, i) => u[i] * v[i]), new Array(powers.length).fill(1)),
 			(t1 - t0) ** n,
 		);
-		const tps = powers.map(power => t ** power);
+		const tps = powers.map((power) => t ** power);
 		return matrixMultMatrix([vectorMultVector(tps, weights)], coefficients)[0];
 	}
 }
@@ -58,8 +58,8 @@ class CubicHermite extends Monomial {
 		if (tangents.length !== 2 * (vertices.length - 1)) throw "Exactly 2 tangents per segment needed";
 		if (vertices.length !== grid.length) throw "As many grid items as vertices are needed";
 
-		const zip_vertices = zip_n_uplets<TwoUplet<vector>>(2)(vertices);
-		const zip_grid = zip_n_uplets<TwoUplet<number>>(2)(grid);
+		const zip_vertices = slideN<TwoUplet<vector>>(2)(vertices);
+		const zip_grid = slideN<TwoUplet<number>>(2)(grid);
 
 		const segments = _.zip(zip_vertices, zip_grid).map(([[x0, x1], [t0, t1]], i) => {
 			const [v0, v1] = tangents.slice(i * 2, i * 2 + 2);
@@ -84,8 +84,14 @@ export class KochanekBartels extends CubicHermite {
 		const delta0 = t1 - t0;
 		const v_1 = vectorDivScalar(vectorSubVector(x0, x_1), delta_1);
 		const v0 = vectorDivScalar(vectorSubVector(x1, x0), delta0);
-		const incoming = vectorDivScalar(vectorAddVector(scalarMultVector(c * delta0, v_1), scalarMultVector(d * delta_1, v0)), delta_1 + delta0);
-		const outgoing = vectorDivScalar(vectorAddVector(scalarMultVector(a * delta0, v_1), scalarMultVector(b * delta_1, v0)), delta_1 + delta0);
+		const incoming = vectorDivScalar(
+			vectorAddVector(scalarMultVector(c * delta0, v_1), scalarMultVector(d * delta_1, v0)),
+			delta_1 + delta0,
+		);
+		const outgoing = vectorDivScalar(
+			vectorAddVector(scalarMultVector(a * delta0, v_1), scalarMultVector(b * delta_1, v0)),
+			delta_1 + delta0,
+		);
 		return [incoming, outgoing];
 	}
 
@@ -95,7 +101,7 @@ export class KochanekBartels extends CubicHermite {
 		alpha = 0,
 		endconditions: EndConditions = [EndCondition.NATURAL, EndCondition.NATURAL],
 	) {
-		const deltas = zip_n_uplets<TwoUplet<vector>>(2)(vertices).map(([x0, x1]) => vectorDist(x0, x1) ** alpha);
+		const deltas = slideN<TwoUplet<vector>>(2)(vertices).map(([x0, x1]) => vectorDist(x0, x1) ** alpha);
 		const grid = deltas.reduce((partialSums, delta) => [...partialSums, partialSums.at(-1)! + delta], [0]);
 		return KochanekBartels.fromGrid(vertices, tcb, grid, endconditions);
 	}
@@ -111,7 +117,12 @@ export class KochanekBartels extends CubicHermite {
 		return new KochanekBartels(vertices, new Array(tcb_slots).fill(tcb), grid, endconditions);
 	}
 
-	private constructor(vertices: vector[], tcb: Array<Triplet<number>>, grid: number[], endconditions: EndConditions) {
+	private constructor(
+		vertices: vector[],
+		tcb: Array<Triplet<number>>,
+		grid: number[],
+		endconditions: EndConditions,
+	) {
 		if (vertices.length < 2) throw "At least two vertices are required";
 		if (vertices.length !== grid.length) throw "Number of grid values must be same as vertices";
 
@@ -122,11 +133,11 @@ export class KochanekBartels extends CubicHermite {
 			const first_interval = grid[1] - grid[0];
 			grid.push(grid.at(-1)! + first_interval);
 		}
-		const zip_vertices = zip_n_uplets<Triplet<vector>>(3)(vertices);
-		const zip_grid = zip_n_uplets<Triplet<number>>(3)(grid);
+		const zip_vertices = slideN<Triplet<vector>>(3)(vertices);
+		const zip_grid = slideN<Triplet<number>>(3)(grid);
 
 		let tangents = _.zip(zip_vertices, zip_grid, tcb).flatMap(([points, times, tcb]) =>
-			KochanekBartels._calculate_tangents(points!, times!, tcb!),
+			KochanekBartels._calculate_tangents(points!, times!, tcb!)
 		);
 
 		if (closed) {
@@ -148,7 +159,12 @@ export class KochanekBartels extends CubicHermite {
 	}
 }
 
-function _end_tangent(condition: EndCondition.NATURAL | vector, vertices: vector[], times: number[], other_tangent: vector) {
+function _end_tangent(
+	condition: EndCondition.NATURAL | vector,
+	vertices: vector[],
+	times: number[],
+	other_tangent: vector,
+) {
 	return condition === EndCondition.NATURAL ? _natural_tangent(vertices, times, other_tangent) : condition;
 }
 
@@ -156,5 +172,8 @@ function _natural_tangent(vertices: vector[], times: number[], tangent: vector) 
 	const [x0, x1] = vertices;
 	const [t0, t1] = times;
 	const delta = t1 - t0;
-	return vectorSubVector(scalarMultVector(3 / (2 * delta), vectorSubVector(x1, x0)), vectorDivScalar(tangent, 2));
+	return vectorSubVector(
+		scalarMultVector(3 / (2 * delta), vectorSubVector(x1, x0)),
+		vectorDivScalar(tangent, 2),
+	);
 }

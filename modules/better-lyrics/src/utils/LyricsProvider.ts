@@ -1,5 +1,5 @@
 import { _ } from "/modules/stdlib/deps.ts";
-import { type OneUplet, type TwoUplet, zip_n_uplets } from "/modules/Delusoire.delulib/lib/fp.ts";
+import { type OneUplet, slideN, type TwoUplet } from "/modules/Delusoire.delulib/lib/fp.ts";
 import { proxy } from "/hooks/util.ts";
 import { CONFIG } from "../../settings.ts";
 
@@ -45,8 +45,8 @@ export enum LyricsType {
 	WORD_SYNCED = 2,
 }
 
-export type NotSynced = SW<string> & { __type: LyricsType.NOT_SYNCED; };
-export type LineSynced = SW<Array<S<OneUplet<S<string>>>>> & { __type: LyricsType.LINE_SYNCED; };
+export type NotSynced = SW<string> & { __type: LyricsType.NOT_SYNCED };
+export type LineSynced = SW<Array<S<OneUplet<S<string>>>>> & { __type: LyricsType.LINE_SYNCED };
 export type WordSynced = SW<Array<S<Array<S<string>>>>> & {
 	__type: LyricsType.WORD_SYNCED;
 };
@@ -100,7 +100,7 @@ export const findLyrics = async (info: {
 		});
 
 		const wordSyncedFilled = _(
-			zip_n_uplets<TwoUplet<S<Array<S<string>>>>>(2)([{ tep: 0 }, ...wordSynced, { tsp: 1 }]),
+			slideN<TwoUplet<S<Array<S<string>>>>>(2)([{ tep: 0 }, ...wordSynced, { tsp: 1 }]),
 		)
 			.map(([prev, next]) => {
 				return false;
@@ -134,7 +134,7 @@ export const findLyrics = async (info: {
 	if (track.has_subtitles) {
 		const subtitle = JSON.parse(subtitles![0].subtitle_body) as Array<{
 			text: string;
-			time: { total: number; minutes: number; seconds: number; hundredths: number; };
+			time: { total: number; minutes: number; seconds: number; hundredths: number };
 		}>;
 		const lineSynced = subtitle.map((sLine, i, subtitle) => {
 			const tsp = sLine.time.total / track.track_length;

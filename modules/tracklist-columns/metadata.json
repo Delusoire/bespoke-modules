@@ -11,7 +11,8 @@
 	"description": "Library to add custom columns to tracklists",
 	"readme": "./assets/README.md",
 	"entries": {
-		"js": "index.js"
+		"js": "index.js",
+		"css": "index.css"
 	},
 	"hasMixins": true,
 	"dependencies": {

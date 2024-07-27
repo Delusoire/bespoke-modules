@@ -5,9 +5,11 @@ import { classnames } from "/modules/stdlib/src/webpack/ClassNames.ts";
 import { UI } from "/modules/stdlib/src/webpack/ComponentLibrary.ts";
 import {
 	COLUMN_TYPES_EVERYWHERE,
+	COLUMN_TYPES_PLAYLISTS,
 	CUSTOM_COLUMN_TYPE_TO_SORT_PROPS_MAP,
 	CUSTOM_COLUMNS,
 	Data,
+	Options,
 } from "./mix.ts";
 
 function createContext<A>(def: A) {
@@ -110,14 +112,12 @@ export default async function (mod: Module) {
 		Object.defineProperty(m, k, {
 			enumerable: true,
 			get: () =>
-				function (options: any) {
+				function (options: Options) {
 					const columns = v(options);
 					const i = -1;
 					return [
 						...columns.slice(0, i),
-						...Object.values(CUSTOM_COLUMNS).filter((c) =>
-							c.cond(options)
-						).map((c) => c.type),
+						...Array.from(COLUMN_TYPES_PLAYLISTS).flatMap(([type, cond]) => cond(options) ? [type] : []),
 						...columns.slice(i),
 					];
 				},

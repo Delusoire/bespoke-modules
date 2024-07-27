@@ -1,6 +1,7 @@
 import { type AccessToken, SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
 import { _ } from "/modules/stdlib/deps.ts";
 import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
+import { getConcurrentExecutionLimiterWrapper } from "./fp.ts";
 
 const getAccessToken = () => Platform.getAuthorizationAPI().getState().token.accessToken;
 
@@ -9,16 +10,6 @@ export const spotifyApi = SpotifyApi.withAccessToken(undefined, {} as AccessToke
 		(opts.headers as any).Authorization = `Bearer ${getAccessToken()}`;
 	},
 });
-
-/*                          Spotify Web API                                   */
-
-export const fetchWebSoundOfSpotifyPlaylist = async (genre: string) => {
-	const name = `The Sound Of ${genre}`;
-	const re = new RegExp(`^${_.escapeRegExp(name)}$`, "i");
-	const res = await spotifyApi.search(name, ["playlist"]);
-	const item = res.playlists.items.find(item => item?.owner.id === "thesoundsofspotify" && re.test(item.name));
-	return item?.uri;
-};
 
 /*                          Last FM                                       */
 
@@ -57,45 +48,18 @@ export interface fetchLastFMTrackResMinimal {
 	};
 }
 
-export const fetchLastFMTrack = async (LFMApiKey: string, artist: string, trackName: string, lastFmUsername = "") => {
-	const url = new URL("https://ws.audioscrobbler.com/2.0/");
-	url.searchParams.append("method", "track.getInfo");
-	url.searchParams.append("api_key", LFMApiKey);
-	url.searchParams.append("artist", artist);
-	url.searchParams.append("track", trackName);
-	url.searchParams.append("format", "json");
-	url.searchParams.append("username", lastFmUsername);
+export const fetchLastFMTrack = getConcurrentExecutionLimiterWrapper(1000)(
+	async (LFMApiKey: string, artist: string, trackName: string, lastFmUsername = "") => {
+		const url = new URL("https://ws.audioscrobbler.com/2.0/");
+		url.searchParams.append("method", "track.getInfo");
+		url.searchParams.append("api_key", LFMApiKey);
+		url.searchParams.append("artist", artist);
+		url.searchParams.append("track", trackName);
+		url.searchParams.append("format", "json");
+		url.searchParams.append("username", lastFmUsername);
 
-	const res = (await fetch(url).then(res => res.json())) as fetchLastFMTrackResMinimal;
+		const res: fetchLastFMTrackResMinimal = await fetch(url).then((res) => res.json());
 
-	return res.track;
-};
-
-/*                          Youtube                                       */
-
-export interface SearchYoutubeResMinimal {
-	items: Array<{
-		id: {
-			videoId: string;
-		};
-		snippet: {
-			publishedAt: string;
-			channelId: string;
-			title: string;
-			description: string;
-			channelTitle: string;
-			publishTime: string;
-		};
-	}>;
-}
-
-export const searchYoutube = async (YouTubeApiKey: string, searchString: string) => {
-	const url = new URL("https://www.googleapis.com/youtube/v3/search");
-	url.searchParams.append("part", "snippet");
-	url.searchParams.append("maxResults", "10");
-	url.searchParams.append("q", searchString);
-	url.searchParams.append("type", "video");
-	url.searchParams.append("key", YouTubeApiKey);
-
-	return (await fetch(url).then(res => res.json())) as SearchYoutubeResMinimal;
-};
+		return res.track;
+	},
+);

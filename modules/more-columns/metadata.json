@@ -1,5 +1,5 @@
 {
-	"name": "playlist-playcount",
+	"name": "more-columns",
 	"tags": [
 		"extension"
 	],
@@ -8,7 +8,7 @@
 	"authors": [
 		"Delusoire"
 	],
-	"description": "Inline playcounts for your playlist tracks",
+	"description": "Inline stats for your playlist tracks",
 	"readme": "./assets/README.md",
 	"entries": {
 		"js": "index.js"

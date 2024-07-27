@@ -1,5 +1,5 @@
 import { _ } from "/modules/stdlib/deps.ts";
-import { type TwoUplet, zip_n_uplets } from "/modules/Delusoire.delulib/lib/fp.ts";
+import { slideN, type TwoUplet } from "/modules/Delusoire.delulib/lib/fp.ts";
 import {
 	remapScalar,
 	scalarLerp,
@@ -18,10 +18,10 @@ class CatmullRomCurve {
 	private constructor(
 		private P: PointQuadruplet,
 		private T: TimeQuadruplet,
-	) { }
+	) {}
 
 	static fromPointsAndAlpha(P: PointQuadruplet, alpha: number) {
-		const T = zip_n_uplets<TwoUplet<vector>>(2)(P as unknown as vector[])
+		const T = slideN<TwoUplet<vector>>(2)(P as unknown as vector[])
 			.map(([Pi, Pj]) => vectorDist(Pi, Pj) ** alpha)
 			.map((ki, i, kis) => (i > 0 ? kis[i - 1] : 0) + ki) as unknown as TimeQuadruplet;
 		return new CatmullRomCurve(P, T);
@@ -57,7 +57,7 @@ export class AlphaCatmullRomSpline {
 		private points: Array<vector>,
 		alpha: number,
 	) {
-		this.catnumRollCurves = zip_n_uplets<Quadruplet<vector>>(4)(points).map((P) =>
+		this.catnumRollCurves = slideN<Quadruplet<vector>>(4)(points).map((P) =>
 			CatmullRomCurve.fromPointsAndAlpha(P as unknown as PointQuadruplet, alpha)
 		);
 	}
@@ -91,7 +91,7 @@ export class CatmullRomSpline {
 
 	private constructor(points: Array<vectorWithTime>) {
 		this.points = _.sortBy(points, (p) => p[0]);
-		this.catnumRollCurves = zip_n_uplets<Quadruplet<vector>>(4)(this.points).map((P) =>
+		this.catnumRollCurves = slideN<Quadruplet<vector>>(4)(this.points).map((P) =>
 			CatmullRomCurve.fromPointsInTime(P as unknown as PointInTimeQuadruplet)
 		);
 	}
@@ -127,7 +127,7 @@ export class CatmullRomSpline {
 function deCasteljau(points: vector[], position: number) {
 	if (points.length < 2) return points[0];
 	return deCasteljau(
-		zip_n_uplets<TwoUplet<vector>>(2)(points).map(([Pi, Pj]) => vectorLerp(Pi, Pj, position)),
+		slideN<TwoUplet<vector>>(2)(points).map(([Pi, Pj]) => vectorLerp(Pi, Pj, position)),
 		position,
 	);
 }

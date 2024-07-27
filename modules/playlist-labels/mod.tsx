@@ -4,18 +4,10 @@ import { useLiveQuery } from "/modules/Delusoire.dexie-react-hooks/mod.ts";
 import { db } from "/modules/Delusoire.library-db/lib/db.ts";
 import type { Module } from "/hooks/index.ts";
 import { React } from "/modules/stdlib/src/expose/React.ts";
-import {
-	Menu,
-	MenuItem,
-	RightClickMenu,
-	Tooltip,
-} from "/modules/stdlib/src/webpack/ReactComponents.ts";
+import { Menu, MenuItem, RightClickMenu, Tooltip } from "/modules/stdlib/src/webpack/ReactComponents.ts";
 import { fromString } from "/modules/stdlib/src/webpack/URI.ts";
 import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
-import {
-	COLUMN_TYPES_EVERYWHERE,
-	CUSTOM_COLUMNS,
-} from "/modules/Delusoire.tracklist-columns/mix.ts";
+import { COLUMN_TYPES_EVERYWHERE, CUSTOM_COLUMNS } from "/modules/Delusoire.tracklist-columns/mix.ts";
 
 const History = Platform.getHistory();
 const PlaylistAPI = Platform.getPlaylistAPI();
@@ -83,9 +75,7 @@ const PlaylistLabels = React.memo(({ uri }: { uri: string }) => {
 	const playlists = useLivePlaylistItems(uri);
 	return (
 		<div className="playlist-labels-labels-container">
-			{playlists.map((playlist) => (
-				<PlaylistLabel key={playlist} uri={uri} playlistUri={playlist} />
-			))}
+			{playlists.map((playlist) => <PlaylistLabel key={playlist} uri={uri} playlistUri={playlist} />)}
 		</div>
 	);
 });
@@ -96,10 +86,9 @@ const PlaylistLabelsWrapper = React.memo(({ data }: any) => {
 });
 
 const COLUMN = {
-	type: "playlist-labels",
+	type: "PLAYLIST_LABELS",
 	label: "Playlist labels",
 	render: PlaylistLabelsWrapper,
-	cond: () => false,
 };
 
 CUSTOM_COLUMNS[COLUMN.type] = COLUMN;

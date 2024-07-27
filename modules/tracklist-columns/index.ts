@@ -28,17 +28,18 @@ export async function preload(mod: Module) {
 		})[0];
 
 	if (!v[Symbol.for("patched")]) {
+		const patchedTracklistColumnsProvider = function (props) {
+			return v({
+				...props,
+				columns: globalThis.__patchTracklistColumnsProvider(
+					props.columns,
+				),
+			});
+		};
+
 		Object.defineProperty(m, k, {
 			enumerable: true,
-			get: () =>
-				function (props) {
-					return v({
-						...props,
-						columns: globalThis.__patchTracklistColumnsProvider(
-							props.columns,
-						),
-					});
-				},
+			get: () => patchedTracklistColumnsProvider,
 		});
 		v[Symbol.for("patched")] = true;
 	}
