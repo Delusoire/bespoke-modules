@@ -17,6 +17,10 @@ import {
 	TracklistRow,
 } from "/modules/stdlib/src/webpack/ReactComponents.ts";
 import { getPlayContext, useTrackListColumns } from "/modules/stdlib/src/webpack/CustomHooks.ts";
+import { SCROBBLES_COLUMN_TYPE } from "/modules/Delusoire.more-columns/columns.ts";
+import { getLFMTracks } from "/modules/Delusoire.more-columns/patchPlaylistApi.ts";
+import { exportedFunctions } from "/modules/stdlib/src/webpack/index.ts";
+import { findBy } from "/hooks/util.ts";
 
 const DropdownOptions = {
 	"Past Month": () => "Past Month",
@@ -35,49 +39,62 @@ export const fetchTopTracks = (timeRange: SpotifyTimeRange) =>
 	spotifyApi.currentUser.topItems("tracks", timeRange, 50, 0);
 
 const TrackRow = React.memo(
-	({ track, index }: { track: Track; index: number }) => {
-		const { usePlayContextItem } = getPlayContext({ uri: track.uri }, {
+	({ webTrack, index }: { webTrack: Track; index: number }) => {
+		const { usePlayContextItem } = getPlayContext({ uri: webTrack.uri }, {
 			featureIdentifier: "queue",
 		});
 
 		return (
 			<TracklistRow
 				index={index}
-				uri={track.uri}
-				name={track.name}
-				artists={track.artists}
-				imgUrl={track.album.images.at(-1)?.url ?? DEFAULT_TRACK_IMG}
-				isExplicit={track.explicit}
-				albumOrShow={track.album}
-				duration_ms={track.duration_ms}
+				uri={webTrack.uri}
+				name={webTrack.name}
+				artists={webTrack.artists}
+				imgUrl={webTrack.album.images.at(-1)?.url ?? DEFAULT_TRACK_IMG}
+				isExplicit={webTrack.explicit}
+				albumOrShow={webTrack.album}
+				duration_ms={webTrack.duration_ms}
 				usePlayContextItem={usePlayContextItem}
 				allowedDropTypes={allowedDropTypes}
 			/>
 		);
 	},
-	(prev, next) => prev.track.uri === next.track.uri,
+	(prev, next) => prev.webTrack.uri === next.webTrack.uri,
 );
 
+const useItemsCache = findBy("getItems", "invalidateCache", "limit")(exportedFunctions);
+
 interface TracksPageContentProps {
-	topTracks: any;
+	topTracks: Track[];
 }
 const TracksPageContent = ({ topTracks }: TracksPageContentProps) => {
 	const columns = useTrackListColumns();
 
-	// const itemsCache = useItemsCache({
-	// 	nrItems: topTracks.length,
-	// 	fetch: (offset, limit) => topTracks.slice(offset, offset + limit),
-	// 	limit: 50,
-	// 	initialItems: topTracks,
-	// });
+	const fetchTopTracks = React.useCallback(async (offset: number, limit: number) => {
+		const items = topTracks.slice(offset, offset + limit);
+		const lfmTracks = await getLFMTracks(items);
+		topTracks.forEach((track, i) => {
+			const lfmTrack = lfmTracks[i];
+			track.lfmTrack = lfmTrack;
+		});
+		const totalLength = topTracks.length;
+		return { items, totalLength };
+	}, [topTracks]);
 
-	const itemsCache = {
-		getItems: (offset: number, limit: number) => topTracks.slice(offset, offset + limit),
-		nrValidItems: topTracks.length,
-		invalidateCache: () => {},
-		cacheAll: () => {},
-		hasItems: true,
-	};
+	const itemsCache = useItemsCache({
+		nrItems: topTracks.length,
+		fetch: fetchTopTracks,
+		limit: 50,
+		initialItems: [],
+	});
+
+	// const itemsCache = {
+	// 	getItems: (offset: number, limit: number) => topTracks.slice(offset, offset + limit),
+	// 	nrValidItems: topTracks.length,
+	// 	invalidateCache: () => {},
+	// 	cacheAll: () => {},
+	// 	hasItems: true,
+	// };
 
 	return (
 		<Tracklist
@@ -85,7 +102,13 @@ const TracksPageContent = ({ topTracks }: TracksPageContentProps) => {
 			itemsCache={itemsCache}
 			hasHeaderRow={true}
 			columns={columns}
-			renderRow={(track: Track, index: number) => <TrackRow track={track} index={index} key={index} />}
+			renderRow={(track: Track, index: number) => (
+				<TrackRow
+					webTrack={track}
+					index={index}
+					key={track.uri}
+				/>
+			)}
 			ariaLabel="Top Tracks"
 			isCompactMode={false}
 			columnPersistenceKey="stats-top-tracks-tracklist"
@@ -129,9 +152,9 @@ const TracksPage = () => {
 		>
 			{Status ?? (
 				<TracklistColumnsContextProvider
-					columns={["INDEX", "TITLE_AND_ARTIST", "ALBUM", "DURATION"]}
+					columns={["INDEX", "TITLE_AND_ARTIST", "ALBUM", SCROBBLES_COLUMN_TYPE, "DURATION"]}
 				>
-					<TracksPageContent topTracks={topTracks} />
+					<TracksPageContent topTracks={topTracks!} />
 				</TracklistColumnsContextProvider>
 			)}
 		</PageContainer>

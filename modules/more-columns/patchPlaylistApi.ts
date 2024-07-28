@@ -10,7 +10,7 @@ import { fetchLastFMTrack } from "/modules/Delusoire.delulib/lib/api.ts";
 import { CONFIG } from "./settings.ts";
 
 export const lfmTracksCache = new Map<string, any>();
-const getLFMTracks = async (tracks: any[]) => {
+export const getLFMTracks = async (tracks: any[]) => {
 	const uris = tracks.map((track) => track.uri);
 	const objs = uris.map((uri) => lfmTracksCache.get(uri));
 	const missed = objs.reduce<number[]>((missed, obj, i) => {
@@ -57,38 +57,44 @@ export async function patchPlaylistContents(contents: any, opts: any) {
 	if (needsAlbumData) {
 		const albumUris = items.map((track) => track.album.uri);
 		const albums = await getAlbumsFromURIs(albumUris);
+		items.forEach((track, i) => {
+			const album = albums[i];
+			const albumTracks = album.tracks.items.map((w) => w.track);
+			const albumTrack = albumTracks.find((albumTrack) => albumTrack.uri === track.uri);
+			track.albumAlbum = album;
+			track.albumTrack = albumTrack;
+		});
 		if (isPlaycountSort) {
-			const albumTracks = albums.flatMap((album) => album.tracks.items.map((w) => w.track));
-			const urisToPlaycount = Object.fromEntries(
-				albumTracks.map((track, i) => [track.uri, Number(track.playcount ?? -1)]),
-			);
-			order = (a, b) => urisToPlaycount[a.uri] - urisToPlaycount[b.uri];
+			const p = (track) => Number(track.albumTrack.playcount ?? -1);
+			order = (a, b) => p(a) - p(b);
 		} else if (isReleaseDateSort) {
-			const urisToReleaseDate = Object.fromEntries(
-				items.map((track, i) => [track.uri, new Date(albums[i].date.isoString)]),
-			);
-			order = (a, b) => urisToReleaseDate[a.uri] - urisToReleaseDate[b.uri];
+			const p = (track) => new Date(track.albumTrack.date.isoString);
+			order = (a, b) => p(a) - p(b);
 		}
 	}
 
 	if (needsWebTrackData) {
 		const uris = items.map((track) => track.uri);
 		const webTracks = await getTracksFromURIs(uris);
+		items.forEach((track, i) => {
+			const webTrack = webTracks[i];
+			track.webTrack = webTrack;
+		});
 		if (isPopularitySort) {
-			const urisToPopularity = Object.fromEntries(
-				items.map((track, i) => [track.uri, Number(webTracks[i].popularity ?? -1)]),
-			);
-			order = (a, b) => urisToPopularity[a.uri] - urisToPopularity[b.uri];
+			const p = (track) => Number(track.webTrack.popularity ?? -1);
+			order = (a, b) => p(a) - p(b);
 		}
 	}
 
 	if (needsLFMData) {
 		const lfmTracks = await getLFMTracks(items);
+		items.forEach((track, i) => {
+			const lfmTrack = lfmTracks[i];
+			track.lfmTrack = lfmTrack;
+		});
 		if (isScrobblesSort) {
-			const urisToScrobbles = Object.fromEntries(
-				items.map((track, i) => [track.uri, Number(lfmTracks[i].userplaycount ?? -1)]),
-			);
-			order = (a, b) => urisToScrobbles[a.uri] - urisToScrobbles[b.uri];
+			const p = (track) => Number(track.lfmTrack.userplaycount ?? -1);
+			order = (a, b) => p(a) - p(b);
 		}
 	}
 

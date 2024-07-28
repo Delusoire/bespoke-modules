@@ -1,95 +1,56 @@
 import { React } from "/modules/stdlib/src/expose/React.ts";
 import { UI } from "/modules/stdlib/src/webpack/ComponentLibrary.xpui.js";
-import { db } from "/modules/Delusoire.library-db/lib/db.ts";
-import { useLiveQuery } from "/modules/Delusoire.dexie-react-hooks/mod.ts";
-import { lfmTracksCache } from "./patchPlaylistApi.ts";
+
+const TextColumn = ({ children }: { children: React.ReactNode }) => (
+	<UI.Text as="div" variant="bodySmall" className="HxDMwNr5oCxTOyqt85gi">
+		{children}
+	</UI.Text>
+);
 
 const Playcount = React.memo(
-	({ uri, albumUri }: { uri: string; albumUri: string }) => {
-		const album = useLiveQuery(async () => {
-			const t = await db.albums.get(albumUri);
-			return t;
-		}, [albumUri]);
-
-		const albumTracks = album?.tracks.items.map((w) => w.track);
-		const playcount = albumTracks?.find((track) => track.uri === uri)?.playcount ?? -1;
-
-		return (
-			<UI.Text as="div" variant="bodySmall" className="HxDMwNr5oCxTOyqt85gi">
-				{Number(playcount).toLocaleString()}
-			</UI.Text>
-		);
+	({ albumTrack }: { albumTrack: any }) => {
+		const playcount = albumTrack.playcount ?? -1;
+		return <TextColumn>{Number(playcount).toLocaleString()}</TextColumn>;
 	},
 );
 
 const ReleaseDate = React.memo(
-	({ uri, albumUri }: { uri: string; albumUri: string }) => {
-		const album = useLiveQuery(async () => {
-			const t = await db.albums.get(albumUri);
-			return t;
-		}, [albumUri]);
-
-		const releaseDate = album?.date.isoString ?? null;
-
-		return (
-			<UI.Text as="div" variant="bodySmall" className="HxDMwNr5oCxTOyqt85gi">
-				{new Date(releaseDate).toLocaleString()}
-			</UI.Text>
-		);
+	({ album }: { album: any }) => {
+		const releaseDate = album.date.isoString ?? null;
+		return <TextColumn>{new Date(releaseDate).toLocaleString()}</TextColumn>;
 	},
 );
 
 const Popularity = React.memo(
-	({ uri }: { uri: string }) => {
-		const webTrack = useLiveQuery(async () => {
-			const t = await db.tracks.get(uri);
-			return t;
-		}, [uri]);
-
-		const popularity = webTrack?.popularity ?? -1;
-
-		return (
-			<UI.Text as="div" variant="bodySmall" className="HxDMwNr5oCxTOyqt85gi">
-				{popularity}%
-			</UI.Text>
-		);
+	({ webTrack }: { webTrack: any }) => {
+		const popularity = webTrack.popularity ?? -1;
+		return <TextColumn>{popularity}%</TextColumn>;
 	},
 );
 
 const Scrobbles = React.memo(
-	({ uri }: { uri: string }) => {
-		const lfmTrack = lfmTracksCache.get(uri);
-
+	({ lfmTrack }: { lfmTrack: any }) => {
 		const scrobbles = lfmTrack?.userplaycount ?? -1;
-
-		return (
-			<UI.Text as="div" variant="bodySmall" className="HxDMwNr5oCxTOyqt85gi">
-				{Number(scrobbles).toLocaleString()}
-			</UI.Text>
-		);
+		return <TextColumn>{Number(scrobbles).toLocaleString()}</TextColumn>;
 	},
 );
 
 export const PlaycountWrapper = React.memo(({ data }: any) => {
-	const uri = data.uri;
-	const albumUri = data.album.uri;
-	return uri && albumUri && <Playcount uri={uri} albumUri={albumUri} />;
+	const albumTrack = data.albumTrack;
+	return albumTrack && <Playcount albumTrack={albumTrack} />;
 });
 
 export const ReleaseDateWrapper = React.memo(({ data }: any) => {
-	const uri = data.uri;
-	const albumUri = data.album.uri;
-	return uri && albumUri && <ReleaseDate uri={uri} albumUri={albumUri} />;
+	const album = data.albumAlbum;
+	return album && <ReleaseDate album={album} />;
 });
 
 export const PopularityWrapper = React.memo(({ data }: any) => {
-	const uri = data.uri;
-	const albumUri = data.album.uri;
-	return uri && albumUri && <Popularity uri={uri} />;
+	const webTrack = data.webTrack;
+	return webTrack && <Popularity webTrack={webTrack} />;
 });
 
 export const ScrobblesWrapper = React.memo(({ data }: any) => {
-	const uri = data.uri;
-	const albumUri = data.album.uri;
-	return uri && albumUri && <Scrobbles uri={uri} />;
+	const lfmTrack = data.lfmTrack;
+	return lfmTrack && <Scrobbles lfmTrack={lfmTrack} />;
 });

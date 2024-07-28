@@ -11,15 +11,9 @@ import {
 	Data,
 	Options,
 } from "./mix.ts";
+import { createContext } from "/modules/Delusoire.delulib/lib/react.ts";
 
-function createContext<A>(def: A) {
-	let ctx: React.Context<A> | null = null;
-	return function () {
-		return ctx ??= React.createContext(def);
-	};
-}
-
-const ctx = createContext<any>(null);
+const RowDataCtx = createContext<any>(null);
 
 interface RowProps {
 	data: Data;
@@ -28,7 +22,7 @@ interface RowProps {
 }
 const Row = React.memo((props: RowProps) => {
 	return React.createElement(
-		ctx().Provider,
+		RowDataCtx().Provider,
 		{ value: props.data },
 		props.renderRow(props.data, props.index),
 	);
@@ -51,7 +45,7 @@ globalThis.__patchTracklistWrapperProps = (props) => {
 };
 
 globalThis.__patchRenderTracklistRowColumn = (columnType) => {
-	const data = React.useContext(ctx());
+	const data = React.useContext(RowDataCtx());
 	return React.createElement(CUSTOM_COLUMNS[columnType].render, {
 		key: columnType,
 		data,
