@@ -88,14 +88,6 @@ const TracksPageContent = ({ topTracks }: TracksPageContentProps) => {
 		initialItems: [],
 	});
 
-	// const itemsCache = {
-	// 	getItems: (offset: number, limit: number) => topTracks.slice(offset, offset + limit),
-	// 	nrValidItems: topTracks.length,
-	// 	invalidateCache: () => {},
-	// 	cacheAll: () => {},
-	// 	hasItems: true,
-	// };
-
 	return (
 		<Tracklist
 			resolveItem={(track: any) => ({ uri: track.uri })}
