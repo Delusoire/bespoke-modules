@@ -49,7 +49,6 @@ const VersionListPanelContent = React.memo(() => {
 		<>
 			<PanelHeader title="Marketplace Version Selector" />
 			<ModuleSection
-				key={module.getHeritage().join("\x00")}
 				module={module}
 				addModule={m.addModule}
 				removeModule={m.removeModule}
@@ -86,18 +85,20 @@ const ModuleSection = (props: ModuleSectionProps) => {
 					{cutPrefix(heritage, "▶")}
 				</div>
 			</UI.Text>
-			{Array.from(module.instances).map(([version, inst]) => (
-				<ModuleVersion
-					key={version}
-					moduleInstance={inst}
-					isSelected={inst === selectedInstance}
-					selectInstance={selectInstance}
-					addModule={props.addModule}
-					removeModule={props.removeModule}
-					updateModules={props.updateModules}
-					updateModule={props.updateModule}
-				/>
-			))}
+			<div className="bg-[var(--background-tinted-base)] rounded-lg px-4 pt-2">
+				{Array.from(module.instances).map(([version, inst]) => (
+					<ModuleVersion
+						key={version}
+						moduleInstance={inst}
+						isSelected={inst === selectedInstance}
+						selectInstance={selectInstance}
+						addModule={props.addModule}
+						removeModule={props.removeModule}
+						updateModules={props.updateModules}
+						updateModule={props.updateModule}
+					/>
+				))}
+			</div>
 		</div>
 	);
 };
