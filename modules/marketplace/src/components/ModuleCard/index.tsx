@@ -1,22 +1,10 @@
 import { React } from "/modules/stdlib/src/expose/React.ts";
-import {
-	MdAddCircleOutline,
-	MdDeleteSweep,
-} from "https://esm.sh/react-icons/md";
+import { MdAddCircleOutline, MdDeleteSweep } from "https://esm.sh/react-icons/md";
 import AuthorsDiv from "./AuthorsDiv.tsx";
 import TagsDiv from "./TagsDiv.tsx";
-import {
-	type Metadata,
-	type Module,
-	type ModuleIdentifier,
-	type ModuleInstance,
-	RootModule,
-} from "/hooks/module.ts";
+import { type Metadata, type Module, type ModuleIdentifier, type ModuleInstance } from "/hooks/module.ts";
 import { useUpdate } from "../../util/index.ts";
-import {
-	Cards,
-	SettingsToggle,
-} from "/modules/stdlib/src/webpack/ReactComponents.ts";
+import { Cards, SettingsToggle } from "/modules/stdlib/src/webpack/ReactComponents.ts";
 import { classnames } from "/modules/stdlib/src/webpack/ClassNames.ts";
 import { useQuery } from "/modules/stdlib/src/webpack/ReactQuery.ts";
 import { display } from "/modules/stdlib/lib/modal.tsx";
@@ -37,6 +25,7 @@ const fallbackImage = () => (
 );
 
 interface ModuleCardProps {
+	modules: [Module];
 	moduleInstance: ModuleInstance;
 	selectModule: (moduleIdentifier: ModuleIdentifier | null) => void;
 	isSelected: boolean;
@@ -49,7 +38,7 @@ interface ModuleCardProps {
 const ModuleCard = (props: ModuleCardProps) => {
 	const { moduleInstance, isSelected } = props;
 
-	const module = moduleInstance.getModule();
+	const [module] = props.modules;
 
 	const noMetadata = moduleInstance.metadata === null;
 
@@ -121,8 +110,7 @@ const ModuleCard = (props: ModuleCardProps) => {
 		}
 	};
 
-	const localModule = RootModule.INSTANCE.getChild(module.getIdentifier());
-	const enabledLocalInstance = localModule?.getEnabledInstance();
+	const enabledLocalInstance = module.getEnabledInstance();
 	const showLoaded = enabledLocalInstance?.isInstalled() ?? false;
 
 	const isLoaded = React.useCallback(() => moduleInstance.isLoaded(), [
@@ -193,35 +181,32 @@ const ModuleCard = (props: ModuleCardProps) => {
 	};
 
 	const fastInstall = async () => {
-		let localModuleInstance = moduleInstance;
-		let localModule = localModuleInstance.getModule();
+		const module = moduleInstance.getModule();
 
 		add: if (!moduleInstance.isLocal()) {
 			if (moduleInstance.canAdd()) {
-				localModuleInstance = await moduleInstance.add();
-				if (localModuleInstance) {
-					localModule = localModuleInstance.getModule();
-					props.addModule(localModule);
-					props.selectInstance(localModuleInstance);
+				if (await moduleInstance.add()) {
+					props.addModule(module);
+					props.selectInstance(moduleInstance);
 					break add;
 				}
 			}
 			return false;
 		}
 
-		ins: if (!localModuleInstance.isInstalled()) {
-			if (localModuleInstance.canInstallRemove()) {
-				if (await localModuleInstance.install()) {
-					props.updateModule(localModule);
+		ins: if (!moduleInstance.isInstalled()) {
+			if (moduleInstance.canInstallRemove()) {
+				if (await moduleInstance.install()) {
+					props.updateModule(module);
 					break ins;
 				}
 			}
 			return false;
 		}
 
-		ena: if (!localModuleInstance.isEnabled()) {
-			if (localModule.canEnable(localModuleInstance)) {
-				if (await localModule.enable(localModuleInstance)) {
+		ena: if (!moduleInstance.isEnabled()) {
+			if (module.canEnable(moduleInstance)) {
+				if (await module.enable(moduleInstance)) {
 					props.updateModules();
 					break ena;
 				}
@@ -350,7 +335,7 @@ const ModuleCardContent = (props: ModuleCardContentProps) => {
 						title={name}
 						className="hover:underline"
 						dir="auto"
-						href={externalHref}
+						href={externalHref ?? ""}
 						target="_blank"
 						rel="noopener noreferrer"
 						onClick={(e) => e.stopPropagation()}

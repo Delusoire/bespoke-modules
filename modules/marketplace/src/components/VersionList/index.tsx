@@ -2,15 +2,8 @@ import { classnames } from "/modules/stdlib/src/webpack/ClassNames.ts";
 import { useUpdate } from "../../util/index.ts";
 import { Module, ModuleInstance } from "/hooks/module.ts";
 import { React } from "/modules/stdlib/src/expose/React.ts";
-import {
-	useLocation,
-	usePanelAPI,
-} from "/modules/stdlib/src/webpack/CustomHooks.ts";
-import {
-	PanelContent,
-	PanelHeader,
-	PanelSkeleton,
-} from "/modules/stdlib/src/webpack/ReactComponents.ts";
+import { useLocation, usePanelAPI } from "/modules/stdlib/src/webpack/CustomHooks.ts";
+import { PanelContent, PanelHeader, PanelSkeleton } from "/modules/stdlib/src/webpack/ReactComponents.ts";
 import { ScrollableText } from "/modules/stdlib/src/webpack/ReactComponents.js";
 import {
 	MdCircle,
@@ -22,7 +15,6 @@ import {
 } from "https://esm.sh/react-icons/md";
 import { UI } from "/modules/stdlib/src/webpack/ComponentLibrary.ts";
 import { useModules } from "../ModulesProvider/index.tsx";
-import { RootModule } from "/hooks/module.js";
 
 export default function () {
 	const location = useLocation();
@@ -42,10 +34,8 @@ export default function () {
 
 const VersionListPanelContent = React.memo(() => {
 	const m = useModules();
-	const modules = m.modules[m.selectedModule!] ?? [];
-	const selectedInstance = m.moduleToInstance[m.selectedModule!] ?? null;
-
-	if (!selectedInstance) {
+	const [module] = m.modules[m.selectedModule!] ?? [];
+	if (!module) {
 		return (
 			<>
 				<PanelHeader title="No module selected" />
@@ -53,24 +43,21 @@ const VersionListPanelContent = React.memo(() => {
 			</>
 		);
 	}
+	const selectedInstance = m.moduleToInstance[m.selectedModule!];
 
 	return (
 		<>
-			<PanelHeader title={selectedInstance.getModuleIdentifier()} />
-			<div className="flex flex-col gap-4">
-				{modules.map((module) => (
-					<ModuleSection
-						key={module.getHeritage().join("\x00")}
-						module={module}
-						addModule={m.addModule}
-						removeModule={m.removeModule}
-						updateModules={m.updateModules}
-						updateModule={m.updateModule}
-						selectedInstance={selectedInstance!}
-						selectInstance={m.selectInstance}
-					/>
-				))}
-			</div>
+			<PanelHeader title="Marketplace Version Selector" />
+			<ModuleSection
+				key={module.getHeritage().join("\x00")}
+				module={module}
+				addModule={m.addModule}
+				removeModule={m.removeModule}
+				updateModules={m.updateModules}
+				updateModule={m.updateModule}
+				selectedInstance={selectedInstance!}
+				selectInstance={m.selectInstance}
+			/>
 		</>
 	);
 });
@@ -84,18 +71,23 @@ interface ModuleSectionProps {
 	selectedInstance: ModuleInstance;
 	selectInstance: (moduleInstance: ModuleInstance) => void;
 }
-const ModuleSection = (props: ModuleSectionProps) =>
-	props.module.parent === RootModule.INSTANCE
-		? RealModuleSection(props as ModuleSectionProps)
-		: VirtualModuleSection(props as ModuleSectionProps);
-
-const RealModuleSection = (props: ModuleSectionProps) => {
+const ModuleSection = (props: ModuleSectionProps) => {
 	const { module, selectedInstance, selectInstance } = props;
 
+	const heritage = module.getHeritage().join("▶");
+
 	return (
-		<div className="bg-[var(--background-tinted-base)] rounded-lg px-4 pt-2">
+		<div className="flex flex-col bg-[var(--background-tinted-base)] rounded-lg px-4 pt-2 gap-2">
+			<UI.Text as="div" variant="bodyMediumBold" semanticColor="textBase">
+				<div
+					className="overflow-x-auto whitespace-nowrap"
+					style={{ scrollbarWidth: "none" }}
+				>
+					{cutPrefix(heritage, "▶")}
+				</div>
+			</UI.Text>
 			{Array.from(module.instances).map(([version, inst]) => (
-				<RealModuleInstance
+				<ModuleVersion
 					key={version}
 					moduleInstance={inst}
 					isSelected={inst === selectedInstance}
@@ -117,38 +109,7 @@ function cutPrefix(str: string, prefix: string) {
 	return str;
 }
 
-const VirtualModuleSection = (props: ModuleSectionProps) => {
-	const { module, selectedInstance, selectInstance } = props;
-
-	const heritage = module.getHeritage().join("▶");
-
-	return (
-		<div className="flex flex-col bg-[var(--background-tinted-base)] rounded-lg px-4 pt-4 gap-2">
-			<UI.Text as="div" variant="bodyMediumBold" semanticColor="textBase">
-				<div
-					className="overflow-x-auto whitespace-nowrap"
-					style={{ scrollbarWidth: "none" }}
-				>
-					{cutPrefix(heritage, "▶")}
-				</div>
-			</UI.Text>
-			{Array.from(module.instances).map(([version, inst]) => (
-				<VirtualModuleInstance
-					key={version}
-					moduleInstance={inst}
-					isSelected={inst === selectedInstance}
-					selectInstance={selectInstance}
-					addModule={props.addModule}
-					removeModule={props.removeModule}
-					updateModule={props.updateModule}
-					updateModules={props.updateModules}
-				/>
-			))}
-		</div>
-	);
-};
-
-interface ModuleInstanceProps {
+interface ModuleVersionProps {
 	moduleInstance: ModuleInstance;
 	isSelected: boolean;
 	selectInstance: (moduleInstance: ModuleInstance) => void;
@@ -158,7 +119,7 @@ interface ModuleInstanceProps {
 	updateModules: () => void;
 }
 
-const RealModuleInstance = (props: ModuleInstanceProps) => {
+const ModuleVersion = (props: ModuleVersionProps) => {
 	const { moduleInstance } = props;
 
 	return (
@@ -209,33 +170,6 @@ const RealModuleInstance = (props: ModuleInstanceProps) => {
 				<DeleteButton
 					moduleInstance={moduleInstance}
 					updateModule={props.updateModule}
-				/>
-			)}
-		</div>
-	);
-};
-
-const VirtualModuleInstance = (props: ModuleInstanceProps) => {
-	return (
-		<div
-			className={classnames(
-				"flex items-center gap-2 justify-between group",
-				"rounded-md -mx-2 mt-0 mb-2 p-2 hover:bg-[var(--background-tinted-highlight)]",
-				props.isSelected && "!bg-white !bg-opacity-30",
-			)}
-			onClick={() => props.selectInstance(props.moduleInstance)}
-		>
-			<div className="flex-1 min-w-0">
-				<ScrollableText>
-					<span className="font-medium">
-						{props.moduleInstance.getVersion()}
-					</span>
-				</ScrollableText>
-			</div>
-			{props.moduleInstance.canAdd() && (
-				<AddButton
-					moduleInstance={props.moduleInstance}
-					addModule={props.addModule}
 				/>
 			)}
 		</div>
@@ -373,7 +307,5 @@ const EnabledDisabledRad = (props: EnaDisRadioProps) => {
 
 	const enabledDisabledButtonProps = { ...props, setEnabled, updateEnabled };
 
-	return isEnabled
-		? EnabledButton(enabledDisabledButtonProps)
-		: DisabledButton(enabledDisabledButtonProps);
+	return isEnabled ? EnabledButton(enabledDisabledButtonProps) : DisabledButton(enabledDisabledButtonProps);
 };

@@ -1,12 +1,6 @@
 import { React } from "/modules/stdlib/src/expose/React.ts";
-import { _ } from "/modules/stdlib/deps.ts";
 import { t } from "../i18n.ts";
-import {
-	type Metadata,
-	type Module,
-	type ModuleIdentifier,
-	type ModuleInstance,
-} from "/hooks/module.ts";
+import { type Metadata, type Module, type ModuleIdentifier, type ModuleInstance } from "/hooks/module.ts";
 import ModuleCard from "../components/ModuleCard/index.tsx";
 import { hash, settingsButton } from "../../mod.tsx";
 import { CONFIG } from "../settings.ts";
@@ -50,8 +44,7 @@ const getFilters = () =>
 	}), [CONFIG.showLibs]);
 
 const libTags = new Set(["lib", "npm", "internal"]);
-const isModLib = (m: ModuleInstance) =>
-	new Set(m.metadata?.tags).intersection(libTags).size > 0;
+const isModLib = (m: ModuleInstance) => new Set(m.metadata?.tags).intersection(libTags).size > 0;
 const enabledFn = {
 	enabled: {
 		[TreeNodeVal]: (m: ModuleInstance) => "isLoaded" in m && m.isLoaded(),
@@ -125,7 +118,7 @@ export default React.memo(() => {
 });
 
 interface MarketplaceContentProps {
-	modules: Record<string, Array<Module>>;
+	modules: Record<string, [Module]>;
 	moduleToInstance: Record<string, ModuleInstance>;
 	selectedModule: ModuleIdentifier | null;
 	updateModules: () => void;
@@ -147,9 +140,7 @@ const MarketplaceContent = (props: MarketplaceContentProps) => {
 	const [chipFilter, selectedFilters] = useChipFilter(getFilters());
 
 	const getSelectedFilterFNs = () =>
-		selectedFilters.map(({ key }) =>
-			getProp(filterFNs, key) as typeof filterFNs
-		);
+		selectedFilters.map(({ key }) => getProp(filterFNs, key) as typeof filterFNs);
 	const selectedFilterFNs = React.useMemo(getSelectedFilterFNs, [
 		selectedFilters,
 	]);
@@ -176,9 +167,7 @@ const MarketplaceContent = (props: MarketplaceContentProps) => {
 		.filter((moduleInst) => {
 			const { name, tags, authors } = moduleInst.metadata ?? dummy_metadata;
 			const searchFiels = [name, ...tags, ...authors];
-			return searchFiels.some((f) =>
-				f.toLowerCase().includes(search.toLowerCase())
-			);
+			return searchFiels.some((f) => f.toLowerCase().includes(search.toLowerCase()));
 		})
 		.sort((a, b) =>
 			sortFn?.(
@@ -228,7 +217,6 @@ const MarketplaceContent = (props: MarketplaceContentProps) => {
 								updateModule={updateModule}
 								removeModule={removeModule}
 								addModule={addModule}
-								// @ts-ignore ensures rerender
 								modules={modules[moduleIdentifier]}
 								selectInstance={selectInstance}
 							/>

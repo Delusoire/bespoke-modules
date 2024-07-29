@@ -1,19 +1,14 @@
 import { React } from "/modules/stdlib/src/expose/React.ts";
 import { _ } from "/modules/stdlib/deps.ts";
-import {
-	type Module,
-	type ModuleIdentifier,
-	type ModuleInstance,
-	RootModule,
-} from "/hooks/module.ts";
+import { type Module, type ModuleIdentifier, type ModuleInstance, RootModule } from "/hooks/module.ts";
 
 const getModulesByIdentifier = () => {
-	const modules = Array.from(RootModule.INSTANCE.getAllDescendantsByBreadth());
+	const modules = Array.from(RootModule.INSTANCE.getDescendantsByDepth());
 	const modulesByIdentifier = Object.groupBy(
 		modules,
 		(module) => module.getIdentifier(),
 	);
-	return modulesByIdentifier as Record<ModuleIdentifier, Array<Module>>;
+	return modulesByIdentifier as Record<ModuleIdentifier, [Module]>;
 };
 
 const getModuleToInst = (modules: Record<ModuleIdentifier, Array<Module>>) =>
@@ -47,10 +42,10 @@ const _useModules = () => {
 	const setModulesForIdentifier = React.useCallback(
 		(
 			identifier: ModuleIdentifier,
-			f: (_modules: Array<Module>) => Array<Module>,
+			f: (_modules: [Module]) => [Module],
 		) => {
 			setModules((modules) => {
-				modules[identifier] = Array.from(f(modules[identifier] ?? []));
+				modules[identifier] = Array.from(f(modules[identifier] ?? [])) as [Module];
 				return modules;
 			});
 			rerender();

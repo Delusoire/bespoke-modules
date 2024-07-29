@@ -89,15 +89,15 @@ export const RemoteMarkdown = React.memo(({ url }: { url: string }) => {
 	}
 });
 
-async function getLocalModuleInstance(moduleIdentifier: ModuleIdentifier, version: Version) {
-	const localModule = RootModule.INSTANCE.getChild(moduleIdentifier);
-	const localModuleInstance = await localModule?.instances.get(version);
+function getLocalModuleInstance(moduleIdentifier: ModuleIdentifier, version: Version) {
+	const localModule = RootModule.INSTANCE.getDescendant(moduleIdentifier);
+	const localModuleInstance = localModule?.instances.get(version);
 	return localModuleInstance;
 }
 
 async function createRemoteModuleInstance(moduleIdentifier: ModuleIdentifier, version: Version, aurl: string) {
 	const marketplaceModule = marketplaceModuleInstance.getModule();
-	const remoteModule = await marketplaceModule.getChildOrNew(moduleIdentifier);
+	const remoteModule = await marketplaceModule.getDescendantOrNew(moduleIdentifier);
 	const remoteModuleInstance = await remoteModule.newInstance(version, {
 		installed: false,
 		artifacts: [aurl],
