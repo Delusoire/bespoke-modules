@@ -7,7 +7,7 @@ import type { Shortcut } from "./mix.ts";
 import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
 import { Locale } from "/modules/stdlib/src/webpack/misc.ts";
 import withRecord from "./moustrap-extension-record.mjs";
-import { Mousetrap } from "/modules/stdlib/src/webpack/Mousetrap.ts";
+import { Mousetrap } from "/modules/stdlib/src/webpack/Mousetrap.xpui.ts";
 
 let spotifyKeybinds: Record<string, Array<string>> = {};
 
@@ -18,6 +18,8 @@ export default async function (mod: Module) {
 	spotifyKeybinds = exports.find((obj) => Array.isArray(obj?.OPEN_HELP));
 
 	loadKeybinds();
+
+	withRecord(Mousetrap);
 
 	globalThis.__patchKeybindSectionComponent = () => KeybindSection;
 
@@ -100,7 +102,7 @@ const KeybindCombinations = ({ action }: { action: string }) => {
 					return;
 				}
 				setIsListening(true);
-				withRecord(Mousetrap)(ref.current!).record((combinations) => {
+				Mousetrap(ref.current!).record((combinations) => {
 					if (!isListening.current || !isVisible.current) {
 						return;
 					}

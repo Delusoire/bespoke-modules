@@ -194,8 +194,4 @@ export default function (Mousetrap) {
 		var self = this;
 		_handleKey.apply(self, arguments);
 	};
-
-	Mousetrap.init();
-
-	return Mousetrap;
 }
