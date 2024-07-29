@@ -85,7 +85,7 @@ const ModuleSection = (props: ModuleSectionProps) => {
 					{cutPrefix(heritage, "▶")}
 				</div>
 			</UI.Text>
-			<div className="bg-[var(--background-tinted-base)] rounded-lg px-4 pt-2">
+			<div className="bg-[var(--background-tinted-base)] rounded-lg px-4 pt-2 mb-2">
 				{Array.from(module.instances).map(([version, inst]) => (
 					<ModuleVersion
 						key={version}
