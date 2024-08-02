@@ -17,7 +17,7 @@ export async function preload(mod: Module) {
 				}
 				const s = v.toString();
 				if (
-					!/\(\{(columnType:[a-zA-Z_\$][\w\$]*,visible:!0),toggleable:([^,})]+),/
+					!/\(\{columnType:[a-zA-Z_\$][\w\$]*,visible:(?:[^,}]+),toggleable:(?:[^,}]+),/
 						.test(s)
 				) {
 					continue;
