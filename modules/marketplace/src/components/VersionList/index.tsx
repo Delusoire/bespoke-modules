@@ -20,7 +20,7 @@ export default function () {
 	const location = useLocation();
 	const { panelSend } = usePanelAPI();
 	if (location.pathname !== "/bespoke/marketplace") {
-		panelSend("panel_close_click_or_collapse");
+		panelSend("panel_close_click");
 	}
 
 	return (
@@ -34,8 +34,8 @@ export default function () {
 
 const VersionListPanelContent = React.memo(() => {
 	const m = useModules();
-	const [module] = m.modules[m.selectedModule!] ?? [];
-	if (!module) {
+	const modules = m.modules[m.selectedModule!] ?? [];
+	if (!modules.length) {
 		return (
 			<>
 				<PanelHeader title="No module selected" />
@@ -48,15 +48,18 @@ const VersionListPanelContent = React.memo(() => {
 	return (
 		<>
 			<PanelHeader title="Marketplace Version Selector" />
-			<ModuleSection
-				module={module}
-				addModule={m.addModule}
-				removeModule={m.removeModule}
-				updateModules={m.updateModules}
-				updateModule={m.updateModule}
-				selectedInstance={selectedInstance!}
-				selectInstance={m.selectInstance}
-			/>
+			{modules.map((module) => (
+				<ModuleSection
+					key={module.getIdentifier()}
+					module={module}
+					addModule={m.addModule}
+					removeModule={m.removeModule}
+					updateModules={m.updateModules}
+					updateModule={m.updateModule}
+					selectedInstance={selectedInstance!}
+					selectInstance={m.selectInstance}
+				/>
+			))}
 		</>
 	);
 });

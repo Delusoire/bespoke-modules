@@ -26,7 +26,7 @@ export default async function (mod: Module) {
 	[settings, settingsButton] = createSettings(mod);
 	const registrar = createRegistrar(mod);
 
-	const LazyApp = React.lazy(() => import("./src/app.js"));
+	const LazyApp = React.lazy(() => import("./src/app.tsx"));
 	registrar.register("route", <Route path={"/bespoke/marketplace/*"} element={<LazyApp />} />);
 
 	registrar.register("navlink", <MarketplaceLink />);

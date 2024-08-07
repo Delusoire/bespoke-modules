@@ -222,7 +222,7 @@ const ModuleCard = (props: ModuleCardProps) => {
 		? (
 			<>
 				<MdDeleteSweep />
-				Reset
+				Delete
 			</>
 		)
 		: (
@@ -234,13 +234,6 @@ const ModuleCard = (props: ModuleCardProps) => {
 
 	const footer = (
 		<div className="flex justify-between w-full">
-			{showLoaded && SettingsToggle && (
-				<SettingsToggle
-					className="x-settings-button justify-end"
-					value={loaded}
-					onSelected={onToggleLoaded}
-				/>
-			)}
 			<button
 				className={`cursor-pointer border-0 rounded inline-flex items-center justify-between ${
 					isInstalled ? "bg-gray-500" : "bg-green-500"
@@ -256,6 +249,13 @@ const ModuleCard = (props: ModuleCardProps) => {
 			>
 				{fastInstallDeleteButton}
 			</button>
+			{showLoaded && SettingsToggle && (
+				<SettingsToggle
+					className="x-settings-button justify-end"
+					value={loaded}
+					onSelected={onToggleLoaded}
+				/>
+			)}
 		</div>
 	);
 

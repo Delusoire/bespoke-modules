@@ -2,7 +2,7 @@ import { MdCloudDownload, MdDeleteForever } from "https://esm.sh/react-icons/md"
 import { logger, module as marketplaceModuleInstance } from "../../mod.tsx";
 import { renderMarkdown } from "../api/github.ts";
 import Button from "../components/Button/index.tsx";
-import LoadingIcon from "../components/icons/LoadingIcon.tsx";
+import LoadingIcon from "../components/Icons/LoadingIcon.tsx";
 import { t } from "../i18n.ts";
 import {
 	type Metadata,
