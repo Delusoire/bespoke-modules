@@ -15,6 +15,7 @@ import {
 } from "https://esm.sh/react-icons/md";
 import { UI } from "/modules/stdlib/src/webpack/ComponentLibrary.ts";
 import { useModules } from "../ModulesProvider/index.tsx";
+import { satisfies } from "/hooks/semver/satisfies.ts";
 
 export default function () {
 	const location = useLocation();
@@ -34,8 +35,8 @@ export default function () {
 
 const VersionListPanelContent = React.memo(() => {
 	const m = useModules();
-	const modules = m.modules[m.selectedModule!] ?? [];
-	if (!modules.length) {
+	const [module] = m.modules[m.selectedModule!] ?? [];
+	if (!module) {
 		return (
 			<>
 				<PanelHeader title="No module selected" />
@@ -48,7 +49,8 @@ const VersionListPanelContent = React.memo(() => {
 	return (
 		<>
 			<PanelHeader title="Marketplace Version Selector" />
-			{modules.map((module) => (
+			// TODO: support multiple modules (DnD)
+			{[module].map((module) => (
 				<ModuleSection
 					key={module.getIdentifier()}
 					module={module}
@@ -66,6 +68,8 @@ const VersionListPanelContent = React.memo(() => {
 
 interface ModuleSectionProps {
 	module: Module;
+	collapsed?: boolean;
+	versionRange?: string;
 	addModule: (module: Module) => void;
 	removeModule: (module: Module) => void;
 	updateModules: () => void;
@@ -74,10 +78,12 @@ interface ModuleSectionProps {
 	selectInstance: (moduleInstance: ModuleInstance) => void;
 }
 const ModuleSection = (props: ModuleSectionProps) => {
-	const { module, selectedInstance, selectInstance } = props;
+	const { module, selectedInstance, selectInstance, versionRange } = props;
 
 	const heritage = module.getHeritage().join("▶");
 
+	// TODO: add collapsed logic
+	// TODO: add onDragStart onDragOver onDragLeave onDrop
 	return (
 		<div className="flex flex-col bg-[var(--background-tinted-base)] rounded-lg px-4 pt-2 gap-2">
 			<UI.Text as="div" variant="bodyMediumBold" semanticColor="textBase">
@@ -89,18 +95,21 @@ const ModuleSection = (props: ModuleSectionProps) => {
 				</div>
 			</UI.Text>
 			<div className="bg-[var(--background-tinted-base)] rounded-lg px-4 pt-2 mb-2">
-				{Array.from(module.instances).map(([version, inst]) => (
-					<ModuleVersion
-						key={version}
-						moduleInstance={inst}
-						isSelected={inst === selectedInstance}
-						selectInstance={selectInstance}
-						addModule={props.addModule}
-						removeModule={props.removeModule}
-						updateModules={props.updateModules}
-						updateModule={props.updateModule}
-					/>
-				))}
+				{Array
+					.from(module.instances)
+					.filter(([version]) => versionRange ? satisfies(version, versionRange) : true)
+					.map(([version, inst]) => (
+						<ModuleVersion
+							key={version}
+							moduleInstance={inst}
+							isSelected={inst === selectedInstance}
+							selectInstance={selectInstance}
+							addModule={props.addModule}
+							removeModule={props.removeModule}
+							updateModules={props.updateModules}
+							updateModule={props.updateModule}
+						/>
+					))}
 			</div>
 		</div>
 	);
@@ -126,6 +135,7 @@ interface ModuleVersionProps {
 const ModuleVersion = (props: ModuleVersionProps) => {
 	const { moduleInstance } = props;
 
+	// TODO: add dependencies dropdown
 	return (
 		<div
 			onClick={() => props.selectInstance(moduleInstance)}
