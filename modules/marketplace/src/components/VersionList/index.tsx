@@ -20,7 +20,7 @@ export default function () {
 	const location = useLocation();
 	const { panelSend } = usePanelAPI();
 	if (location.pathname !== "/bespoke/marketplace") {
-		panelSend("panel_close_click_or_collapse");
+		panelSend("panel_close_click");
 	}
 
 	return (
