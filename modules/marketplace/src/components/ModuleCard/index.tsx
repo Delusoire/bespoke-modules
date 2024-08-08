@@ -201,13 +201,13 @@ const ModuleCard = (props: ModuleCardProps) => {
 	const fastInstallDeleteButton = isInstalled
 		? (
 			<>
-				<MdDeleteForever />
+				<MdDeleteForever title="Disable, Delete, and Remove" className="w-4 h-4" />
 				Remove
 			</>
 		)
 		: (
 			<>
-				<MdInstallDesktop />
+				<MdInstallDesktop title="Add, Install, and Enable" className="w-4 h-4" />
 				Enable
 			</>
 		);

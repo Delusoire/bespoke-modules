@@ -72,6 +72,26 @@ const VersionListPanelContent = React.memo(() => {
 	);
 });
 
+const useCollapsed = (initialCollapsed?: boolean) => {
+	const [isCollapsed, setCollapsed] = React.useState(initialCollapsed ?? false);
+	const toggleCollapsed = React.useCallback(() => setCollapsed((collapsed) => !collapsed), []);
+
+	const Button = () => (
+		<button
+			className="bg-transparent cursor-pointer border-0 rounded inline-flex items-center"
+			onClick={toggleCollapsed}
+		>
+			{isCollapsed
+				? <FaRegPlusSquare className="w-4 h-4 fill-green-500" />
+				: <FaRegMinusSquare className="w-4 h-4 fill-red-500" />}
+		</button>
+	);
+
+	const Collapsed = (children: React.ReactNode) => !isCollapsed && <>{children}</>;
+
+	return [Button, Collapsed] as const;
+};
+
 interface ModuleSectionProps {
 	module: [Module];
 	collapsed?: boolean;
@@ -87,8 +107,7 @@ const ModuleSection = (props: ModuleSectionProps) => {
 
 	const heritage = module.getHeritage().join("▶");
 
-	const [collapsed, setCollapsed] = React.useState(props.collapsed ?? false);
-	const toggleCollapsed = React.useCallback(() => setCollapsed((collapsed) => !collapsed), []);
+	const [Button, Collapsed] = useCollapsed(props.collapsed);
 
 	// TODO: add onDragStart
 	return (
@@ -102,16 +121,9 @@ const ModuleSection = (props: ModuleSectionProps) => {
 						{cutPrefix(heritage, "▶")}
 					</div>
 				</UI.Text>
-				<button
-					className="bg-transparent cursor-pointer border-0 rounded inline-flex items-center"
-					onClick={toggleCollapsed}
-				>
-					{collapsed
-						? <FaRegPlusSquare className="w-4 h-4 fill-green-500" />
-						: <FaRegMinusSquare className="w-4 h-4 fill-red-500" />}
-				</button>
+				<Button />
 			</div>
-			{!collapsed && (
+			{Collapsed(
 				<div className="bg-[var(--background-tinted-base)] rounded-lg px-4 pt-2 mb-2">
 					{Array
 						.from(module.instances)
@@ -126,7 +138,7 @@ const ModuleSection = (props: ModuleSectionProps) => {
 								updateModule={props.updateModule}
 							/>
 						))}
-				</div>
+				</div>,
 			)}
 		</div>
 	);
