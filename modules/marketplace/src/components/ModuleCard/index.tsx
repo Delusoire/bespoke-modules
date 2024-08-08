@@ -1,5 +1,5 @@
 import { React } from "/modules/stdlib/src/expose/React.ts";
-import { MdAddCircleOutline, MdDeleteSweep } from "https://esm.sh/react-icons/md";
+import { MdDeleteForever, MdInstallDesktop } from "https://esm.sh/react-icons/md";
 import AuthorsDiv from "./AuthorsDiv.tsx";
 import TagsDiv from "./TagsDiv.tsx";
 import { type Metadata, type Module, type ModuleIdentifier, type ModuleInstance } from "/hooks/module.ts";
@@ -36,84 +36,30 @@ interface useManageModulesProps {
 	selectInstance: (moduleInstance: ModuleInstance) => void;
 }
 const useManageModules = (props: useManageModulesProps) => {
-	const fastDelete = async (moduleInstance: ModuleInstance) => {
+	const fastRemove = async (moduleInstance: ModuleInstance) => {
 		const module = moduleInstance.getModule();
 
-		dis: if (moduleInstance.isEnabled()) {
-			if (module.canDisable(moduleInstance)) {
-				if (await module.disable()) {
-					props.updateModules();
-					break dis;
-				}
-			}
-			return false;
+		if (await moduleInstance.fastRemove()) {
+			props.updateModule(module);
+			return true;
 		}
 
-		del: if (moduleInstance.isInstalled()) {
-			if (moduleInstance.canDelete()) {
-				if (await moduleInstance.delete()) {
-					props.updateModule(module);
-					break del;
-				}
-			}
-			return false;
-		}
-
-		rem: if (moduleInstance.isLocal()) {
-			if (moduleInstance.canInstallRemove()) {
-				if (await moduleInstance.remove()) {
-					if (module.parent) {
-						props.updateModule(module);
-					} else {
-						props.removeModule(module);
-					}
-					break rem;
-				}
-			}
-			return false;
-		}
-
-		return true;
+		return false;
 	};
 
-	const fastInstall = async (moduleInstance: ModuleInstance) => {
+	const fastEnable = async (moduleInstance: ModuleInstance) => {
 		const module = moduleInstance.getModule();
 
-		add: if (!moduleInstance.isLocal()) {
-			if (moduleInstance.canAdd()) {
-				if (await moduleInstance.add()) {
-					props.addModule(module);
-					props.selectInstance(moduleInstance);
-					break add;
-				}
-			}
-			return false;
+		if (await module.fastEnable(moduleInstance)) {
+			props.selectInstance(moduleInstance);
+			props.updateModule(module);
+			return true;
 		}
 
-		ins: if (!moduleInstance.isInstalled()) {
-			if (moduleInstance.canInstallRemove()) {
-				if (await moduleInstance.install()) {
-					props.updateModule(module);
-					break ins;
-				}
-			}
-			return false;
-		}
-
-		ena: if (!moduleInstance.isEnabled()) {
-			if (module.canEnable(moduleInstance)) {
-				if (await module.enable(moduleInstance)) {
-					props.updateModules();
-					break ena;
-				}
-			}
-			return false;
-		}
-
-		return true;
+		return false;
 	};
 
-	const fastInstallWithDependencies = async (moduleInstance: ModuleInstance) => {
+	const fastEnableWithDependencies = async (moduleInstance: ModuleInstance) => {
 		const deps = getStaticDeps();
 
 		for await (
@@ -124,7 +70,7 @@ const useManageModules = (props: useManageModulesProps) => {
 			)
 		) {
 			for (const moduleInstance of candidate) {
-				if (!await fastInstall(moduleInstance)) {
+				if (!await fastEnable(moduleInstance)) {
 					return false;
 				}
 			}
@@ -132,7 +78,7 @@ const useManageModules = (props: useManageModulesProps) => {
 		}
 	};
 
-	return { fastDelete, fastInstall, fastInstallWithDependencies };
+	return { fastRemove, fastEnable, fastEnableWithDependencies };
 };
 
 interface ModuleCardProps {
@@ -255,18 +201,18 @@ const ModuleCard = (props: ModuleCardProps) => {
 	const fastInstallDeleteButton = isInstalled
 		? (
 			<>
-				<MdDeleteSweep />
-				Delete
+				<MdDeleteForever />
+				Remove
 			</>
 		)
 		: (
 			<>
-				<MdAddCircleOutline />
-				Install
+				<MdInstallDesktop />
+				Enable
 			</>
 		);
 
-	const { fastDelete, fastInstallWithDependencies } = useManageModules(props);
+	const { fastRemove, fastEnableWithDependencies } = useManageModules(props);
 
 	const footer = (
 		<div className="flex justify-between w-full">
@@ -277,9 +223,9 @@ const ModuleCard = (props: ModuleCardProps) => {
 				onClick={async (e) => {
 					e.stopPropagation();
 					if (isInstalled) {
-						await fastDelete(moduleInstance);
+						await fastRemove(moduleInstance);
 					} else {
-						await fastInstallWithDependencies(moduleInstance);
+						await fastEnableWithDependencies(moduleInstance);
 					}
 				}}
 			>
