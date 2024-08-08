@@ -12,7 +12,7 @@ import { RemoteMarkdown } from "../../pages/Module.tsx";
 import {
 	getModulesVersionsObjectsCandidates,
 	getStaticDeps,
-} from "../../../getModulesVersionsObjectsCandidates.ts";
+} from "../../util/getModulesVersionsObjectsCandidates.ts";
 
 const fallbackImage = () => (
 	<svg
