@@ -1,6 +1,6 @@
 import { classnames } from "/modules/stdlib/src/webpack/ClassNames.ts";
 import { useUpdate } from "../../util/index.ts";
-import { Module, ModuleInstance } from "/hooks/module.ts";
+import { type Module, type ModuleIdentifier, type ModuleInstance } from "/hooks/module.ts";
 import { React } from "/modules/stdlib/src/expose/React.ts";
 import { useLocation, usePanelAPI } from "/modules/stdlib/src/webpack/CustomHooks.ts";
 import { PanelContent, PanelHeader, PanelSkeleton } from "/modules/stdlib/src/webpack/ReactComponents.ts";
@@ -17,6 +17,7 @@ import { FaRegMinusSquare, FaRegPlusSquare } from "https://esm.sh/react-icons/fa
 import { UI } from "/modules/stdlib/src/webpack/ComponentLibrary.ts";
 import { useModules } from "../ModulesProvider/index.tsx";
 import { satisfies } from "/hooks/semver/satisfies.ts";
+import { useQuery } from "/modules/stdlib/src/webpack/ReactQuery.ts";
 
 export default function () {
 	const location = useLocation();
@@ -37,14 +38,14 @@ export default function () {
 const VersionListPanelContent = React.memo(() => {
 	const m = useModules();
 	const selectedModule = m.modules[m.selectedModule!] ?? [];
-	const [modules, setModules] = React.useState<Array<[[Module], string | undefined]>>([]);
+	const [listedModules, setListedModules] = React.useState<Array<[[Module], string | undefined]>>([]);
 	React.useEffect(() => {
 		if (selectedModule[0]) {
-			setModules([[selectedModule, undefined]]);
+			setListedModules([[selectedModule, undefined]]);
 		}
 	}, [selectedModule[0]]);
 
-	if (!modules.length) {
+	if (!listedModules.length) {
 		return (
 			<>
 				<PanelHeader title="No module selected" />
@@ -57,17 +58,21 @@ const VersionListPanelContent = React.memo(() => {
 		<>
 			<PanelHeader title="Marketplace Version Selector" />
 			{/* // TODO: add onDragOver onDragLeave onDrop */}
-			{modules.map(([module, versionRange]) => (
-				<ModuleSection
-					key={module[0].getIdentifier()}
-					module={module}
-					versionRange={versionRange}
-					updateModules={m.updateModules}
-					updateModule={m.updateModule}
-					selectedInstance={m.moduleToInstance[m.selectedModule!]!}
-					selectInstance={m.selectInstance}
-				/>
-			))}
+			{listedModules.map(([module, versionRange]) => {
+				const moduleIdentifier = module[0].getIdentifier();
+				return (
+					<ModuleSection
+						key={moduleIdentifier}
+						module={module}
+						modules={m.modules}
+						versionRange={versionRange}
+						updateModules={m.updateModules}
+						updateModule={m.updateModule}
+						selectedInstance={m.moduleToInstance[moduleIdentifier]!}
+						selectInstance={m.selectInstance}
+					/>
+				);
+			})}
 		</>
 	);
 });
@@ -87,13 +92,14 @@ const useCollapsed = (initialCollapsed?: boolean) => {
 		</button>
 	);
 
-	const Collapsed = (children: React.ReactNode) => !isCollapsed && <>{children}</>;
+	const Collapsed = (children: () => React.ReactNode) => !isCollapsed && <>{children()}</>;
 
 	return [Button, Collapsed] as const;
 };
 
 interface ModuleSectionProps {
 	module: [Module];
+	modules: Record<ModuleIdentifier, [Module]>;
 	collapsed?: boolean;
 	versionRange?: string;
 	updateModules: () => void;
@@ -120,10 +126,15 @@ const ModuleSection = (props: ModuleSectionProps) => {
 					>
 						{cutPrefix(heritage, "▶")}
 					</div>
+					{versionRange && (
+						<div className="text-xs text-gray-500">
+							{versionRange}
+						</div>
+					)}
 				</UI.Text>
-				<Button />
+				{Button()}
 			</div>
-			{Collapsed(
+			{Collapsed(() => (
 				<div className="bg-[var(--background-tinted-base)] rounded-lg px-4 pt-2 mb-2">
 					{Array
 						.from(module.instances)
@@ -131,6 +142,7 @@ const ModuleSection = (props: ModuleSectionProps) => {
 						.map(([version, inst]) => (
 							<ModuleVersion
 								key={version}
+								modules={props.modules}
 								moduleInstance={inst}
 								isSelected={inst === selectedInstance}
 								selectInstance={selectInstance}
@@ -138,8 +150,8 @@ const ModuleSection = (props: ModuleSectionProps) => {
 								updateModule={props.updateModule}
 							/>
 						))}
-				</div>,
-			)}
+				</div>
+			))}
 		</div>
 	);
 };
@@ -153,6 +165,7 @@ function cutPrefix(str: string, prefix: string) {
 
 interface ModuleVersionProps {
 	moduleInstance: ModuleInstance;
+	modules: Record<ModuleIdentifier, [Module]>;
 	isSelected: boolean;
 	selectInstance: (moduleInstance: ModuleInstance) => void;
 	updateModule: (module: Module) => void;
@@ -162,58 +175,96 @@ interface ModuleVersionProps {
 const ModuleVersion = (props: ModuleVersionProps) => {
 	const { moduleInstance, updateModule, updateModules } = props;
 
+	const [Button, Collapsed] = useCollapsed(true);
+
 	return (
-		<div
-			onClick={() => props.selectInstance(moduleInstance)}
-			className={classnames(
-				"flex items-center gap-2 justify-between group",
-				"rounded-md -mx-2 mt-0 mb-2 p-2 hover:bg-[var(--background-tinted-highlight)]",
-				props.isSelected && "!bg-white !bg-opacity-30",
-			)}
-		>
-			<div className="flex items-center w-4">
-				{moduleInstance.isInstalled() && (
-					<EnabledDisabledRad
+		<div>
+			<div
+				onClick={() => props.selectInstance(moduleInstance)}
+				className={classnames(
+					"flex items-center gap-2 justify-between group",
+					"rounded-md -mx-2 mt-0 mb-2 p-2 hover:bg-[var(--background-tinted-highlight)]",
+					props.isSelected && "!bg-white !bg-opacity-30",
+				)}
+			>
+				<div className="flex items-center w-4">
+					{moduleInstance.isInstalled() && (
+						<EnabledDisabledRad
+							moduleInstance={moduleInstance}
+							updateModules={updateModules}
+						/>
+					)}
+				</div>
+
+				<div className="flex-1 min-w-0">
+					<ScrollableText>
+						<span className="font-medium">
+							{moduleInstance.getVersion()}
+						</span>
+					</ScrollableText>
+				</div>
+				{moduleInstance.canAdd() && (
+					<AddButton
 						moduleInstance={moduleInstance}
-						updateModules={updateModules}
+						updateModule={updateModule}
 					/>
 				)}
-			</div>
-
-			<div className="flex-1 min-w-0">
-				<ScrollableText>
-					<span className="font-medium">
-						{moduleInstance.getVersion()}
-					</span>
-				</ScrollableText>
-			</div>
-			{moduleInstance.canAdd() && (
-				<AddButton
-					moduleInstance={moduleInstance}
-					updateModule={updateModule}
-				/>
-			)}
-			{moduleInstance.canInstallRemove() && (
-				<>
-					<InstallButton
+				{moduleInstance.canInstallRemove() && (
+					<>
+						<InstallButton
+							moduleInstance={moduleInstance}
+							updateModule={updateModule}
+						/>
+						<RemoveButton
+							moduleInstance={moduleInstance}
+							updateModule={updateModule}
+						/>
+					</>
+				)}
+				{moduleInstance.canDelete() && (
+					<DeleteButton
 						moduleInstance={moduleInstance}
 						updateModule={updateModule}
 					/>
-					<RemoveButton
-						moduleInstance={moduleInstance}
-						updateModule={updateModule}
-					/>
-				</>
-			)}
-			{moduleInstance.canDelete() && (
-				<DeleteButton
-					moduleInstance={moduleInstance}
-					updateModule={updateModule}
-				/>
-			)}
-			{/* TODO: add dependencies dropdown */}
+				)}
+				{Button()}
+			</div>
+			{Collapsed(() => <ModuleVersionInfo {...props} />)}
 		</div>
 	);
+};
+
+const ModuleVersionInfo = (
+	props: { moduleInstance: ModuleInstance } & Omit<ModuleSectionProps, "module" | "selectedInstance">,
+) => {
+	const metadata = props.moduleInstance.metadata;
+
+	useQuery({
+		queryKey: ["module-version-info", props.moduleInstance.getIdentifier()],
+		queryFn: () => props.moduleInstance.ensureMetadata(),
+		enabled: !metadata,
+	});
+
+	if (!metadata) {
+		return;
+	}
+
+	return Object.entries(metadata.dependencies).map(([moduleIdentifier, versionRange]) => {
+		const module = props.modules[moduleIdentifier];
+		if (!module) {
+			return;
+		}
+
+		return (
+			<ModuleSection
+				{...props}
+				module={module}
+				versionRange={versionRange}
+				collapsed
+				selectedInstance={null}
+			/>
+		);
+	});
 };
 
 interface AddButtonProps {
