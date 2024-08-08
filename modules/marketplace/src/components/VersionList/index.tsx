@@ -35,8 +35,15 @@ export default function () {
 
 const VersionListPanelContent = React.memo(() => {
 	const m = useModules();
-	const [module] = m.modules[m.selectedModule!] ?? [];
-	if (!module) {
+	const selectedModule = m.modules[m.selectedModule!] ?? [];
+	const [modules, setModules] = React.useState<Array<[[Module], string | undefined]>>([]);
+	React.useEffect(() => {
+		if (selectedModule[0]) {
+			setModules([[selectedModule, undefined]]);
+		}
+	}, [selectedModule[0]]);
+
+	if (!modules.length) {
 		return (
 			<>
 				<PanelHeader title="No module selected" />
@@ -44,21 +51,21 @@ const VersionListPanelContent = React.memo(() => {
 			</>
 		);
 	}
-	const selectedInstance = m.moduleToInstance[m.selectedModule!];
 
 	return (
 		<>
 			<PanelHeader title="Marketplace Version Selector" />
-			// TODO: support multiple modules (DnD)
-			{[module].map((module) => (
+			// TODO: add onDragOver onDragLeave onDrop
+			{modules.map(([module, versionRange]) => (
 				<ModuleSection
-					key={module.getIdentifier()}
+					key={module[0].getIdentifier()}
 					module={module}
+					versionRange={versionRange}
 					addModule={m.addModule}
 					removeModule={m.removeModule}
 					updateModules={m.updateModules}
 					updateModule={m.updateModule}
-					selectedInstance={selectedInstance!}
+					selectedInstance={m.moduleToInstance[m.selectedModule!]!}
 					selectInstance={m.selectInstance}
 				/>
 			))}
@@ -67,7 +74,7 @@ const VersionListPanelContent = React.memo(() => {
 });
 
 interface ModuleSectionProps {
-	module: Module;
+	module: [Module];
 	collapsed?: boolean;
 	versionRange?: string;
 	addModule: (module: Module) => void;
@@ -78,12 +85,13 @@ interface ModuleSectionProps {
 	selectInstance: (moduleInstance: ModuleInstance) => void;
 }
 const ModuleSection = (props: ModuleSectionProps) => {
-	const { module, selectedInstance, selectInstance, versionRange } = props;
+	const { selectedInstance, selectInstance, versionRange } = props;
+	const [module] = props.module;
 
 	const heritage = module.getHeritage().join("▶");
 
 	// TODO: add collapsed logic
-	// TODO: add onDragStart onDragOver onDragLeave onDrop
+	// TODO: add onDragStart
 	return (
 		<div className="flex flex-col bg-[var(--background-tinted-base)] rounded-lg px-4 pt-2 gap-2">
 			<UI.Text as="div" variant="bodyMediumBold" semanticColor="textBase">

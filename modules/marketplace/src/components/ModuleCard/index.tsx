@@ -140,7 +140,7 @@ const ModuleCard = (props: ModuleCardProps) => {
 		}
 	};
 
-	const fastDelete = async () => {
+	const fastDelete = async (moduleInstance: ModuleInstance) => {
 		const module = moduleInstance.getModule();
 
 		dis: if (moduleInstance.isEnabled()) {
@@ -180,7 +180,8 @@ const ModuleCard = (props: ModuleCardProps) => {
 		return true;
 	};
 
-	const fastInstall = async () => {
+	// TODO: install dependencies too
+	const fastInstall = async (moduleInstance: ModuleInstance) => {
 		const module = moduleInstance.getModule();
 
 		add: if (!moduleInstance.isLocal()) {
@@ -241,9 +242,9 @@ const ModuleCard = (props: ModuleCardProps) => {
 				onClick={async (e) => {
 					e.stopPropagation();
 					if (isInstalled) {
-						await fastDelete();
+						await fastDelete(moduleInstance);
 					} else {
-						await fastInstall();
+						await fastInstall(moduleInstance);
 					}
 				}}
 			>
