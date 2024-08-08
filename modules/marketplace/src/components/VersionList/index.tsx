@@ -61,8 +61,6 @@ const VersionListPanelContent = React.memo(() => {
 					key={module[0].getIdentifier()}
 					module={module}
 					versionRange={versionRange}
-					addModule={m.addModule}
-					removeModule={m.removeModule}
 					updateModules={m.updateModules}
 					updateModule={m.updateModule}
 					selectedInstance={m.moduleToInstance[m.selectedModule!]!}
@@ -77,8 +75,6 @@ interface ModuleSectionProps {
 	module: [Module];
 	collapsed?: boolean;
 	versionRange?: string;
-	addModule: (module: Module) => void;
-	removeModule: (module: Module) => void;
 	updateModules: () => void;
 	updateModule: (module: Module) => void;
 	selectedInstance: ModuleInstance;
@@ -112,8 +108,6 @@ const ModuleSection = (props: ModuleSectionProps) => {
 							moduleInstance={inst}
 							isSelected={inst === selectedInstance}
 							selectInstance={selectInstance}
-							addModule={props.addModule}
-							removeModule={props.removeModule}
 							updateModules={props.updateModules}
 							updateModule={props.updateModule}
 						/>
@@ -134,16 +128,13 @@ interface ModuleVersionProps {
 	moduleInstance: ModuleInstance;
 	isSelected: boolean;
 	selectInstance: (moduleInstance: ModuleInstance) => void;
-	addModule: (module: Module) => void;
-	removeModule: (module: Module) => void;
 	updateModule: (module: Module) => void;
 	updateModules: () => void;
 }
 
 const ModuleVersion = (props: ModuleVersionProps) => {
-	const { moduleInstance } = props;
+	const { moduleInstance, updateModule, updateModules } = props;
 
-	// TODO: add dependencies dropdown
 	return (
 		<div
 			onClick={() => props.selectInstance(moduleInstance)}
@@ -157,7 +148,7 @@ const ModuleVersion = (props: ModuleVersionProps) => {
 				{moduleInstance.isInstalled() && (
 					<EnabledDisabledRad
 						moduleInstance={moduleInstance}
-						updateModules={props.updateModules}
+						updateModules={updateModules}
 					/>
 				)}
 			</div>
@@ -172,35 +163,35 @@ const ModuleVersion = (props: ModuleVersionProps) => {
 			{moduleInstance.canAdd() && (
 				<AddButton
 					moduleInstance={moduleInstance}
-					addModule={props.addModule}
+					updateModule={updateModule}
 				/>
 			)}
 			{moduleInstance.canInstallRemove() && (
 				<>
 					<InstallButton
 						moduleInstance={moduleInstance}
-						updateModule={props.updateModule}
+						updateModule={updateModule}
 					/>
 					<RemoveButton
 						moduleInstance={moduleInstance}
-						removeModule={props.removeModule}
-						updateModule={props.updateModule}
+						updateModule={updateModule}
 					/>
 				</>
 			)}
 			{moduleInstance.canDelete() && (
 				<DeleteButton
 					moduleInstance={moduleInstance}
-					updateModule={props.updateModule}
+					updateModule={updateModule}
 				/>
 			)}
+			{/* TODO: add dependencies dropdown */}
 		</div>
 	);
 };
 
 interface AddButtonProps {
 	moduleInstance: ModuleInstance;
-	addModule: (module: Module) => void;
+	updateModule: (module: Module) => void;
 }
 const AddButton = (props: AddButtonProps) => (
 	<button
@@ -208,7 +199,7 @@ const AddButton = (props: AddButtonProps) => (
 		onClick={async () => {
 			const localModuleInstance = await props.moduleInstance.add();
 			if (localModuleInstance) {
-				props.addModule(localModuleInstance.getModule());
+				props.updateModule(localModuleInstance.getModule());
 			}
 		}}
 	>
@@ -297,7 +288,6 @@ const DeleteButton = (props: DeleteButtonProps) => (
 
 interface RemoveButtonProps {
 	moduleInstance: ModuleInstance;
-	removeModule: (module: Module) => void;
 	updateModule: (module: Module) => void;
 }
 const RemoveButton = (props: RemoveButtonProps) => (
@@ -306,11 +296,6 @@ const RemoveButton = (props: RemoveButtonProps) => (
 		onClick={async () => {
 			if (await props.moduleInstance.remove()) {
 				const module = props.moduleInstance.getModule();
-				if (module.parent) {
-					props.updateModule(module);
-				} else {
-					props.removeModule(module);
-				}
 				props.updateModule(module);
 			}
 		}}

@@ -4,16 +4,9 @@ import { type ModuleIdentifier, type ModuleInstance, RootModule, type Version } 
 async function ensureModuleInstanceMetadata(instance: ModuleInstance) {
 	if (!instance.isEnabled()) {
 		try {
-			const metadataURL = instance.getMetadataURL();
-			const metadata = await fetch(metadataURL!).then((res) => res.json());
-			instance.updateMetadata(metadata);
+			await instance.ensureMetadata();
 		} catch (e) {
-			console.error(
-				new Error(
-					`couldn't load metadata for module '${instance.getIdentifier()}'`,
-					{ cause: e },
-				),
-			);
+			console.error(e);
 			return false;
 		}
 	}
