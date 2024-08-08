@@ -22,6 +22,20 @@ async function ensureModuleInstanceMetadata(instance: ModuleInstance) {
 
 export type Deps = Map<ModuleIdentifier, Set<Version>>;
 
+export function getStaticDeps() {
+	const deps: Deps = new Map();
+	for (const moduleInstance of RootModule.INSTANCE.getDescendantsByDepth()) {
+		const enabledInstance = moduleInstance.getEnabledInstance();
+		if (!enabledInstance) {
+			continue;
+		}
+		if (!setDepsModuleVersions(deps, moduleInstance.getIdentifier(), [enabledInstance.getVersion()])) {
+			throw new Error("couldn't set deps");
+		}
+	}
+	return deps;
+}
+
 export function setDepsModuleVersions(
 	deps: Deps,
 	moduleIdentifier: ModuleIdentifier,
@@ -44,7 +58,7 @@ export async function* getModulesVersionsObjectsCandidates(
 	moduleIdentifier: ModuleIdentifier,
 	versionRange: string,
 	deps: Deps = new Map(),
-): AsyncGenerator<Record<ModuleIdentifier, Version>> {
+): AsyncGenerator<Set<ModuleInstance>> {
 	for await (
 		const entries of getModulesVersionsTreesCandidates(
 			moduleIdentifier,
@@ -52,7 +66,7 @@ export async function* getModulesVersionsObjectsCandidates(
 			deps,
 		)
 	) {
-		yield Object.fromEntries(entries);
+		yield new Set(entries.reverse());
 	}
 }
 
@@ -60,7 +74,7 @@ export async function* getModulesVersionsTreesCandidates(
 	moduleIdentifier: ModuleIdentifier,
 	versionRange: string,
 	deps: Deps = new Map(),
-): AsyncGenerator<Array<[ModuleIdentifier, Version]>> {
+): AsyncGenerator<Array<ModuleInstance>> {
 	const module = RootModule.INSTANCE.getDescendant(moduleIdentifier);
 	const versions = Array
 		.from(module?.instances.keys() ?? [])
@@ -87,7 +101,7 @@ export async function* getModulesVersionsTreesCandidates(
 			});
 
 		for await (const comb of getCombinationsFromGenerators(...gens)) {
-			yield [[module!.getIdentifier(), version], ...comb.flat()];
+			yield [instance, ...comb.flat()];
 		}
 	}
 }
