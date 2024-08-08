@@ -117,7 +117,7 @@ const ModuleSection = (props: ModuleSectionProps) => {
 
 	// TODO: add onDragStart
 	return (
-		<div className="flex flex-col bg-[var(--background-tinted-base)] rounded-lg px-4 pt-2">
+		<div className="flex flex-col bg-[var(--background-tinted-base)] rounded-lg px-2 pt-2">
 			<div className="flex items-center gap-2 justify-between mb-2">
 				<UI.Text className="flex-1 min-w-0" as="div" variant="bodyMediumBold" semanticColor="textBase">
 					<div
@@ -135,7 +135,7 @@ const ModuleSection = (props: ModuleSectionProps) => {
 				{Button()}
 			</div>
 			{Collapsed(() => (
-				<div className="bg-[var(--background-tinted-base)] rounded-lg px-4 pt-2 mb-2">
+				<div className="bg-[var(--background-tinted-base)] rounded-lg px-2 pt-2 mb-2">
 					{Array
 						.from(module.instances)
 						.filter(([version]) => versionRange ? satisfies(version, versionRange) : true)
@@ -249,22 +249,46 @@ const ModuleVersionInfo = (
 		return;
 	}
 
-	return Object.entries(metadata.dependencies).map(([moduleIdentifier, versionRange]) => {
-		const module = props.modules[moduleIdentifier];
-		if (!module) {
-			return;
-		}
+	return (
+		<div className="pb-2">
+			<div
+				className="bg flex flex-col gap-2 justify-between"
+				style={{ "--hue-rotate-": `var(--hue-rotate, 0)` } as React.CSSProperties}
+			>
+				{Object.entries(metadata.dependencies).map(([moduleIdentifier, versionRange]) => {
+					const module = props.modules[moduleIdentifier];
+					if (!module) {
+						return;
+					}
 
-		return (
-			<ModuleSection
-				{...props}
-				module={module}
-				versionRange={versionRange}
-				collapsed
-				selectedInstance={null}
-			/>
-		);
-	});
+					return (
+						<div
+							key={moduleIdentifier}
+							className="bg-[var(--background-base)] rounded-lg"
+							style={{
+								"--hue-rotate": `calc(var(--hue-rotate-) + 1)`,
+							} as React.CSSProperties}
+						>
+							<div
+								className="rounded-lg"
+								style={{
+									backdropFilter: "hue-rotate(calc(var(--hue-rotate) * 60deg))",
+								} as React.CSSProperties}
+							>
+								<ModuleSection
+									{...props}
+									module={module}
+									versionRange={versionRange}
+									collapsed
+									selectedInstance={null}
+								/>
+							</div>
+						</div>
+					);
+				})}
+			</div>
+		</div>
+	);
 };
 
 interface AddButtonProps {
