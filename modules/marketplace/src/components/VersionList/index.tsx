@@ -13,6 +13,7 @@ import {
 	MdInstallDesktop,
 	MdOutlineCircle,
 } from "https://esm.sh/react-icons/md";
+import { FaRegMinusSquare, FaRegPlusSquare } from "https://esm.sh/react-icons/fa";
 import { UI } from "/modules/stdlib/src/webpack/ComponentLibrary.ts";
 import { useModules } from "../ModulesProvider/index.tsx";
 import { satisfies } from "/hooks/semver/satisfies.ts";
@@ -55,7 +56,7 @@ const VersionListPanelContent = React.memo(() => {
 	return (
 		<>
 			<PanelHeader title="Marketplace Version Selector" />
-			// TODO: add onDragOver onDragLeave onDrop
+			{/* // TODO: add onDragOver onDragLeave onDrop */}
 			{modules.map(([module, versionRange]) => (
 				<ModuleSection
 					key={module[0].getIdentifier()}
@@ -86,33 +87,47 @@ const ModuleSection = (props: ModuleSectionProps) => {
 
 	const heritage = module.getHeritage().join("▶");
 
-	// TODO: add collapsed logic
+	const [collapsed, setCollapsed] = React.useState(props.collapsed ?? false);
+	const toggleCollapsed = React.useCallback(() => setCollapsed((collapsed) => !collapsed), []);
+
 	// TODO: add onDragStart
 	return (
-		<div className="flex flex-col bg-[var(--background-tinted-base)] rounded-lg px-4 pt-2 gap-2">
-			<UI.Text as="div" variant="bodyMediumBold" semanticColor="textBase">
-				<div
-					className="overflow-x-auto whitespace-nowrap"
-					style={{ scrollbarWidth: "none" }}
+		<div className="flex flex-col bg-[var(--background-tinted-base)] rounded-lg px-4 pt-2">
+			<div className="flex items-center gap-2 justify-between mb-2">
+				<UI.Text className="flex-1 min-w-0" as="div" variant="bodyMediumBold" semanticColor="textBase">
+					<div
+						className="overflow-x-auto whitespace-nowrap"
+						style={{ scrollbarWidth: "none" }}
+					>
+						{cutPrefix(heritage, "▶")}
+					</div>
+				</UI.Text>
+				<button
+					className="bg-transparent cursor-pointer border-0 rounded inline-flex items-center"
+					onClick={toggleCollapsed}
 				>
-					{cutPrefix(heritage, "▶")}
-				</div>
-			</UI.Text>
-			<div className="bg-[var(--background-tinted-base)] rounded-lg px-4 pt-2 mb-2">
-				{Array
-					.from(module.instances)
-					.filter(([version]) => versionRange ? satisfies(version, versionRange) : true)
-					.map(([version, inst]) => (
-						<ModuleVersion
-							key={version}
-							moduleInstance={inst}
-							isSelected={inst === selectedInstance}
-							selectInstance={selectInstance}
-							updateModules={props.updateModules}
-							updateModule={props.updateModule}
-						/>
-					))}
+					{collapsed
+						? <FaRegPlusSquare className="w-4 h-4 fill-green-500" />
+						: <FaRegMinusSquare className="w-4 h-4 fill-red-500" />}
+				</button>
 			</div>
+			{!collapsed && (
+				<div className="bg-[var(--background-tinted-base)] rounded-lg px-4 pt-2 mb-2">
+					{Array
+						.from(module.instances)
+						.filter(([version]) => versionRange ? satisfies(version, versionRange) : true)
+						.map(([version, inst]) => (
+							<ModuleVersion
+								key={version}
+								moduleInstance={inst}
+								isSelected={inst === selectedInstance}
+								selectInstance={selectInstance}
+								updateModules={props.updateModules}
+								updateModule={props.updateModule}
+							/>
+						))}
+				</div>
+			)}
 		</div>
 	);
 };
