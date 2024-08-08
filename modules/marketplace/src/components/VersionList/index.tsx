@@ -253,7 +253,7 @@ const ModuleVersionInfo = (
 		<div className="pb-2">
 			<div
 				className="bg flex flex-col gap-2 justify-between"
-				style={{ "--hue-rotate-": `var(--hue-rotate, 0)` } as React.CSSProperties}
+				style={{ "--hue-rotate-parent": `var(--hue-rotate, 0deg)` } as React.CSSProperties}
 			>
 				{Object.entries(metadata.dependencies).map(([moduleIdentifier, versionRange]) => {
 					const module = props.modules[moduleIdentifier];
@@ -266,14 +266,12 @@ const ModuleVersionInfo = (
 							key={moduleIdentifier}
 							className="bg-[var(--background-base)] rounded-lg"
 							style={{
-								"--hue-rotate": `calc(var(--hue-rotate-) + 1)`,
+								"--hue-rotate": `calc(var(--hue-rotate-parent) + 60deg)`,
 							} as React.CSSProperties}
 						>
 							<div
 								className="rounded-lg"
-								style={{
-									backdropFilter: "hue-rotate(calc(var(--hue-rotate) * 60deg))",
-								} as React.CSSProperties}
+								style={{ backdropFilter: "hue-rotate(var(--hue-rotate))" }}
 							>
 								<ModuleSection
 									{...props}
