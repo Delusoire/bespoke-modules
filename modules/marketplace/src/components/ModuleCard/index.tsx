@@ -219,7 +219,7 @@ const ModuleCard = (props: ModuleCardProps) => {
 			<button
 				className={`cursor-pointer border-0 rounded inline-flex items-center justify-between ${
 					isInstalled ? "bg-gray-500" : "bg-green-500"
-				} text-white px-2 py-2 w-1/2 h-8`}
+				} text-white px-2 py-2 h-8`}
 				onClick={async (e) => {
 					e.stopPropagation();
 					if (isInstalled) {
