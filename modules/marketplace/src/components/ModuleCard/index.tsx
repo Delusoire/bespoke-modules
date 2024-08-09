@@ -13,6 +13,7 @@ import {
 	getModulesVersionsObjectsCandidates,
 	getStaticDeps,
 } from "../../util/getModulesVersionsObjectsCandidates.ts";
+import { Snackbar } from "/modules/stdlib/src/expose/Snackbar.ts";
 
 const fallbackImage = () => (
 	<svg
@@ -44,6 +45,10 @@ const useManageModules = (props: useManageModulesProps) => {
 			return true;
 		}
 
+		Snackbar.enqueueSnackbar(
+			`Failed to remove ${moduleInstance.getIdentifier()}`,
+			{ variant: "error" },
+		);
 		return false;
 	};
 
@@ -56,6 +61,10 @@ const useManageModules = (props: useManageModulesProps) => {
 			return true;
 		}
 
+		Snackbar.enqueueSnackbar(
+			`Failed to enable ${moduleInstance.getIdentifier()}`,
+			{ variant: "error" },
+		);
 		return false;
 	};
 
@@ -76,6 +85,12 @@ const useManageModules = (props: useManageModulesProps) => {
 			}
 			return true;
 		}
+
+		Snackbar.enqueueSnackbar(
+			`Failed to enable ${moduleInstance.getIdentifier()}: required dependencies weren't met`,
+			{ variant: "error" },
+		);
+		return false;
 	};
 
 	return { fastRemove, fastEnable, fastEnableWithDependencies };
