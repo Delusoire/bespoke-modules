@@ -354,6 +354,7 @@
     }
   },
   "redirects": {
+    "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk": "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk@1.2.1",
     "https://esm.sh/i18next": "https://esm.sh/i18next@23.12.2",
     "https://esm.sh/i18next-browser-languagedetector": "https://esm.sh/i18next-browser-languagedetector@8.0.0",
     "https://esm.sh/lodash": "https://esm.sh/lodash@4.17.21",
@@ -372,9 +373,11 @@
     "https://esm.sh/v135/@types/lodash@~4.17/index.d.ts": "https://esm.sh/v135/@types/lodash@4.17.7/index.d.ts",
     "https://esm.sh/v135/@types/lodash@~4.17/kebabCase~.d.ts": "https://esm.sh/v135/@types/lodash@4.17.7/kebabCase~.d.ts",
     "https://esm.sh/v135/@types/lodash@~4.17/startCase~.d.ts": "https://esm.sh/v135/@types/lodash@4.17.7/startCase~.d.ts",
-    "https://esm.sh/v135/i18next": "https://esm.sh/v135/i18next@23.12.2"
+    "https://esm.sh/v135/i18next": "https://esm.sh/v135/i18next@23.12.2",
+    "https://esm.sh/youtubei.js/web.bundle.min": "https://esm.sh/youtubei.js@10.3.0/web.bundle.min"
   },
   "remote": {
+    "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk@1.2.1": "93f5a856e8790d46ba8984d3a18d519bbc3cdbd47f606eddaef5b1b0791aad5e",
     "https://esm.sh/i18next-browser-languagedetector@8.0.0": "63bbe6a40a8bd317d6fb80045dcb2d38f81fe88d50ecdb2c4ad322ba2b01f64c",
     "https://esm.sh/i18next@23.12.2": "e233af65f01730b09d69654a83917832f128caf4ea1c30f27a63da4c3a804c0f",
     "https://esm.sh/lodash@4.17.21": "cf3544d5159a7648b25ad21fcf8dbf08a1fbfb1415b70b4163da646ef83eec4a",
@@ -388,6 +391,7 @@
     "https://esm.sh/react-icons@5.2.1/md": "7f6b6efd63b70ec3958137a3fe45ade34db3f2d7c2a6786c4bbc248308ad3b0e",
     "https://esm.sh/rxjs@7.8.1": "68e394db3f3b90054f22fe3f20c4d7359c989b282246a66ea0372d652912e244",
     "https://esm.sh/stable/react@18.3.1/denonext/react.mjs": "fc048ffc55366baf7669519127d186761db72046e2bebf35fe8d0de3964defa3",
+    "https://esm.sh/v135/@fostertheweb/spotify-web-api-ts-sdk@1.2.1/denonext/spotify-web-api-ts-sdk.mjs": "5fda1100a8b2043c3b83b187da1245d637e7d1916ee3e25c26b0cd6101a575d6",
     "https://esm.sh/v135/@octokit/app@15.0.1/denonext/app.mjs": "7b4084d12d8a2650ebd7c664380cd9e010ffb7d5d012a43444e3569a38737670",
     "https://esm.sh/v135/@octokit/auth-app@7.0.0/denonext/auth-app.mjs": "1bb4b60c13bf1d6ed10ccb5e14ae86cb5f65f92d20e118ee7649911ca46e636a",
     "https://esm.sh/v135/@octokit/auth-oauth-app@8.1.1/denonext/auth-oauth-app.mjs": "3053797c8f7c35a753fad67685d11b45bb57dc032a560d2f1fdc6c26f395c343",
@@ -445,6 +449,8 @@
     "https://esm.sh/v135/tslib@2.6.2/denonext/tslib.mjs": "29782bcd3139f77ec063dc5a9385c0fff4a8d0a23b6765c73d9edeb169a04bf1",
     "https://esm.sh/v135/universal-github-app-jwt@2.1.0/denonext/universal-github-app-jwt.mjs": "08710f74b4aad214153631556c583da5489523be1d341da1dc61d167deb08724",
     "https://esm.sh/v135/universal-user-agent@7.0.2/denonext/universal-user-agent.mjs": "c95431a8f6a7593e78b18ba137d1ae8fb8e2c7ebbcfc55c3d2cf1c9667ae8554",
-    "https://esm.sh/v135/void-elements@3.1.0/denonext/void-elements.mjs": "4fc8446ac0b7bd182a532f5badf5565a005d0fc6b0732587b3f2e914121568f4"
+    "https://esm.sh/v135/void-elements@3.1.0/denonext/void-elements.mjs": "4fc8446ac0b7bd182a532f5badf5565a005d0fc6b0732587b3f2e914121568f4",
+    "https://esm.sh/v135/youtubei.js@10.3.0/denonext/web.bundle.min.js": "3ff10577cf77fd4be4c00481f055f0eedd84c91a48c4e23b0329836a86ef7ba1",
+    "https://esm.sh/youtubei.js@10.3.0/web.bundle.min": "a4d7846a4c677d2551ded6a26efff167205d2240c3237e03a4f116ec70afe11e"
   }
 }

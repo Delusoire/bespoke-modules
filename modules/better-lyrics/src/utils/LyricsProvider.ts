@@ -1,6 +1,6 @@
 import { _ } from "/modules/stdlib/deps.ts";
 import { type OneUplet, slideN, type TwoUplet } from "/modules/Delusoire.delulib/lib/fp.ts";
-import { proxy } from "/hooks/util.ts";
+import { localProxy } from "/hooks/util.ts";
 import { CONFIG } from "../../settings.ts";
 
 const headers = {
@@ -295,7 +295,7 @@ const fetchMxmMacroSubtitlesGet = async (
 	url.searchParams.append("f_subtitle_length", encodeURIComponent(Math.floor(durationS)));
 	url.searchParams.append("usertoken", CONFIG.musixmatchToken);
 
-	const res = await fetch(...proxy(url, { headers })).then((res) => res.json());
+	const res = await fetch(...localProxy(url, { headers })).then((res) => res.json());
 	if (res.message.header.hint === "renew") {
 		return renewsLeft > 0
 			? fetchMxmMacroSubtitlesGet(uri, title, artist, album, durationS, renewsLeft - 1)
@@ -329,7 +329,7 @@ const fetchMxmTrackRichSyncGet = async (commonTrackId: number, durationS: number
 	url.searchParams.append("f_subtitle_length", encodeURIComponent(Math.floor(durationS)));
 	url.searchParams.append("usertoken", CONFIG.musixmatchToken);
 
-	const res = await fetch(...proxy(url, { headers })).then((res) => res.json());
+	const res = await fetch(...localProxy(url, { headers })).then((res) => res.json());
 
 	const { richsync } = res.message.body;
 
@@ -356,7 +356,7 @@ const fetchMxmCrowdTrackTranslationsGet = async (trackId: string, lang = "en") =
 	url.searchParams.append("track_id", trackId);
 	url.searchParams.append("usertoken", CONFIG.musixmatchToken);
 
-	const res = await fetch(...proxy(url, { headers })).then((res) => res.json());
+	const res = await fetch(...localProxy(url, { headers })).then((res) => res.json());
 
 	return res.message.body.translations_list.map((translation_element: any) =>
 		translation_element.translation

@@ -11,7 +11,7 @@ import {
 	RootModule,
 	type Version,
 } from "/hooks/module.ts";
-import { proxy } from "/hooks/util.ts";
+import { localProxy } from "/hooks/util.ts";
 import { React } from "/modules/stdlib/src/expose/React.ts";
 import { ReactDOM } from "/modules/stdlib/src/webpack/React.ts";
 import { useQuery, useSuspenseQuery } from "/modules/stdlib/src/webpack/ReactQuery.ts";
@@ -53,7 +53,7 @@ export const RemoteMarkdown = React.memo(({ url }: { url: string }) => {
 	} = useQuery({
 		queryKey: ["markdown", url],
 		queryFn: () => {
-			const proxiedUrl = url.startsWith("/") ? url : proxy(url)[0];
+			const proxiedUrl = url.startsWith("/") ? url : localProxy(url)[0];
 			return fetch(proxiedUrl)
 				.then((res) => res.text())
 				.then((markdown) => renderMarkdown(markdown));
@@ -136,7 +136,7 @@ export default function ({ aurl }: { aurl?: string }) {
 
 	const { data: metadata } = useSuspenseQuery({
 		queryKey: ["modulePage", murl],
-		queryFn: () => fetch(...proxy(murl)).then((res: any) => res.json() as Promise<Metadata>),
+		queryFn: () => fetch(...localProxy(murl)).then((res: any) => res.json() as Promise<Metadata>),
 	});
 
 	const [moduleInstance, refetchModuleInstance] = useModuleInstance(moduleIdentifier, version, aurl);
