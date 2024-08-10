@@ -38,6 +38,10 @@ interface useManageModulesProps {
 }
 const useManageModules = (props: useManageModulesProps) => {
 	const fastRemove = async (moduleInstance: ModuleInstance) => {
+		if (!moduleInstance.isLocal()) {
+			return true;
+		}
+
 		const module = moduleInstance.getModule();
 
 		if (await moduleInstance.fastRemove()) {
@@ -53,6 +57,10 @@ const useManageModules = (props: useManageModulesProps) => {
 	};
 
 	const fastEnable = async (moduleInstance: ModuleInstance) => {
+		if (moduleInstance.isEnabled()) {
+			return true;
+		}
+
 		const module = moduleInstance.getModule();
 
 		if (await module.fastEnable(moduleInstance)) {
@@ -69,6 +77,10 @@ const useManageModules = (props: useManageModulesProps) => {
 	};
 
 	const fastEnableWithDependencies = async (moduleInstance: ModuleInstance) => {
+		if (moduleInstance.isEnabled()) {
+			return true;
+		}
+
 		const deps = getStaticDeps();
 
 		for await (
