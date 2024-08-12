@@ -8,6 +8,7 @@ const getModulesByIdentifier = () => {
 		modules,
 		(module) => module.getIdentifier(),
 	);
+	delete modulesByIdentifier.Spotify;
 	return modulesByIdentifier as Record<ModuleIdentifier, [Module]>;
 };
 
