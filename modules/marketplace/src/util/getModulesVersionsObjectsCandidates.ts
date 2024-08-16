@@ -13,7 +13,7 @@ async function ensureModuleInstanceMetadata(instance: ModuleInstance) {
 	return true;
 }
 
-export type Deps = Map<ModuleIdentifier, Set<Version>>;
+export type Deps = Map<ModuleIdentifier, Set<ModuleInstance>>;
 
 export function getStaticDeps() {
 	const deps: Deps = new Map();
@@ -22,80 +22,89 @@ export function getStaticDeps() {
 		if (!enabledInstance) {
 			continue;
 		}
-		if (!setDepsModuleVersions(deps, moduleInstance.getIdentifier(), [enabledInstance.getVersion()])) {
+		if (
+			!accumulateInstanceDependencies(deps, enabledInstance)
+		) {
 			throw new Error("couldn't set deps");
 		}
 	}
 	return deps;
 }
 
-export function setDepsModuleVersions(
-	deps: Deps,
-	moduleIdentifier: ModuleIdentifier,
-	versions: Version[],
+export function accumulateInstanceDependencies(
+	accumulator: Deps,
+	...instances: ModuleInstance[]
 ) {
-	const d1 = new Set(versions);
-	const d2 = deps.get(moduleIdentifier);
-	let d = d1;
-	if (d2) {
-		d = d2.intersection(d1);
+	const instancesByModuleIdentifier = Object.groupBy(instances, (instance) => instance.getModuleIdentifier());
+	for (const [moduleIdentifier, instances] of Object.entries(instancesByModuleIdentifier)) {
+		const d1 = new Set(instances);
+		const d2 = accumulator.get(moduleIdentifier) ?? d1;
+		const d = d1.intersection(d2);
+		if (d.size === 0) {
+			return false;
+		}
+		accumulator.set(moduleIdentifier, d);
 	}
-	if (d.size === 0) {
-		return false;
-	}
-	deps.set(moduleIdentifier, d);
 	return true;
 }
 
-export async function* getModulesVersionsObjectsCandidates(
+export async function* getModulesDependencyListCandidates(
 	moduleIdentifier: ModuleIdentifier,
 	versionRange: string,
-	deps: Deps = new Map(),
+	accumulator: Deps = new Map(),
 ): AsyncGenerator<Set<ModuleInstance>> {
 	for await (
-		const entries of getModulesVersionsTreesCandidates(
-			moduleIdentifier,
-			versionRange,
-			deps,
-		)
+		const entries of getModulesDependencyTreeCandidates({ [moduleIdentifier]: versionRange }, accumulator)
 	) {
-		yield new Set(entries.reverse());
+		yield new Set(entries.flat(Infinity).reverse());
 	}
 }
 
-export async function* getModulesVersionsTreesCandidates(
-	moduleIdentifier: ModuleIdentifier,
-	versionRange: string,
-	deps: Deps = new Map(),
-): AsyncGenerator<Array<ModuleInstance>> {
-	const module = RootModule.INSTANCE.getDescendant(moduleIdentifier);
-	const versions = Array
-		.from(module?.instances.keys() ?? [])
-		.filter((version) => satisfies(version, versionRange));
+type DependencyTree = [ModuleInstance, ...DependencyTree[]];
 
-	for (const version of versions) {
-		const instance = module!.instances.get(version)!;
+export async function* getModulesDependencyTreeCandidates(
+	dependencies: Record<ModuleIdentifier, string>,
+	accumulator: Deps = new Map(),
+): AsyncGenerator<[...DependencyTree[]]> {
+	const gens = Object
+		.entries(dependencies)
+		.map(async function* ([moduleIdentifier, versionRange]) {
+			const module = RootModule.INSTANCE.getDescendant(moduleIdentifier);
+			const versions = Array
+				.from(module?.instances.keys() ?? [])
+				.filter((version) => satisfies(version, versionRange));
 
-		if (!await ensureModuleInstanceMetadata(instance)) {
-			continue;
+			for (const version of versions) {
+				const instance = module!.instances.get(version)!;
+
+				if (!(await ensureModuleInstanceMetadata(instance))) {
+					continue;
+				}
+
+				const acc = new Map(accumulator);
+				if (!accumulateInstanceDependencies(acc, instance)) {
+					continue;
+				}
+
+				for await (
+					const candidate of getModulesDependencyTreeCandidates(instance.metadata!.dependencies, acc)
+				) {
+					yield [instance, ...candidate] as const;
+				}
+			}
+		});
+
+	for await (const comb of getCombinationsFromGenerators(...gens)) {
+		const accumulator: Deps = new Map();
+
+		for (const dependencyTree of comb) {
+			const dependencyList = dependencyTree.flat(Infinity) as ModuleInstance[];
+			if (!accumulateInstanceDependencies(accumulator, ...dependencyList)) {
+				continue;
+			}
 		}
 
-		const _deps = new Map(deps);
-		if (!setDepsModuleVersions(_deps, module!.getIdentifier(), [version])) {
-			continue;
-		}
-
-		const gens = Object
-			.entries(
-				instance.metadata!.dependencies as Record<ModuleIdentifier, string>,
-			)
-			.map(([depModuleIdentifier, depVersionRange]) => {
-				return getModulesVersionsTreesCandidates(depModuleIdentifier, depVersionRange, _deps);
-			});
-
-		for await (const comb of getCombinationsFromGenerators(...gens)) {
-			yield [instance, ...comb.flat()];
-		}
+		yield comb as [...DependencyTree[]];
 	}
 }
 
