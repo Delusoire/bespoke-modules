@@ -48,63 +48,92 @@ export function accumulateInstanceDependencies(
 	return true;
 }
 
-export async function* getModulesDependencyListCandidates(
+export function mergeInstanceDependencies(target: Deps, source: Deps) {
+	for (const [moduleIdentifier, sourceInstances] of source) {
+		const targetInstances = target.get(moduleIdentifier) ?? sourceInstances;
+		const commonInstances = sourceInstances.intersection(targetInstances);
+		if (commonInstances.size === 0) {
+			return false;
+		}
+		target.set(moduleIdentifier, commonInstances);
+	}
+	return true;
+}
+
+export type DependencyTree = [ModuleInstance, ...DependencyTree[]];
+
+export function flattenDTrees(
+	dependencyTrees: DependencyTree | DependencyTree[],
+) {
+	return new Set((dependencyTrees.flat(Infinity) as ModuleInstance[]).reverse());
+}
+
+export async function* getModuleDTreeCandidates(
 	moduleIdentifier: ModuleIdentifier,
 	versionRange: string,
 	accumulator: Deps = new Map(),
-): AsyncGenerator<Set<ModuleInstance>> {
-	for await (
-		const entries of getModulesDependencyTreeCandidates({ [moduleIdentifier]: versionRange }, accumulator)
-	) {
-		yield new Set(entries.flat(Infinity).reverse());
+): AsyncGenerator<DependencyTree> {
+	const module = RootModule.INSTANCE.getDescendant(moduleIdentifier);
+	const versions = Array
+		.from(module?.instances.keys() ?? [])
+		.filter((version) => satisfies(version, versionRange));
+
+	for (const version of versions) {
+		const instance = module!.instances.get(version)!;
+
+		if (!(await ensureModuleInstanceMetadata(instance))) {
+			continue;
+		}
+
+		// for (const candidate of getInstanceDTreeCandidates(instance)) {
+		// 	// TODO: cache candidate
+		// 	if (!accumulateInstanceDependencies(accumulator, candidate.flat(Infinity))) {
+		// 		continue;
+		// 	}
+		// 	yield candidate;
+		// }
+		yield* getInstanceDTreeCandidates(instance, new Map(accumulator));
 	}
 }
 
-type DependencyTree = [ModuleInstance, ...DependencyTree[]];
+export async function* getInstanceDTreeCandidates(
+	instance: ModuleInstance,
+	accumulator: Deps = new Map(),
+): AsyncGenerator<DependencyTree> {
+	if (!accumulateInstanceDependencies(accumulator, instance)) {
+		return;
+	}
 
-export async function* getModulesDependencyTreeCandidates(
+	for await (
+		const candidate of getDependenciesDTreeCandidates(instance.metadata!.dependencies, accumulator)
+	) {
+		yield [instance, ...candidate] as const;
+	}
+}
+
+export async function* getDependenciesDTreeCandidates(
 	dependencies: Record<ModuleIdentifier, string>,
 	accumulator: Deps = new Map(),
-): AsyncGenerator<[...DependencyTree[]]> {
+): AsyncGenerator<DependencyTree[]> {
 	const gens = Object
 		.entries(dependencies)
-		.map(async function* ([moduleIdentifier, versionRange]) {
-			const module = RootModule.INSTANCE.getDescendant(moduleIdentifier);
-			const versions = Array
-				.from(module?.instances.keys() ?? [])
-				.filter((version) => satisfies(version, versionRange));
-
-			for (const version of versions) {
-				const instance = module!.instances.get(version)!;
-
-				if (!(await ensureModuleInstanceMetadata(instance))) {
-					continue;
-				}
-
-				const acc = new Map(accumulator);
-				if (!accumulateInstanceDependencies(acc, instance)) {
-					continue;
-				}
-
-				for await (
-					const candidate of getModulesDependencyTreeCandidates(instance.metadata!.dependencies, acc)
-				) {
-					yield [instance, ...candidate] as const;
-				}
-			}
-		});
+		.map(([moduleIdentifier, versionRange]) =>
+			getModuleDTreeCandidates(moduleIdentifier, versionRange, accumulator)
+		);
 
 	for await (const comb of getCombinationsFromGenerators(...gens)) {
 		const accumulator: Deps = new Map();
 
-		for (const dependencyTree of comb) {
-			const dependencyList = dependencyTree.flat(Infinity) as ModuleInstance[];
-			if (!accumulateInstanceDependencies(accumulator, ...dependencyList)) {
-				continue;
+		skip: {
+			for (const dependencyTree of comb) {
+				const dependencyList = dependencyTree.flat(Infinity) as ModuleInstance[];
+				if (!accumulateInstanceDependencies(accumulator, ...dependencyList)) {
+					break skip;
+				}
 			}
-		}
 
-		yield comb as [...DependencyTree[]];
+			yield comb as DependencyTree[];
+		}
 	}
 }
 
