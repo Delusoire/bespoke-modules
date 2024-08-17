@@ -55,35 +55,37 @@ const VersionListPanelContent = React.memo(() => {
 	return (
 		<>
 			<PanelHeader title="Marketplace Version Selector" />
-			{/* // TODO: add onDragOver onDragLeave onDrop */}
-			{selectedModules.map(([module, versionRange]) => {
-				const moduleIdentifier = module[0].getIdentifier();
-				return (
-					<ModuleSection
-						key={moduleIdentifier}
-						module={module}
-						modules={m.modules}
-						versionRange={versionRange}
-						updateModules={m.updateModules}
-						updateModule={m.updateModule}
-						selectedInstance={m.moduleToInstance[moduleIdentifier]!}
-						selectInstance={m.selectInstance}
-					/>
-				);
-			})}
-			<button
-				className={`cursor-pointer border-0 rounded inline-flex items-center justify-between bg-green-500 text-white px-2 py-2 h-8`}
-				onClick={async (e) => {
-					e.stopPropagation();
-					const selectedInstances = selectedModules.map(([[module]]) =>
-						m.moduleToInstance[module.getIdentifier()]!
+			<div className="flex flex-col gap-2">
+				<button
+					className="cursor-pointer border-0 rounded inline-flex items-center justify-between bg-green-500 text-white px-2 py-2 h-8"
+					onClick={async (e) => {
+						e.stopPropagation();
+						const selectedInstances = selectedModules.map(([[module]]) =>
+							m.moduleToInstance[module.getIdentifier()]!
+						);
+						await fastEnableWithDependencies(...selectedInstances);
+					}}
+				>
+					<MdInstallDesktop title="Add, Install, and Enable" className="w-4 h-4" />
+					Enable all selected
+				</button>
+				{/* // TODO: add onDragOver onDragLeave onDrop */}
+				{selectedModules.map(([module, versionRange]) => {
+					const moduleIdentifier = module[0].getIdentifier();
+					return (
+						<ModuleSection
+							key={moduleIdentifier}
+							module={module}
+							modules={m.modules}
+							versionRange={versionRange}
+							updateModules={m.updateModules}
+							updateModule={m.updateModule}
+							selectedInstance={m.moduleToInstance[moduleIdentifier]!}
+							selectInstance={m.selectInstance}
+						/>
 					);
-					await fastEnableWithDependencies(...selectedInstances);
-				}}
-			>
-				<MdInstallDesktop title="Add, Install, and Enable" className="w-4 h-4" />
-				Enable
-			</button>
+				})}
+			</div>
 		</>
 	);
 });

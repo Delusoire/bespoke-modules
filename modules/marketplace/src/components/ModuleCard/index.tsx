@@ -148,10 +148,10 @@ const ModuleCard = (props: ModuleCardProps) => {
 	} = moduleInstance.metadata ?? {};
 
 	const cardClasses = classnames(
-		"rounded-lg bg-neutral-900 p-4 transition duration-300 ease-in-out",
+		"rounded-lg bg-neutral-900 p-4 transition duration-300 ease-in-out hover:bg-neutral-800",
 		{
 			"border border-dashed border-[var(--essential-warning)]": noMetadata,
-			"!bg-neutral-800": isSelected,
+			"!bg-neutral-700": isSelected,
 		},
 	);
 
@@ -377,12 +377,9 @@ const ModuleCardContent = (props: ModuleCardContentProps) => {
 				onClick={onCardClick}
 			>
 				<div
+					className="cursor-pointer mb-4"
 					onClick={onImageClick}
-					style={{
-						pointerEvents: "all",
-						cursor: "pointer",
-						marginBottom: "16px",
-					}}
+					style={{ pointerEvents: "all" }}
 				>
 					<Cards.CardImage
 						key={previewHref}
