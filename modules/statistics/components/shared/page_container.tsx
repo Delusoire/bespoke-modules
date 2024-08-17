@@ -16,7 +16,7 @@ const PageContainer = ({ title, headerLeft, headerRight, children }: PageContain
 	const selectedCategory = React.useContext(selectedCategoryCtx);
 	return (
 		<section className="contentSpacing">
-			<div className={"page-header"}>
+			<div className="page-header">
 				<div className="header-left">
 					<UI.Type as="h1" variant="canon" semanticColor="textBase">
 						{title}
