@@ -157,13 +157,13 @@ const MarketplaceContent = (props: MarketplaceContentProps) => {
 		selectModules,
 	} = props;
 
-	const instances = React.useMemo(
+	const allModuleInstances = React.useMemo(
 		() => Array.from(Object.values(moduleToInstance)),
 		[moduleToInstance],
 	);
 
-	const moduleCardProps = selectedFilterFNs
-		.reduce((acc, fn) => acc.filter(fn[TreeNodeVal]), instances)
+	const moduleInstances = selectedFilterFNs
+		.reduce((acc, fn) => acc.filter(fn[TreeNodeVal]), allModuleInstances)
 		.filter((moduleInst) => {
 			const { name, tags, authors } = moduleInst.metadata ?? dummy_metadata;
 			const searchFiels = [name, ...tags, ...authors];
@@ -202,28 +202,32 @@ const MarketplaceContent = (props: MarketplaceContentProps) => {
 						{settingsButton}
 					</div>
 				</div>
-				<div className="marketplace-grid iKwGKEfAfW7Rkx2_Ba4E soGhxDX6VjS7dBxX9Hbd">
-					{moduleCardProps.map((moduleInst) => {
-						const module = moduleInst.getModule();
-						const moduleIdentifier = module.getIdentifier();
-						const isSelected = selectedModules.includes(moduleIdentifier);
-						return (
-							<ModuleCard
-								key={moduleIdentifier}
-								moduleInstance={moduleInst}
-								isSelected={isSelected}
-								selectModules={selectModules}
-								updateModules={updateModules}
-								updateModule={updateModule}
-								removeModule={removeModule}
-								addModule={addModule}
-								modules={modules[moduleIdentifier]}
-								selectInstance={selectInstance}
-							/>
-						);
-					})}
-				</div>
+				<ModuleInstancesContext.Provider value={moduleInstances}>
+					<div className="marketplace-grid iKwGKEfAfW7Rkx2_Ba4E soGhxDX6VjS7dBxX9Hbd">
+						{moduleInstances.map((moduleInst) => {
+							const module = moduleInst.getModule();
+							const moduleIdentifier = module.getIdentifier();
+							const isSelected = selectedModules.includes(moduleIdentifier);
+							return (
+								<ModuleCard
+									key={moduleIdentifier}
+									moduleInstance={moduleInst}
+									isSelected={isSelected}
+									selectModules={selectModules}
+									updateModules={updateModules}
+									updateModule={updateModule}
+									removeModule={removeModule}
+									addModule={addModule}
+									modules={modules[moduleIdentifier]}
+									selectInstance={selectInstance}
+								/>
+							);
+						})}
+					</div>
+				</ModuleInstancesContext.Provider>
 			</section>
 		</>
 	);
 };
+
+export const ModuleInstancesContext = React.createContext<ModuleInstance[]>([]);

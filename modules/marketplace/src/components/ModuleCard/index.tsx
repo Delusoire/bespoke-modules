@@ -11,10 +11,11 @@ import { display } from "/modules/stdlib/lib/modal.tsx";
 import { RemoteMarkdown } from "../../pages/Module.tsx";
 import {
 	flattenDTrees,
-	getInstanceDTreeCandidates,
+	getInstanceGensDTreeCandidates,
 	getStaticDeps,
 } from "../../util/getModulesVersionsObjectsCandidates.ts";
 import { Snackbar } from "/modules/stdlib/src/expose/Snackbar.ts";
+import { ModuleInstancesContext } from "../../pages/Marketplace.tsx";
 
 const fallbackImage = () => (
 	<svg
@@ -77,14 +78,14 @@ const useManageModules = (props: useManageModulesProps) => {
 		return false;
 	};
 
-	const fastEnableWithDependencies = async (moduleInstance: ModuleInstance) => {
-		if (moduleInstance.isEnabled()) {
-			return true;
-		}
-
+	const fastEnableWithDependencies = async (...moduleInstances: ModuleInstance[]) => {
 		const deps = getStaticDeps();
 
-		for await (const candidate of getInstanceDTreeCandidates(moduleInstance, deps)) {
+		const instanceGens = moduleInstances.map(async function* (instance) {
+			yield instance;
+		});
+
+		for await (const candidate of getInstanceGensDTreeCandidates(instanceGens, deps)) {
 			for (const moduleInstance of flattenDTrees(candidate)) {
 				if (!await fastEnable(moduleInstance)) {
 					return false;
@@ -93,8 +94,9 @@ const useManageModules = (props: useManageModulesProps) => {
 			return true;
 		}
 
+		const moduleIdentifiers = moduleInstances.map((instance) => instance.getIdentifier()).join(", ");
 		Snackbar.enqueueSnackbar(
-			`Failed to enable ${moduleInstance.getIdentifier()}: required dependencies weren't met`,
+			`Failed to enable ${moduleIdentifiers}: required dependencies weren't met`,
 			{ variant: "error" },
 		);
 		return false;
@@ -172,18 +174,51 @@ const ModuleCard = (props: ModuleCardProps) => {
 
 	// TODO: add more important tags
 	const importantTags: string[] = [];
+	if (moduleInstance.metadata?.hasMixins) {
+		importantTags.push("mixins");
+	}
+
+	const moduleInstances = React.useContext(ModuleInstancesContext);
 
 	const onCardClick = React.useCallback((e: React.MouseEvent<HTMLDivElement>) => {
 		if (e.shiftKey) {
-			// TODO: add shift select (would require to be passed as prop from Marketplace)
+			props.selectModules((selectedModules) => {
+				let lastIndex = 0;
+				const lastSelected = selectedModules.at(-1);
+				if (lastSelected) {
+					lastIndex = moduleInstances.findIndex(
+						(moduleInstance) => moduleInstance.getModuleIdentifier() === lastSelected,
+					);
+					if (lastIndex === -1) {
+						return selectedModules;
+					}
+				}
+
+				const currentIndex = moduleInstances.findIndex(
+					(moduleInstance) => moduleInstance.getModuleIdentifier() === module.getIdentifier(),
+				);
+				if (currentIndex === -1) {
+					return selectedModules;
+				}
+
+				const sel = new Set(selectedModules);
+				const newSel = new Set(
+					moduleInstances
+						.slice(Math.min(lastIndex, currentIndex), Math.max(lastIndex, currentIndex) + 1)
+						.map((instance) => instance.getModuleIdentifier()),
+				);
+				return Array.from(sel.union(newSel));
+			});
 		} else if (e.ctrlKey) {
 			props.selectModules((selectedModules) => {
-				const s = new Set(selectedModules);
-				if (s.has(module.getIdentifier())) {
-					s.delete(module.getIdentifier());
-					return Array.from(s);
+				const sel = new Set(selectedModules);
+
+				if (sel.has(module.getIdentifier())) {
+					sel.delete(module.getIdentifier());
+					return Array.from(sel);
 				} else {
-					return selectedModules.concat([module.getIdentifier()]);
+					sel.add(module.getIdentifier());
+					return Array.from(sel);
 				}
 			});
 		} else {

@@ -51,6 +51,7 @@ const VersionListPanelContent = React.memo(() => {
 	return (
 		<>
 			<PanelHeader title="Marketplace Version Selector" />
+			{/* // TODO: add Enable all button */}
 			{/* // TODO: add onDragOver onDragLeave onDrop */}
 			{selectedModules.map(([module, versionRange]) => {
 				const moduleIdentifier = module[0].getIdentifier();
