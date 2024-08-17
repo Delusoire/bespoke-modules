@@ -37,15 +37,9 @@ export default function () {
 
 const VersionListPanelContent = React.memo(() => {
 	const m = useModules();
-	const selectedModule = m.modules[m.selectedModule!] ?? [];
-	const [listedModules, setListedModules] = React.useState<Array<[[Module], string | undefined]>>([]);
-	React.useEffect(() => {
-		if (selectedModule[0]) {
-			setListedModules([[selectedModule, undefined]]);
-		}
-	}, [selectedModule[0]]);
+	const selectedModules = m.selectedModules.map((identifier) => [m.modules[identifier], undefined] as const);
 
-	if (!listedModules.length) {
+	if (!selectedModules.length) {
 		return (
 			<>
 				<PanelHeader title="No module selected" />
@@ -58,7 +52,7 @@ const VersionListPanelContent = React.memo(() => {
 		<>
 			<PanelHeader title="Marketplace Version Selector" />
 			{/* // TODO: add onDragOver onDragLeave onDrop */}
-			{listedModules.map(([module, versionRange]) => {
+			{selectedModules.map(([module, versionRange]) => {
 				const moduleIdentifier = module[0].getIdentifier();
 				return (
 					<ModuleSection

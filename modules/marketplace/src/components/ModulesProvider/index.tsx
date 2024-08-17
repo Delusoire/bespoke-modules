@@ -102,14 +102,14 @@ const _useModules = () => {
 		[moduleToInstance],
 	);
 
-	const [selectedModule, selectModule] = React.useState<
-		ModuleIdentifier | null
-	>(null);
+	const [selectedModules, selectModules] = React.useState<
+		ModuleIdentifier[]
+	>([]);
 
 	return {
 		modules,
 		moduleToInstance,
-		selectedModule,
+		selectedModules,
 
 		setModules,
 		updateModules,
@@ -117,7 +117,7 @@ const _useModules = () => {
 		removeModule,
 		updateModule,
 		selectInstance,
-		selectModule,
+		selectModules,
 	};
 };
 

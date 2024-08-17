@@ -106,7 +106,7 @@ const useManageModules = (props: useManageModulesProps) => {
 interface ModuleCardProps {
 	modules: [Module];
 	moduleInstance: ModuleInstance;
-	selectModule: (moduleIdentifier: ModuleIdentifier | null) => void;
+	selectModules: React.Dispatch<React.SetStateAction<ModuleIdentifier[]>>;
 	isSelected: boolean;
 	removeModule: (module: Module) => void;
 	updateModules: () => void;
@@ -173,10 +173,27 @@ const ModuleCard = (props: ModuleCardProps) => {
 	// TODO: add more important tags
 	const importantTags: string[] = [];
 
-	const onCardClick = React.useCallback(() => {
-		const selectedModule = isSelected ? null : module.getIdentifier();
-		props.selectModule(selectedModule);
-	}, [isSelected, module, props.selectModule]);
+	const onCardClick = React.useCallback((e: React.MouseEvent<HTMLDivElement>) => {
+		if (e.shiftKey) {
+			// TODO: add shift select (would require to be passed as prop from Marketplace)
+		} else if (e.ctrlKey) {
+			props.selectModules((selectedModules) => {
+				const s = new Set(selectedModules);
+				if (s.has(module.getIdentifier())) {
+					s.delete(module.getIdentifier());
+					return Array.from(s);
+				} else {
+					return selectedModules.concat([module.getIdentifier()]);
+				}
+			});
+		} else {
+			if (isSelected) {
+				props.selectModules([]);
+			} else {
+				props.selectModules([module.getIdentifier()]);
+			}
+		}
+	}, [isSelected, module]);
 
 	const onImageClick = (e: React.MouseEvent) => {
 		e.stopPropagation();
@@ -283,9 +300,9 @@ const ModuleCard = (props: ModuleCardProps) => {
 
 interface ModuleCardContentProps {
 	className?: string;
-	onCardClick: React.HTMLAttributes<HTMLDivElement>["onClick"];
+	onCardClick: React.MouseEventHandler<HTMLDivElement>;
 	previewHref: string | null;
-	onImageClick: React.HTMLAttributes<HTMLDivElement>["onClick"];
+	onImageClick: React.MouseEventHandler<HTMLDivElement>;
 	name: string;
 	externalHref: string | null;
 	authors: string[];

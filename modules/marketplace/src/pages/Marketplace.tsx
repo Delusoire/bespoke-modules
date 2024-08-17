@@ -88,12 +88,12 @@ export default React.memo(() => {
 	const {
 		modules,
 		moduleToInstance,
-		selectedModule,
+		selectedModules,
 
 		updateModules,
 		updateModule,
 		removeModule,
-		selectModule,
+		selectModules,
 		addModule,
 		selectInstance,
 	} = useModules();
@@ -106,11 +106,11 @@ export default React.memo(() => {
 		<MarketplaceContent
 			modules={modules}
 			moduleToInstance={moduleToInstance}
-			selectedModule={selectedModule}
+			selectedModules={selectedModules}
 			updateModules={updateModules}
 			updateModule={updateModule}
 			removeModule={removeModule}
-			selectModule={selectModule}
+			selectModules={selectModules}
 			addModule={addModule}
 			selectInstance={selectInstance}
 		/>
@@ -120,11 +120,11 @@ export default React.memo(() => {
 interface MarketplaceContentProps {
 	modules: Record<string, [Module]>;
 	moduleToInstance: Record<string, ModuleInstance>;
-	selectedModule: ModuleIdentifier | null;
+	selectedModules: ModuleIdentifier[];
 	updateModules: () => void;
 	updateModule: (module: Module) => void;
 	removeModule: (module: Module) => void;
-	selectModule: (moduleIdentifier: ModuleIdentifier | null) => void;
+	selectModules: React.Dispatch<React.SetStateAction<ModuleIdentifier[]>>;
 	addModule: (module: Module) => void;
 	selectInstance: (moduleInstance: ModuleInstance) => void;
 }
@@ -153,8 +153,8 @@ const MarketplaceContent = (props: MarketplaceContentProps) => {
 		addModule,
 		removeModule,
 		moduleToInstance,
-		selectedModule,
-		selectModule,
+		selectedModules,
+		selectModules,
 	} = props;
 
 	const instances = React.useMemo(
@@ -206,13 +206,13 @@ const MarketplaceContent = (props: MarketplaceContentProps) => {
 					{moduleCardProps.map((moduleInst) => {
 						const module = moduleInst.getModule();
 						const moduleIdentifier = module.getIdentifier();
-						const isSelected = moduleIdentifier === selectedModule;
+						const isSelected = selectedModules.includes(moduleIdentifier);
 						return (
 							<ModuleCard
 								key={moduleIdentifier}
 								moduleInstance={moduleInst}
 								isSelected={isSelected}
-								selectModule={selectModule}
+								selectModules={selectModules}
 								updateModules={updateModules}
 								updateModule={updateModule}
 								removeModule={removeModule}
