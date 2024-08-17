@@ -31,14 +31,14 @@ const fallbackImage = () => (
 	</svg>
 );
 
-interface useManageModulesProps {
+export interface useManageModulesProps {
 	updateModules: () => void;
 	updateModule: (module: Module) => void;
 	removeModule: (module: Module) => void;
 	addModule: (module: Module) => void;
 	selectInstance: (moduleInstance: ModuleInstance) => void;
 }
-const useManageModules = (props: useManageModulesProps) => {
+export const useManageModules = (props: useManageModulesProps) => {
 	const fastRemove = async (moduleInstance: ModuleInstance) => {
 		if (!moduleInstance.isLocal()) {
 			return true;

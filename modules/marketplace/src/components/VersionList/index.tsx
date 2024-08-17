@@ -1,10 +1,4 @@
-import { classnames } from "/modules/stdlib/src/webpack/ClassNames.ts";
-import { useUpdate } from "../../util/index.ts";
-import { type Module, type ModuleIdentifier, type ModuleInstance } from "/hooks/module.ts";
-import { React } from "/modules/stdlib/src/expose/React.ts";
-import { useLocation, usePanelAPI } from "/modules/stdlib/src/webpack/CustomHooks.ts";
-import { PanelContent, PanelHeader, PanelSkeleton } from "/modules/stdlib/src/webpack/ReactComponents.ts";
-import { ScrollableText } from "/modules/stdlib/src/webpack/ReactComponents.js";
+import { FaRegMinusSquare, FaRegPlusSquare } from "https://esm.sh/react-icons/fa";
 import {
 	MdCircle,
 	MdCloudDownload,
@@ -13,10 +7,17 @@ import {
 	MdInstallDesktop,
 	MdOutlineCircle,
 } from "https://esm.sh/react-icons/md";
-import { FaRegMinusSquare, FaRegPlusSquare } from "https://esm.sh/react-icons/fa";
-import { UI } from "/modules/stdlib/src/webpack/ComponentLibrary.ts";
+import { useManageModules } from "../../components/ModuleCard/index.tsx";
+import { useUpdate } from "../../util/index.ts";
 import { useModules } from "../ModulesProvider/index.tsx";
+import { type Module, type ModuleIdentifier, type ModuleInstance } from "/hooks/module.ts";
 import { satisfies } from "/hooks/semver/satisfies.ts";
+import { React } from "/modules/stdlib/src/expose/React.ts";
+import { classnames } from "/modules/stdlib/src/webpack/ClassNames.ts";
+import { UI } from "/modules/stdlib/src/webpack/ComponentLibrary.ts";
+import { useLocation, usePanelAPI } from "/modules/stdlib/src/webpack/CustomHooks.ts";
+import { ScrollableText } from "/modules/stdlib/src/webpack/ReactComponents.js";
+import { PanelContent, PanelHeader, PanelSkeleton } from "/modules/stdlib/src/webpack/ReactComponents.ts";
 import { useQuery } from "/modules/stdlib/src/webpack/ReactQuery.ts";
 
 export default function () {
@@ -48,10 +49,11 @@ const VersionListPanelContent = React.memo(() => {
 		);
 	}
 
+	const { fastEnableWithDependencies } = useManageModules(m);
+
 	return (
 		<>
 			<PanelHeader title="Marketplace Version Selector" />
-			{/* // TODO: add Enable all button */}
 			{/* // TODO: add onDragOver onDragLeave onDrop */}
 			{selectedModules.map(([module, versionRange]) => {
 				const moduleIdentifier = module[0].getIdentifier();
@@ -68,6 +70,19 @@ const VersionListPanelContent = React.memo(() => {
 					/>
 				);
 			})}
+			<button
+				className={`cursor-pointer border-0 rounded inline-flex items-center justify-between bg-green-500 text-white px-2 py-2 h-8`}
+				onClick={async (e) => {
+					e.stopPropagation();
+					const selectedInstances = selectedModules.map(([[module]]) =>
+						m.moduleToInstance[module.getIdentifier()]!
+					);
+					await fastEnableWithDependencies(...selectedInstances);
+				}}
+			>
+				<MdInstallDesktop title="Add, Install, and Enable" className="w-4 h-4" />
+				Enable
+			</button>
 		</>
 	);
 });
