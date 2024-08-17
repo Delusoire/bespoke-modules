@@ -7,3 +7,8 @@
 /modules/*/**/*.css
 /modules/*/timestamp
 /modules/*/classmap.d.ts
+
+/archived/*/**/*.js
+/archived/*/**/*.css
+/archived/*/timestamp
+/archived/*/classmap.d.ts
