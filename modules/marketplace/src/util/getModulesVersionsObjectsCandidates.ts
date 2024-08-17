@@ -79,26 +79,38 @@ export function flattenDTrees(
 
 //
 
-export async function* getModuleDTreeCandidates(
+async function* getModuleInstances(
 	moduleIdentifier: ModuleIdentifier,
 	versionRange: string,
-	accumulator: ReadonlyDeps = new Map(),
-	sigfs: SharedIntanceGeneratorFactories = new WeakMap(),
-): AsyncGenerator<DependencyTree> {
+): AsyncGenerator<ModuleInstance> {
 	const module = RootModule.INSTANCE.getDescendant(moduleIdentifier);
 	const versions = Array
 		.from(module?.instances.keys() ?? [])
 		.filter((version) => satisfies(version, versionRange));
 
 	for (const version of versions) {
-		const instance = module!.instances.get(version)!;
+		yield module!.instances.get(version)!;
+	}
+}
 
-		if (!(await ensureModuleInstanceMetadata(instance))) {
-			continue;
-		}
-
+async function* getInstanceDTreeCandidatesGen(
+	instanceGen: AsyncGenerator<ModuleInstance>,
+	accumulator: ReadonlyDeps,
+	sigfs: SharedIntanceGeneratorFactories,
+): AsyncGenerator<DependencyTree> {
+	for await (const instance of instanceGen) {
 		yield* getInstanceDTreeCandidates(instance, accumulator, sigfs);
 	}
+}
+
+export async function* getModuleDTreeCandidates(
+	moduleIdentifier: ModuleIdentifier,
+	versionRange: string,
+	accumulator: ReadonlyDeps = new Map(),
+	sigfs: SharedIntanceGeneratorFactories = new WeakMap(),
+): AsyncGenerator<DependencyTree> {
+	const instanceGen = getModuleInstances(moduleIdentifier, versionRange);
+	yield* getInstanceDTreeCandidatesGen(instanceGen, accumulator, sigfs);
 }
 
 export async function* getInstanceDTreeCandidates(
@@ -106,6 +118,10 @@ export async function* getInstanceDTreeCandidates(
 	accumulator: ReadonlyDeps = new Map(),
 	sigfs: SharedIntanceGeneratorFactories = new WeakMap(),
 ): AsyncGenerator<DependencyTree> {
+	if (!(await ensureModuleInstanceMetadata(instance))) {
+		return;
+	}
+
 	const _accumulator: Deps = new Map(accumulator);
 	if (!accumulateInstanceDependencies(_accumulator, instance)) {
 		return;
@@ -141,11 +157,21 @@ export async function* getDependenciesDTreeCandidates(
 	accumulator: ReadonlyDeps = new Map(),
 	sigfs: SharedIntanceGeneratorFactories = new WeakMap(),
 ): AsyncGenerator<DependencyTree[]> {
-	const gens = Object
+	const instanceGens = Object
 		.entries(dependencies)
-		.map(([moduleIdentifier, versionRange]) =>
-			getModuleDTreeCandidates(moduleIdentifier, versionRange, accumulator, sigfs)
-		);
+		.map(([moduleIdentifier, versionRange]) => (getModuleInstances(moduleIdentifier, versionRange)));
+
+	yield* getInstanceGensDTreeCandidates(instanceGens, accumulator, sigfs);
+}
+
+export async function* getInstanceGensDTreeCandidates(
+	instanceGens: Array<AsyncGenerator<ModuleInstance>>,
+	accumulator: ReadonlyDeps = new Map(),
+	sigfs: SharedIntanceGeneratorFactories = new WeakMap(),
+): AsyncGenerator<DependencyTree[]> {
+	const gens = instanceGens.map(async function* (instanceGen) {
+		yield* getInstanceDTreeCandidatesGen(instanceGen, accumulator, sigfs);
+	});
 
 	for await (const comb of getCombinationsFromGenerators(...gens)) {
 		const accumulator: Deps = new Map();
