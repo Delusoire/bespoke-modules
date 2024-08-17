@@ -184,7 +184,7 @@ export async function* getInstanceGensDTreeCandidates(
 				}
 			}
 
-			yield comb as DependencyTree[];
+			yield comb;
 		}
 	}
 }
