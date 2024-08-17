@@ -1,9 +1,4 @@
-import {
-	createEventBus,
-	createLogger,
-	createRegistrar,
-	createStorage,
-} from "/modules/stdlib/mod.ts";
+import { createEventBus, createLogger, createRegistrar, createStorage } from "/modules/stdlib/mod.ts";
 import { createSettings } from "/modules/stdlib/lib/settings.tsx";
 
 import { NavLink } from "/modules/stdlib/src/registers/navlink.tsx";
@@ -60,7 +55,7 @@ export default function (mod: Module) {
 
 	registrar.register("topbarLeftButton", <PlaylistEdit />);
 
-	const LazyStatsApp = React.lazy(() => import("./app.js"));
+	const LazyStatsApp = React.lazy(() => import("./app.tsx"));
 	registrar.register("route", <Route path={"/bespoke/stats/*"} element={<LazyStatsApp />} />);
 
 	registrar.register(

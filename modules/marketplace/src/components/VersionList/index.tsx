@@ -15,10 +15,11 @@ import { satisfies } from "/hooks/semver/satisfies.ts";
 import { React } from "/modules/stdlib/src/expose/React.ts";
 import { classnames } from "/modules/stdlib/src/webpack/ClassNames.ts";
 import { UI } from "/modules/stdlib/src/webpack/ComponentLibrary.ts";
-import { useLocation, usePanelAPI } from "/modules/stdlib/src/webpack/CustomHooks.ts";
+import { usePanelAPI } from "/modules/stdlib/src/webpack/CustomHooks.ts";
 import { ScrollableText } from "/modules/stdlib/src/webpack/ReactComponents.js";
 import { PanelContent, PanelHeader, PanelSkeleton } from "/modules/stdlib/src/webpack/ReactComponents.ts";
 import { useQuery } from "/modules/stdlib/src/webpack/ReactQuery.ts";
+import { useLocation } from "/modules/stdlib/src/webpack/ReactRouter.xpui.ts";
 
 export default function () {
 	const location = useLocation();

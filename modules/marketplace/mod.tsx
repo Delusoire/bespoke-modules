@@ -8,7 +8,6 @@ import type { Settings } from "/modules/stdlib/lib/settings.tsx";
 import { ACTIVE_ICON, ICON } from "./src/static.ts";
 import { Route } from "/modules/stdlib/src/webpack/ReactComponents.ts";
 import panelReg from "/modules/stdlib/src/registers/panel.ts";
-import VersionList from "./src/components/VersionList/index.tsx";
 
 export let storage: Storage;
 export let logger: Console;
@@ -31,7 +30,7 @@ export default async function (mod: Module) {
 
 	registrar.register("navlink", <MarketplaceLink />);
 
-	const panel = <VersionList />;
+	const panel = React.createElement((await import("./src/components/VersionList/index.tsx")).default);
 	registrar.register("panel", panel);
 	hash = panelReg.getHash(panel)!;
 
