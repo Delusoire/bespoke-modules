@@ -10,9 +10,11 @@ import { useQuery } from "/modules/stdlib/src/webpack/ReactQuery.ts";
 import { display } from "/modules/stdlib/lib/modal.tsx";
 import { RemoteMarkdown } from "../../pages/Module.tsx";
 import {
+	Deps,
 	flattenDTrees,
+	getEnabledDeps,
 	getInstanceGensDTreeCandidates,
-	getStaticDeps,
+	getModuleDeps,
 } from "../../util/getModulesVersionsObjectsCandidates.ts";
 import { Snackbar } from "/modules/stdlib/src/expose/Snackbar.ts";
 import { ModuleInstancesContext } from "../../pages/Marketplace.tsx";
@@ -79,13 +81,16 @@ export const useManageModules = (props: useManageModulesProps) => {
 	};
 
 	const fastEnableWithDependencies = async (...moduleInstances: ModuleInstance[]) => {
-		const deps = getStaticDeps();
+		const enabledDeps = getEnabledDeps();
+		for (const moduleInstance of moduleInstances) {
+			enabledDeps.delete(moduleInstance.getModuleIdentifier());
+		}
 
 		const instanceGens = moduleInstances.map(async function* (instance) {
 			yield instance;
 		});
 
-		for await (const candidate of getInstanceGensDTreeCandidates(instanceGens, deps)) {
+		for await (const candidate of getInstanceGensDTreeCandidates(instanceGens, enabledDeps)) {
 			for (const moduleInstance of flattenDTrees(candidate)) {
 				if (!await fastEnable(moduleInstance)) {
 					return false;

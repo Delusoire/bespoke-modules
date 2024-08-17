@@ -1,5 +1,5 @@
+import { Module, type ModuleIdentifier, type ModuleInstance, RootModule } from "/hooks/module.ts";
 import { satisfies } from "/hooks/semver/satisfies.ts";
-import { type ModuleIdentifier, type ModuleInstance, RootModule } from "/hooks/module.ts";
 
 async function ensureModuleInstanceMetadata(instance: ModuleInstance) {
 	if (!instance.isEnabled()) {
@@ -15,52 +15,97 @@ async function ensureModuleInstanceMetadata(instance: ModuleInstance) {
 
 //
 
-export type Deps = Map<ModuleIdentifier, ReadonlySet<ModuleInstance>>;
-export type ReadonlyDeps = ReadonlyMap<ModuleIdentifier, ReadonlySet<ModuleInstance>>;
+export class ReadonlyDeps extends Map<ModuleIdentifier, ReadonlySet<ModuleInstance>>
+	implements ReadonlyMap<ModuleIdentifier, ReadonlySet<ModuleInstance>> {
+	intersectionTo(other: ReadonlyDeps) {
+		const deps = new Deps(this);
+		if (!deps.intersection(other)) {
+			return null;
+		}
+		return deps;
+	}
 
-export function getStaticDeps() {
-	const deps: Deps = new Map();
+	differenceTo(other: ReadonlyDeps) {
+		const deps = new Deps(this);
+		if (!deps.difference(other)) {
+			return null;
+		}
+		return deps;
+	}
+
+	accumulateTo(...instances: ModuleInstance[]) {
+		const deps = new Deps(this);
+		if (!deps.accumulate(...instances)) {
+			return null;
+		}
+		return deps;
+	}
+}
+
+export class Deps extends ReadonlyDeps implements Map<ModuleIdentifier, ReadonlySet<ModuleInstance>> {
+	intersection(other: ReadonlyDeps) {
+		for (const [moduleIdentifier, sourceInstances] of other) {
+			const targetInstances = this.get(moduleIdentifier) ?? sourceInstances;
+			const commonInstances = sourceInstances.intersection(targetInstances);
+			if (commonInstances.size === 0) {
+				return false;
+			}
+			this.set(moduleIdentifier, commonInstances);
+		}
+		return true;
+	}
+
+	difference(other: ReadonlyDeps) {
+		for (const [moduleIdentifier, targetInstances] of this) {
+			const sourceInstances = other.get(moduleIdentifier) ?? targetInstances;
+			const targetOnlyInstances = targetInstances.difference(sourceInstances);
+			if (targetOnlyInstances.size === 0) {
+				this.delete(moduleIdentifier);
+			} else {
+				this.set(moduleIdentifier, targetOnlyInstances);
+			}
+		}
+		return true;
+	}
+
+	accumulate(...instances: ModuleInstance[]) {
+		const instancesByModuleIdentifier = Object.groupBy(
+			instances,
+			(instance) => instance.getModuleIdentifier(),
+		);
+		for (const [moduleIdentifier, instances] of Object.entries(instancesByModuleIdentifier)) {
+			const d1 = new Set(instances);
+			const d2 = this.get(moduleIdentifier) ?? d1;
+			const d = d1.intersection(d2);
+			if (d.size === 0) {
+				return false;
+			}
+			this.set(moduleIdentifier, d);
+		}
+		return true;
+	}
+}
+
+export function getEnabledDeps() {
+	const deps = new Deps();
 	for (const moduleInstance of RootModule.INSTANCE.getDescendantsByDepth()) {
 		const enabledInstance = moduleInstance.getEnabledInstance();
 		if (!enabledInstance) {
 			continue;
 		}
-		if (
-			!accumulateInstanceDependencies(deps, enabledInstance)
-		) {
+		if (!deps.accumulate(enabledInstance)) {
 			throw new Error("couldn't set deps");
 		}
 	}
 	return deps;
 }
 
-export function accumulateInstanceDependencies(
-	accumulator: Deps,
-	...instances: ModuleInstance[]
-) {
-	const instancesByModuleIdentifier = Object.groupBy(instances, (instance) => instance.getModuleIdentifier());
-	for (const [moduleIdentifier, instances] of Object.entries(instancesByModuleIdentifier)) {
-		const d1 = new Set(instances);
-		const d2 = accumulator.get(moduleIdentifier) ?? d1;
-		const d = d1.intersection(d2);
-		if (d.size === 0) {
-			return false;
-		}
-		accumulator.set(moduleIdentifier, d);
+export function getModuleDeps(module: Module) {
+	const deps = new Deps();
+	if (!deps.accumulate(...module.instances.values())) {
+		throw new Error("couldn't set deps");
 	}
-	return true;
-}
-
-export function mergeInstanceDependencies(target: Deps, source: ReadonlyDeps) {
-	for (const [moduleIdentifier, sourceInstances] of source) {
-		const targetInstances = target.get(moduleIdentifier) ?? sourceInstances;
-		const commonInstances = sourceInstances.intersection(targetInstances);
-		if (commonInstances.size === 0) {
-			return false;
-		}
-		target.set(moduleIdentifier, commonInstances);
-	}
-	return true;
+	return deps;
 }
 
 //
@@ -106,7 +151,7 @@ async function* getInstanceGenInstanceDTreeCandidates(
 export async function* getModuleDTreeCandidates(
 	moduleIdentifier: ModuleIdentifier,
 	versionRange: string,
-	accumulator: ReadonlyDeps = new Map(),
+	accumulator = new ReadonlyDeps(),
 	sigfs: SharedIntanceGeneratorFactories = new WeakMap(),
 ): AsyncGenerator<DependencyTree> {
 	const instanceGen = getModuleInstances(moduleIdentifier, versionRange);
@@ -115,15 +160,15 @@ export async function* getModuleDTreeCandidates(
 
 export async function* getInstanceDTreeCandidates(
 	instance: ModuleInstance,
-	accumulator: ReadonlyDeps = new Map(),
+	accumulator = new ReadonlyDeps(),
 	sigfs: SharedIntanceGeneratorFactories = new WeakMap(),
 ): AsyncGenerator<DependencyTree> {
 	if (!(await ensureModuleInstanceMetadata(instance))) {
 		return;
 	}
 
-	const _accumulator: Deps = new Map(accumulator);
-	if (!accumulateInstanceDependencies(_accumulator, instance)) {
+	const _accumulator = accumulator.accumulateTo(instance);
+	if (!_accumulator) {
 		return;
 	}
 
@@ -146,7 +191,7 @@ export async function* getInstanceDTreeCandidates(
 	}
 
 	for await (const candidate of sigf()) {
-		if (accumulateInstanceDependencies(_accumulator, ...candidate.flat(Infinity) as ModuleInstance[])) {
+		if (_accumulator.accumulateTo(...candidate.flat(Infinity) as ModuleInstance[])) {
 			yield candidate;
 		}
 	}
@@ -154,7 +199,7 @@ export async function* getInstanceDTreeCandidates(
 
 export async function* getDependenciesDTreeCandidates(
 	dependencies: Record<ModuleIdentifier, string>,
-	accumulator: ReadonlyDeps = new Map(),
+	accumulator = new ReadonlyDeps(),
 	sigfs: SharedIntanceGeneratorFactories = new WeakMap(),
 ): AsyncGenerator<DependencyTree[]> {
 	const instanceGens = Object
@@ -166,7 +211,7 @@ export async function* getDependenciesDTreeCandidates(
 
 export async function* getInstanceGensDTreeCandidates(
 	instanceGens: Array<AsyncGenerator<ModuleInstance>>,
-	accumulator: ReadonlyDeps = new Map(),
+	accumulator = new ReadonlyDeps(),
 	sigfs: SharedIntanceGeneratorFactories = new WeakMap(),
 ): AsyncGenerator<DependencyTree[]> {
 	const gens = instanceGens.map(async function* (instanceGen) {
@@ -175,11 +220,11 @@ export async function* getInstanceGensDTreeCandidates(
 
 	for await (const comb of getCombinationsFromGenerators(...gens)) {
 		yield_comb: {
-			const accumulator: Deps = new Map();
+			const accumulator = new Deps();
 
 			for (const dependencyTree of comb) {
 				const dependencyList = dependencyTree.flat(Infinity) as ModuleInstance[];
-				if (!accumulateInstanceDependencies(accumulator, ...dependencyList)) {
+				if (!accumulator.accumulate(...dependencyList)) {
 					break yield_comb;
 				}
 			}
