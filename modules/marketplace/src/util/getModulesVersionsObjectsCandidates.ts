@@ -1,5 +1,5 @@
 import { satisfies } from "/hooks/semver/satisfies.ts";
-import { type ModuleIdentifier, type ModuleInstance, RootModule, type Version } from "/hooks/module.ts";
+import { type ModuleIdentifier, type ModuleInstance, RootModule } from "/hooks/module.ts";
 
 async function ensureModuleInstanceMetadata(instance: ModuleInstance) {
 	if (!instance.isEnabled()) {
@@ -12,6 +12,8 @@ async function ensureModuleInstanceMetadata(instance: ModuleInstance) {
 	}
 	return true;
 }
+
+//
 
 export type Deps = Map<ModuleIdentifier, ReadonlySet<ModuleInstance>>;
 export type ReadonlyDeps = ReadonlyMap<ModuleIdentifier, ReadonlySet<ModuleInstance>>;
@@ -61,6 +63,12 @@ export function mergeInstanceDependencies(target: Deps, source: ReadonlyDeps) {
 	return true;
 }
 
+//
+
+export type SharedIntanceGeneratorFactories = WeakMap<ModuleInstance, AsyncGeneratorFactory<DependencyTree>>;
+
+//
+
 export type DependencyTree = [ModuleInstance, ...DependencyTree[]];
 
 export function flattenDTrees(
@@ -68,6 +76,8 @@ export function flattenDTrees(
 ) {
 	return new Set((dependencyTrees.flat(Infinity) as ModuleInstance[]).reverse());
 }
+
+//
 
 export async function* getModuleDTreeCandidates(
 	moduleIdentifier: ModuleIdentifier,
@@ -91,35 +101,12 @@ export async function* getModuleDTreeCandidates(
 	}
 }
 
-function createSharedGeneratorFactory<T>(generator: AsyncGenerator<T>): AsyncGeneratorFactory<Awaited<T>> {
-	const cache: T[] = [];
-
-	async function next(index: number) {
-		if (index === cache.length) {
-			const result = await generator.next();
-			if (result.done) return -1;
-			cache.push(result.value);
-		}
-		return index + 1;
-	}
-
-	return async function* () {
-		for (let index = 0; (index = await next(index)) >= 0;) {
-			yield cache[index - 1];
-		}
-	};
-}
-
-type AsyncGeneratorFactory<T> = () => AsyncGenerator<T>;
-type SharedIntanceGeneratorFactories = WeakMap<ModuleInstance, AsyncGeneratorFactory<DependencyTree>>;
-
 export async function* getInstanceDTreeCandidates(
 	instance: ModuleInstance,
 	accumulator: ReadonlyDeps = new Map(),
 	sigfs: SharedIntanceGeneratorFactories = new WeakMap(),
 ): AsyncGenerator<DependencyTree> {
 	const _accumulator: Deps = new Map(accumulator);
-	// This is the only purpose of the accumulator, pruning at every instance
 	if (!accumulateInstanceDependencies(_accumulator, instance)) {
 		return;
 	}
@@ -127,10 +114,10 @@ export async function* getInstanceDTreeCandidates(
 	async function* _getInstanceDTreeCandidates(
 		instance: ModuleInstance,
 		accumulator: ReadonlyDeps,
-		sigf: SharedIntanceGeneratorFactories,
+		sigfs: SharedIntanceGeneratorFactories,
 	) {
 		for await (
-			const candidate of getDependenciesDTreeCandidates(instance.metadata!.dependencies, accumulator, sigf)
+			const candidate of getDependenciesDTreeCandidates(instance.metadata!.dependencies, accumulator, sigfs)
 		) {
 			yield [instance, ...candidate] as const as DependencyTree;
 		}
@@ -175,6 +162,8 @@ export async function* getDependenciesDTreeCandidates(
 		}
 	}
 }
+
+//
 
 async function* getCombinationsFromGenerators<T>(...gens: Array<AsyncGenerator<T>>) {
 	const values = new Array(gens.length) as Array<Array<T>>;
@@ -222,4 +211,24 @@ function* getCombinationsFromArrays<T>(
 			...arrays.map((arr, j) => i === j ? [arr[indicies[j]]] : arr.slice(0, indicies[j] + 1)),
 		);
 	}
+}
+
+type AsyncGeneratorFactory<T> = () => AsyncGenerator<T>;
+
+function createSharedGeneratorFactory<T>(generator: AsyncGenerator<T>): AsyncGeneratorFactory<Awaited<T>> {
+	const cache: T[] = [];
+	async function next(index: number) {
+		if (index === cache.length) {
+			const result = await generator.next();
+			if (result.done) return -1;
+			cache.push(result.value);
+		}
+		return index + 1;
+	}
+
+	return async function* () {
+		for (let index = 0; (index = await next(index)) >= 0;) {
+			yield cache[index - 1];
+		}
+	};
 }

@@ -10,7 +10,8 @@ import { useQuery } from "/modules/stdlib/src/webpack/ReactQuery.ts";
 import { display } from "/modules/stdlib/lib/modal.tsx";
 import { RemoteMarkdown } from "../../pages/Module.tsx";
 import {
-	getModulesVersionsObjectsCandidates,
+	flattenDTrees,
+	getInstanceDTreeCandidates,
 	getStaticDeps,
 } from "../../util/getModulesVersionsObjectsCandidates.ts";
 import { Snackbar } from "/modules/stdlib/src/expose/Snackbar.ts";
@@ -83,14 +84,8 @@ const useManageModules = (props: useManageModulesProps) => {
 
 		const deps = getStaticDeps();
 
-		for await (
-			const candidate of getModulesVersionsObjectsCandidates(
-				moduleInstance.getModuleIdentifier(),
-				moduleInstance.getVersion(),
-				deps,
-			)
-		) {
-			for (const moduleInstance of candidate) {
+		for await (const candidate of getInstanceDTreeCandidates(moduleInstance, deps)) {
+			for (const moduleInstance of flattenDTrees(candidate)) {
 				if (!await fastEnable(moduleInstance)) {
 					return false;
 				}
