@@ -174,13 +174,13 @@ export async function* getInstanceGensDTreeCandidates(
 	});
 
 	for await (const comb of getCombinationsFromGenerators(...gens)) {
-		const accumulator: Deps = new Map();
+		yield_comb: {
+			const accumulator: Deps = new Map();
 
-		skip: {
 			for (const dependencyTree of comb) {
 				const dependencyList = dependencyTree.flat(Infinity) as ModuleInstance[];
 				if (!accumulateInstanceDependencies(accumulator, ...dependencyList)) {
-					break skip;
+					break yield_comb;
 				}
 			}
 
