@@ -143,153 +143,153 @@ const _configs = [
 	{
 		"label": "video-sw-decode",
 		"initDataTypes": [
-			"cenc"
+			"cenc",
 		],
 		"audioCapabilities": [
 			{
-				"contentType": "audio/mp4; codecs=\"flac\"",
-				"robustness": "SW_SECURE_CRYPTO"
+				"contentType": 'audio/mp4; codecs="flac"',
+				"robustness": "SW_SECURE_CRYPTO",
 			},
 			{
-				"contentType": "audio/mp4; codecs=\"mp4a.40.2\"",
-				"robustness": "SW_SECURE_CRYPTO"
+				"contentType": 'audio/mp4; codecs="mp4a.40.2"',
+				"robustness": "SW_SECURE_CRYPTO",
 			},
 			{
-				"contentType": "audio/mp4; codecs=\"mp4a.40.5\"",
-				"robustness": "SW_SECURE_CRYPTO"
+				"contentType": 'audio/mp4; codecs="mp4a.40.5"',
+				"robustness": "SW_SECURE_CRYPTO",
 			},
 			{
-				"contentType": "audio/webm; codecs=\"opus\"",
-				"robustness": "SW_SECURE_CRYPTO"
-			}
+				"contentType": 'audio/webm; codecs="opus"',
+				"robustness": "SW_SECURE_CRYPTO",
+			},
 		],
 		"videoCapabilities": [
 			{
-				"contentType": "video/mp4; codecs=\"avc1.64002a\"",
-				"robustness": "SW_SECURE_DECODE"
+				"contentType": 'video/mp4; codecs="avc1.64002a"',
+				"robustness": "SW_SECURE_DECODE",
 			},
 			{
-				"contentType": "video/mp4; codecs=\"avc1.4d402a\"",
-				"robustness": "SW_SECURE_DECODE"
+				"contentType": 'video/mp4; codecs="avc1.4d402a"',
+				"robustness": "SW_SECURE_DECODE",
 			},
 			{
-				"contentType": "video/mp4; codecs=\"avc1.4d401f\"",
-				"robustness": "SW_SECURE_DECODE"
+				"contentType": 'video/mp4; codecs="avc1.4d401f"',
+				"robustness": "SW_SECURE_DECODE",
 			},
 			{
-				"contentType": "video/webm; codecs=\"vp9\"",
-				"robustness": "SW_SECURE_DECODE"
+				"contentType": 'video/webm; codecs="vp9"',
+				"robustness": "SW_SECURE_DECODE",
 			},
 			{
-				"contentType": "video/webm; codecs=\"vp8\"",
-				"robustness": "SW_SECURE_DECODE"
-			}
+				"contentType": 'video/webm; codecs="vp8"',
+				"robustness": "SW_SECURE_DECODE",
+			},
 		],
 		"distinctiveIdentifier": "optional",
 		"persistentState": "optional",
 		"sessionTypes": [
-			"temporary"
-		]
+			"temporary",
+		],
 	},
 	{
 		"label": "video-sw-crypto",
 		"initDataTypes": [
-			"cenc"
+			"cenc",
 		],
 		"audioCapabilities": [
 			{
-				"contentType": "audio/mp4; codecs=\"flac\"",
-				"robustness": "SW_SECURE_CRYPTO"
+				"contentType": 'audio/mp4; codecs="flac"',
+				"robustness": "SW_SECURE_CRYPTO",
 			},
 			{
-				"contentType": "audio/mp4; codecs=\"mp4a.40.2\"",
-				"robustness": "SW_SECURE_CRYPTO"
+				"contentType": 'audio/mp4; codecs="mp4a.40.2"',
+				"robustness": "SW_SECURE_CRYPTO",
 			},
 			{
-				"contentType": "audio/mp4; codecs=\"mp4a.40.5\"",
-				"robustness": "SW_SECURE_CRYPTO"
+				"contentType": 'audio/mp4; codecs="mp4a.40.5"',
+				"robustness": "SW_SECURE_CRYPTO",
 			},
 			{
-				"contentType": "audio/webm; codecs=\"opus\"",
-				"robustness": "SW_SECURE_CRYPTO"
-			}
+				"contentType": 'audio/webm; codecs="opus"',
+				"robustness": "SW_SECURE_CRYPTO",
+			},
 		],
 		"videoCapabilities": [
 			{
-				"contentType": "video/mp4; codecs=\"avc1.64002a\"",
-				"robustness": "SW_SECURE_CRYPTO"
+				"contentType": 'video/mp4; codecs="avc1.64002a"',
+				"robustness": "SW_SECURE_CRYPTO",
 			},
 			{
-				"contentType": "video/mp4; codecs=\"avc1.4d402a\"",
-				"robustness": "SW_SECURE_CRYPTO"
+				"contentType": 'video/mp4; codecs="avc1.4d402a"',
+				"robustness": "SW_SECURE_CRYPTO",
 			},
 			{
-				"contentType": "video/mp4; codecs=\"avc1.4d401f\"",
-				"robustness": "SW_SECURE_CRYPTO"
+				"contentType": 'video/mp4; codecs="avc1.4d401f"',
+				"robustness": "SW_SECURE_CRYPTO",
 			},
 			{
-				"contentType": "video/webm; codecs=\"vp9\"",
-				"robustness": "SW_SECURE_CRYPTO"
+				"contentType": 'video/webm; codecs="vp9"',
+				"robustness": "SW_SECURE_CRYPTO",
 			},
 			{
-				"contentType": "video/webm; codecs=\"vp8\"",
-				"robustness": "SW_SECURE_CRYPTO"
-			}
+				"contentType": 'video/webm; codecs="vp8"',
+				"robustness": "SW_SECURE_CRYPTO",
+			},
 		],
 		"distinctiveIdentifier": "optional",
 		"persistentState": "optional",
 		"sessionTypes": [
-			"temporary"
-		]
+			"temporary",
+		],
 	},
 	{
 		"label": "audio-flac-sw-crypto",
 		"initDataTypes": [
-			"cenc"
+			"cenc",
 		],
 		"audioCapabilities": [
 			{
-				"contentType": "audio/mp4; codecs=\"flac\"",
-				"robustness": "SW_SECURE_CRYPTO"
+				"contentType": 'audio/mp4; codecs="flac"',
+				"robustness": "SW_SECURE_CRYPTO",
 			},
 			{
-				"contentType": "audio/mp4; codecs=\"mp4a.40.2\"",
-				"robustness": "SW_SECURE_CRYPTO"
+				"contentType": 'audio/mp4; codecs="mp4a.40.2"',
+				"robustness": "SW_SECURE_CRYPTO",
 			},
 			{
-				"contentType": "audio/mp4; codecs=\"mp4a.40.5\"",
-				"robustness": "SW_SECURE_CRYPTO"
-			}
+				"contentType": 'audio/mp4; codecs="mp4a.40.5"',
+				"robustness": "SW_SECURE_CRYPTO",
+			},
 		],
 		"videoCapabilities": [],
 		"distinctiveIdentifier": "optional",
 		"persistentState": "optional",
 		"sessionTypes": [
-			"temporary"
-		]
+			"temporary",
+		],
 	},
 	{
 		"label": "audio-sw-crypto",
 		"initDataTypes": [
-			"cenc"
+			"cenc",
 		],
 		"audioCapabilities": [
 			{
-				"contentType": "audio/mp4; codecs=\"mp4a.40.2\"",
-				"robustness": "SW_SECURE_CRYPTO"
+				"contentType": 'audio/mp4; codecs="mp4a.40.2"',
+				"robustness": "SW_SECURE_CRYPTO",
 			},
 			{
-				"contentType": "audio/mp4; codecs=\"mp4a.40.5\"",
-				"robustness": "SW_SECURE_CRYPTO"
-			}
+				"contentType": 'audio/mp4; codecs="mp4a.40.5"',
+				"robustness": "SW_SECURE_CRYPTO",
+			},
 		],
 		"videoCapabilities": [],
 		"distinctiveIdentifier": "optional",
 		"persistentState": "optional",
 		"sessionTypes": [
-			"temporary"
-		]
-	}
+			"temporary",
+		],
+	},
 ];
 
 const mediaKeySystemAccess = await navigator.requestMediaKeySystemAccess("com.widevine.alpha", _configs as any);
@@ -800,7 +800,7 @@ async function synchronizePlayer(player: HTMLMediaElement, offsetMs = 0) {
 	const forceResync = resync("mitigating currentTime playback delta: %s", Number.MAX_VALUE);
 
 	let state: PlayerState = {};
-	const onPlayerUpdate = ({ data: _state }: { data: PlayerState; }) => {
+	const onPlayerUpdate = ({ data: _state }: { data: PlayerState }) => {
 		const oldUri = state.item?.uri;
 		const newUri = _state.item?.uri;
 		if ((oldUri || newUri) && newUri !== oldUri) {
@@ -849,7 +849,7 @@ function gauss(x: number, sigma = 1, mu = 0) {
 }
 
 interface SoundProcessorOptions {
-	filterParams?: { mu?: number; sigma?: number; radius?: number; };
+	filterParams?: { mu?: number; sigma?: number; radius?: number };
 	sampleRate: number;
 	fftSize: number;
 	endFrequency?: number;
@@ -873,7 +873,7 @@ class SoundProcessor {
 		filterRadius: number;
 	};
 	aWeights = new Array<number>();
-	bands = new Array<{ l: number; h: number; }>();
+	bands = new Array<{ l: number; h: number }>();
 	gKernel = new Array<number>();
 	historyLimit = 5;
 	history = new Array<Uint8Array>();
@@ -1167,7 +1167,7 @@ class Bar {
 	heightScale = 0.3;
 	smoothing = 0;
 	normedAmp = 0;
-	constructor(public x = 0, public y = 0, public w = 0, public h = 0) { }
+	constructor(public x = 0, public y = 0, public w = 0, public h = 0) {}
 
 	set(x: number, y: number, w: number, h: number) {
 		this.x = x;
