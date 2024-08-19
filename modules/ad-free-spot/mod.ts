@@ -59,8 +59,14 @@ export default async function (mod: Module) {
 
 /* */
 
-function overrideSlot(adSlotEvent: { slotId: string }) {
-	adsCoreConnector.clearSlot(adSlotEvent.slotId);
+async function overrideSlot({ slotId }: { slotId: string }) {
+	adsCoreConnector.clearSlot(slotId);
+	await Promise.all([
+		settingsClient.updateSlotEnabled({ slotId, enabled: false }),
+		settingsClient.updateDisplayTimeInterval({ slotId }),
+		settingsClient.updateExpiryTimeInterval({ slotId, timeInterval: "1800000n" }),
+		settingsClient.updateStreamTimeInterval({ slotId }),
+	]);
 }
 
 /* */
