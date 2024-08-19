@@ -1,0 +1,18 @@
+{
+	"name": "block-ad-spot",
+	"tags": [
+		"ad",
+		"block"
+	],
+	"version": "0.1.3",
+	"authors": [
+		"Delusoire"
+	],
+	"description": "Block ads on a Spot",
+	"entries": {
+		"js": "index.js"
+	},
+	"dependencies": {
+		"stdlib": "0.2.2"
+	}
+}
