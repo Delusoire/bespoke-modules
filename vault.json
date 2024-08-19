@@ -4,7 +4,7 @@
       "v": {
         "0.1.3+cm-1020040-ly32efah": {
           "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-18/Delusoire.better-lyrics@0.1.3+cm-1020040-ly32efah.zip"
+            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-19/Delusoire.better-lyrics@0.1.3+cm-1020040-ly32efah.zip"
           ],
           "providers": []
         }
@@ -14,7 +14,7 @@
       "v": {
         "0.1.3+cm-1020040-ly32efah": {
           "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-18/Delusoire.delulib@0.1.3+cm-1020040-ly32efah.zip"
+            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-19/Delusoire.delulib@0.1.3+cm-1020040-ly32efah.zip"
           ],
           "providers": []
         }
@@ -24,7 +24,7 @@
       "v": {
         "1.1.7+cm-1020040-ly32efah": {
           "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-18/Delusoire.dexie-react-hooks@1.1.7+cm-1020040-ly32efah.zip"
+            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-19/Delusoire.dexie-react-hooks@1.1.7+cm-1020040-ly32efah.zip"
           ],
           "providers": []
         }
@@ -34,7 +34,7 @@
       "v": {
         "0.1.3+cm-1020040-ly32efah": {
           "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-18/Delusoire.keyboard-shortcuts@0.1.3+cm-1020040-ly32efah.zip"
+            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-19/Delusoire.keyboard-shortcuts@0.1.3+cm-1020040-ly32efah.zip"
           ],
           "providers": []
         }
@@ -44,7 +44,7 @@
       "v": {
         "0.1.3+cm-1020040-ly32efah": {
           "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-18/Delusoire.library-db@0.1.3+cm-1020040-ly32efah.zip"
+            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-19/Delusoire.library-db@0.1.3+cm-1020040-ly32efah.zip"
           ],
           "providers": []
         }
@@ -54,7 +54,7 @@
       "v": {
         "0.1.3+cm-1020040-ly32efah": {
           "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-18/Delusoire.marketplace@0.1.3+cm-1020040-ly32efah.zip"
+            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-19/Delusoire.marketplace@0.1.3+cm-1020040-ly32efah.zip"
           ],
           "providers": []
         }
@@ -64,7 +64,7 @@
       "v": {
         "0.1.3+cm-1020040-ly32efah": {
           "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-18/Delusoire.perf@0.1.3+cm-1020040-ly32efah.zip"
+            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-19/Delusoire.perf@0.1.3+cm-1020040-ly32efah.zip"
           ],
           "providers": []
         }
@@ -74,7 +74,7 @@
       "v": {
         "0.1.3+cm-1020040-ly32efah": {
           "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-18/Delusoire.playlist-labels@0.1.3+cm-1020040-ly32efah.zip"
+            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-19/Delusoire.playlist-labels@0.1.3+cm-1020040-ly32efah.zip"
           ],
           "providers": []
         }
@@ -84,7 +84,7 @@
       "v": {
         "0.1.3+cm-1020040-ly32efah": {
           "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-18/Delusoire.search-on-youtube@0.1.3+cm-1020040-ly32efah.zip"
+            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-19/Delusoire.search-on-youtube@0.1.3+cm-1020040-ly32efah.zip"
           ],
           "providers": []
         }
@@ -94,7 +94,7 @@
       "v": {
         "0.1.3+cm-1020040-ly32efah": {
           "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-18/Delusoire.show-the-genres@0.1.3+cm-1020040-ly32efah.zip"
+            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-19/Delusoire.show-the-genres@0.1.3+cm-1020040-ly32efah.zip"
           ],
           "providers": []
         }
@@ -104,7 +104,7 @@
       "v": {
         "0.1.3+cm-1020040-ly32efah": {
           "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-18/Delusoire.spoqify-radios@0.1.3+cm-1020040-ly32efah.zip"
+            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-19/Delusoire.spoqify-radios@0.1.3+cm-1020040-ly32efah.zip"
           ],
           "providers": []
         }
@@ -114,7 +114,7 @@
       "v": {
         "0.1.3--a8bf02cafb661b5d9504084cdef73a1ee2572d43+cm-1020040-ly32efah": {
           "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-18/Delusoire.statistics@0.1.3--a8bf02cafb661b5d9504084cdef73a1ee2572d43+cm-1020040-ly32efah.zip"
+            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-19/Delusoire.statistics@0.1.3--a8bf02cafb661b5d9504084cdef73a1ee2572d43+cm-1020040-ly32efah.zip"
           ],
           "providers": []
         }
@@ -124,7 +124,7 @@
       "v": {
         "0.1.3+cm-1020040-ly32efah": {
           "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-18/Delusoire.vaultify@0.1.3+cm-1020040-ly32efah.zip"
+            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-19/Delusoire.vaultify@0.1.3+cm-1020040-ly32efah.zip"
           ],
           "providers": []
         }
@@ -134,7 +134,7 @@
       "v": {
         "0.1.3+cm-1020040-ly32efah": {
           "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-18/Delusoire.passionate-buttons@0.1.3+cm-1020040-ly32efah.zip"
+            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-19/Delusoire.passionate-buttons@0.1.3+cm-1020040-ly32efah.zip"
           ],
           "providers": []
         }
@@ -144,7 +144,7 @@
       "v": {
         "0.1.3+cm-1020040-ly32efah": {
           "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-18/Delusoire.tracklist-columns@0.1.3+cm-1020040-ly32efah.zip"
+            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-19/Delusoire.tracklist-columns@0.1.3+cm-1020040-ly32efah.zip"
           ],
           "providers": []
         }
@@ -154,7 +154,7 @@
       "v": {
         "0.1.3+cm-1020040-ly32efah": {
           "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-18/Delusoire.artist-discography@0.1.3+cm-1020040-ly32efah.zip"
+            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-19/Delusoire.artist-discography@0.1.3+cm-1020040-ly32efah.zip"
           ],
           "providers": []
         }
@@ -164,7 +164,7 @@
       "v": {
         "0.1.3+cm-1020040-ly32efah": {
           "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-18/Delusoire.custom-keybinds@0.1.3+cm-1020040-ly32efah.zip"
+            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-19/Delusoire.custom-keybinds@0.1.3+cm-1020040-ly32efah.zip"
           ],
           "providers": []
         }
@@ -174,7 +174,7 @@
       "v": {
         "0.1.3+cm-1020040-ly32efah": {
           "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-18/Delusoire.more-columns@0.1.3+cm-1020040-ly32efah.zip"
+            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-19/Delusoire.more-columns@0.1.3+cm-1020040-ly32efah.zip"
           ],
           "providers": []
         }
@@ -184,7 +184,17 @@
       "v": {
         "0.1.3+cm-1020040-ly32efah": {
           "artifacts": [
-            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-18/Delusoire.shuffle-anything@0.1.3+cm-1020040-ly32efah.zip"
+            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-19/Delusoire.shuffle-anything@0.1.3+cm-1020040-ly32efah.zip"
+          ],
+          "providers": []
+        }
+      }
+    },
+    "Delusoire.block-ad-spot": {
+      "v": {
+        "0.1.3+cm-1020040-ly32efah": {
+          "artifacts": [
+            "https://github.com/Delusoire/bespoke-modules/releases/download/2024-08-19/Delusoire.block-ad-spot@0.1.3+cm-1020040-ly32efah.zip"
           ],
           "providers": []
         }
