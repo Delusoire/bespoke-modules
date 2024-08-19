@@ -120,9 +120,8 @@ async function overrideProductState(pairs?: Partial<PairOverrides>) {
 
 	await ProductStateAPI.productStateApi.putOverridesValues({ pairs: newPairs });
 
-	const { audio, vto } = Platform.getAdManagers();
-	audio.isNewAdsNpvEnabled = false;
-	vto.manager.isNewAdsNpvEnabled = false;
+	// AdManagers.audio.isNewAdsNpvEnabled = false;
+	// AdManagers.vto.manager.isNewAdsNpvEnabled = false;
 }
 
 /* */
