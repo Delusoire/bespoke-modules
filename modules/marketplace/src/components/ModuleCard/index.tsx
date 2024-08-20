@@ -92,7 +92,7 @@ export const useManageModules = (props: useManageModulesProps) => {
 
 		for await (const candidate of getInstanceGensDTreeCandidates(instanceGens, enabledDeps)) {
 			for (const moduleInstance of flattenDTrees(candidate)) {
-				if (!await fastEnable(moduleInstance)) {
+				if (!(await fastEnable(moduleInstance))) {
 					return false;
 				}
 			}
