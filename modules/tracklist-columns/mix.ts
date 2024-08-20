@@ -74,13 +74,13 @@ function tracklistColumn(transformer: Transformer) {
 		);
 
 		str = str.replace(
-			/\(\{(columnType:[a-zA-Z_\$][\w\$]*,visible:!0),toggleable:([^,})]+),/,
-			"({$1,toggleable:$2??true,",
+			/{(?=[^{}]*(?:{[^{}]*}[^{}]*)*(?<=[,{])columnType:)(?=[^{}]*(?:{[^{}]*}[^{}]*)*(?<=[,{])visible:)(?=[^{}]*(?:{[^{}]*}[^{}]*)*(?<=[,{])toggleable:)(?=[^{}]*(?:{[^{}]*}[^{}]*)*(?<=[,{])options:)([^{}]*(?:{[^{}]*}[^{}]*)*(?<=[,{]))toggleable:((?:[^{}]*{[^{}]*})*?[^,{}]*)(,[^{}]*(?:{[^{}]*}[^{}]*)*|)}/,
+			"{$1toggleable:($2)??true$3}",
 		);
 
 		str = str.replace(
-			/({\[[a-zA-Z_\$][\w\$]*\.[a-zA-Z_\$][\w\$]*\.INDEX\]:[^{}]*(?:{[^{}]*(?:{[^{}]*}[^{}]*)*}[^{}]*)*})/,
-			"globalThis.__patchColumnTypeToColumnLabelMap($1)",
+			/{(\[[a-zA-Z_\$][\w\$]*\.[a-zA-Z_\$][\w\$]*\.INDEX\]:[^{}]*(?:{[^{}]*(?:{[^{}]*}[^{}]*)*}[^{}]*)*)}/,
+			"globalThis.__patchColumnTypeToColumnLabelMap({$1})",
 		);
 
 		emit();
@@ -153,28 +153,28 @@ globalThis.__patchColumnTypeToSortFieldMap = (x) => {
 function tracklistSort(transformer: Transformer) {
 	transformer((emit) => (str) => {
 		str = str.replace(
-			/({\[[a-zA-Z_\$][\w\$\.]*\.INDEX\]:[^{}]*(?:{[^{}]*(?:{[^{}]*}[^{}]*)*}[^{}]*)*})/,
-			"globalThis.__patchColumnTypeToSortPropsMap($1)",
+			/{((?=[^{}]*(?:{[^{}]*(?:{[^{}]*(?:{[^{}]*}[^{}]*)*}[^{}]*)*}[^{}]*)*(?<=[,{])\[([a-zA-Z_\$][\w\$]*\.){2}INDEX\]:{key:)(?=[^{}]*(?:{[^{}]*(?:{[^{}]*(?:{[^{}]*}[^{}]*)*}[^{}]*)*}[^{}]*)*(?<=[,{])\[([a-zA-Z_\$][\w\$]*\.){2}TITLE\]:{key:)[^{}]*(?:{[^{}]*(?:{[^{}]*(?:{[^{}]*}[^{}]*)*}[^{}]*)*}[^{}]*)*)}/,
+			"globalThis.__patchColumnTypeToSortPropsMap({$1})",
 		);
 		str = str.replace(
-			/({"custom-order":[^{}]*(?:{[^{}]*}[^{}]*)*})/,
-			"globalThis.__patchSortKeyToDefaultSortOptionsMap($1)",
+			/{("custom-order":[^{}]*(?:{[^{}]*}[^{}]*)*)}/,
+			"globalThis.__patchSortKeyToDefaultSortOptionsMap({$1})",
 		);
 		str = str.replace(
-			/(\{[\w\$\.\"\-\:\,]*\btitle:[a-zA-Z_\$][\w\$\.]*\.TITLE,[\w\$\.\"\-\:\,]*\})/,
-			"globalThis.__patchSortKeyToColumnTypeMap($1)",
+			/{((?=[^{}]*(?<=[,{])title:[a-zA-Z_\$][\w\$\.]*\.TITLE[,}])(?=[^{}]*(?<=[,{])"title-and-artist-title":[a-zA-Z_\$][\w\$\.]*\.TITLE_AND_ARTIST[,}])[^{}]*)}/,
+			"globalThis.__patchSortKeyToColumnTypeMap({$1})",
 		);
 		emit();
 		return str;
 	}, {
-		glob: /^\/7271\.js$/,
+		glob: /^\/.+\.js$/,
 		noAwait: true,
 	});
 
 	transformer((emit) => (str) => {
 		str = str.replace(
-			/(\{[\w\$\.\"\:\,\[\]]*\[r\.\$\.TITLE\]:[a-zA-Z_\$][\w\$\.]*\.TITLE,[\w\$\.\"\:\,\[\]]*\})/,
-			"globalThis.__patchColumnTypeToSortFieldMap($1)",
+			/{((?=[^{}]*(?<=[,{])\[([a-zA-Z_\$][\w\$]*\.){2}TITLE\]:([a-zA-Z_\$][\w\$]*\.){2}TITLE[,}])[^{}]*)}/,
+			"globalThis.__patchColumnTypeToSortFieldMap({$1})",
 		);
 		emit();
 		return str;
