@@ -10,12 +10,10 @@ import { useQuery } from "/modules/stdlib/src/webpack/ReactQuery.ts";
 import { display } from "/modules/stdlib/lib/modal.tsx";
 import { RemoteMarkdown } from "../../pages/Module.tsx";
 import {
-	Deps,
 	flattenDTrees,
 	getEnabledDeps,
 	getInstanceGensDTreeCandidates,
-	getModuleDeps,
-} from "../../util/getModulesVersionsObjectsCandidates.ts";
+} from "../../util/getDTreeCandidates.ts";
 import { Snackbar } from "/modules/stdlib/src/expose/Snackbar.ts";
 import { ModuleInstancesContext } from "../../pages/Marketplace.tsx";
 
