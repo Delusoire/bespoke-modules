@@ -1,6 +1,8 @@
 import type { ResourceLanguage } from "https://esm.sh/v135/i18next";
-import { fetchJson } from "/hooks/util.ts";
+
+const j = <R>(path: string) =>
+	import(path, { with: { type: "json" } }).then((m) => m.default).catch(() => null) as Promise<Awaited<R>>;
 
 export default {
-	en: await fetchJson<ResourceLanguage>("/modules/Delusoire.marketplace/src/resources/locales/en.json"),
-};
+	en: await j("./en.json"),
+} as Record<string, ResourceLanguage>;
