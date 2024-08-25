@@ -152,6 +152,8 @@ globalThis.__patchColumnTypeToSortFieldMap = (x) => {
 
 function tracklistSort(transformer: Transformer) {
 	transformer((emit) => (str) => {
+		emit();
+
 		str = str.replace(
 			/{((?=[^{}]*(?:{[^{}]*(?:{[^{}]*(?:{[^{}]*}[^{}]*)*}[^{}]*)*}[^{}]*)*(?<=[,{])\[([a-zA-Z_\$][\w\$]*\.){2}INDEX\]:{key:)(?=[^{}]*(?:{[^{}]*(?:{[^{}]*(?:{[^{}]*}[^{}]*)*}[^{}]*)*}[^{}]*)*(?<=[,{])\[([a-zA-Z_\$][\w\$]*\.){2}TITLE\]:{key:)[^{}]*(?:{[^{}]*(?:{[^{}]*(?:{[^{}]*}[^{}]*)*}[^{}]*)*}[^{}]*)*)}/,
 			"globalThis.__patchColumnTypeToSortPropsMap({$1})",
@@ -164,7 +166,7 @@ function tracklistSort(transformer: Transformer) {
 			/{((?=[^{}]*(?<=[,{])title:[a-zA-Z_\$][\w\$\.]*\.TITLE[,}])(?=[^{}]*(?<=[,{])"title-and-artist-title":[a-zA-Z_\$][\w\$\.]*\.TITLE_AND_ARTIST[,}])[^{}]*)}/,
 			"globalThis.__patchSortKeyToColumnTypeMap({$1})",
 		);
-		emit();
+
 		return str;
 	}, {
 		glob: /^\/.+\.js$/,
@@ -172,11 +174,13 @@ function tracklistSort(transformer: Transformer) {
 	});
 
 	transformer((emit) => (str) => {
+		emit();
+
 		str = str.replace(
 			/{((?=[^{}]*(?<=[,{])\[([a-zA-Z_\$][\w\$]*\.){2}TITLE\]:([a-zA-Z_\$][\w\$]*\.){2}TITLE[,}])[^{}]*)}/,
 			"globalThis.__patchColumnTypeToSortFieldMap({$1})",
 		);
-		emit();
+
 		return str;
 	}, {
 		glob: /^\/xpui\.js$/,

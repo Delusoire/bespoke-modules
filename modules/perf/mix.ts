@@ -10,12 +10,12 @@ declare global {
 }
 
 globalThis.__patchTbo = (prop, val) => {
-	document.querySelectorAll(tboSel).forEach(n => n.style.setProperty(prop, val));
+	document.querySelectorAll(tboSel).forEach((n) => n.style.setProperty(prop, val));
 };
 
 const maps: Record<string, WeakMap<HTMLElement, string>> = {};
 const setCssVar = (prop: string, val: string) => (node: HTMLElement) => {
-	const map = maps[prop] ??= new WeakMap;
+	const map = maps[prop] ??= new WeakMap();
 	const oldVal = map.get(node);
 	if (val !== oldVal) {
 		map.set(node, val);
@@ -37,11 +37,14 @@ globalThis.__patchLswPw = (prop, val) => {
 
 export default function (transformer: Transformer) {
 	transformer((emit) => (str) => {
-		str = str.replace(/&&[a-zA-Z_\$][\w\$]*\.current\.style\.setProperty\(("--top-bar-opacity"),(.+?)\)(?=})/, `&&__patchTbo($1,$2)`);
+		emit();
+
+		str = str.replace(
+			/&&[a-zA-Z_\$][\w\$]*\.current\.style\.setProperty\(("--top-bar-opacity"),(.+?)\)(?=})/,
+			`&&__patchTbo($1,$2)`,
+		);
 
 		// str = str.replace(/e!==[a-zA-Z_\$][\w\$]*\.current&&(\(document.documentElement.style.setProperty\(([a-zA-Z_\$][\w\$]*),(.+?)\))(?=,)/, "__patchLswPw($2,$3)||$1");
-
-		emit();
 
 		return str;
 	}, {

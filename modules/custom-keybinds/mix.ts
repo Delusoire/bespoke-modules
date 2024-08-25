@@ -13,11 +13,13 @@ globalThis.__patchKeybindSectionComponent = (x) => x;
 
 export default async function (transformer: Transformer) {
 	transformer((emit) => (str) => {
+		emit();
+
 		str = str.replaceAll(
 			/\(0,([a-zA-Z_\$][\w\$]*)\.jsx\)\(([a-zA-Z_\$][\w\$]*),{(shortcuts:[^,]+,sectionTitle:[^,]+)}\)/g,
 			"(0,$1.jsx)(__patchKeybindSectionComponent($2),{$3})",
 		);
-		emit();
+
 		return str;
 	}, {
 		glob: /^\/xpui-root-dialogs\.js$/,
