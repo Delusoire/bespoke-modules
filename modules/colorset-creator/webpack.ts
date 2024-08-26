@@ -1,3 +1,7 @@
+/* Copyright (C) 2024 Delusoire
+ * SPDX-License-Identifier: GPL-3.0-or-later
+ */
+
 import { modules, require } from "/modules/stdlib/src/webpack/index.ts";
 
 export type ColorSetObj = {
