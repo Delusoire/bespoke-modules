@@ -1,4 +1,4 @@
-import { modules } from "/modules/stdlib/src/webpack/index.ts";
+import { exports } from "/modules/stdlib/src/webpack/index.ts";
 import { Module } from "/hooks/index.ts";
 import { React } from "/modules/stdlib/src/expose/React.ts";
 import { classnames } from "/modules/stdlib/src/webpack/ClassNames.ts";
@@ -81,7 +81,7 @@ globalThis.__patchTracklistColumnHeaderContextMenu =
 	};
 
 export default async function (mod: Module) {
-	const [m, k, v] = modules
+	const [m, k, v] = exports
 		.flatMap((m) => {
 			const keys = Object.keys(m);
 			for (const k of keys) {

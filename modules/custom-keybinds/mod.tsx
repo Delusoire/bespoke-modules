@@ -1,6 +1,6 @@
 import { createStorage } from "/modules/stdlib/mod.ts";
 import type { Module } from "/hooks/index.ts";
-import { exports } from "/modules/stdlib/src/webpack/index.ts";
+import { exported } from "/modules/stdlib/src/webpack/index.ts";
 import { UI } from "/modules/stdlib/src/webpack/ComponentLibrary.ts";
 import { React } from "/modules/stdlib/src/expose/React.ts";
 import type { Shortcut } from "./mix.ts";
@@ -15,7 +15,7 @@ export let storage: Storage;
 export default async function (mod: Module) {
 	storage = createStorage(mod);
 
-	spotifyKeybinds = exports.find((obj) => Array.isArray(obj?.OPEN_HELP));
+	spotifyKeybinds = exported.find((obj) => Array.isArray(obj?.OPEN_HELP));
 
 	loadKeybinds();
 

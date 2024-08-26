@@ -5,9 +5,9 @@ export async function mixin(tr: Transformer) {
 }
 
 export async function preload(mod: Module) {
-	const { modules } = await import("/modules/stdlib/src/webpack/index.ts");
+	const { exports } = await import("/modules/stdlib/src/webpack/index.ts");
 	await CHUNKS.xpui.promise;
-	const [m, k, v] = modules
+	const [m, k, v] = exports
 		.flatMap((m) => {
 			const keys = Object.keys(m);
 			for (const k of keys) {

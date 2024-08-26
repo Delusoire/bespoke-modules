@@ -1,14 +1,14 @@
 import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
 import type { Module } from "/hooks/index.ts";
 
-import { modules } from "/modules/stdlib/src/webpack/index.ts";
+import { exports } from "/modules/stdlib/src/webpack/index.ts";
 
 const AdManagers = Platform.getAdManagers();
 const ProductStateAPI = Platform.getProductStateAPI();
 const PrefsAPI = Platform.getSettingsAPI().quality.volumeLevel.prefsApi;
 
 function getAdsCoreConnector() {
-	const { adsCoreConnector, settingsClient, slotsClient } = modules.find((m) =>
+	const { adsCoreConnector, settingsClient, slotsClient } = exports.find((m) =>
 		m.adsCoreConnector && m.settingsClient && m.slotsClient
 	);
 	return { adsCoreConnector, settingsClient, slotsClient };

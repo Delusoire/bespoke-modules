@@ -16,6 +16,6 @@ export async function mixin(tr: Transformer) {
 
 		return str;
 	}, {
-		await: false,
+		wait: false,
 	});
 }

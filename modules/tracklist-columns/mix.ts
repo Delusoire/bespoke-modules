@@ -170,7 +170,7 @@ function tracklistSort(transformer: Transformer) {
 		return str;
 	}, {
 		glob: /^\/.+\.js$/,
-		noAwait: true,
+		wait: false,
 	});
 
 	transformer((emit) => (str) => {
