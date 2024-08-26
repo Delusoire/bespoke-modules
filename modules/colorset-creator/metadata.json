@@ -1,0 +1,23 @@
+{
+	"name": "colorset-creator",
+	"tags": [
+		"extension",
+		"color",
+		"set"
+	],
+	"preview": "./assets/PREVIEW.png",
+	"version": "0.2.1",
+	"authors": [
+		"Delusoire",
+		"harbassan"
+	],
+	"description": "Create custom color sets for any theme.",
+	"readme": "./assets/README.md",
+	"entries": {
+		"js": "index.js",
+		"css": "index.css"
+	},
+	"dependencies": {
+		"stdlib": "0.2.2"
+	}
+}
