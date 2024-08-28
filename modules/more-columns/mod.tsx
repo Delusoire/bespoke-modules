@@ -1,4 +1,4 @@
-import { Module } from "/hooks/index.ts";
+import { ModuleInstance } from "/hooks/index.ts";
 import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
 import { createSettings, type Settings } from "/modules/stdlib/lib/settings.tsx";
 
@@ -16,7 +16,7 @@ const DEFAULT_SORT_FIELDS = new Set([
 ]);
 
 export let settings: Settings;
-export default async function (mod: Module) {
+export default async function (mod: ModuleInstance) {
 	[settings] = createSettings(mod);
 
 	const { load, unload } = await import("./columns.ts");

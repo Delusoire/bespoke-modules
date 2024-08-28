@@ -13,7 +13,7 @@ import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
 import { React } from "/modules/stdlib/src/expose/React.ts";
 import { fromString, is } from "/modules/stdlib/src/webpack/URI.ts";
 import { Route } from "/modules/stdlib/src/webpack/ReactComponents.ts";
-import { Module } from "/hooks/index.ts";
+import { ModuleInstance } from "/hooks/index.ts";
 
 const History = Platform.getHistory();
 
@@ -22,7 +22,7 @@ export let logger: Console;
 export let settings: Settings;
 export let settingsButton: React.JSX.Element;
 
-export default function (mod: Module) {
+export default function (mod: ModuleInstance) {
 	storage = createStorage(mod);
 	logger = createLogger(mod);
 	[settings, settingsButton] = createSettings(mod);

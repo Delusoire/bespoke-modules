@@ -3,7 +3,7 @@
  */
 
 import { createStorage } from "/modules/stdlib/mod.ts";
-import type { Module } from "/hooks/index.ts";
+import type { ModuleInstance } from "/hooks/index.ts";
 import { Color } from "/modules/stdlib/src/webpack/misc.xpui.ts";
 import {
 	type ColorSets,
@@ -15,7 +15,7 @@ import {
 } from "./webpack.ts";
 
 let storage: Storage;
-export default function (mod: Module) {
+export default function (mod: ModuleInstance) {
 	storage = createStorage(mod);
 	PaletteManager.INSTANCE._init();
 }

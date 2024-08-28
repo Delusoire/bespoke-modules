@@ -1,5 +1,5 @@
 import { exports } from "/modules/stdlib/src/webpack/index.ts";
-import { Module } from "/hooks/index.ts";
+import { ModuleInstance } from "/hooks/index.ts";
 import { React } from "/modules/stdlib/src/expose/React.ts";
 import { classnames } from "/modules/stdlib/src/webpack/ClassNames.ts";
 import { UI } from "/modules/stdlib/src/webpack/ComponentLibrary.ts";
@@ -80,7 +80,7 @@ globalThis.__patchTracklistColumnHeaderContextMenu =
 		);
 	};
 
-export default async function (mod: Module) {
+export default async function (mod: ModuleInstance) {
 	const [m, k, v] = exports
 		.flatMap((m) => {
 			const keys = Object.keys(m);

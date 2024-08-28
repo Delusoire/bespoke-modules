@@ -1,5 +1,5 @@
 import { createStorage } from "/modules/stdlib/mod.ts";
-import type { Module } from "/hooks/index.ts";
+import type { ModuleInstance } from "/hooks/index.ts";
 import { exported } from "/modules/stdlib/src/webpack/index.ts";
 import { UI } from "/modules/stdlib/src/webpack/ComponentLibrary.ts";
 import { React } from "/modules/stdlib/src/expose/React.ts";
@@ -12,7 +12,7 @@ import { Mousetrap } from "/modules/stdlib/src/webpack/Mousetrap.xpui.ts";
 let spotifyKeybinds: Record<string, Array<string>> = {};
 
 export let storage: Storage;
-export default async function (mod: Module) {
+export default async function (mod: ModuleInstance) {
 	storage = createStorage(mod);
 
 	spotifyKeybinds = exported.find((obj) => Array.isArray(obj?.OPEN_HELP));

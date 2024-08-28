@@ -1,5 +1,5 @@
-import type { Module } from "/hooks/index.ts";
+import type { ModuleInstance } from "/hooks/index.ts";
 
-export function load(mod: Module) {
+export function load(mod: ModuleInstance) {
 	return import("./mod.ts").then((m) => m.default(mod));
 }

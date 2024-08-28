@@ -1,4 +1,4 @@
-import type { Module } from "/hooks/index.ts";
+import type { ModuleInstance } from "/hooks/index.ts";
 import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
 
 const PlayerAPI = Platform.getPlayerAPI();
@@ -31,7 +31,7 @@ export class PermanentMutationObserver extends MutationObserver {
 	target: HTMLElement | null = null;
 
 	constructor(
-		mod: Module,
+		mod: ModuleInstance,
 		targetSelector: string,
 		callback: MutationCallback,
 		opts: MutationObserverInit = {
@@ -61,22 +61,20 @@ export class PermanentMutationObserver extends MutationObserver {
 	}
 }
 
-export const sleep = (ms: number) =>
-	new Promise((resolve) => setTimeout(resolve, ms));
+export const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 
-export const createQueueItem =
-	(queued: boolean) => ({ uri, uid = "" }: { uri: string; uid?: string }) => ({
-		contextTrack: {
-			uri,
-			uid,
-			metadata: {
-				is_queued: queued.toString(),
-			},
+export const createQueueItem = (queued: boolean) => ({ uri, uid = "" }: { uri: string; uid?: string }) => ({
+	contextTrack: {
+		uri,
+		uid,
+		metadata: {
+			is_queued: queued.toString(),
 		},
-		removed: [],
-		blocked: [],
-		provider: queued ? ("queue" as const) : ("context" as const),
-	});
+	},
+	removed: [],
+	blocked: [],
+	provider: queued ? ("queue" as const) : ("context" as const),
+});
 
 export const setQueue = async (
 	nextTracks: Array<ReturnType<ReturnType<typeof createQueueItem>>>,

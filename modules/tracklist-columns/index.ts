@@ -1,10 +1,10 @@
-import type { Module, Transformer } from "/hooks/index.ts";
+import type { ModuleInstance, Transformer } from "/hooks/index.ts";
 
 export async function mixin(tr: Transformer) {
 	return await (await import("./mix.ts")).default(tr);
 }
 
-export async function preload(mod: Module) {
+export async function preload(mod: ModuleInstance) {
 	const { exports } = await import("/modules/stdlib/src/webpack/index.ts");
 	await CHUNKS.xpui.promise;
 	const [m, k, v] = exports
@@ -45,6 +45,6 @@ export async function preload(mod: Module) {
 	}
 }
 
-export async function load(mod: Module) {
+export async function load(mod: ModuleInstance) {
 	return await (await import("./mod.tsx")).default(mod);
 }

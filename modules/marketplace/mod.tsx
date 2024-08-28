@@ -3,7 +3,7 @@ import { createSettings } from "/modules/stdlib/lib/settings.tsx";
 import { React } from "/modules/stdlib/src/expose/React.ts";
 
 import { NavLink } from "/modules/stdlib/src/registers/navlink.tsx";
-import type { Module } from "/hooks/index.ts";
+import type { ModuleInstance } from "/hooks/index.ts";
 import type { Settings } from "/modules/stdlib/lib/settings.tsx";
 import { ACTIVE_ICON, ICON } from "./src/static.ts";
 import { Route } from "/modules/stdlib/src/webpack/ReactComponents.ts";
@@ -16,9 +16,9 @@ export let settingsButton: React.JSX.Element;
 
 export let hash: { state: string; event: string } | undefined;
 
-export let module: Module;
+export let module: ModuleInstance;
 
-export default async function (mod: Module) {
+export default async function (mod: ModuleInstance) {
 	module = mod;
 	storage = createStorage(mod);
 	logger = createLogger(mod);
