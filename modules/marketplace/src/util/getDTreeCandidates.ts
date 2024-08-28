@@ -1,5 +1,5 @@
 import { Module, type ModuleIdentifier, type ModuleInstance, RootModule } from "/hooks/module.ts";
-import { satisfies } from "/hooks/semver/satisfies.ts";
+import { parse, parseRange, satisfies } from "/hooks/std/semver.ts";
 
 async function ensureModuleInstanceMetadata(instance: ModuleInstance) {
 	if (!instance.isEnabled()) {
@@ -131,7 +131,7 @@ async function* getModuleInstances(
 	const module = RootModule.INSTANCE.getDescendant(moduleIdentifier);
 	const versions = Array
 		.from(module?.instances.keys() ?? [])
-		.filter((version) => satisfies(version, versionRange));
+		.filter((version) => satisfies(parse(version), parseRange(versionRange)));
 
 	for (const version of versions) {
 		yield module!.instances.get(version)!;

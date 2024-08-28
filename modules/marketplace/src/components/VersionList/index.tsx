@@ -11,7 +11,7 @@ import { useManageModules } from "../../components/ModuleCard/index.tsx";
 import { useUpdate } from "../../util/index.ts";
 import { useModules } from "../ModulesProvider/index.tsx";
 import { type Module, type ModuleIdentifier, type ModuleInstance } from "/hooks/module.ts";
-import { satisfies } from "/hooks/semver/satisfies.ts";
+import { parse, parseRange, satisfies } from "/hooks/std/semver.ts";
 import { React } from "/modules/stdlib/src/expose/React.ts";
 import { classnames } from "/modules/stdlib/src/webpack/ClassNames.ts";
 import { UI } from "/modules/stdlib/src/webpack/ComponentLibrary.ts";
@@ -147,24 +147,28 @@ const ModuleSection = (props: ModuleSectionProps) => {
 				</UI.Text>
 				{Button()}
 			</div>
-			{Collapsed(() => (
-				<div className="bg-[var(--background-tinted-base)] rounded-lg px-2 pt-2 mb-2">
-					{Array
-						.from(module.instances)
-						.filter(([version]) => versionRange ? satisfies(version, versionRange) : true)
-						.map(([version, inst]) => (
-							<ModuleVersion
-								key={version}
-								modules={props.modules}
-								moduleInstance={inst}
-								isSelected={inst === selectedInstance}
-								selectInstance={selectInstance}
-								updateModules={props.updateModules}
-								updateModule={props.updateModule}
-							/>
-						))}
-				</div>
-			))}
+			{Collapsed(() => {
+				const range = parseRange(versionRange ?? "");
+
+				return (
+					<div className="bg-[var(--background-tinted-base)] rounded-lg px-2 pt-2 mb-2">
+						{Array
+							.from(module.instances)
+							.filter(([version]) => satisfies(parse(version), range))
+							.map(([version, inst]) => (
+								<ModuleVersion
+									key={version}
+									modules={props.modules}
+									moduleInstance={inst}
+									isSelected={inst === selectedInstance}
+									selectInstance={selectInstance}
+									updateModules={props.updateModules}
+									updateModule={props.updateModule}
+								/>
+							))}
+					</div>
+				);
+			})}
 		</div>
 	);
 };
