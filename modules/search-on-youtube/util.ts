@@ -4,14 +4,14 @@ import { normalizeStr } from "/modules/Delusoire.delulib/lib/util.ts";
 
 import { fromString } from "/modules/stdlib/src/webpack/URI.ts";
 
-import { localProxy } from "/hooks/util.ts";
+import { proxy } from "/hooks/util/proxy.ts";
 
 import { Innertube, UniversalCache } from "https://esm.sh/youtubei.js/web.bundle.min";
 
 const yt = await Innertube.create({
 	cache: new UniversalCache(false),
 	fetch: (input, init) => {
-		const [_request, _init] = localProxy(input, init);
+		const [_request, _init] = proxy(input, init);
 		const headers = _init.headers as Headers;
 		const h = new Headers(JSON.parse(headers.get("X-Set-Headers")!));
 		if (!h.has("Origin")) {
