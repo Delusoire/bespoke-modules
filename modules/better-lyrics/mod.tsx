@@ -39,4 +39,8 @@ export default async function (mod: ModuleInstance) {
 			</>
 		);
 	};
+
+	return () => {
+		globalThis.__renderCinemaLyrics = undefined;
+	};
 }
