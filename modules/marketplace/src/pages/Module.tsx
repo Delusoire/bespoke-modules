@@ -11,7 +11,7 @@ import {
 	RootModule,
 	type Version,
 } from "/hooks/module.ts";
-import { localProxy } from "/hooks/util.ts";
+import { proxy } from "/hooks/util/proxy.ts";
 import { React } from "/modules/stdlib/src/expose/React.ts";
 import { ReactDOM } from "/modules/stdlib/src/webpack/React.ts";
 import { useQuery, useSuspenseQuery } from "/modules/stdlib/src/webpack/ReactQuery.ts";
@@ -45,16 +45,20 @@ const ShadowRoot = ({ mode, delegatesFocus, styleSheets, children }: ShadowRootP
 	return <div ref={node}>{content}</div>;
 };
 
-export const RemoteMarkdown = React.memo(({ url }: { url: string }) => {
+export const RemoteMarkdown = React.memo(({ url }: { url?: string }) => {
 	const {
 		status,
 		error,
 		data: markdown,
 	} = useQuery({
 		queryKey: ["markdown", url],
-		queryFn: () => {
-			const proxiedUrl = url.startsWith("/") ? url : localProxy(url)[0];
-			return fetch(proxiedUrl)
+		queryFn: async () => {
+			if (!url) {
+				throw new Error("url is required");
+			}
+
+			const proxiedUrl = url.startsWith("/") ? url : proxy(url)[0];
+			return await fetch(proxiedUrl)
 				.then((res) => res.text())
 				.then((markdown) => renderMarkdown(markdown));
 		},
@@ -136,7 +140,7 @@ export default function ({ aurl }: { aurl?: string }) {
 
 	const { data: metadata } = useSuspenseQuery({
 		queryKey: ["modulePage", murl],
-		queryFn: () => fetch(...localProxy(murl)).then((res: any) => res.json() as Promise<Metadata>),
+		queryFn: () => fetch(...proxy(murl)).then((res: any) => res.json() as Promise<Metadata>),
 	});
 
 	const [moduleInstance, refetchModuleInstance] = useModuleInstance(moduleIdentifier, version, aurl);

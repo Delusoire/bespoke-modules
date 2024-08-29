@@ -18,7 +18,6 @@
 	},
 	"imports": {
 		"/hooks/": "/Users/Delusoire/AppData/Local/Spicetify/hooks/",
-		"/hooks/util.js": "/Users/Delusoire/AppData/Local/Spicetify/hooks/util.ts",
 		"/modules/": "/Users/Delusoire/AppData/Local/Spicetify/modules/"
 	},
 	"tasks": {
