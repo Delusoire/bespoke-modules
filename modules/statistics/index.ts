@@ -1,5 +1,5 @@
-import type { ModuleInstance } from "/hooks/index.ts";
+import { IndexLoadFn } from "/hooks/module.ts";
 
-export async function load(mod: ModuleInstance) {
+export const load: IndexLoadFn = async (mod) => {
 	return await (await import("./mod.tsx")).default(mod);
-}
+};

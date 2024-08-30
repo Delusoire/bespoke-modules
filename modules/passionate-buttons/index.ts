@@ -1,6 +1,6 @@
-import type { Transformer } from "/hooks/index.ts";
+import { IndexMixinFn } from "/hooks/module.ts";
 
-export async function mixin(tr: Transformer) {
+export const mixin: IndexMixinFn = (tr) => {
 	tr((emit) => (str) => {
 		emit();
 
@@ -18,4 +18,4 @@ export async function mixin(tr: Transformer) {
 	}, {
 		wait: false,
 	});
-}
+};

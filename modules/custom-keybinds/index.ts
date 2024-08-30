@@ -1,9 +1,9 @@
-import type { ModuleInstance, Transformer } from "/hooks/index.ts";
+import { IndexLoadFn, IndexMixinFn } from "/hooks/module.ts";
 
-export async function mixin(tr: Transformer) {
-	await import("./mix.ts").then((m) => m.default(tr));
-}
+export const mixin: IndexMixinFn = async (tr) => {
+	return await (await import("./mix.ts")).default(tr);
+};
 
-export async function load(mod: ModuleInstance) {
-	await import("./mod.tsx").then((m) => m.default(mod));
-}
+export const load: IndexLoadFn = async (mod) => {
+	return await (await import("./mod.tsx")).default(mod);
+};

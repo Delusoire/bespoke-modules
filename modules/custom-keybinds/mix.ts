@@ -1,5 +1,5 @@
 import type { React } from "/modules/stdlib/src/expose/React.ts";
-import type { Transformer } from "/hooks/index.ts";
+import type { Transformer } from "/hooks/transform.ts";
 
 type Identity<T> = (x: T) => T;
 

@@ -1,10 +1,10 @@
-import type { ModuleInstance, Transformer } from "/hooks/index.ts";
+import { IndexLoadFn, IndexMixinFn, IndexPreloadFn } from "/hooks/module.ts";
 
-export async function mixin(tr: Transformer) {
+export const mixin: IndexMixinFn = async (tr) => {
 	return await (await import("./mix.ts")).default(tr);
-}
+};
 
-export async function preload(mod: ModuleInstance) {
+export const preload: IndexPreloadFn = async (mod) => {
 	const { exports } = await import("/modules/stdlib/src/webpack/index.ts");
 	await CHUNKS.xpui.promise;
 	const [m, k, v] = exports
@@ -28,7 +28,7 @@ export async function preload(mod: ModuleInstance) {
 		})[0];
 
 	if (!v[Symbol.for("patched")]) {
-		const patchedTracklistColumnsProvider = function (props) {
+		const patchedTracklistColumnsProvider = function (props: any) {
 			return v({
 				...props,
 				columns: globalThis.__patchTracklistColumnsProvider(
@@ -43,8 +43,8 @@ export async function preload(mod: ModuleInstance) {
 		});
 		v[Symbol.for("patched")] = true;
 	}
-}
+};
 
-export async function load(mod: ModuleInstance) {
+export const load: IndexLoadFn = async (mod) => {
 	return await (await import("./mod.tsx")).default(mod);
-}
+};
