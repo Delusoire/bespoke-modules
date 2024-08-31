@@ -1,6 +1,3 @@
-import type { ModuleInstance } from "/hooks/module.ts";
-import { Color } from "/modules/stdlib/src/webpack/misc.xpui.ts";
-import { appliedColorTheme, type ColorSets, type ColorTheme, defaultColorTheme } from "./webpack.ts";
 import {
 	EntityContext,
 	Serializable,
@@ -8,14 +5,10 @@ import {
 	Serialized,
 	SerializedEntity,
 } from "./entity.ts";
+import { storage } from "./preload.ts";
 
 const LS_ACTIVE_CONFIGLETS = "active_configlets";
 const LS_CONFIGLETS = "configlets";
-
-let storage: Storage;
-export default function (mod: ModuleInstance) {
-	ConfigletManager.INSTANCE._init();
-}
 
 type TwoUplet<T> = [T, T];
 

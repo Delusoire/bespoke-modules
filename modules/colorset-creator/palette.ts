@@ -1,5 +1,3 @@
-import { createStorage } from "/modules/stdlib/mod.ts";
-import type { ModuleInstance } from "/hooks/module.ts";
 import { Color } from "/modules/stdlib/src/webpack/misc.xpui.ts";
 import {
 	appliedColorTheme,
@@ -18,15 +16,10 @@ import {
 	SerializedEntity,
 } from "./entity.ts";
 import { mapValues } from "/hooks/std/collections.ts";
+import { storage } from "./preload.ts";
 
 const LS_ACTIVE_PALETTE = "active_palette";
 const LS_PALETTES = "palettes";
-
-let storage: Storage;
-export default function (mod: ModuleInstance) {
-	storage = createStorage(mod);
-	PaletteManager.INSTANCE._init();
-}
 
 type TwoUplet<T> = [T, T];
 
