@@ -19,9 +19,22 @@ export default function (mod: ModuleInstance) {
 
 type TwoUplet<T> = [T, T];
 
-type SerializedThemeData = Record<ColorSets, TwoUplet<string>>;
-export class Config implements Serializable<SerializedThemeData> {
-	constructor(private theme: { [key in ColorSets]: TwoUplet<Color> }) {}
+type SerializedConfigData = string;
+export class Config implements Serializable<SerializedConfigData> {
+	constructor(private config: string) {}
+
+	getCSS() {
+		return this.config;
+	}
+
+	toJSON(): SerializedConfigData {
+		return this.config;
+	}
+
+	static fromJSON(json: SerializedConfigData) {
+		const config = json;
+		return new Config(config);
+	}
 
 	copy() {
 		return Config.fromJSON(this.toJSON());
@@ -54,8 +67,8 @@ export class Configlet extends serializableEntityMixin(Config, ConfigletContext)
 
 export class ConfigletManager {
 	public static INSTANCE = new ConfigletManager();
-	palettes = new Map<string, Configlet>();
-	private palette: Configlet | null = null;
+	configlets = new Map<string, Configlet>();
+	private active = new Set<Configlet>();
 	private stylesheet = new CSSStyleSheet();
 
 	private constructor() {
@@ -68,83 +81,73 @@ export class ConfigletManager {
 		);
 		const palettes = serializedPalettes.map((json) => Configlet.fromJSON(json));
 		for (const palette of palettes) {
-			this.palettes.set(palette.id, palette);
+			this.configlets.set(palette.id, palette);
 		}
 
-		const paletteId: string | null = JSON.parse(storage.getItem(LS_ACTIVE_CONFIGLETS) ?? "null");
-		const palette = this.palettes.get(paletteId!) ?? null;
-		this.setCurrent(palette);
+		const paletteId: string[] | null = JSON.parse(storage.getItem(LS_ACTIVE_CONFIGLETS) ?? "[]");
+		for (const id of paletteId ?? []) {
+			const configlet = this.configlets.get(id) ?? null;
+			if (configlet) {
+				this.toggleActive(configlet);
+			}
+		}
 	}
 
-	public getDefault(): Configlet | null {
-		return this.palettes.values().next().value ?? null;
-	}
-
-	public getPalettes(): Configlet[] {
-		return Array.from(this.palettes.values());
+	public getConfiglets(): Configlet[] {
+		return Array.from(this.configlets.values());
 	}
 
 	public save(): void {
-		storage.setItem(LS_CONFIGLETS, JSON.stringify(this.getPalettes()));
+		storage.setItem(LS_CONFIGLETS, JSON.stringify(this.getConfiglets()));
 	}
 
-	public getCurrent(): Configlet | null {
-		return this.palette;
+	public getActive(): Configlet[] {
+		return Array.from(this.active);
 	}
 
-	public setCurrent(palette: Configlet | null) {
-		this.palette = palette;
-		this.applyCurrent();
-		return palette;
-	}
-
-	public async applyCurrent() {
-		let css: string;
-		let colorTheme: ColorTheme;
-
-		if (this.palette && this.palette.data) {
-			css = this.palette.data.getCSS();
-			colorTheme = this.palette.data.getColorTheme();
+	public toggleActive(configlet: Configlet) {
+		if (this.active.has(configlet)) {
+			this.active.delete(configlet);
 		} else {
-			css = "";
-			colorTheme = defaultColorTheme;
+			this.active.add(configlet);
 		}
+		this.applyActive();
+		return configlet;
+	}
+
+	public async applyActive() {
+		const css = this.getActive().map((c) => c.data.getCSS()).join("\n");
 
 		await this.stylesheet.replace(css);
-		for (const [set, paletteObj] of Object.entries(colorTheme)) {
-			Object.assign(appliedColorTheme[set as ColorSets], paletteObj);
-		}
 
-		this.saveCurrent();
+		this.saveActive();
 	}
 
-	public saveCurrent() {
-		storage.setItem(LS_ACTIVE_CONFIGLETS, JSON.stringify(this.palette?.id ?? null));
+	public saveActive() {
+		const ids = Array.from(this.active).map((c) => c.id);
+		storage.setItem(LS_ACTIVE_CONFIGLETS, JSON.stringify(ids));
 	}
 
-	public addPalette(palette: Configlet) {
-		this.palettes.set(palette.id, palette);
+	public addConfiglet(configlet: Configlet) {
+		this.configlets.set(configlet.id, configlet);
 		this.save();
 	}
 
-	public deletePalette(palette: Configlet) {
-		this.palettes.delete(palette.id);
-		if (this.isCurrent(palette)) {
-			this.setCurrent(null);
+	public deleteConfiglet(configlet: Configlet) {
+		this.configlets.delete(configlet.id);
+		if (this.isActive(configlet)) {
+			this.toggleActive(configlet);
 		}
 		this.save();
 	}
 
-	public renamePalette(palette: Configlet, name: string) {
-		palette.name = name;
-		if (this.isCurrent(palette)) {
-			this.saveCurrent();
-		}
+	public renamePalette(configlet: Configlet, name: string) {
+		configlet.name = name;
 		this.save();
 	}
 
-	public isCurrent(palette: Configlet) {
-		return palette.id === this.getCurrent()?.id;
+	public isActive(configlet: Configlet) {
+		return this.active.has(configlet);
 	}
 
 	public dispose() {

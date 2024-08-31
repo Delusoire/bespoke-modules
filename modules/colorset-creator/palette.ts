@@ -121,7 +121,7 @@ export class Palette extends serializableEntityMixin(Theme, PaletteContext) {
 export class PaletteManager {
 	public static INSTANCE = new PaletteManager();
 	palettes = new Map<string, Palette>();
-	private palette: Palette | null = null;
+	private active: Palette | null = null;
 	private stylesheet = new CSSStyleSheet();
 
 	private constructor() {
@@ -153,11 +153,11 @@ export class PaletteManager {
 	}
 
 	public getCurrent(): Palette | null {
-		return this.palette;
+		return this.active;
 	}
 
 	public setCurrent(palette: Palette | null) {
-		this.palette = palette;
+		this.active = palette;
 		this.applyCurrent();
 		return palette;
 	}
@@ -166,9 +166,9 @@ export class PaletteManager {
 		let css: string;
 		let colorTheme: ColorTheme;
 
-		if (this.palette && this.palette.data) {
-			css = this.palette.data.getCSS();
-			colorTheme = this.palette.data.getColorTheme();
+		if (this.active && this.active.data) {
+			css = this.active.data.getCSS();
+			colorTheme = this.active.data.getColorTheme();
 		} else {
 			css = "";
 			colorTheme = defaultColorTheme;
@@ -183,7 +183,8 @@ export class PaletteManager {
 	}
 
 	public saveCurrent() {
-		storage.setItem(LS_ACTIVE_PALETTE, JSON.stringify(this.palette?.id ?? null));
+		const id = this.active?.id ?? null;
+		storage.setItem(LS_ACTIVE_PALETTE, JSON.stringify(id));
 	}
 
 	public addPalette(palette: Palette) {
@@ -201,14 +202,11 @@ export class PaletteManager {
 
 	public renamePalette(palette: Palette, name: string) {
 		palette.name = name;
-		if (this.isCurrent(palette)) {
-			this.saveCurrent();
-		}
 		this.save();
 	}
 
 	public isCurrent(palette: Palette) {
-		return palette.id === this.getCurrent()?.id;
+		return palette.id === this.active?.id;
 	}
 
 	public dispose() {
