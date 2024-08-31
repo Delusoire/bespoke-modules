@@ -16,10 +16,11 @@ import {
 	serializableEntityMixin,
 	Serialized,
 	SerializedEntity,
-	SerializedEntityContext,
 } from "./entity.ts";
 import { mapValues } from "/hooks/std/collections.ts";
-import { Schemer } from "./schemer.ts";
+
+const LS_ACTIVE_PALETTE = "active_palette";
+const LS_PALETTES = "palettes";
 
 let storage: Storage;
 export default function (mod: ModuleInstance) {
@@ -103,13 +104,6 @@ export class PaletteContext extends EntityContext {
 	}
 }
 
-type SerializedPalette = {
-	id: string;
-	name: string;
-	data: SerializedThemeData;
-	context: SerializedEntityContext | null;
-};
-
 export class Palette extends serializableEntityMixin(Theme, PaletteContext) {
 	static override fromJSON(json: SerializedEntity<Palette>): Palette {
 		return super.fromJSON(json);
@@ -135,13 +129,13 @@ export class PaletteManager {
 	}
 
 	_init() {
-		const serializedPalettes: SerializedPalette[] = JSON.parse(storage.getItem("palettes") ?? "[]");
+		const serializedPalettes: SerializedEntity<Palette>[] = JSON.parse(storage.getItem(LS_PALETTES) ?? "[]");
 		const palettes = serializedPalettes.map((json) => Palette.fromJSON(json));
 		for (const palette of palettes) {
 			this.palettes.set(palette.id, palette);
 		}
 
-		const paletteId: string | null = JSON.parse(storage.getItem("palette") ?? "null");
+		const paletteId: string | null = JSON.parse(storage.getItem(LS_ACTIVE_PALETTE) ?? "null");
 		const palette = this.palettes.get(paletteId!) ?? null;
 		this.setCurrent(palette);
 	}
@@ -155,7 +149,7 @@ export class PaletteManager {
 	}
 
 	public save(): void {
-		storage.setItem("palettes", JSON.stringify(this.getPalettes()));
+		storage.setItem(LS_PALETTES, JSON.stringify(this.getPalettes()));
 	}
 
 	public getCurrent(): Palette | null {
@@ -189,7 +183,7 @@ export class PaletteManager {
 	}
 
 	public saveCurrent() {
-		storage.setItem("palette", JSON.stringify(this.palette?.id ?? null));
+		storage.setItem(LS_ACTIVE_PALETTE, JSON.stringify(this.palette?.id ?? null));
 	}
 
 	public addPalette(palette: Palette) {

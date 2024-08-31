@@ -1,6 +1,7 @@
 import { ModuleInstance } from "/hooks/module.ts";
 import { Palette, PaletteContext, Theme } from "./palette.ts";
 import { EntityContext } from "./entity.ts";
+import { Config, Configlet, ConfigletContext } from "./configlet.ts";
 
 export class Schemer {
 	public static INSTANCES = new Map<ModuleInstance, Schemer>();
@@ -23,7 +24,7 @@ export class Schemer {
 			return null;
 		}
 
-		let schemer = Schemer.INSTANCES.get(module);
+		const schemer = Schemer.INSTANCES.get(module);
 		if (!schemer) {
 			return null;
 		}
@@ -59,7 +60,7 @@ export class Schemer {
 		this.palettes.set(id, palette);
 	}
 
-	registerConfiglet() {
+	registerConfiglet(id: string, name: string, config: Config) {
 		const configlet = new Configlet(id, name, config, new ConfigletContext(this.getModuleIdentifier(), id));
 		this.configlets.set(id, configlet);
 	}
