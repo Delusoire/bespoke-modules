@@ -10,7 +10,14 @@ import {
 	toCssAttributes,
 	toCssClassName,
 } from "./webpack.ts";
-import { Entity, EntityContext, SerializedEntityContext } from "./entity.ts";
+import {
+	EntityContext,
+	Serializable,
+	serializableEntityMixin,
+	Serialized,
+	SerializedEntity,
+	SerializedEntityContext,
+} from "./entity.ts";
 import { mapValues } from "/hooks/std/collections.ts";
 import { Schemer } from "./schemer.ts";
 
@@ -23,7 +30,7 @@ export default function (mod: ModuleInstance) {
 type TwoUplet<T> = [T, T];
 
 type SerializedThemeData = Record<ColorSets, TwoUplet<string>>;
-class ThemeData {
+export class Theme implements Serializable<SerializedThemeData> {
 	constructor(private theme: { [key in ColorSets]: TwoUplet<Color> }) {}
 
 	getColors() {
@@ -75,69 +82,45 @@ class ThemeData {
 
 	static fromJSON(json: SerializedThemeData) {
 		const theme = mapValues(json, (colors) => colors.map((color) => Color.parse(color)) as TwoUplet<Color>);
-		return new ThemeData(theme);
+		return new Theme(theme);
 	}
 
 	copy() {
-		return ThemeData.fromJSON(this.toJSON());
+		return Theme.fromJSON(this.toJSON());
 	}
 
 	static createDefault() {
 		const colors = ["#000000", "#ffffff"].map((c) => JSON.stringify(Color.fromHex(c))) as TwoUplet<string>;
 		const themeJSON = mapValues(defaultColorTheme, () => colors);
 
-		return ThemeData.fromJSON(themeJSON);
+		return Theme.fromJSON(themeJSON);
 	}
 }
 
-export class PaletteContext extends EntityContext {}
+export class PaletteContext extends EntityContext {
+	static override fromJSON(json: Serialized<PaletteContext>): PaletteContext {
+		return super.fromJSON(json) as PaletteContext;
+	}
+}
 
 type SerializedPalette = {
 	id: string;
 	name: string;
-	theme: SerializedThemeData;
+	data: SerializedThemeData;
 	context: SerializedEntityContext | null;
 };
-export class Palette extends Entity<PaletteContext> {
-	constructor(id: string, name: string, public theme: ThemeData, context: PaletteContext | null = null) {
-		super(id, name, context);
+
+export class Palette extends serializableEntityMixin(Theme, PaletteContext) {
+	static override fromJSON(json: SerializedEntity<Palette>): Palette {
+		return super.fromJSON(json);
 	}
 
-	toJSON(): SerializedPalette {
-		return {
-			id: this.id,
-			name: this.name,
-			theme: this.theme.toJSON(),
-			context: this.context?.toJSON() ?? null,
-		};
+	static override create(name: string, theme: Theme, context?: PaletteContext | null): Palette {
+		return super.create(name, theme, context);
 	}
 
-	static fromJSON(json: SerializedPalette) {
-		let context: PaletteContext | null = null;
-		if (json.context) {
-			context = PaletteContext.fromJSON(json.context);
-		}
-
-		return new Palette(
-			json.id,
-			json.name,
-			ThemeData.fromJSON(json.theme),
-			context,
-		);
-	}
-
-	static create(name: string, theme: ThemeData, context: PaletteContext | null = null) {
-		return new Palette(crypto.randomUUID(), name, theme, context);
-	}
-
-	static createDefault(name?: string, context: PaletteContext | null = null) {
-		const palette = context ? Schemer.get(context) : null;
-
-		if (palette) {
-			return Palette.create(name ?? palette.name, palette.theme.copy(), context);
-		}
-
-		return Palette.create(name ?? "New Palette", ThemeData.createDefault(), context);
+	static override createDefault(name?: string, context: PaletteContext | null = null): Palette {
+		return super.createDefault(name, context);
 	}
 }
 
@@ -189,9 +172,9 @@ export class PaletteManager {
 		let css: string;
 		let colorTheme: ColorTheme;
 
-		if (this.palette && this.palette.theme) {
-			css = this.palette.theme.getCSS();
-			colorTheme = this.palette.theme.getColorTheme();
+		if (this.palette && this.palette.data) {
+			css = this.palette.data.getCSS();
+			colorTheme = this.palette.data.getColorTheme();
 		} else {
 			css = "";
 			colorTheme = defaultColorTheme;

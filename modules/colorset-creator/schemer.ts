@@ -1,5 +1,5 @@
 import { ModuleInstance } from "/hooks/module.ts";
-import { Palette, PaletteContext } from "./palette.ts";
+import { Palette, PaletteContext, Theme } from "./palette.ts";
 import { EntityContext } from "./entity.ts";
 
 export class Schemer {
@@ -46,11 +46,22 @@ export class Schemer {
 		return this.palettes;
 	}
 
+	getConfiglets() {
+		return this.configlets;
+	}
+
 	getModuleIdentifier() {
 		return this.mod.getModuleIdentifier();
 	}
 
-	registerPalette() {
+	registerPalette(id: string, name: string, theme: Theme) {
+		const palette = new Palette(id, name, theme, new PaletteContext(this.getModuleIdentifier(), id));
+		this.palettes.set(id, palette);
+	}
+
+	registerConfiglet() {
+		const configlet = new Configlet(id, name, config, new ConfigletContext(this.getModuleIdentifier(), id));
+		this.configlets.set(id, configlet);
 	}
 }
 

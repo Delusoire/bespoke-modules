@@ -188,7 +188,7 @@ const PaletteComponent = (props: PaletteFieldsProps) => {
 				selectPalette={props.selectPalette}
 			/>
 			<div className="palette__color-sets bg-[var(--secondary-bg)] p-[var(--gap-primary)] rounded-[var(--border-radius)] flex flex-col flex-nowrap overflow-y-auto h-[calc(100%-40px)] gap-y-1 gap-x-[var(--gap-secondary)]">
-				{Object.entries(props.palette.theme.getColors()).map(([set, colors]) => (
+				{Object.entries(props.palette.data.getColors()).map(([set, colors]) => (
 					<PaletteColorSet
 						key={set}
 						set={set as ColorSets}
@@ -228,11 +228,11 @@ const PaletteInfo = ({ palette, updatePalettes, selectPalette }: PaletteInfoProp
 	// }, [palette]);
 
 	const copyPalette = React.useCallback(() => {
-		const copy = Palette.create(name, palette.theme.copy(), palette.context);
+		const copy = Palette.create(name, palette.data.copy(), palette.context);
 		PaletteManager.INSTANCE.addPalette(copy);
 		selectPalette(copy);
 		updatePalettes();
-	}, [name, palette.theme, palette.context]);
+	}, [name, palette.data, palette.context]);
 
 	return (
 		<div className="palette__info flex gap-[var(--gap-primary)]">
@@ -318,7 +318,7 @@ const PaletteColorInput = (props: PaletteFieldColorProps) => {
 			return;
 		}
 
-		props.palette.theme.setColor(props.set, props.index, color);
+		props.palette.data.setColor(props.set, props.index, color);
 
 		PaletteManager.INSTANCE.save();
 
