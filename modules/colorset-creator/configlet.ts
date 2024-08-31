@@ -30,8 +30,13 @@ export class Config implements Serializable<SerializedConfigData> {
 	}
 }
 
-export class ConfigletContext extends EntityContext {}
-export class Configlet extends serializableEntityMixin(Config, ConfigletContext) {}
+class ConfigletContext extends EntityContext {}
+export interface Configlet {
+	Context: ConfigletContext;
+}
+export class Configlet extends serializableEntityMixin(Config, ConfigletContext) {
+	static Context = ConfigletContext;
+}
 
 export class ConfigletManager {
 	public static INSTANCE = new ConfigletManager();

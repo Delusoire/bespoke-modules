@@ -1,7 +1,7 @@
 import { ModuleInstance } from "/hooks/module.ts";
-import { Palette, PaletteContext, Theme } from "./palette.ts";
+import { Palette, Theme } from "./palette.ts";
 import { EntityContext } from "./entity.ts";
-import { Config, Configlet, ConfigletContext } from "./configlet.ts";
+import { Config, Configlet } from "./configlet.ts";
 
 export class Schemer {
 	public static INSTANCES = new Map<ModuleInstance, Schemer>();
@@ -16,9 +16,9 @@ export class Schemer {
 	private palettes = new Map<string, Palette>();
 	private configlets = new Map<string, Configlet>();
 
-	static get(context: PaletteContext): Palette | null;
-	static get(context: ConfigletContext): Configlet | null;
-	static get(context: EntityContext): unknown {
+	static get(context: Palette["Context"]): Palette | null;
+	static get(context: Configlet["Context"]): Configlet | null;
+	static get(context: EntityContext): unknown | null {
 		const module = context.getModuleInstance();
 		if (!module) {
 			return null;
@@ -29,10 +29,10 @@ export class Schemer {
 			return null;
 		}
 
-		if (context instanceof PaletteContext) {
+		if (context instanceof Palette.Context) {
 			return schemer.palettes.get(context.id) ?? null;
 		}
-		if (context instanceof ConfigletContext) {
+		if (context instanceof Configlet.Context) {
 			return schemer.configlets.get(context.id) ?? null;
 		}
 
@@ -56,12 +56,12 @@ export class Schemer {
 	}
 
 	registerPalette(id: string, name: string, theme: Theme) {
-		const palette = new Palette(id, name, theme, new PaletteContext(this.getModuleIdentifier(), id));
+		const palette = new Palette(id, name, theme, new Palette.Context(this.getModuleIdentifier(), id));
 		this.palettes.set(id, palette);
 	}
 
 	registerConfiglet(id: string, name: string, config: Config) {
-		const configlet = new Configlet(id, name, config, new ConfigletContext(this.getModuleIdentifier(), id));
+		const configlet = new Configlet(id, name, config, new Configlet.Context(this.getModuleIdentifier(), id));
 		this.configlets.set(id, configlet);
 	}
 }

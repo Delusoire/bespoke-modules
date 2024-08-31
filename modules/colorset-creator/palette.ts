@@ -85,8 +85,13 @@ export class Theme implements Serializable<SerializedThemeData> {
 	}
 }
 
-export class PaletteContext extends EntityContext {}
-export class Palette extends serializableEntityMixin(Theme, PaletteContext) {}
+class PaletteContext extends EntityContext {}
+export interface Palette {
+	Context: PaletteContext;
+}
+export class Palette extends serializableEntityMixin(Theme, PaletteContext) {
+	static Context = PaletteContext;
+}
 
 export class PaletteManager {
 	public static INSTANCE = new PaletteManager();
