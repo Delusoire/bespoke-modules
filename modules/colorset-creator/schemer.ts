@@ -6,18 +6,12 @@ import { type CondensedPalette, Palette, PaletteManager } from "./palette.ts";
 import { ModuleInstance } from "/hooks/index.ts";
 
 class Schemer {
-	constructor(private mod: ModuleInstance) {
-		const unloadJs = mod._unloadJs!;
-		mod._unloadJs = () => {
-			this.dispose();
-			return unloadJs();
-		};
-	}
+	constructor(private mod: ModuleInstance) {}
 
 	palettes = new Set<Palette>();
 
 	getPaletteId(name: string) {
-		return `${this.mod.getModuleIdentifier()}/${name}`;
+		return `${this.mod.getModuleIdentifier()}#${name}`;
 	}
 
 	getPalette(name: string) {
@@ -49,5 +43,13 @@ class Schemer {
 }
 
 export function createSchemer(mod: ModuleInstance) {
-	return new Schemer(mod);
+	const schemer = new Schemer(mod);
+
+	const unloadJs = mod._unloadJs!;
+	mod._unloadJs = () => {
+		schemer.dispose();
+		return unloadJs();
+	};
+
+	return schemer;
 }
