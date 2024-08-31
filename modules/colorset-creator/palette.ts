@@ -1,18 +1,18 @@
-/* Copyright (C) 2024 harbassan, and Delusoire
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
-
 import { createStorage } from "/modules/stdlib/mod.ts";
-import type { ModuleInstance } from "/hooks/index.ts";
+import type { ModuleInstance } from "/hooks/module.ts";
 import { Color } from "/modules/stdlib/src/webpack/misc.xpui.ts";
 import {
+	appliedColorTheme,
 	type ColorSets,
-	type ColorSetsObjs,
+	type ColorTheme,
+	defaultColorTheme,
 	generateColorSet,
-	paletteObjs,
 	toCssAttributes,
 	toCssClassName,
 } from "./webpack.ts";
+import { Entity, EntityContext, SerializedEntityContext } from "./entity.ts";
+import { mapValues } from "/hooks/std/collections.ts";
+import { Schemer } from "./schemer.ts";
 
 let storage: Storage;
 export default function (mod: ModuleInstance) {
@@ -20,57 +20,31 @@ export default function (mod: ModuleInstance) {
 	PaletteManager.INSTANCE._init();
 }
 
-// TODO: edit these keys
-const def_fields = {
-	base: [Color.fromHex("#000000"), Color.fromHex("#ffffff")],
-	brightAccent: [Color.fromHex("#1ed760"), Color.fromHex("#ffffff")],
-	negative: [Color.fromHex("#ff0000"), Color.fromHex("#ffffff")],
-	negativeSubdued: [Color.fromHex("#ff0000"), Color.fromHex("#ffffff")],
-	warning: [Color.fromHex("#ff0000"), Color.fromHex("#ffffff")],
-	warningSubdued: [Color.fromHex("#ff0000"), Color.fromHex("#ffffff")],
-	positive: [Color.fromHex("#1ed760"), Color.fromHex("#ffffff")],
-	positiveSubdued: [Color.fromHex("#1ed760"), Color.fromHex("#ffffff")],
-	announcement: [Color.fromHex("#3d91f4"), Color.fromHex("#ffffff")],
-	announcementSubdued: [Color.fromHex("#3d91f4"), Color.fromHex("#ffffff")],
-	invertedDark: [Color.fromHex("#000000"), Color.fromHex("#ffffff")],
-	invertedLight: [Color.fromHex("#ffffff"), Color.fromHex("#000000")],
-	mutedAccent: [Color.fromHex("#1ed760"), Color.fromHex("#ffffff")],
-	overMedia: [Color.fromHex("#1ed760"), Color.fromHex("#ffffff")],
-} as CondensedPalette;
+type TwoUplet<T> = [T, T];
 
-export type CondensedPalette = { [key in ColorSets]: [Color, ...Color[]] };
+type SerializedThemeData = Record<ColorSets, TwoUplet<string>>;
+class ThemeData {
+	constructor(private theme: { [key in ColorSets]: TwoUplet<Color> }) {}
 
-type PaletteData = { id: string; name: string; colors: { [key in ColorSets]: [string, ...string[]] } };
-
-export class Palette {
-	constructor(
-		public id: string,
-		public name: string,
-		public colors: CondensedPalette,
-		public isStatic = true,
-	) {}
-
-	overwrite(colors: CondensedPalette) {
-		if (this.isStatic) {
-			return false;
-		}
-		this.colors = colors;
-		return true;
+	getColors() {
+		return this.theme;
 	}
 
-	getColorSetObjs(): ColorSetsObjs {
-		return Object.fromEntries(
-			Object.entries(this.colors).map(([set, colors]) => {
-				const colorsHex = colors.map((c) => c.toCSS(Color.Format.HEX)) as [string, ...string[]];
-				const paletteObj = generateColorSet(...colorsHex);
-				return [set as ColorSets, paletteObj];
-			}),
-		) as ColorSetsObjs;
+	setColor(set: ColorSets, index: number, color: Color) {
+		this.theme[set] = this.theme[set].toSpliced(index, 1, color) as TwoUplet<Color>;
+	}
+
+	getColorTheme(): ColorTheme {
+		return mapValues(this.theme, (colors) => {
+			const colorsHex = colors.map((c) => c.toCSS(Color.Format.HEX)) as TwoUplet<string>;
+			const paletteObj = generateColorSet(...colorsHex);
+			return paletteObj;
+		});
 	}
 
 	getCSS() {
 		const encoreDarkThemeSelector = ".encore-dark-theme";
-		return Object.entries(this.getColorSetObjs()).map(([set, paletteObj]) => {
+		return Object.entries(this.getColorTheme()).map(([set, paletteObj]) => {
 			const setClassName = toCssClassName(set);
 			const setSelector = `${encoreDarkThemeSelector} .${setClassName}`;
 			const selectors = [setSelector];
@@ -91,104 +65,164 @@ export class Palette {
 		}).join("\n");
 	}
 
-	toJSON(): PaletteData {
-		const palette: PaletteData["colors"] = {};
-		for (const [set, colors] of Object.entries(this.colors)) {
-			palette[set] = colors.map((c) => JSON.stringify(c) as string);
-		}
-		return { id: this.id, name: this.name, colors: palette };
+	toJSON(): SerializedThemeData {
+		const theme = mapValues(
+			this.theme,
+			(colors) => colors.map((color) => JSON.stringify(color)) as TwoUplet<string>,
+		);
+		return theme;
 	}
 
-	static fromJSON(json: PaletteData) {
-		const palette: CondensedPalette = {};
-		for (const [set, colors] of Object.entries(json.colors)) {
-			palette[set] = colors.map((c) => Color.parse(c) as Color);
-		}
-		return new Palette(json.id, json.name, palette, false);
+	static fromJSON(json: SerializedThemeData) {
+		const theme = mapValues(json, (colors) => colors.map((color) => Color.parse(color)) as TwoUplet<Color>);
+		return new ThemeData(theme);
+	}
+
+	copy() {
+		return ThemeData.fromJSON(this.toJSON());
+	}
+
+	static createDefault() {
+		const colors = ["#000000", "#ffffff"].map((c) => JSON.stringify(Color.fromHex(c))) as TwoUplet<string>;
+		const themeJSON = mapValues(defaultColorTheme, () => colors);
+
+		return ThemeData.fromJSON(themeJSON);
 	}
 }
 
-const defaultPalette = new Palette("default", "Spotify • default", def_fields);
+export class PaletteContext extends EntityContext {}
+
+type SerializedPalette = {
+	id: string;
+	name: string;
+	theme: SerializedThemeData;
+	context: SerializedEntityContext | null;
+};
+export class Palette extends Entity<PaletteContext> {
+	constructor(id: string, name: string, public theme: ThemeData, context: PaletteContext | null = null) {
+		super(id, name, context);
+	}
+
+	toJSON(): SerializedPalette {
+		return {
+			id: this.id,
+			name: this.name,
+			theme: this.theme.toJSON(),
+			context: this.context?.toJSON() ?? null,
+		};
+	}
+
+	static fromJSON(json: SerializedPalette) {
+		let context: PaletteContext | null = null;
+		if (json.context) {
+			context = PaletteContext.fromJSON(json.context);
+		}
+
+		return new Palette(
+			json.id,
+			json.name,
+			ThemeData.fromJSON(json.theme),
+			context,
+		);
+	}
+
+	static create(name: string, theme: ThemeData, context: PaletteContext | null = null) {
+		return new Palette(crypto.randomUUID(), name, theme, context);
+	}
+
+	static createDefault(name?: string, context: PaletteContext | null = null) {
+		const palette = context ? Schemer.get(context) : null;
+
+		if (palette) {
+			return Palette.create(name ?? palette.name, palette.theme.copy(), context);
+		}
+
+		return Palette.create(name ?? "New Palette", ThemeData.createDefault(), context);
+	}
+}
 
 export class PaletteManager {
 	public static INSTANCE = new PaletteManager();
-	staticPalettes = new Map<string, Palette>([[defaultPalette.id, defaultPalette]]);
-	userPalettes = new Set<Palette>();
-	private palette!: Palette;
-	private stylesheet = document.createElement("style");
+	palettes = new Map<string, Palette>();
+	private palette: Palette | null = null;
+	private stylesheet = new CSSStyleSheet();
 
 	private constructor() {
-		document.head.appendChild(this.stylesheet);
+		document.adoptedStyleSheets.push(this.stylesheet);
 	}
 
 	_init() {
-		const paletteStr = storage.getItem("palette");
-		const palette: Palette = paletteStr ? Palette.fromJSON(JSON.parse(paletteStr)) : this.getDefault();
-
-		this.setCurrent(palette);
-
-		this.initUserPalettes();
-	}
-
-	private initUserPalettes() {
-		const userPalettesJSON: PaletteData[] = JSON.parse(storage.getItem("user_palettes") || "[]");
-		const userPalettes = userPalettesJSON.map((json) => Palette.fromJSON(json));
-		for (const palette of userPalettes) {
-			this.userPalettes.add(palette);
-			if (this.isCurrent(palette)) {
-				this.setCurrent(palette);
-			}
+		const serializedPalettes: SerializedPalette[] = JSON.parse(storage.getItem("palettes") ?? "[]");
+		const palettes = serializedPalettes.map((json) => Palette.fromJSON(json));
+		for (const palette of palettes) {
+			this.palettes.set(palette.id, palette);
 		}
+
+		const paletteId: string | null = JSON.parse(storage.getItem("palette") ?? "null");
+		const palette = this.palettes.get(paletteId!) ?? null;
+		this.setCurrent(palette);
 	}
 
-	public getDefault(): Palette {
-		return this.staticPalettes.values().next().value;
+	public getDefault(): Palette | null {
+		return this.palettes.values().next().value ?? null;
 	}
 
 	public getPalettes(): Palette[] {
-		return [...this.userPalettes, ...this.staticPalettes.values()];
+		return Array.from(this.palettes.values());
 	}
 
 	public save(): void {
-		storage.setItem("user_palettes", JSON.stringify(Array.from(this.userPalettes)));
+		storage.setItem("palettes", JSON.stringify(this.getPalettes()));
 	}
 
-	public getCurrent(): Palette {
+	public getCurrent(): Palette | null {
 		return this.palette;
 	}
 
-	public setCurrent(palette: Palette): Palette {
+	public setCurrent(palette: Palette | null) {
 		this.palette = palette;
-		this.writeCurrent();
+		this.applyCurrent();
 		return palette;
 	}
 
-	public writeCurrent() {
-		this.stylesheet.innerHTML = this.palette.getCSS();
-		for (const [set, paletteObj] of Object.entries(this.palette.getColorSetObjs())) {
-			Object.assign(paletteObjs[set as ColorSets], paletteObj);
+	public async applyCurrent() {
+		let css: string;
+		let colorTheme: ColorTheme;
+
+		if (this.palette && this.palette.theme) {
+			css = this.palette.theme.getCSS();
+			colorTheme = this.palette.theme.getColorTheme();
+		} else {
+			css = "";
+			colorTheme = defaultColorTheme;
 		}
+
+		await this.stylesheet.replace(css);
+		for (const [set, paletteObj] of Object.entries(colorTheme)) {
+			Object.assign(appliedColorTheme[set as ColorSets], paletteObj);
+		}
+
 		this.saveCurrent();
 	}
 
 	public saveCurrent() {
-		storage.setItem("palette", JSON.stringify(this.palette));
+		storage.setItem("palette", JSON.stringify(this.palette?.id ?? null));
 	}
 
-	public addUserPalette(palette: Palette) {
-		this.userPalettes.add(palette);
+	public addPalette(palette: Palette) {
+		this.palettes.set(palette.id, palette);
 		this.save();
 	}
 
-	public deleteUserPalette(palette: Palette) {
-		this.userPalettes.delete(palette);
+	public deletePalette(palette: Palette) {
+		this.palettes.delete(palette.id);
 		if (this.isCurrent(palette)) {
-			this.setCurrent(this.getDefault());
+			this.setCurrent(null);
 		}
 		this.save();
 	}
 
-	public renameUserPalette(palette: Palette, name: string) {
+	public renamePalette(palette: Palette, name: string) {
 		palette.name = name;
 		if (this.isCurrent(palette)) {
 			this.saveCurrent();
@@ -197,6 +231,10 @@ export class PaletteManager {
 	}
 
 	public isCurrent(palette: Palette) {
-		return palette.id === this.getCurrent().id;
+		return palette.id === this.getCurrent()?.id;
+	}
+
+	public dispose() {
+		document.adoptedStyleSheets = document.adoptedStyleSheets.filter((sheet) => sheet !== this.stylesheet);
 	}
 }

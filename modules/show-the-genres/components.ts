@@ -1,14 +1,10 @@
 import { css, html, LitElement, PropertyValues } from "https://esm.sh/lit";
-import {
-	customElement,
-	property,
-	state,
-} from "https://esm.sh/lit/decorators.js";
+import { customElement, property, state } from "https://esm.sh/lit/decorators.js";
 import { join } from "https://esm.sh/lit/directives/join.js";
 import { map } from "https://esm.sh/lit/directives/map.js";
 
-import { _ } from "/modules/stdlib/deps.js";
 import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
+import { startCase } from "/modules/stdlib/deps.ts";
 
 const History = Platform.getHistory();
 
@@ -21,7 +17,7 @@ declare global {
 
 @customElement("genre-link")
 class _GenreLink extends LitElement {
-	static styles = css`
+	static override styles = css`
         :host > a {
             color: var(--spice-subtext);
             font-size: var(--genre-link-size);
@@ -35,10 +31,8 @@ class _GenreLink extends LitElement {
 		History.push({ pathname: `/search/${this.genre}/playlists` });
 	}
 
-	protected render() {
-		return html`<a href="#" @click=${this.openPlaylistsSearch}>${
-			_.startCase(this.genre)
-		}</a>`;
+	protected override render() {
+		return html`<a href="#" @click=${this.openPlaylistsSearch}>${startCase(this.genre)}</a>`;
 	}
 }
 
@@ -59,13 +53,13 @@ class _ArtistGenreContainer extends LitElement {
 	@property()
 	accessor fetchGenres = (_uri: string) => Promise.resolve([] as string[]);
 
-	protected async willUpdate(changedProperties: PropertyValues<this>) {
+	protected override async willUpdate(changedProperties: PropertyValues<this>) {
 		if (changedProperties.has("uri") && this.uri) {
 			this.genres = await this.fetchGenres(this.uri);
 		}
 	}
 
-	protected render() {
+	protected override render() {
 		const artistGenreLinks = map(
 			this.genres,
 			(genre) => html`<genre-link genre=${genre} />`,
@@ -78,9 +72,7 @@ class _ArtistGenreContainer extends LitElement {
                 }
             </style>
             <div className="main-entityHeader-detailsText genre-container">
-                ${this.name && html`<span>${this.name} : </span>`} ${
-			join(artistGenreLinks, divider)
-		}
+                ${this.name && html`<span>${this.name} : </span>`} ${join(artistGenreLinks, divider)}
             </div>`;
 	}
 }

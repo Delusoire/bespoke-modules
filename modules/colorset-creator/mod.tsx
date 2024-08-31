@@ -1,7 +1,3 @@
-/* Copyright (C) 2024 harbassan, and Delusoire
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
-
 import { createRegistrar } from "/modules/stdlib/mod.ts";
 
 import { React } from "/modules/stdlib/src/expose/React.ts";

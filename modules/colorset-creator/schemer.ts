@@ -1,55 +1,61 @@
-/* Copyright (C) 2024 harbassan, and Delusoire
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
+import { ModuleInstance } from "/hooks/module.ts";
+import { Palette, PaletteContext } from "./palette.ts";
+import { EntityContext } from "./entity.ts";
 
-import { type CondensedPalette, Palette, PaletteManager } from "./palette.ts";
-import { ModuleInstance } from "/hooks/index.ts";
+export class Schemer {
+	public static INSTANCES = new Map<ModuleInstance, Schemer>();
 
-class Schemer {
-	constructor(private mod: ModuleInstance) {}
-
-	palettes = new Set<Palette>();
-
-	getPaletteId(name: string) {
-		return `${this.mod.getModuleIdentifier()}#${name}`;
-	}
-
-	getPalette(name: string) {
-		return PaletteManager.INSTANCE.staticPalettes.get(this.getPaletteId(name));
-	}
-
-	register(name: string, colors: CondensedPalette) {
-		const palette = new Palette(this.getPaletteId(name), name, colors);
-		this.palettes.add(palette);
-		PaletteManager.INSTANCE.staticPalettes.set(palette.id, palette);
-		if (PaletteManager.INSTANCE.isCurrent(palette)) {
-			PaletteManager.INSTANCE.setCurrent(palette);
+	constructor(private mod: ModuleInstance) {
+		if (Schemer.INSTANCES.has(mod)) {
+			throw new Error("Schemer already exists for this module");
 		}
-		return this;
+		Schemer.INSTANCES.set(mod, this);
 	}
 
-	unregister(name: string) {
-		const palette = PaletteManager.INSTANCE.staticPalettes.get(this.getPaletteId(name));
-		if (!palette) return;
-		this.palettes.delete(palette);
-		PaletteManager.INSTANCE.staticPalettes.delete(palette.id);
-	}
+	private palettes = new Map<string, Palette>();
+	private configlets = new Map<string, Configlet>();
 
-	dispose() {
-		for (const palette of this.palettes) {
-			this.unregister(palette.name);
+	static get(context: PaletteContext): Palette | null;
+	static get(context: ConfigletContext): Configlet | null;
+	static get(context: EntityContext): unknown {
+		const module = context.getModuleInstance();
+		if (!module) {
+			return null;
 		}
+
+		let schemer = Schemer.INSTANCES.get(module);
+		if (!schemer) {
+			return null;
+		}
+
+		if (context instanceof PaletteContext) {
+			return schemer.palettes.get(context.id) ?? null;
+		}
+		if (context instanceof ConfigletContext) {
+			return schemer.configlets.get(context.id) ?? null;
+		}
+
+		return null;
+	}
+
+	static instances() {
+		return Array.from(this.INSTANCES.values());
+	}
+
+	getPalettes() {
+		return this.palettes;
+	}
+
+	getModuleIdentifier() {
+		return this.mod.getModuleIdentifier();
+	}
+
+	registerPalette() {
 	}
 }
 
 export function createSchemer(mod: ModuleInstance) {
 	const schemer = new Schemer(mod);
-
-	const unloadJs = mod._unloadJs!;
-	mod._unloadJs = () => {
-		schemer.dispose();
-		return unloadJs();
-	};
 
 	return schemer;
 }

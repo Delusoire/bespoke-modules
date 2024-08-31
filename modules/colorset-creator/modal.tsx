@@ -1,26 +1,27 @@
-/* Copyright (C) 2024 harbassan, and Delusoire
- * SPDX-License-Identifier: GPL-3.0-or-later
- */
-
 import { useSearchBar } from "/modules/stdlib/lib/components/index.tsx";
-import { Palette, PaletteManager } from "./palette.ts";
+import { Palette, PaletteContext, PaletteManager } from "./palette.ts";
 import { createIconComponent } from "/modules/stdlib/lib/createIconComponent.tsx";
 import { startCase } from "/modules/stdlib/deps.ts";
 import { React } from "/modules/stdlib/src/expose/React.ts";
-import { MenuItem } from "/modules/stdlib/src/webpack/ReactComponents.ts";
-import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
+import { Menu, MenuItem, RightClickMenu } from "/modules/stdlib/src/webpack/ReactComponents.ts";
 import { ChangeEvent } from "npm:@types/react";
 import { Color } from "/modules/stdlib/src/webpack/misc.ts";
 import { ColorSets } from "./webpack.ts";
 import { classnames } from "/modules/stdlib/src/webpack/ClassNames.ts";
+import { Schemer } from "./schemer.ts";
+import { MenuItemSubMenu } from "/modules/stdlib/src/webpack/ReactComponents.ts";
+
+const CHECK_ICON_PATH =
+	'<path d="M15.53 2.47a.75.75 0 0 1 0 1.06L4.907 14.153.47 9.716a.75.75 0 0 1 1.06-1.06l3.377 3.376L14.47 2.47a.75.75 0 0 1 1.06 0z"/>';
 
 export default function () {
-	const setCurrentPalette = (_: Palette, palette: Palette) => PaletteManager.INSTANCE.setCurrent(palette);
-	const getCurrentPalette = (_: undefined) => PaletteManager.INSTANCE.getCurrent();
+	const setCurrentPalette = (_: Palette | null, palette: Palette | null) =>
+		PaletteManager.INSTANCE.setCurrent(palette);
+	const getCurrentPalette = (_: null) => PaletteManager.INSTANCE.getCurrent();
 
 	const [selectedPalette, selectPalette] = React.useReducer(
 		setCurrentPalette,
-		undefined,
+		null as never,
 		getCurrentPalette,
 	);
 
@@ -31,18 +32,17 @@ export default function () {
 		undefined,
 		getPalettes,
 	);
+
 	const [searchbar, search] = useSearchBar({
 		placeholder: "Search Palettes",
 		expanded: true,
 	});
 
-	function createPalette() {
-		PaletteManager.INSTANCE.addUserPalette(
-			new Palette(crypto.randomUUID(), "New Palette", selectedPalette.colors, false),
-		);
+	const newPalette = React.useCallback(() => {
+		PaletteManager.INSTANCE.addPalette(Palette.createDefault());
 
 		updatePalettes();
-	}
+	}, []);
 
 	const filteredPalettes = palettes.filter((palette) =>
 		palette.name.toLowerCase().includes(search.toLowerCase())
@@ -59,39 +59,125 @@ export default function () {
 								icon: '<path d="M14 7H9V2H7v5H2v2h5v5h2V9h5z"/><path fill="none" d="M0 0h16v16H0z"/>',
 							})}
 							divider="after"
-							onClick={createPalette}
+							onClick={newPalette}
 						>
 							Create New Palette
 						</MenuItem>
 					</div>
 					<ul className="palette-modal__list overflow-y-auto">
 						{filteredPalettes.map((palette) => (
-							<MenuItem
+							<PaletteListItem
 								key={palette.id}
-								trailingIcon={palette === selectedPalette &&
-									createIconComponent({
-										icon:
-											'<path d="M15.53 2.47a.75.75 0 0 1 0 1.06L4.907 14.153.47 9.716a.75.75 0 0 1 1.06-1.06l3.377 3.376L14.47 2.47a.75.75 0 0 1 1.06 0z"/>',
-									})}
-								onClick={() => selectPalette(palette)}
-							>
-								{palette.name}
-							</MenuItem>
+								palette={palette}
+								isSelected={palette === selectedPalette}
+								selectPalette={selectPalette}
+							/>
 						))}
 					</ul>
 				</ul>
 			</div>
-			<PaletteComponent
-				palette={selectedPalette}
-				updatePalettes={updatePalettes}
-			/>
+			{selectedPalette &&
+				(
+					<PaletteComponent
+						palette={selectedPalette}
+						updatePalettes={updatePalettes}
+						selectPalette={selectPalette}
+					/>
+				)}
 		</div>
 	);
 }
 
+const SchemerMenuItemA = (
+	{ palette, schemer }: { palette: Palette; schemer: Schemer },
+) => {
+	const palettes = schemer.getPalettes();
+
+	if (palettes.size === 0) {
+		return;
+	}
+
+	return (
+		<MenuItemSubMenu
+			displayText={schemer.getModuleIdentifier()}
+			depth={1}
+			placement="right-start"
+		>
+			{Object.entries(palettes).map(([id, option]) => {
+				const context = new PaletteContext(schemer.getModuleIdentifier(), id);
+				const isSelected = palette.context && context.equals(palette.context);
+
+				return (
+					<SchemerMenuItemB
+						key={id}
+						palette={option}
+						isSelected={isSelected || false}
+						context={context}
+					/>
+				);
+			})}
+		</MenuItemSubMenu>
+	);
+};
+
+const SchemerMenuItemB = (
+	{ palette, context, isSelected }: { palette: Palette; context: PaletteContext; isSelected: boolean },
+) => {
+	const onClick = React.useCallback(() => {
+		palette.context = context;
+	}, [palette]);
+
+	return (
+		<MenuItem
+			trailingIcon={isSelected && createIconComponent({ icon: CHECK_ICON_PATH })}
+			onClick={onClick}
+		>
+			{palette.name}
+		</MenuItem>
+	);
+};
+
+interface PaletteListItemProps {
+	isSelected: boolean;
+	palette: Palette;
+	selectPalette: (palette: Palette | null) => void;
+}
+const PaletteListItem = ({ palette, isSelected, selectPalette }: PaletteListItemProps) => {
+	const onSelect = React.useCallback(() => {
+		selectPalette(isSelected ? null : palette);
+	}, [palette, isSelected]);
+
+	const resetContext = React.useCallback(() => {
+		palette.context = null;
+	}, [palette]);
+
+	const menu = (
+		<Menu>
+			<MenuItem onClick={resetContext} divider="after" disabled={palette.context == null}>
+				Reset context
+			</MenuItem>
+			{Schemer.instances().map((schemer) => (
+				<SchemerMenuItemA key={schemer.getModuleIdentifier()} schemer={schemer} palette={palette} />
+			))}
+		</Menu>
+	);
+
+	return (
+		<RightClickMenu menu={menu}>
+			<MenuItem
+				trailingIcon={isSelected && createIconComponent({ icon: CHECK_ICON_PATH })}
+				onClick={onSelect}
+			>
+				{palette.name}
+			</MenuItem>
+		</RightClickMenu>
+	);
+};
+
 interface PaletteFieldsProps {
 	palette: Palette;
 	updatePalettes: () => void;
+	selectPalette: (palette: Palette | null) => void;
 }
 const PaletteComponent = (props: PaletteFieldsProps) => {
 	return (
@@ -99,9 +185,10 @@ const PaletteComponent = (props: PaletteFieldsProps) => {
 			<PaletteInfo
 				palette={props.palette}
 				updatePalettes={props.updatePalettes}
+				selectPalette={props.selectPalette}
 			/>
 			<div className="palette__color-sets bg-[var(--secondary-bg)] p-[var(--gap-primary)] rounded-[var(--border-radius)] flex flex-col flex-nowrap overflow-y-auto h-[calc(100%-40px)] gap-y-1 gap-x-[var(--gap-secondary)]">
-				{Object.entries(props.palette.colors).map(([set, colors]) => (
+				{Object.entries(props.palette.theme.getColors()).map(([set, colors]) => (
 					<PaletteColorSet
 						key={set}
 						set={set as ColorSets}
@@ -117,63 +204,69 @@ const PaletteComponent = (props: PaletteFieldsProps) => {
 interface PaletteInfoProps {
 	palette: Palette;
 	updatePalettes: () => void;
+	selectPalette: (palette: Palette | null) => void;
 }
 
-const PaletteInfo = (props: PaletteInfoProps) => {
-	const [name, setName] = React.useState(props.palette.name);
-	const updateName = useUpdater(setName)(props.palette.name);
+const PaletteInfo = ({ palette, updatePalettes, selectPalette }: PaletteInfoProps) => {
+	const [name, setName] = React.useState(palette.name);
+	const updateName = useUpdater(setName)(palette.name);
 
-	function deletePalette(palette: Palette) {
-		PaletteManager.INSTANCE.deleteUserPalette(palette);
-		props.updatePalettes();
-	}
+	const deletePalette = React.useCallback(() => {
+		PaletteManager.INSTANCE.deletePalette(palette);
+		selectPalette(null);
+		updatePalettes();
+	}, [palette]);
 
-	function renamePalette(palette: Palette, name: string) {
-		PaletteManager.INSTANCE.renameUserPalette(palette, name);
-		props.updatePalettes();
-	}
+	const renamePalette = React.useCallback(() => {
+		PaletteManager.INSTANCE.renamePalette(palette, name);
+		updatePalettes();
+	}, [name, palette]);
+
+	// const copySerializedPalette = React.useCallback(async () => {
+	// 	const serializedPalette = JSON.stringify(palette);
+	// 	await Platform.getClipboardAPI().copy(serializedPalette);
+	// }, [palette]);
+
+	const copyPalette = React.useCallback(() => {
+		const copy = Palette.create(name, palette.theme.copy(), palette.context);
+		PaletteManager.INSTANCE.addPalette(copy);
+		selectPalette(copy);
+		updatePalettes();
+	}, [name, palette.theme, palette.context]);
 
 	return (
 		<div className="palette__info flex gap-[var(--gap-primary)]">
 			<input
 				className="palette__name bg-[var(--input-bg)] p-2 border-none rounded-[var(--border-radius)] h-8 flex-grow text-base text-white"
-				readOnly={props.palette.isStatic}
 				placeholder="Custom Palette"
-				value={props.palette.isStatic ? name + " (static)" : name}
+				value={name}
 				onChange={(e) => setName(e.target.value)}
 			/>
-			{!props.palette.isStatic && [
-				<PaletteInfoButton
-					type="button"
-					key="delete"
-					onClick={() => deletePalette(props.palette)}
-				>
-					Delete
-				</PaletteInfoButton>,
-				<PaletteInfoButton
-					type="button"
-					key="rename"
-					onClick={() => renamePalette(props.palette, name)}
-				>
-					Rename
-				</PaletteInfoButton>,
-			]}
 			<PaletteInfoButton
 				type="button"
-				onClick={() => {
-					const css = JSON.stringify(props.palette);
-					Platform.getClipboardAPI().copy(css);
-				}}
+				key="delete"
+				onClick={deletePalette}
 			>
-				Copy Object
+				Delete
+			</PaletteInfoButton>
+			<PaletteInfoButton
+				type="button"
+				key="rename"
+				onClick={renamePalette}
+			>
+				Rename
+			</PaletteInfoButton>
+			<PaletteInfoButton
+				type="button"
+				onClick={copyPalette}
+			>
+				Copy
 			</PaletteInfoButton>
 		</div>
 	);
 };
 
-type PaletteInfoButtonProps =
-	& React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>
-	& { children: React.ReactNode };
+type PaletteInfoButtonProps = JSX.IntrinsicElements["button"];
 const PaletteInfoButton = (props: PaletteInfoButtonProps) => {
 	const className = classnames(
 		"info__button",
@@ -225,17 +318,12 @@ const PaletteColorInput = (props: PaletteFieldColorProps) => {
 			return;
 		}
 
-		const colors = {
-			...props.palette.colors,
-			[props.set]: props.palette.colors[props.set].toSpliced(props.index, 1, color),
-		};
+		props.palette.theme.setColor(props.set, props.index, color);
 
-		if (props.palette.overwrite(colors)) {
-			PaletteManager.INSTANCE.save();
-		}
+		PaletteManager.INSTANCE.save();
 
 		if (PaletteManager.INSTANCE.isCurrent(props.palette)) {
-			PaletteManager.INSTANCE.writeCurrent();
+			PaletteManager.INSTANCE.applyCurrent();
 		}
 	}, [props.palette, props.index, props.set]);
 
