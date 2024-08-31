@@ -8,13 +8,7 @@ import {
 	toCssAttributes,
 	toCssClassName,
 } from "./webpack.ts";
-import {
-	EntityContext,
-	Serializable,
-	serializableEntityMixin,
-	Serialized,
-	SerializedEntity,
-} from "./entity.ts";
+import { EntityContext, Serializable, serializableEntityMixin, SerializedEntity } from "./entity.ts";
 import { mapValues } from "/hooks/std/collections.ts";
 import { storage } from "./preload.ts";
 
@@ -91,25 +85,8 @@ export class Theme implements Serializable<SerializedThemeData> {
 	}
 }
 
-export class PaletteContext extends EntityContext {
-	static override fromJSON(json: Serialized<PaletteContext>): PaletteContext {
-		return super.fromJSON(json) as PaletteContext;
-	}
-}
-
-export class Palette extends serializableEntityMixin(Theme, PaletteContext) {
-	static override fromJSON(json: SerializedEntity<Palette>): Palette {
-		return super.fromJSON(json);
-	}
-
-	static override create(name: string, theme: Theme, context?: PaletteContext | null): Palette {
-		return super.create(name, theme, context);
-	}
-
-	static override createDefault(name?: string, context: PaletteContext | null = null): Palette {
-		return super.createDefault(name, context);
-	}
-}
+export class PaletteContext extends EntityContext {}
+export class Palette extends serializableEntityMixin(Theme, PaletteContext) {}
 
 export class PaletteManager {
 	public static INSTANCE = new PaletteManager();

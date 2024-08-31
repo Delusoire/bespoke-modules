@@ -1,16 +1,8 @@
-import {
-	EntityContext,
-	Serializable,
-	serializableEntityMixin,
-	Serialized,
-	SerializedEntity,
-} from "./entity.ts";
+import { EntityContext, Serializable, serializableEntityMixin, SerializedEntity } from "./entity.ts";
 import { storage } from "./preload.ts";
 
 const LS_ACTIVE_CONFIGLETS = "active_configlets";
 const LS_CONFIGLETS = "configlets";
-
-type TwoUplet<T> = [T, T];
 
 type SerializedConfigData = string;
 export class Config implements Serializable<SerializedConfigData> {
@@ -38,25 +30,8 @@ export class Config implements Serializable<SerializedConfigData> {
 	}
 }
 
-export class ConfigletContext extends EntityContext {
-	static override fromJSON(json: Serialized<ConfigletContext>): ConfigletContext {
-		return super.fromJSON(json) as ConfigletContext;
-	}
-}
-
-export class Configlet extends serializableEntityMixin(Config, ConfigletContext) {
-	static override fromJSON(json: SerializedEntity<Configlet>): Configlet {
-		return super.fromJSON(json);
-	}
-
-	static override create(name: string, theme: Config, context?: ConfigletContext | null): Configlet {
-		return super.create(name, theme, context);
-	}
-
-	static override createDefault(name?: string, context: ConfigletContext | null = null): Configlet {
-		return super.createDefault(name, context);
-	}
-}
+export class ConfigletContext extends EntityContext {}
+export class Configlet extends serializableEntityMixin(Config, ConfigletContext) {}
 
 export class ConfigletManager {
 	public static INSTANCE = new ConfigletManager();

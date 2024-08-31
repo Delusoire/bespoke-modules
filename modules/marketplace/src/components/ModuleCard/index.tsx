@@ -1,5 +1,5 @@
 import { React } from "/modules/stdlib/src/expose/React.ts";
-import { MdDeleteForever, MdInstallDesktop } from "https://esm.sh/react-icons/md";
+import { MdDeleteForever, MdInstallDesktop } from "../../deps/icons.ts";
 import AuthorsDiv from "./AuthorsDiv.tsx";
 import TagsDiv from "./TagsDiv.tsx";
 import { type Metadata, type Module, type ModuleIdentifier, type ModuleInstance } from "/hooks/module.ts";

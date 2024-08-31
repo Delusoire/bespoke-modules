@@ -12,7 +12,7 @@ export type SerializedEntityContext = {
 	module: string;
 	id: string;
 };
-export abstract class EntityContext implements Serializable<SerializedEntityContext> {
+export class EntityContext implements Serializable<SerializedEntityContext> {
 	constructor(public module: ModuleIdentifier, public id: string) {}
 
 	getModuleInstance() {
@@ -26,9 +26,8 @@ export abstract class EntityContext implements Serializable<SerializedEntityCont
 		};
 	}
 
-	static fromJSON(json: SerializedEntityContext): unknown {
-		// @ts-ignore
-		return new this(json.module, json.id);
+	static fromJSON<C extends typeof EntityContext>(this: C, json: SerializedEntityContext): InstanceType<C> {
+		return new this(json.module, json.id) as InstanceType<C>;
 	}
 
 	equals(other: EntityContext) {
@@ -93,7 +92,10 @@ export const serializableEntityMixin = <Data extends Serializable, Context exten
 		};
 	}
 
-	static fromJSON(json: SerializedEntity<SerializableEntity>) {
+	static fromJSON<Ctor extends typeof SerializableEntity>(
+		this: Ctor,
+		json: SerializedEntity<SerializableEntity>,
+	): InstanceType<Ctor> {
 		let context: Context | null = null;
 		if (json.context) {
 			context = contextCtor.fromJSON(json.context);
@@ -104,14 +106,23 @@ export const serializableEntityMixin = <Data extends Serializable, Context exten
 			json.name,
 			dataCtor.fromJSON(json.data),
 			context,
-		);
+		) as InstanceType<Ctor>;
 	}
 
-	static create(name: string, theme: Data, context: Context | null = null) {
-		return new this(crypto.randomUUID(), name, theme, context);
+	static create<Ctor extends typeof SerializableEntity>(
+		this: Ctor,
+		name: string,
+		theme: Data,
+		context: Context | null = null,
+	): InstanceType<Ctor> {
+		return new this(crypto.randomUUID(), name, theme, context) as InstanceType<Ctor>;
 	}
 
-	static createDefault(name?: string, context: Context | null = null) {
+	static createDefault<Ctor extends typeof SerializableEntity>(
+		this: Ctor,
+		name?: string,
+		context: Context | null = null,
+	): InstanceType<Ctor> {
 		const palette = context ? Schemer.get(context) as SerializableEntity | null : null;
 
 		let data: Data;
@@ -128,6 +139,6 @@ export const serializableEntityMixin = <Data extends Serializable, Context exten
 			data = dataCtor.createDefault();
 		}
 
-		return this.create(name, data, context);
+		return this.create(name, data, context) as InstanceType<Ctor>;
 	}
 });

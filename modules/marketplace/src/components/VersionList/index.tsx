@@ -1,12 +1,13 @@
-import { FaRegMinusSquare, FaRegPlusSquare } from "https://esm.sh/react-icons/fa";
 import {
+	FaRegMinusSquare,
+	FaRegPlusSquare,
 	MdCircle,
 	MdCloudDownload,
 	MdDelete,
 	MdDeleteForever,
 	MdInstallDesktop,
 	MdOutlineCircle,
-} from "https://esm.sh/react-icons/md";
+} from "../../deps/icons.ts";
 import { useManageModules } from "../../components/ModuleCard/index.tsx";
 import { useUpdate } from "../../util/index.ts";
 import { useModules } from "../ModulesProvider/index.tsx";

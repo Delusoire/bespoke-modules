@@ -1,4 +1,4 @@
-import { MdCloudDownload, MdDeleteForever } from "https://esm.sh/react-icons/md";
+import { MdCloudDownload, MdDeleteForever } from "../deps/icons.ts";
 import { logger, module as marketplaceModuleInstance } from "../../mod.tsx";
 import { renderMarkdown } from "../api/github.ts";
 import Button from "../components/Button/index.tsx";
