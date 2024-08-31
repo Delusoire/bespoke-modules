@@ -1,6 +1,6 @@
 import { UI } from "/modules/stdlib/src/webpack/ComponentLibrary.ts";
-import { _ } from "/modules/stdlib/deps.ts";
 import { React } from "/modules/stdlib/src/expose/React.ts";
+import { capitalize } from "/modules/stdlib/deps.ts";
 
 interface StatCardProps {
 	label: string;
@@ -53,7 +53,7 @@ const StatCard = ({ label, value }: StatCardProps) => (
 			{formatValue(label, value)}
 		</UI.Type>
 		<UI.Type as="div" semanticColor="textBase" variant="balladBold">
-			{_.capitalize(label)}
+			{capitalize(label)}
 		</UI.Type>
 	</div>
 );

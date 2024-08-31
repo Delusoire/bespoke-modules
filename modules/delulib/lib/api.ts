@@ -1,5 +1,4 @@
 import { type AccessToken, SpotifyApi } from "https://esm.sh/@fostertheweb/spotify-web-api-ts-sdk";
-import { _ } from "/modules/stdlib/deps.ts";
 import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
 import { getConcurrentExecutionLimiterWrapper } from "./fp.ts";
 

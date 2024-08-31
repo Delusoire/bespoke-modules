@@ -1,5 +1,4 @@
 import { spotifyApi } from "/modules/Delusoire.delulib/lib/api.ts";
-import { _ } from "/modules/stdlib/deps.ts";
 import { normalizeStr } from "/modules/Delusoire.delulib/lib/util.ts";
 
 import { fromString } from "/modules/stdlib/src/webpack/URI.ts";

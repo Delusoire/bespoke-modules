@@ -1,4 +1,3 @@
-import { _ } from "/modules/stdlib/deps.ts";
 import { React } from "/modules/stdlib/src/expose/React.ts";
 
 export interface SearchbarProps {

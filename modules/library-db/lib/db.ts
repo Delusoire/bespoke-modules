@@ -1,6 +1,6 @@
 import Dexie, { type Table } from "https://esm.sh/dexie";
 import type { Track } from "https://esm.sh/v135/@fostertheweb/spotify-web-api-ts-sdk/dist/mjs/types.js";
-import { chunkify50 } from "/modules/Delusoire.delulib/lib/fp.ts";
+import { chunkify } from "/modules/Delusoire.delulib/lib/fp.ts";
 import { spotifyApi } from "/modules/Delusoire.delulib/lib/api.ts";
 import { fromString, Types } from "/modules/stdlib/src/webpack/URI.ts";
 import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
@@ -26,33 +26,33 @@ const fetchOrPopulateDB = <A, B extends string>(
 	table: Table<A, B>,
 	fetcher: (primaryKeys: B[]) => Promise<A[]>,
 ) =>
-async (primaryKeys: B[]) => {
-	const objs = await table.bulkGet(primaryKeys);
-	const missed = objs.reduce((missed, obj, i) => {
-		obj ?? missed.push(i);
-		return missed;
-	}, [] as number[]);
+	async (primaryKeys: B[]) => {
+		const objs = await table.bulkGet(primaryKeys);
+		const missed = objs.reduce((missed, obj, i) => {
+			obj ?? missed.push(i);
+			return missed;
+		}, [] as number[]);
 
-	const missedUniq = Object.groupBy(missed, (i) => primaryKeys[i]);
-	const missedUniqKeys = Object.keys(missedUniq) as B[];
+		const missedUniq = Object.groupBy(missed, (i) => primaryKeys[i]);
+		const missedUniqKeys = Object.keys(missedUniq) as B[];
 
-	if (missedUniqKeys.length) {
-		const fillers = await fetcher(missedUniqKeys);
-		table.bulkAdd(fillers);
-		missedUniqKeys.forEach((k, i) => {
-			const js = missedUniq[k]!;
-			for (const j of js) {
-				objs[j] = fillers[i];
-			}
-		});
-	}
+		if (missedUniqKeys.length) {
+			const fillers = await fetcher(missedUniqKeys);
+			table.bulkAdd(fillers);
+			missedUniqKeys.forEach((k, i) => {
+				const js = missedUniq[k]!;
+				for (const j of js) {
+					objs[j] = fillers[i];
+				}
+			});
+		}
 
-	return objs;
-};
+		return objs;
+	};
 
 export const getTracksFromURIs = fetchOrPopulateDB(db.tracks, (uris) => {
 	const ids = uris.map((uri) => fromString(uri).id);
-	return chunkify50((is) => spotifyApi.tracks.get(is))(ids);
+	return chunkify(ids, (x) => spotifyApi.tracks.get(x), 50);
 });
 
 export const getAlbumsFromURIs = fetchOrPopulateDB(db.albums, (uris) => {
@@ -112,7 +112,7 @@ const labelSizes = {
 const getPlaylist = async (uri: string) => {
 	const playlist = await PlaylistAPI.getPlaylist(uri);
 
-	const images: Array<{ url: string; label: keyof typeof labelSizes }> =
+	const images: Array<{ url: string; label: keyof typeof labelSizes; }> =
 		playlist.metadata.images ?? [];
 	const image = images.sort((image) => labelSizes[image.label])[0];
 

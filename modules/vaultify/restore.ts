@@ -13,9 +13,9 @@ import {
 	type PersonalPlaylist,
 } from "./util.ts";
 
-import { _ } from "/modules/stdlib/deps.ts";
 import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
 import { Snackbar } from "/modules/stdlib/src/expose/Snackbar.ts";
+import { mapValues } from "/hooks/std/collections.ts";
 
 const LocalStorageAPI = Platform.getLocalStorageAPI();
 
@@ -41,7 +41,7 @@ const PrefsAPI = Platform.getSettingsAPI().quality.volumeLevel.prefsApi;
 const ProductStateAPI = Platform.getProductStateAPI();
 
 export const restoreSettings = async (data: SettingBackup, silent = true) => {
-	const entries = _.mapValues(data.prefs, (value) => {
+	const entries = mapValues(data.prefs, (value) => {
 		value.number = eval(value.number);
 		return value;
 	});

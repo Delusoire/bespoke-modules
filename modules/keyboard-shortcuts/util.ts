@@ -1,5 +1,3 @@
-import { _ } from "/modules/stdlib/deps.ts";
-
 import { listeningToSneakBinds } from "./sneak.ts";
 import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
 import { Mousetrap } from "/modules/stdlib/src/webpack/Mousetrap.xpui.ts";
@@ -60,11 +58,13 @@ export class Bind {
 export const isElementVisible = (e: HTMLElement) =>
 	e.checkVisibility({ checkOpacity: true, checkVisibilityCSS: true });
 export const isElementInViewPort = (e: HTMLElement) => {
-	const c = document.body;
+	const { clientHeight: ch, clientWidth: cw } = document.body;
 	const bound = e.getBoundingClientRect();
-	const within = (m: number, M: number) => (x: number) => m <= x && x <= M;
-	const f = (top: number) => _.flow(_.mean, within(0, top));
-	return f(c.clientHeight)([bound.top, bound.bottom]) && f(c.clientWidth)([bound.left, bound.right]);
+
+	const mx = (bound.left + bound.right) / 2;
+	const my = (bound.top + bound.bottom) / 2;
+
+	return 0 <= mx && mx <= cw && 0 <= my && my <= ch;
 };
 
 export const CLICKABLE_ELEMENT_SELECTOR = `.Root [href]:not(link),.Root button,.Root [role="button"]`;

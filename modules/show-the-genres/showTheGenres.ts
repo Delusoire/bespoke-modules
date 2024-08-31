@@ -4,11 +4,11 @@ import { waitForElement } from "/modules/stdlib/lib/dom.ts";
 import { CONFIG } from "./settings.ts";
 
 import { fetchArtistRelated } from "/modules/Delusoire.delulib/lib/GraphQL/fetchArtistRelated.ts";
-import { _ } from "/modules/stdlib/deps.ts";
 import "./components.ts";
 import { eventBus } from "./mod.ts";
 import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
 import { fromString, is } from "/modules/stdlib/src/webpack/URI.ts";
+import { chunk } from "/hooks/std/collections.ts";
 
 const PlayerAPI = Platform.getPlayerAPI();
 
@@ -39,7 +39,7 @@ eventBus.Player.song_changed.subscribe((state) => {
 const getArtistsGenresOrRelated = async (artistsUris: string[]) => {
 	const getArtistsGenres = async (artistsUris: string[]) => {
 		const ids = artistsUris.map((uri) => fromString(uri).id as string);
-		const artists = await spotifyApi.artists.get(_.compact(ids));
+		const artists = await spotifyApi.artists.get(ids.filter(Boolean));
 		const genres = new Set(artists.flatMap((artist) => artist.genres));
 		return Array.from(genres);
 	};
@@ -54,15 +54,13 @@ const getArtistsGenresOrRelated = async (artistsUris: string[]) => {
 
 	if (allGenres.length) return allGenres;
 
-	const artistRelated = await fetchArtistRelated(artistsUris[0]);
+	const artistRelated: any[] = await fetchArtistRelated(artistsUris[0]);
 
-	return _.chunk(
-		artistRelated.map((a) => a.uri),
-		5,
-	).reduce(
-		async (acc, arr5uris) => ((await acc).length ? await acc : await getArtistsGenres(arr5uris)),
-		Promise.resolve([] as string[]),
-	);
+	return chunk(artistRelated.map((a) => a.uri as string), 5)
+		.reduce(
+			async (acc, arr5uris) => ((await acc).length ? acc : await getArtistsGenres(arr5uris)),
+			Promise.resolve([] as string[]),
+		);
 };
 
 const updateArtistPage = async (uri: string) => {
@@ -88,5 +86,5 @@ eventBus.History.updated.subscribe(({ pathname }) => {
 		if (is.Artist(uri)) {
 			updateArtistPage(uri);
 		}
-	} catch (_) { }
+	} catch (_) {}
 });

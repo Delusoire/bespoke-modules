@@ -7,7 +7,7 @@ import { when } from "https://esm.sh/lit/directives/when.js";
 // import { PropertyValueMap } from "https://esm.sh/@lit/reactive-element/development/reactive-element.js";
 // import { hermite } from "https://esm.sh/@thi.ng/ramp"
 
-import { _ } from "/modules/stdlib/deps.ts";
+import { runningReduce, zip } from "/hooks/std/collections.ts";
 import { remapScalar, vectorLerp } from "/modules/Delusoire.delulib/lib/math.ts";
 import { MonotoneNormalSpline } from "../splines/monotoneNormalSpline.ts";
 import { type Lyrics, LyricsType } from "../utils/LyricsProvider.ts";
@@ -78,7 +78,7 @@ export class AnimatedText extends AnimatedMixin(SyncedMixin(LitElement)) {
 	@property({ type: Boolean })
 	accessor split!: boolean;
 
-	static styles = css`
+	static override styles = css`
         :host {
             cursor: pointer;
             background-color: black;
@@ -94,7 +94,7 @@ export class AnimatedText extends AnimatedMixin(SyncedMixin(LitElement)) {
         }
     `;
 
-	animateContent() {
+	override animateContent() {
 		const nextGradientAlpha = opacityInterpolator.at(this.csp).toFixed(5);
 		const nextGlowRadius = `${glowRadiusInterpolator.at(this.csp)}px`;
 		const nextGlowAlpha = glowAlphaInterpolator.at(this.csp).toFixed(5);
@@ -116,7 +116,7 @@ export class AnimatedText extends AnimatedMixin(SyncedMixin(LitElement)) {
 		Player.setTimestamp(this.tsp);
 	}
 
-	render() {
+	override render() {
 		return html`<span role="button" @click=${this.onClick}>${this.content}</span>`;
 	}
 }
@@ -129,7 +129,7 @@ const DetailTimelineProviderName = "detail-timeline-provider";
 
 @customElement(DetailTimelineProviderName)
 export class DetailTimelineProvider extends SyncedContainerMixin(SyncedMixin(LitElement)) {
-	static styles = css`
+	static override styles = css`
         :host {
             display: flex;
             flex-wrap: wrap;
@@ -139,7 +139,7 @@ export class DetailTimelineProvider extends SyncedContainerMixin(SyncedMixin(Lit
 	intermediatePositions?: number[];
 	lastPosition?: number;
 
-	computeChildProgress(rp: number, child: number) {
+	override computeChildProgress(rp: number, child: number) {
 		if (!this.intermediatePositions) {
 			const childs = Array.from(this.childs);
 			const partialWidths = childs.reduce(
@@ -161,7 +161,7 @@ const TimelineProviderName = "timeline-provider";
 
 @customElement(TimelineProviderName)
 export class TimelineProvider extends ScrolledMixin(SyncedContainerMixin(SyncedMixin(LitElement))) {
-	static styles = css`
+	static override styles = css`
         :host {
             display: flex;
             flex-wrap: wrap;
@@ -175,20 +175,20 @@ export class TimelineProvider extends ScrolledMixin(SyncedContainerMixin(SyncedM
 	computeIntermediatePosition(rsp: number) {
 		if (!this.timelineSpline) {
 			const childs = Array.from(this.childs);
-			const partialWidths = childs.reduce(
-				(
-					partialWidths,
-					child,
-				) => (partialWidths.push(partialWidths.at(-1)! + child.offsetWidth), partialWidths),
-				[0],
+			const partialWidths = runningReduce(
+				childs,
+				(partialWidth, child) => (partialWidth + child.offsetWidth),
+				0,
 			);
-			this.lastPosition = partialWidths.at(-1)!;
+			partialWidths.unshift(0);
+
+			this.lastPosition = partialWidths.at(-1);
 			this.intermediatePositions = partialWidths.map((pw) => pw / this.lastPosition!);
 
-			const pairs = _.zip(
-				childs.map((child) => child.tsp).concat(childs.at(-1)!.tep),
-				this.intermediatePositions,
-			) as Array<[number, number]>;
+			const tps = childs.map((child) => child.tsp);
+			tps.push(childs.at(-1)!.tep);
+
+			const pairs = zip(tps, this.intermediatePositions);
 			const first = vectorLerp(pairs[0], pairs[1], -1);
 			const last = vectorLerp(pairs.at(-2)!, pairs.at(-1)!, 2);
 			this.timelineSpline = new MonotoneNormalSpline([first, ...pairs, last]);
@@ -197,7 +197,7 @@ export class TimelineProvider extends ScrolledMixin(SyncedContainerMixin(SyncedM
 		return this.timelineSpline.at(rsp);
 	}
 
-	computeChildProgress(rp: number, child: number) {
+	override computeChildProgress(rp: number, child: number) {
 		const sip = this.computeIntermediatePosition(rp);
 		return remapScalar(this.intermediatePositions![child], this.intermediatePositions![child + 1], sip);
 	}
@@ -207,7 +207,7 @@ const LyricsContainerName = "lyrics-container";
 
 @customElement(LyricsContainerName)
 export class LyricsContainer extends SyncedContainerMixin(SyncedMixin(LitElement)) {
-	render() {
+	override render() {
 		return html`<slot></slot>`;
 	}
 }
@@ -223,7 +223,7 @@ export class LyricsWrapper extends LitElement {
 		this.scrollContainer = document.querySelector<HTMLElement>(query) ?? undefined;
 	}
 
-	static styles = css`
+	static override styles = css`
         :host > animated-content-container {
             display: unset;
         }
@@ -268,17 +268,17 @@ export class LyricsWrapper extends LitElement {
 		this.scrollTimeout = Date.now() + LyricsWrapper.SCROLL_TIMEOUT_MS;
 	}
 
-	connectedCallback() {
+	override connectedCallback() {
 		super.connectedCallback();
 		this.scrollContainer?.addEventListener("scroll", this.onExternalScroll);
 	}
 
-	disconnectedCallback() {
+	override disconnectedCallback() {
 		super.disconnectedCallback();
 		this.scrollContainer?.removeEventListener("scroll", this.onExternalScroll);
 	}
 
-	render() {
+	override render() {
 		if (!this.state) {
 			return html`<div class="info">No Song Loaded</div>`;
 		}
@@ -301,52 +301,58 @@ export class LyricsWrapper extends LitElement {
                         }
                     </style>
                     <lyrics-container>
-                        ${when(
-					isWordSync,
-					() =>
-						html`${map(
-							lyrics.content,
-							(l) =>
-								html`<timeline-provider tsp=${l.tsp} tep=${l.tep}
-                                            >${map(
-									l.content,
-									(w) =>
-										html`<detail-timeline-provider tsp=${w.tsp} tep=${w.tep}
-                                                        >${map(
-											w.content.split(""),
-											(c) =>
-												html`<animated-text
+                        ${
+					when(
+						isWordSync,
+						() =>
+							html`${
+								map(
+									lyrics.content,
+									(l) =>
+										html`<timeline-provider tsp=${l.tsp} tep=${l.tep}
+                                            >${
+											map(
+												l.content,
+												(w) =>
+													html`<detail-timeline-provider tsp=${w.tsp} tep=${w.tep}
+                                                        >${
+														map(
+															w.content.split(""),
+															(c) =>
+																html`<animated-text
                                                                     tsp=${w.tsp}
                                                                     content=${c === " " ? " " : c}
                                                                 ></animated-text>`,
-										)
-											}</detail-timeline-provider
+														)
+													}</detail-timeline-provider
                                                     >`,
-								)
-									}</timeline-provider
+											)
+										}</timeline-provider
                                         >`,
-						)
+								)
 							}`,
-					() =>
-						html`${map(
-							lyrics.content,
-							(l) =>
-								html`<timeline-provider tsp=${l.tsp} tep=${l.tep}
-                                            >${map(
-									l.content,
-									(wl) =>
-										html`<animated-text
+						() =>
+							html`${
+								map(
+									lyrics.content,
+									(l) =>
+										html`<timeline-provider tsp=${l.tsp} tep=${l.tep}
+                                            >${
+											map(
+												l.content,
+												(wl) =>
+													html`<animated-text
                                                         tsp=${wl.tsp}
                                                         tep=${wl.tep}
                                                         content=${wl.content}
                                                     ></animated-text>`,
-								)
-									}</timeline-provider
+											)
+										}</timeline-provider
                                         >`,
-						)
+								)
 							}`,
-				)
-					}</lyrics-container
+					)
+				}</lyrics-container
                     >,
                 `;
 			},

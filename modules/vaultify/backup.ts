@@ -1,8 +1,8 @@
-import { _ } from "/modules/stdlib/deps.ts";
 import { fetchPlaylistContents, fetchRootFolder } from "/modules/Delusoire.delulib/lib/platform.ts";
 
 import type { LikedPlaylist, PersonalFolder, PersonalPlaylist, PoF } from "./util.ts";
 import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
+import { omit, pick } from "/hooks/std/collections.ts";
 
 const LibraryAPI = Platform.getLibraryAPI();
 const LocalStorageAPI = Platform.getLocalStorageAPI();
@@ -33,12 +33,13 @@ export type SettingBackup = {
 
 export const getLibrary = async () => {
 	const { items } = await LibraryAPI.getContents({ limit: 50000, sortOrder: 1 });
-	const lib = {} as Record<string, Array<string>>;
+	const _library = {} as Record<string, Array<string>>;
 	for (const item of items) {
-		lib[item.type] ??= [];
-		lib[item.type].push(item.uri);
+		_library[item.type] ??= [];
+		_library[item.type].push(item.uri);
 	}
-	const extractUris = ({ items }) => items.map((item) => item.uri);
+	const library = omit(_library, ["playlist", "folder"]);
+
 	const track = await LibraryAPI.getTracks({ limit: 50000, sort: { field: "ADDED_AT", order: "ASC" } }).then(
 		extractUris,
 	);
@@ -47,12 +48,12 @@ export const getLibrary = async () => {
 	// const book =
 	const rootlist = await fetchRootFolder().then(extractLikedPlaylistTreeRecur);
 	return Object.assign(
+		library,
 		{
 			track,
 			episode,
 			rootlist,
 		},
-		_.omit(lib, ["playlist", "folder"]),
 	) as LibraryBackup;
 };
 
@@ -67,7 +68,7 @@ export const getSettings = async () => {
 	const { entries } = await PrefsAPI.getAll();
 	const pairs = await ProductStateAPI.getValues();
 	const prefs = entries as Prefs;
-	const productState = _.pick(pairs, [
+	const productState = pick(pairs, [
 		"autoplay",
 		"dsa-mode-available",
 		"dsa-mode-enabled",
@@ -118,3 +119,5 @@ export const extractLikedPlaylistTreeRecur = async (
 		}
 	}
 };
+
+const extractUris = ({ items }) => items.map((item) => item.uri);

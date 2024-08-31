@@ -10,7 +10,6 @@ import RefreshButton from "../components/buttons/refresh_button.tsx";
 import { SpotifyTimeRange } from "../api/spotify.ts";
 import { getTracksFromURIs } from "/modules/Delusoire.library-db/lib/db.ts";
 import { PlaylistItems, SavedPlaylists } from "/modules/Delusoire.library-db/mod.ts";
-import { fp } from "/modules/stdlib/deps.ts";
 import { fetchAlbumsMeta, fetchArtistsMeta, fetchAudioFeaturesMeta } from "./playlist.tsx";
 import { calculateTracksMeta } from "./top_genres.tsx";
 import { getURI, toID } from "../util/parse.ts";
@@ -139,7 +138,7 @@ const LibraryPage = () => {
 				.filter(Boolean);
 			const tracks = await getTracksFromURIs(trackURIsInLibrary);
 
-			const duration = tracks.map((track) => track.duration_ms).reduce(fp.add);
+			const duration = tracks.map((track) => track.duration_ms).reduce((a, b) => a + b, 0);
 			const { explicitness, obscureTracks, popularity, releaseDates } = calculateTracksMeta(tracks);
 
 			const trackURIs = tracks.map(getURI);

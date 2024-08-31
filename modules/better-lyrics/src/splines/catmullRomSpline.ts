@@ -1,5 +1,3 @@
-import { _ } from "/modules/stdlib/deps.ts";
-import { slideN, type TwoUplet } from "/modules/Delusoire.delulib/lib/fp.ts";
 import {
 	remapScalar,
 	scalarLerp,
@@ -7,8 +5,10 @@ import {
 	vectorDist,
 	vectorLerp,
 } from "/modules/Delusoire.delulib/lib/math.ts";
+import { slidingWindows, sortBy, unzip } from "/hooks/std/collections.ts";
+import { clamp, sortedLastIndexBy } from "/modules/stdlib/deps.ts";
 
-export type vectorWithTime = readonly [number, vector];
+export type vectorWithTime = [number, vector];
 
 type Quadruplet<A> = readonly [A, A, A, A];
 type PointQuadruplet = Quadruplet<vector>;
@@ -21,19 +21,19 @@ class CatmullRomCurve {
 	) {}
 
 	static fromPointsAndAlpha(P: PointQuadruplet, alpha: number) {
-		const T = slideN<TwoUplet<vector>>(2)(P as unknown as vector[])
+		const T = slidingWindows(P, 2)
 			.map(([Pi, Pj]) => vectorDist(Pi, Pj) ** alpha)
 			.map((ki, i, kis) => (i > 0 ? kis[i - 1] : 0) + ki) as unknown as TimeQuadruplet;
 		return new CatmullRomCurve(P, T);
 	}
 
 	static fromPointsInTime(points: PointInTimeQuadruplet) {
-		const [T, P] = _.unzip(points) as unknown as [TimeQuadruplet, PointQuadruplet];
+		const [T, P] = unzip(points) as unknown as [TimeQuadruplet, PointQuadruplet];
 		return new CatmullRomCurve(P, T);
 	}
 
 	at(t: number) {
-		t = _.clamp(t, this.T[1], this.T[2]);
+		t = clamp(t, this.T[1], this.T[2]);
 		const vectorLerpWithRemapedScalar = (s: vectorWithTime, e: vectorWithTime, x: number) =>
 			vectorLerp(s[1], e[1], remapScalar(s[0], e[0], x));
 
@@ -57,7 +57,7 @@ export class AlphaCatmullRomSpline {
 		private points: Array<vector>,
 		alpha: number,
 	) {
-		this.catnumRollCurves = slideN<Quadruplet<vector>>(4)(points).map((P) =>
+		this.catnumRollCurves = slidingWindows(points, 4).map((P) =>
 			CatmullRomCurve.fromPointsAndAlpha(P as unknown as PointQuadruplet, alpha)
 		);
 	}
@@ -76,8 +76,9 @@ export class AlphaCatmullRomSpline {
 	static fromPointsClamped(points: Array<vector>, alpha = 0.5) {
 		if (points.length < 2) return null;
 
-		const [P1, P2] = _.take(points, 2);
-		const [P3, P4] = _.takeRight(points, 2);
+		const [P1, P2] = points;
+		const P3 = points.at(-2)!;
+		const P4 = points.at(-1)!;
 		const P0 = vectorLerp(P1, P2, -1);
 		const P5 = vectorLerp(P3, P4, 2);
 
@@ -90,16 +91,17 @@ export class CatmullRomSpline {
 	private catnumRollCurves;
 
 	private constructor(points: Array<vectorWithTime>) {
-		this.points = _.sortBy(points, (p) => p[0]);
-		this.catnumRollCurves = slideN<Quadruplet<vector>>(4)(this.points).map((P) =>
+		this.points = sortBy(points, (p) => p[0]);
+
+		this.catnumRollCurves = slidingWindows(this.points, 4).map((P) =>
 			CatmullRomCurve.fromPointsInTime(P as unknown as PointInTimeQuadruplet)
 		);
 	}
 
 	at(t: number) {
 		const point = [t, []] as vectorWithTime;
-		const i = _.clamp(
-			_.sortedLastIndexBy(this.points, point, (p) => p[0]) - 2,
+		const i = clamp(
+			sortedLastIndexBy(this.points, point, (p) => p[0]) - 2,
 			0,
 			this.catnumRollCurves.length - 1,
 		);
@@ -115,10 +117,11 @@ export class CatmullRomSpline {
 	static fromPointsClamped(points: Array<vectorWithTime>) {
 		if (points.length < 2) return null;
 
-		const [P1, P2] = _.take(points, 2);
-		const [P3, P4] = _.takeRight(points, 2);
-		const P0 = [scalarLerp(P1[0], P2[0], -1), vectorLerp(P1[1], P2[1], -1)] as const;
-		const P5 = [scalarLerp(P3[0], P4[0], 2), vectorLerp(P3[1], P4[1], 2)] as const;
+		const [P1, P2] = points;
+		const P3 = points.at(-2)!;
+		const P4 = points.at(-1)!;
+		const P0 = [scalarLerp(P1[0], P2[0], -1), vectorLerp(P1[1], P2[1], -1)] as vectorWithTime;
+		const P5 = [scalarLerp(P3[0], P4[0], 2), vectorLerp(P3[1], P4[1], 2)] as vectorWithTime;
 
 		return CatmullRomSpline.fromPoints([P0, ...points, P5]);
 	}
@@ -127,7 +130,7 @@ export class CatmullRomSpline {
 function deCasteljau(points: vector[], position: number) {
 	if (points.length < 2) return points[0];
 	return deCasteljau(
-		slideN<TwoUplet<vector>>(2)(points).map(([Pi, Pj]) => vectorLerp(Pi, Pj, position)),
+		slidingWindows(points, 2).map(([Pi, Pj]) => vectorLerp(Pi, Pj, position)),
 		position,
 	);
 }

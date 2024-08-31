@@ -1,11 +1,9 @@
-import { _ } from "/modules/stdlib/deps.ts";
-
 import { createRegistrar } from "/modules/stdlib/mod.ts";
 import { createSettings } from "/modules/stdlib/lib/settings.tsx";
 
-import type { ModuleInstance } from "/hooks/index.ts";
 import type { Settings } from "/modules/stdlib/lib/settings.tsx";
 import { React } from "/modules/stdlib/src/expose/React.ts";
+import { ModuleInstance } from "/hooks/module.ts";
 
 export let settings: Settings;
 export default async function (mod: ModuleInstance) {

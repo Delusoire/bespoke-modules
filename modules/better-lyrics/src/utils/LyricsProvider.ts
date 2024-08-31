@@ -1,7 +1,6 @@
-import { _ } from "/modules/stdlib/deps.ts";
-import { type OneUplet, slideN, type TwoUplet } from "/modules/Delusoire.delulib/lib/fp.ts";
 import { proxy } from "/hooks/util/proxy.ts";
 import { CONFIG } from "../../settings.ts";
+import { slidingWindows, zip } from "/hooks/std/collections.ts";
 
 const headers = {
 	authority: "apic-desktop.musixmatch.com",
@@ -46,7 +45,7 @@ export enum LyricsType {
 }
 
 export type NotSynced = SW<string> & { __type: LyricsType.NOT_SYNCED };
-export type LineSynced = SW<Array<S<OneUplet<S<string>>>>> & { __type: LyricsType.LINE_SYNCED };
+export type LineSynced = SW<Array<S<[S<string>]>>> & { __type: LyricsType.LINE_SYNCED };
 export type WordSynced = SW<Array<S<Array<S<string>>>>> & {
 	__type: LyricsType.WORD_SYNCED;
 };
@@ -99,34 +98,32 @@ export const findLyrics = async (info: {
 			return { tsp, tep, content };
 		});
 
-		const wordSyncedFilled = _(
-			slideN<TwoUplet<S<Array<S<string>>>>>(2)([{ tep: 0 }, ...wordSynced, { tsp: 1 }]),
-		)
-			.map(([prev, next]) => {
-				return false;
-				const tsp = prev.tep;
-				const tep = next.tsp;
-				const duration = (tep - tsp) * track.track_length * 1000;
+		const delimiters = slidingWindows([{ tep: 0 }, ...wordSynced, { tsp: 1 }], 2).map(([prev, next]) => {
+			return null;
 
-				return (
-					duration > 500 && {
+			const tsp = prev.tep!;
+			const tep = next.tsp!;
+			const duration = (tep - tsp) * track.track_length * 1000;
+
+			if (duration < 500) {
+				return null;
+			}
+
+			return {
+				tsp,
+				tep,
+				content: [
+					{
 						tsp,
 						tep,
-						content: [
-							{
-								tsp,
-								tep,
-								duration,
-								content: "🎵",
-							},
-						],
-					}
-				);
-			})
-			.zip(wordSynced)
-			.flatten()
-			.compact()
-			.value();
+						duration,
+						content: "🎵",
+					},
+				],
+			};
+		});
+
+		const wordSyncedFilled = zip(wordSynced, delimiters.concat(null)).flat().filter(Boolean);
 
 		l.wordSynced = wrapInContainerSyncedType(LyricsType.WORD_SYNCED, wordSyncedFilled);
 	}
@@ -139,7 +136,7 @@ export const findLyrics = async (info: {
 		const lineSynced = subtitle.map((sLine, i, subtitle) => {
 			const tsp = sLine.time.total / track.track_length;
 			const tep = subtitle[i + 1]?.time.total / track.track_length || 1;
-			return { tsp, tep, content: [{ tsp, tep, content: sLine.text }] as OneUplet<S<string>> };
+			return { tsp, tep, content: [{ tsp, tep, content: sLine.text }] as [S<string>] };
 		});
 		l.lineSynced = wrapInContainerSyncedType(LyricsType.LINE_SYNCED, lineSynced);
 	}

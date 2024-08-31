@@ -1,4 +1,3 @@
-import { _ } from "/modules/stdlib/deps.ts";
 import { progressify } from "/modules/Delusoire.delulib/lib/fp.ts";
 import {
 	createPlaylistFromTracks,
@@ -29,7 +28,7 @@ export const createPlaylistFromLastSortedQueue = async () => {
 
 	const { success, uri: playlistUri } = await createPlaylistFromTracks(
 		playlistName,
-		globalThis.lastSortedQueue.map(t => t.uri),
+		globalThis.lastSortedQueue.map((t) => t.uri),
 		sortedPlaylistsFolder.uri,
 	);
 
@@ -53,31 +52,39 @@ export const reordedPlaylistLikeSortedQueue = async () => {
 		return;
 	}
 
-	const sortedUids = globalThis.lastSortedQueue.map(track => track.uid!);
-	const playlistUids = (await fetchPlaylistContents(lastFetchedUri)).map(item => item.uid);
+	const sortedUids = globalThis.lastSortedQueue.map((track) => track.uid!);
+	const reversedPlaylistUids: string[] = (await fetchPlaylistContents(lastFetchedUri)).map((item) => item.uid)
+		.reverse();
 
 	let i = sortedUids.length - 1;
 	const uidsByReqs = new Array<string[]>();
 	while (i >= 0) {
 		const uids = new Array<string>();
 
-		_.forEachRight(playlistUids, (uid, j) => {
+		for (const [j, uid] of reversedPlaylistUids.entries()) {
 			if (uid === sortedUids[i]) {
-				i--;
-				playlistUids.splice(j, 1);
+				reversedPlaylistUids.splice(j, 1);
 				uids.push(uid);
+				if (~--i) {
+					break;
+				}
 			}
-		});
+		}
 
 		uidsByReqs.push(uids.reverse());
 	}
 
-	const fn = progressify((uids: string[]) => movePlaylistTracks(lastFetchedUri, uids, SpotifyLoc.before.start()), uidsByReqs.length);
+	const fn = progressify(
+		(uids: string[]) => movePlaylistTracks(lastFetchedUri, uids, SpotifyLoc.before.start()),
+		uidsByReqs.length,
+	);
 
 	await Promise.all(uidsByReqs.map(fn));
 
 	Snackbar.enqueueSnackbar("Reordered the sorted playlist", { variant: "default" });
-	if (playlistUids.length) {
-		Snackbar.enqueueSnackbar(`Left ${playlistUids.length} unordered at the bottom`, { variant: "default" });
+	if (reversedPlaylistUids.length) {
+		Snackbar.enqueueSnackbar(`Left ${reversedPlaylistUids.length} unordered at the bottom`, {
+			variant: "default",
+		});
 	}
 };

@@ -15,7 +15,7 @@ export default async function (mod: ModuleInstance) {
 
 	registrar.register("topbarLeftButton", <EditButton />);
 
-	const schemer = await import("./schemer.ts");
+	const { createSchemer } = await import("./schemer.ts");
 
-	schemer.createSchemer(mod);
+	const schemer = createSchemer(mod);
 }

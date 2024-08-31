@@ -1,5 +1,5 @@
-import { _ } from "/modules/stdlib/deps.ts";
 import { Snackbar } from "/modules/stdlib/src/expose/Snackbar.ts";
+import { chunk } from "/hooks/std/collections.ts";
 
 type async = {
 	<A, B>(f: (a: A) => Promise<B>): (fa: Promise<A>) => Promise<B>;
@@ -8,14 +8,10 @@ type async = {
 export const pMchain: async = <A, R>(f: (a: A) => R) => async (fa: A) =>
 	f(await fa);
 
-export const chunkifyN =
-	(n: number) => <A, R>(fn: (a: Array<A>) => R) => async (args: Array<A>) => {
-		const a = await Promise.all(_(args).chunk(n).map(fn).value());
-		return a.flat();
-	};
-
-export const chunkify50 = chunkifyN(50);
-export const chunkify20 = chunkifyN(20);
+export const chunkify = async <A, R>(args: Array<A>, fn: (a: Array<A>) => Promise<Array<R>>, n: number): Promise<R[]> => {
+	const a = await Promise.all(chunk(args, n).map(fn));
+	return a.flat();
+};
 
 export const progressify = async <PS extends Array<Promise<any>>>(ps: PS) => {
 	const n = ps.length;
@@ -45,13 +41,6 @@ export const progressify = async <PS extends Array<Promise<any>>>(ps: PS) => {
 
 	await Promise.all(ps.map((p) => p.then(update)));
 };
-
-export type OneUplet<E> = [E];
-export type TwoUplet<E> = [E, E];
-export type Triplet<E> = [E, E, E];
-export type Quadruplet<E> = [E, E, E, E];
-export const slideN = <R>(n: number) => <A>(a: A[]) =>
-	a.map((_, i, a) => a.slice(i, i + n)).slice(0, 1 - n) as R[];
 
 type AsyncFunction = (...args: any[]) => Promise<any>;
 

@@ -1,5 +1,4 @@
 import { React } from "/modules/stdlib/src/expose/React.ts";
-import { _ } from "/modules/stdlib/deps.ts";
 import { type Module, type ModuleIdentifier, type ModuleInstance, RootModule } from "/hooks/module.ts";
 
 const getModulesByIdentifier = () => {

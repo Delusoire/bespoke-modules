@@ -12,7 +12,7 @@ import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
 import { ChangeEvent } from "npm:@types/react";
 import { Color } from "/modules/stdlib/src/webpack/misc.ts";
 import { ColorSets } from "./webpack.ts";
-import { classnames } from "../stdlib/src/webpack/ClassNames.ts";
+import { classnames } from "/modules/stdlib/src/webpack/ClassNames.ts";
 
 export default function () {
 	const setCurrentPalette = (_: Palette, palette: Palette) => PaletteManager.INSTANCE.setCurrent(palette);

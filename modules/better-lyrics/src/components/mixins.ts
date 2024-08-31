@@ -2,7 +2,7 @@ import { consume } from "https://esm.sh/@lit/context";
 import { html, LitElement } from "https://esm.sh/lit";
 import { property, queryAssignedElements } from "https://esm.sh/lit/decorators.js";
 
-import { _ } from "/modules/stdlib/deps.ts";
+import { clamp } from "/modules/stdlib/deps.ts";
 
 import { scrollContainerCtx, scrollTimeoutCtx } from "./contexts.ts";
 
@@ -35,9 +35,9 @@ export const AnimatedMixin = <T extends Constructor<LitElement & SyncedMixinI>>(
 	class mixedClass extends superClass {
 		csp!: number;
 		dtaa!: number;
-		updateProgress(scaledProgress: number, depthToActiveAncestor: number) {
+		override updateProgress(scaledProgress: number, depthToActiveAncestor: number) {
 			super.updateProgress(scaledProgress, depthToActiveAncestor);
-			const clampedScaledProgress = _.clamp(scaledProgress, -0.5, 1.5);
+			const clampedScaledProgress = clamp(scaledProgress, -0.5, 1.5);
 			if (this.shouldAnimate(clampedScaledProgress, depthToActiveAncestor)) {
 				this.csp = clampedScaledProgress;
 				this.dtaa = depthToActiveAncestor;
@@ -62,7 +62,7 @@ export const ScrolledMixin = <T extends Constructor<LitElement & SyncedMixinI>>(
 
 		dtaa!: number;
 
-		updateProgress(progress: number, depthToActiveAncestor: number) {
+		override updateProgress(progress: number, depthToActiveAncestor: number) {
 			super.updateProgress(progress, depthToActiveAncestor);
 			const isActive = depthToActiveAncestor === 0;
 			const wasActive = this.dtaa === 0;
@@ -77,7 +77,10 @@ export const ScrolledMixin = <T extends Constructor<LitElement & SyncedMixinI>>(
 			const verticalLinesToActive = Math.abs(scrollTop - this.scrollContainer.scrollTop) /
 				this.scrollContainer.offsetHeight;
 
-			if (!bypassProximityCheck && !_.inRange(verticalLinesToActive, 0.1, 0.75)) return;
+			const isProximal = 0.1 <= verticalLinesToActive && verticalLinesToActive < 0.75;
+			if (!bypassProximityCheck && !isProximal) {
+				return;
+			}
 
 			this.scrollContainer.scrollTo({
 				top: scrollTop,
@@ -98,19 +101,19 @@ export const SyncedContainerMixin = <T extends Constructor<LitElement & SyncedMi
 			return rp;
 		}
 
-		updateProgress(rp: number, depthToActiveAncestor: number) {
+		override updateProgress(rp: number, depthToActiveAncestor: number) {
 			super.updateProgress(rp, depthToActiveAncestor);
 			const childs = Array.from(this.childs);
 			if (childs.length === 0) return;
 
 			childs.forEach((child, i) => {
 				const progress = this.computeChildProgress(rp, i);
-				const isActive = _.inRange(rp, child.tsp, child.tep);
+				const isActive = child.tsp <= rp && rp < child.tep;
 				child.updateProgress(progress, depthToActiveAncestor + (isActive ? 0 : 1));
 			});
 		}
 
-		render() {
+		override render() {
 			return html`<slot></slot><br />`;
 		}
 	}
