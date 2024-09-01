@@ -8,9 +8,15 @@ import {
 	toCssAttributes,
 	toCssClassName,
 } from "./webpack.ts";
-import { EntityContext, Serializable, serializableEntityMixin, SerializedEntity } from "./entity.ts";
+import {
+	EntityContext,
+	EntityManager,
+	Serializable,
+	serializableEntityMixin,
+	SerializedEntity,
+} from "./entity.ts";
 import { mapValues } from "/hooks/std/collections.ts";
-import { storage } from "./preload.ts";
+import { storage } from "../preload.ts";
 
 const LS_ACTIVE_PALETTE = "active_palette";
 const LS_PALETTES = "palettes";
@@ -89,61 +95,39 @@ class PaletteContext extends EntityContext {}
 export interface Palette {
 	Context: PaletteContext;
 }
-export class Palette extends serializableEntityMixin(Theme, PaletteContext) {
-	static Context = PaletteContext;
-}
+export class Palette extends serializableEntityMixin(Theme, PaletteContext) {}
 
-export class PaletteManager {
+export class PaletteManager extends EntityManager<Palette> {
+	public static override Entity = Palette;
 	public static INSTANCE = new PaletteManager();
-	palettes = new Map<string, Palette>();
-	private active: Palette | null = null;
-	private stylesheet = new CSSStyleSheet();
-
-	private constructor() {
-		document.adoptedStyleSheets.push(this.stylesheet);
-	}
 
 	_init() {
 		const serializedPalettes: SerializedEntity<Palette>[] = JSON.parse(storage.getItem(LS_PALETTES) ?? "[]");
 		const palettes = serializedPalettes.map((json) => Palette.fromJSON(json));
 		for (const palette of palettes) {
-			this.palettes.set(palette.id, palette);
+			this.entities.set(palette.id, palette);
 		}
 
 		const paletteId: string | null = JSON.parse(storage.getItem(LS_ACTIVE_PALETTE) ?? "null");
-		const palette = this.palettes.get(paletteId!) ?? null;
-		this.setCurrent(palette);
+		const palette = this.entities.get(paletteId!) ?? null;
+		if (palette) {
+			this.toggleActive(palette);
+		}
 	}
 
-	public getDefault(): Palette | null {
-		return this.palettes.values().next().value ?? null;
+	public override save(): void {
+		storage.setItem(LS_PALETTES, JSON.stringify(this.getAll()));
 	}
 
-	public getPalettes(): Palette[] {
-		return Array.from(this.palettes.values());
-	}
-
-	public save(): void {
-		storage.setItem(LS_PALETTES, JSON.stringify(this.getPalettes()));
-	}
-
-	public getCurrent(): Palette | null {
-		return this.active;
-	}
-
-	public setCurrent(palette: Palette | null) {
-		this.active = palette;
-		this.applyCurrent();
-		return palette;
-	}
-
-	public async applyCurrent() {
+	public override async applyActive() {
 		let css: string;
 		let colorTheme: ColorTheme;
 
-		if (this.active && this.active.data) {
-			css = this.active.data.getCSS();
-			colorTheme = this.active.data.getColorTheme();
+		const [active] = this.getActive();
+
+		if (active && active.data) {
+			css = active.data.getCSS();
+			colorTheme = active.data.getColorTheme();
 		} else {
 			css = "";
 			colorTheme = defaultColorTheme;
@@ -154,37 +138,12 @@ export class PaletteManager {
 			Object.assign(appliedColorTheme[set as ColorSets], paletteObj);
 		}
 
-		this.saveCurrent();
+		this.saveActive();
 	}
 
-	public saveCurrent() {
-		const id = this.active?.id ?? null;
+	public override async saveActive() {
+		const [active] = this.getActive();
+		const id = active?.id ?? null;
 		storage.setItem(LS_ACTIVE_PALETTE, JSON.stringify(id));
-	}
-
-	public addPalette(palette: Palette) {
-		this.palettes.set(palette.id, palette);
-		this.save();
-	}
-
-	public deletePalette(palette: Palette) {
-		this.palettes.delete(palette.id);
-		if (this.isCurrent(palette)) {
-			this.setCurrent(null);
-		}
-		this.save();
-	}
-
-	public renamePalette(palette: Palette, name: string) {
-		palette.name = name;
-		this.save();
-	}
-
-	public isCurrent(palette: Palette) {
-		return palette.id === this.active?.id;
-	}
-
-	public dispose() {
-		document.adoptedStyleSheets = document.adoptedStyleSheets.filter((sheet) => sheet !== this.stylesheet);
 	}
 }

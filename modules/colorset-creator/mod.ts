@@ -9,9 +9,9 @@ export default async function (mod: ModuleInstance) {
 
 	const { EditButton } = await import("./paletteManager.tsx");
 
-	registrar.register("topbarLeftButton", <EditButton />);
+	registrar.register("topbarLeftButton", React.createElement(EditButton));
 
-	const { createSchemer } = await import("./schemer.ts");
+	const { createSchemer } = await import("./src/schemer.ts");
 
 	const schemer = createSchemer(mod);
 }

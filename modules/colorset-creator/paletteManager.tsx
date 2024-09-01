@@ -1,5 +1,5 @@
 import { TopbarLeftButton } from "/modules/stdlib/src/registers/topbarLeftButton.tsx";
-import Modal from "./modal.tsx";
+import Modal from "./modal/index.tsx";
 import { React } from "/modules/stdlib/src/expose/React.ts";
 import { display } from "/modules/stdlib/lib/modal.tsx";
 

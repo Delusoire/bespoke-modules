@@ -5,5 +5,5 @@ export const preload: IndexPreloadFn = async (mod) => {
 };
 
 export const load: IndexLoadFn = async (mod) => {
-	return await (await import("./mod.tsx")).default(mod);
+	return await (await import("./mod.ts")).default(mod);
 };

@@ -1,6 +1,6 @@
 import { startCase } from "/modules/stdlib/deps.ts";
 import { Schemer } from "./schemer.ts";
-import { ModuleIdentifier, RootModule } from "/hooks/module.ts";
+import { type ModuleIdentifier, RootModule } from "/hooks/module.ts";
 
 export interface Serializable<T extends {} = any> {
 	toJSON(): T;
@@ -72,11 +72,15 @@ interface ContextCTor<Context> {
 	fromJSON(json: Serialized<Context>): Context;
 }
 
+export type SerializableEntity = ReturnType<typeof serializableEntityMixin>;
 export const serializableEntityMixin = <Data extends Serializable, Context extends EntityContext>(
 	dataCtor: DataCTor<Data>,
 	contextCtor: ContextCTor<Context>,
 ) => (class SerializableEntity extends Entity<Context, Data>
 	implements Serializable<SerializedEntity<Entity<Context, Data>>> {
+	public static Context = contextCtor;
+	public static Data = dataCtor;
+
 	constructor(id: string, name: string, data: Data, context: Context | null) {
 		super(id, name, data, context);
 	}
@@ -90,6 +94,12 @@ export const serializableEntityMixin = <Data extends Serializable, Context exten
 			data: this.data.toJSON(),
 			context: context ? context.toJSON() as Serialized<Context> : null,
 		};
+	}
+
+	reset() {
+		const palette = this.context ? Schemer.get(this.context) as SerializableEntity | null : null;
+
+		this.data = palette ? dataCtor.fromJSON(palette.data.toJSON()) : dataCtor.createDefault();
 	}
 
 	static fromJSON<Ctor extends typeof SerializableEntity>(
@@ -142,3 +152,75 @@ export const serializableEntityMixin = <Data extends Serializable, Context exten
 		return this.create(name, data, context) as InstanceType<Ctor>;
 	}
 });
+
+interface EntityCtor<E extends Entity<any, any>> {
+	new (...args: any[]): E;
+}
+
+export type EntityOfManager<M extends EntityManager<any>> = M extends EntityManager<infer E> ? E : never;
+
+export abstract class EntityManager<E extends Entity<any, any>> {
+	public static Entity: EntityCtor<Entity<any, any>>;
+
+	entities = new Map<string, E>();
+	active = new Set<E>();
+	stylesheet = new CSSStyleSheet();
+
+	constructor() {
+		document.adoptedStyleSheets.push(this.stylesheet);
+	}
+
+	public getDefault(): E | null {
+		return this.entities.values().next().value ?? null;
+	}
+
+	public getAll(): E[] {
+		return Array.from(this.entities.values());
+	}
+
+	public abstract save(): void;
+
+	public getActive(): E[] {
+		return Array.from(this.active);
+	}
+
+	public toggleActive(entity: E) {
+		if (this.active.has(entity)) {
+			this.active.delete(entity);
+		} else {
+			this.active.add(entity);
+		}
+		this.applyActive();
+		return entity;
+	}
+
+	public abstract applyActive(): Promise<void>;
+
+	public abstract saveActive(): Promise<void>;
+
+	public add(entity: E) {
+		this.entities.set(entity.id, entity);
+		this.save();
+	}
+
+	public delete(entity: E) {
+		this.entities.delete(entity.id);
+		if (this.isActive(entity)) {
+			this.toggleActive(entity);
+		}
+		this.save();
+	}
+
+	public rename(entity: E, name: string) {
+		entity.name = name;
+		this.save();
+	}
+
+	public isActive(entity: E) {
+		return this.active.has(entity);
+	}
+
+	public dispose() {
+		document.adoptedStyleSheets = document.adoptedStyleSheets.filter((sheet) => sheet !== this.stylesheet);
+	}
+}
