@@ -16,15 +16,8 @@ const newlineRe = /\r\n|\r|\n/;
 
 // Empty lines need to contain a single empty token, denoted with { empty: true }
 const normalizeEmptyLines = (line: Token[]) => {
-	if (line.length === 0) {
-		line.push({
-			types: ["plain"],
-			content: "\n",
-			empty: true,
-		});
-	} else if (line.length === 1 && line[0].content === "") {
-		line[0].content = "\n";
-		line[0].empty = true;
+	if (line.length === 1 && line[0].content === "") {
+		Object.assign(line[0], { content: "\n", empty: true });
 	}
 };
 
@@ -46,28 +39,29 @@ const appendTypes = (types: string[], add: string[] | string): string[] => {
 export const normalizeTokens = (
 	tokens: Array<PrismToken | string>,
 ): Token[][] => {
-	const typeArrStack: string[][] = [[]];
-	const tokenArrStack = [tokens];
-	const tokenArrIndexStack = [0];
-	const tokenArrSizeStack = [tokens.length];
+	type Frame = {
+		types: string[];
+		tokenArr: Array<string | Prism.Token>;
+		tokenArrIndex: number;
+	};
+	let nextFrame: Frame | undefined = { types: [], tokenArr: tokens, tokenArrIndex: 0 };
+	let frame: Frame;
 
-	let i = 0;
-	let stackIndex = 0;
+	const stack = new Array<Frame>();
+
 	let currentLine = new Array<Token>();
+	const acc = new Array<Token[]>();
 
-	const acc = [currentLine];
+	for (; nextFrame; nextFrame = stack.pop()) {
+		for (; (frame = nextFrame, frame.tokenArrIndex < frame.tokenArr.length); frame.tokenArrIndex++) {
+			let { types } = frame;
+			const token = frame.tokenArr[frame.tokenArrIndex];
 
-	while (stackIndex > -1) {
-		for (; (i = tokenArrIndexStack[stackIndex]++) < tokenArrSizeStack[stackIndex];) {
-			let content: string | Array<string | Prism.Token>;
-			let types = typeArrStack[stackIndex];
-
-			const tokenArr = tokenArrStack[stackIndex];
-			const token = tokenArr[i];
+			let content: string;
 
 			// Determine content and append type to types if necessary
 			if (typeof token === "string") {
-				types = stackIndex > 0 ? types : ["plain"];
+				types = stack.length > 0 ? types : ["plain"];
 				content = token;
 			} else {
 				types = appendTypes(types, token.type);
@@ -75,45 +69,49 @@ export const normalizeTokens = (
 					types = appendTypes(types, token.alias);
 				}
 
-				if (typeof token.content === "string" || Array.isArray(token.content)) {
+				if (typeof token.content === "string") {
 					content = token.content;
 				} else {
-					content = [token.content];
+					let tokenArr: Array<string | Prism.Token>;
+					if (Array.isArray(token.content)) {
+						tokenArr = token.content;
+					} else {
+						tokenArr = [token.content];
+					}
+
+					stack.push(frame);
+					nextFrame = {
+						types,
+						tokenArr,
+						tokenArrIndex: 0,
+					};
+					continue;
 				}
 			}
 
-			// If token.content is an array, increase the stack depth and repeat this while-loop
-			if (typeof content !== "string") {
-				stackIndex++;
-				typeArrStack.push(types);
-				tokenArrStack.push(content);
-				tokenArrIndexStack.push(0);
-				tokenArrSizeStack.push(content.length);
-				continue;
-			}
-
-			// Split by newlines
 			const splitByNewlines = content.split(newlineRe);
 			const newlineCount = splitByNewlines.length;
 
 			currentLine.push({ types, content: splitByNewlines[0] });
 
-			// Create a new line for each string on a new line
 			for (let i = 1; i < newlineCount; i++) {
 				normalizeEmptyLines(currentLine);
-				acc.push(currentLine = []);
-				currentLine.push({ types, content: splitByNewlines[i] });
+				acc.push(currentLine);
+				currentLine = [{ types, content: splitByNewlines[i] }];
 			}
 		}
+	}
 
-		// Decreate the stack depth
-		stackIndex--;
-		typeArrStack.pop();
-		tokenArrStack.pop();
-		tokenArrIndexStack.pop();
-		tokenArrSizeStack.pop();
+	if (acc.length === 0) {
+		return [[{
+			types: ["plain"],
+			content: "\n",
+			empty: true,
+		}]];
 	}
 
 	normalizeEmptyLines(currentLine);
+	acc.push(currentLine);
+
 	return acc;
 };
