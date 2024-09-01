@@ -1,6 +1,6 @@
 import { IndexMixinFn } from "/hooks/module.ts";
 
-export const mixin: IndexMixinFn = (tr) => {
+export const mixin: IndexMixinFn = ({ transformer: tr }) => {
 	tr((emit) => (str) => {
 		emit();
 

@@ -1,28 +1,15 @@
-import { useSearchBar } from "/modules/stdlib/lib/components/index.tsx";
-import { Palette, PaletteManager, Theme } from "../src/palette.ts";
-import { createIconComponent } from "/modules/stdlib/lib/createIconComponent.tsx";
+import { Palette, type PaletteManager } from "../src/palette.ts";
 import { startCase } from "/modules/stdlib/deps.ts";
 import { React } from "/modules/stdlib/src/expose/React.ts";
-import { Menu, MenuItem, RightClickMenu } from "/modules/stdlib/src/webpack/ReactComponents.ts";
 import { Color } from "/modules/stdlib/src/webpack/misc.ts";
 import { ColorSets } from "../src/webpack.ts";
-import { classnames } from "/modules/stdlib/src/webpack/ClassNames.ts";
-import { Schemer } from "../src/schemer.ts";
-import { MenuItemSubMenu } from "/modules/stdlib/src/webpack/ReactComponents.ts";
-import { CHECK_ICON_PATH } from "../static.ts";
-import {
-	EntityInfo,
-	InfoButton,
-	SchemerContextMenu,
-	SchemerContextModuleMenuItem,
-	useUpdater,
-} from "./shared.tsx";
-import { Entity, EntityContext } from "../src/entity.ts";
+import { useSyncedState } from "./shared.tsx";
 
 export interface PaletteColorSetsProps {
 	palette: Palette;
+	paletteManager: PaletteManager;
 }
-export const PaletteColorSets = ({ palette }: PaletteColorSetsProps) => {
+export const PaletteColorSets = ({ palette, paletteManager }: PaletteColorSetsProps) => {
 	return (
 		<div className="palette__color-sets bg-[var(--secondary-bg)] p-[var(--gap-primary)] rounded-[var(--border-radius)] flex flex-col flex-nowrap overflow-y-auto h-[calc(100%-40px)] gap-y-1 gap-x-[var(--gap-secondary)]">
 			{Object.entries(palette.data.getColors()).map(([set, colors]) => (
@@ -31,6 +18,7 @@ export const PaletteColorSets = ({ palette }: PaletteColorSetsProps) => {
 					set={set as ColorSets}
 					colors={colors}
 					palette={palette}
+					paletteManager={paletteManager}
 				/>
 			))}
 		</div>
@@ -41,14 +29,22 @@ export interface PaletteFieldProps {
 	set: ColorSets;
 	colors: Color[];
 	palette: Palette;
+	paletteManager: PaletteManager;
 }
-export const PaletteColorSet = (props: PaletteFieldProps) => {
+export const PaletteColorSet = ({ set, colors, palette, paletteManager }: PaletteFieldProps) => {
 	return (
 		<div className="palette__color-set flex items-center justify-between">
-			<label>{startCase(props.set)}</label>
+			<label>{startCase(set)}</label>
 			<div className="color-set__color-inputs flex gap-[var(--gap-primary)] items-center">
-				{props.colors.map((c, i) => (
-					<PaletteColorInput color={c} palette={props.palette} set={props.set} key={i} index={i} />
+				{colors.map((c, i) => (
+					<PaletteColorInput
+						color={c}
+						palette={palette}
+						set={set}
+						key={i}
+						index={i}
+						paletteManager={paletteManager}
+					/>
 				))}
 			</div>
 		</div>
@@ -60,14 +56,12 @@ export interface PaletteFieldColorProps {
 	color: Color;
 	palette: Palette;
 	index: number;
+	paletteManager: PaletteManager;
 }
 export const PaletteColorInput = (props: PaletteFieldColorProps) => {
-	const colorHex = props.color.toCSS(Color.Format.HEX) as string;
+	const [color, setColor] = useSyncedState(props.color.toCSS(Color.Format.HEX) as string);
 
-	const [color, setColor] = React.useState(colorHex);
-	const updateColor = useUpdater(setColor)(colorHex);
-
-	const onChange = React.useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+	const onChange: React.ChangeEventHandler<HTMLInputElement> = React.useCallback((e) => {
 		const colorHex = e.target.value;
 		setColor(colorHex);
 
@@ -81,10 +75,10 @@ export const PaletteColorInput = (props: PaletteFieldColorProps) => {
 
 		props.palette.data.setColor(props.set, props.index, color);
 
-		PaletteManager.INSTANCE.save();
+		props.paletteManager.save();
 
-		if (PaletteManager.INSTANCE.isActive(props.palette)) {
-			PaletteManager.INSTANCE.applyActive();
+		if (props.paletteManager.isActive(props.palette)) {
+			props.paletteManager.applyActive();
 		}
 	}, [props.palette, props.index, props.set]);
 

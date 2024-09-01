@@ -1,9 +1,7 @@
-import { IndexLoadFn, IndexPreloadFn } from "/hooks/module.ts";
+import { hotwire, IndexLoadFn } from "/hooks/module.ts";
 
-export const preload: IndexPreloadFn = async (mod) => {
-	return await (await import("./preload.ts")).default(mod);
-};
+export const preload = hotwire(import.meta, "./preload.ts", () => import("./preload.ts"));
 
-export const load: IndexLoadFn = async (mod) => {
-	return await (await import("./mod.ts")).default(mod);
+export const load: IndexLoadFn = async (context) => {
+	return await (await import("./mod.ts")).default(context.module);
 };

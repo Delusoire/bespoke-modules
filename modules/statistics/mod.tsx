@@ -13,7 +13,7 @@ import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
 import { React } from "/modules/stdlib/src/expose/React.ts";
 import { fromString, is } from "/modules/stdlib/src/webpack/URI.ts";
 import { Route } from "/modules/stdlib/src/webpack/ReactComponents.ts";
-import { ModuleInstance } from "/hooks/index.ts";
+import type { ModuleInstance } from "/hooks/module.ts";
 
 const History = Platform.getHistory();
 

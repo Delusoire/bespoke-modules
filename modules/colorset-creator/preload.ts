@@ -1,11 +1,13 @@
-import { createStorage } from "/modules/stdlib/mod.ts";
-import { ModuleInstance } from "/hooks/module.ts";
-import { PaletteManager } from "./src/palette.ts";
-import { ConfigletManager } from "./src/configlet.ts";
+import { hotwired, type PreloadContext } from "/hooks/module.ts";
 
-export let storage: Storage;
-export default function (mod: ModuleInstance) {
-	storage = createStorage(mod);
-	PaletteManager.INSTANCE._init();
-	ConfigletManager.INSTANCE._init();
-}
+const { module, dispose } = await hotwired<PreloadContext>(import.meta);
+
+import { createStorage } from "/modules/stdlib/mod.ts";
+export let storage = createStorage(module);
+
+dispose.resolve(() => {
+	// @ts-ignore
+	storage = null;
+});
+
+import("./src/index.ts");

@@ -1,5 +1,4 @@
 import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
-import type { ModuleInstance } from "/hooks/index.ts";
 
 import { exports } from "/modules/stdlib/src/webpack/index.ts";
 
@@ -18,7 +17,7 @@ const { adsCoreConnector, settingsClient, slotsClient } = getAdsCoreConnector();
 
 await adsCoreConnector.increaseStreamTime(-100000000000);
 
-export default async function (mod: ModuleInstance) {
+export default async function () {
 	overridePrefs();
 
 	const prefsSubscription = PrefsAPI.sub({ key: "ui.hide_hpto" }, ({ entries }) => overridePrefs(entries));

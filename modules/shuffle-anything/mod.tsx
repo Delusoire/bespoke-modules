@@ -1,7 +1,7 @@
 import { createRegistrar } from "/modules/stdlib/mod.ts";
 
 import type { Settings } from "/modules/stdlib/lib/settings.tsx";
-import type { ModuleInstance } from "/hooks/index.ts";
+import type { ModuleInstance } from "/hooks/module.ts";
 
 import { React } from "/modules/stdlib/src/expose/React.ts";
 

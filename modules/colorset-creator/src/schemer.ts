@@ -1,7 +1,12 @@
-import { ModuleInstance } from "/hooks/module.ts";
-import { Palette, Theme } from "./palette.ts";
+import type { ModuleInstance } from "/hooks/module.ts";
+
+import type { Palette } from "./palette.ts";
+import type { Configlet } from "./configlet.ts";
+
 import { EntityContext } from "./entity.ts";
-import { Config, Configlet } from "./configlet.ts";
+
+export class PaletteContext extends EntityContext {}
+export class ConfigletContext extends EntityContext {}
 
 export class Schemer {
 	public static INSTANCES = new Map<ModuleInstance, Schemer>();
@@ -13,11 +18,11 @@ export class Schemer {
 		Schemer.INSTANCES.set(mod, this);
 	}
 
-	private palettes = new Map<string, Palette>();
-	private configlets = new Map<string, Configlet>();
+	palettes = new Map<string, Palette>();
+	configlets = new Map<string, Configlet>();
 
-	static get(context: Palette["Context"]): Palette | null;
-	static get(context: Configlet["Context"]): Configlet | null;
+	static get(context: PaletteContext): Palette | null;
+	static get(context: ConfigletContext): Configlet | null;
 	static get(context: EntityContext): unknown | null {
 		const module = context.getModuleInstance();
 		if (!module) {
@@ -29,10 +34,10 @@ export class Schemer {
 			return null;
 		}
 
-		if (context instanceof Palette.Context) {
+		if (context instanceof PaletteContext) {
 			return schemer.palettes.get(context.id) ?? null;
 		}
-		if (context instanceof Configlet.Context) {
+		if (context instanceof ConfigletContext) {
 			return schemer.configlets.get(context.id) ?? null;
 		}
 
@@ -54,20 +59,4 @@ export class Schemer {
 	getModuleIdentifier() {
 		return this.mod.getModuleIdentifier();
 	}
-
-	registerPalette(id: string, name: string, theme: Theme) {
-		const palette = new Palette(id, name, theme, new Palette.Context(this.getModuleIdentifier(), id));
-		this.palettes.set(id, palette);
-	}
-
-	registerConfiglet(id: string, name: string, config: Config) {
-		const configlet = new Configlet(id, name, config, new Configlet.Context(this.getModuleIdentifier(), id));
-		this.configlets.set(id, configlet);
-	}
-}
-
-export function createSchemer(mod: ModuleInstance) {
-	const schemer = new Schemer(mod);
-
-	return schemer;
 }

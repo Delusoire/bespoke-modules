@@ -1,4 +1,4 @@
-import { ModuleInstance } from "/hooks/index.ts";
+import { ModuleInstance } from "/hooks/module.ts";
 import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
 import { createSettings, type Settings } from "/modules/stdlib/lib/settings.tsx";
 

@@ -1,10 +1,10 @@
 import { IndexLoadFn, IndexMixinFn, IndexPreloadFn } from "/hooks/module.ts";
 
-export const mixin: IndexMixinFn = async (tr) => {
-	return await (await import("./mix.ts")).default(tr);
+export const mixin: IndexMixinFn = async (context) => {
+	return await (await import("./mix.ts")).default(context.transformer);
 };
 
-export const preload: IndexPreloadFn = async (mod) => {
+export const preload: IndexPreloadFn = async () => {
 	const { exports } = await import("/modules/stdlib/src/webpack/index.ts");
 	await CHUNKS.xpui.promise;
 	const [m, k, v] = exports
@@ -45,6 +45,6 @@ export const preload: IndexPreloadFn = async (mod) => {
 	}
 };
 
-export const load: IndexLoadFn = async (mod) => {
-	return await (await import("./mod.tsx")).default(mod);
+export const load: IndexLoadFn = async (context) => {
+	return await (await import("./mod.tsx")).default();
 };

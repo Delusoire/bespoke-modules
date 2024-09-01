@@ -1,5 +1,5 @@
 import { createSettings, type Settings } from "/modules/stdlib/lib/settings.tsx";
-import type { ModuleInstance } from "/hooks/index.ts";
+import type { ModuleInstance } from "/hooks/module.ts";
 import { createEventBus, type EventBus } from "/modules/stdlib/mod.ts";
 
 export let settings: Settings;

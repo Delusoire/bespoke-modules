@@ -3,7 +3,7 @@ import { createSettings } from "/modules/stdlib/lib/settings.tsx";
 import { React } from "/modules/stdlib/src/expose/React.ts";
 
 import { NavLink } from "/modules/stdlib/src/registers/navlink.tsx";
-import type { ModuleInstance } from "/hooks/index.ts";
+import type { ModuleInstance } from "/hooks/module.ts";
 import type { Settings } from "/modules/stdlib/lib/settings.tsx";
 import { ACTIVE_ICON, ICON } from "./src/static.ts";
 import { Route } from "/modules/stdlib/src/webpack/ReactComponents.ts";

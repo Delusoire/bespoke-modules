@@ -2,7 +2,7 @@ import { useLivePlaylistItems } from "/modules/Delusoire.library-db/mod.ts";
 import { createIconComponent } from "/modules/stdlib/lib/createIconComponent.tsx";
 import { useLiveQuery } from "/modules/Delusoire.dexie-react-hooks/mod.ts";
 import { db } from "/modules/Delusoire.library-db/lib/db.ts";
-import type { ModuleInstance } from "/hooks/index.ts";
+import type { ModuleInstance } from "/hooks/module.ts";
 import { React } from "/modules/stdlib/src/expose/React.ts";
 import { Menu, MenuItem, RightClickMenu, Tooltip } from "/modules/stdlib/src/webpack/ReactComponents.ts";
 import { fromString } from "/modules/stdlib/src/webpack/URI.ts";

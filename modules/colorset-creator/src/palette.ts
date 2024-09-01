@@ -1,4 +1,7 @@
+import { mapValues } from "/hooks/std/collections.ts";
+
 import { Color } from "/modules/stdlib/src/webpack/misc.xpui.ts";
+
 import {
 	appliedColorTheme,
 	type ColorSets,
@@ -8,22 +11,16 @@ import {
 	toCssAttributes,
 	toCssClassName,
 } from "./webpack.ts";
-import {
-	EntityContext,
-	EntityManager,
-	Serializable,
-	serializableEntityMixin,
-	SerializedEntity,
-} from "./entity.ts";
-import { mapValues } from "/hooks/std/collections.ts";
+import { EntityManager, Serializable, serializableEntityMixin, SerializedEntity } from "./entity.ts";
 import { storage } from "../preload.ts";
+import { PaletteContext, Schemer } from "./schemer.ts";
 
 const LS_ACTIVE_PALETTE = "active_palette";
 const LS_PALETTES = "palettes";
 
 type TwoUplet<T> = [T, T];
 
-type SerializedThemeData = Record<ColorSets, TwoUplet<string>>;
+type SerializedThemeData = Record<ColorSets, TwoUplet<{}>>;
 export class Theme implements Serializable<SerializedThemeData> {
 	constructor(private theme: { [key in ColorSets]: TwoUplet<Color> }) {}
 
@@ -69,13 +66,16 @@ export class Theme implements Serializable<SerializedThemeData> {
 	toJSON(): SerializedThemeData {
 		const theme = mapValues(
 			this.theme,
-			(colors) => colors.map((color) => JSON.stringify(color)) as TwoUplet<string>,
+			(colors) => colors.map((color) => Object.assign({}, color)) as TwoUplet<string>,
 		);
 		return theme;
 	}
 
 	static fromJSON(json: SerializedThemeData) {
-		const theme = mapValues(json, (colors) => colors.map((color) => Color.parse(color)) as TwoUplet<Color>);
+		const theme = mapValues(
+			json,
+			(colors) => colors.map((color) => Color.parse(JSON.stringify(color))) as TwoUplet<Color>,
+		);
 		return new Theme(theme);
 	}
 
@@ -84,18 +84,16 @@ export class Theme implements Serializable<SerializedThemeData> {
 	}
 
 	static createDefault() {
-		const colors = ["#000000", "#ffffff"].map((c) => JSON.stringify(Color.fromHex(c))) as TwoUplet<string>;
-		const themeJSON = mapValues(defaultColorTheme, () => colors);
-
-		return Theme.fromJSON(themeJSON);
+		const colors = ["#000000", "#ffffff"].map((c) => Color.fromHex(c)) as TwoUplet<string>;
+		const theme = mapValues(defaultColorTheme, () => colors);
+		return new Theme(theme);
 	}
 }
 
-class PaletteContext extends EntityContext {}
 export interface Palette {
 	Context: PaletteContext;
 }
-export class Palette extends serializableEntityMixin(Theme, PaletteContext) {}
+export class Palette extends serializableEntityMixin(Theme, PaletteContext, Schemer) {}
 
 export class PaletteManager extends EntityManager<Palette> {
 	public static override Entity = Palette;
@@ -123,7 +121,7 @@ export class PaletteManager extends EntityManager<Palette> {
 		let css: string;
 		let colorTheme: ColorTheme;
 
-		const [active] = this.getActive();
+		const [active] = this.getAllActive();
 
 		if (active && active.data) {
 			css = active.data.getCSS();
@@ -142,7 +140,7 @@ export class PaletteManager extends EntityManager<Palette> {
 	}
 
 	public override async saveActive() {
-		const [active] = this.getActive();
+		const [active] = this.getAllActive();
 		const id = active?.id ?? null;
 		storage.setItem(LS_ACTIVE_PALETTE, JSON.stringify(id));
 	}

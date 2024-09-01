@@ -9,7 +9,7 @@
 	overflow: auto !important;
 }
 
-.palette-modal {
+.palette-manager-modal {
 	--input-bg: #202020;
 	--color-input-bg: #121212;
 	--secondary-bg: #202020;
@@ -18,13 +18,13 @@
 	--gap-secondary: 12px;
 }
 
-.palette-modal__sidebar {
+.palette-manager-modal__sidebar {
 	.QZhV0hWVKlExlKr266jo {
 		width: 100%;
 	}
 }
 
-.palette-modal__palette .palette__color-set .color-set__color-input .color-input__picker {
+.palette-manager-modal__entity .palette__color-set .color-set__color-input .color-input__picker {
 	&::-webkit-color-swatch-wrapper {
 		padding: 0;
 	}

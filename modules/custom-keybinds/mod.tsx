@@ -1,5 +1,5 @@
 import { createStorage } from "/modules/stdlib/mod.ts";
-import type { ModuleInstance } from "/hooks/index.ts";
+import type { ModuleInstance } from "/hooks/module.ts";
 import { exported } from "/modules/stdlib/src/webpack/index.ts";
 import { UI } from "/modules/stdlib/src/webpack/ComponentLibrary.ts";
 import { React } from "/modules/stdlib/src/expose/React.ts";

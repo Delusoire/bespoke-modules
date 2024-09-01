@@ -1,6 +1,7 @@
-import { startCase } from "/modules/stdlib/deps.ts";
-import { Schemer } from "./schemer.ts";
+import type { Schemer } from "./schemer.ts";
 import { type ModuleIdentifier, RootModule } from "/hooks/module.ts";
+
+import { startCase } from "/modules/stdlib/deps.ts";
 
 export interface Serializable<T extends {} = any> {
 	toJSON(): T;
@@ -76,6 +77,7 @@ export type SerializableEntity = ReturnType<typeof serializableEntityMixin>;
 export const serializableEntityMixin = <Data extends Serializable, Context extends EntityContext>(
 	dataCtor: DataCTor<Data>,
 	contextCtor: ContextCTor<Context>,
+	schemer: typeof Schemer,
 ) => (class SerializableEntity extends Entity<Context, Data>
 	implements Serializable<SerializedEntity<Entity<Context, Data>>> {
 	public static Context = contextCtor;
@@ -97,7 +99,7 @@ export const serializableEntityMixin = <Data extends Serializable, Context exten
 	}
 
 	reset() {
-		const palette = this.context ? Schemer.get(this.context) as SerializableEntity | null : null;
+		const palette = this.context ? schemer.get(this.context) as SerializableEntity | null : null;
 
 		this.data = palette ? dataCtor.fromJSON(palette.data.toJSON()) : dataCtor.createDefault();
 	}
@@ -133,7 +135,7 @@ export const serializableEntityMixin = <Data extends Serializable, Context exten
 		name?: string,
 		context: Context | null = null,
 	): InstanceType<Ctor> {
-		const palette = context ? Schemer.get(context) as SerializableEntity | null : null;
+		const palette = context ? schemer.get(context) as SerializableEntity | null : null;
 
 		let data: Data;
 
@@ -170,24 +172,23 @@ export abstract class EntityManager<E extends Entity<any, any>> {
 		document.adoptedStyleSheets.push(this.stylesheet);
 	}
 
-	public getDefault(): E | null {
-		return this.entities.values().next().value ?? null;
-	}
-
 	public getAll(): E[] {
 		return Array.from(this.entities.values());
 	}
 
 	public abstract save(): void;
 
-	public getActive(): E[] {
+	public getAllActive(): E[] {
 		return Array.from(this.active);
 	}
 
-	public toggleActive(entity: E) {
+	public toggleActive(entity: E, only = false) {
 		if (this.active.has(entity)) {
 			this.active.delete(entity);
 		} else {
+			if (only) {
+				this.active.clear();
+			}
 			this.active.add(entity);
 		}
 		this.applyActive();

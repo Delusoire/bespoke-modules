@@ -1,5 +1,5 @@
 import { createEventBus, type EventBus } from "/modules/stdlib/mod.ts";
-import { ModuleInstance } from "/hooks/index.ts";
+import type { ModuleInstance } from "/hooks/module.ts";
 
 import { React } from "/modules/stdlib/src/expose/React.ts";
 

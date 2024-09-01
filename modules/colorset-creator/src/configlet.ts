@@ -1,11 +1,6 @@
-import {
-	EntityContext,
-	EntityManager,
-	Serializable,
-	serializableEntityMixin,
-	SerializedEntity,
-} from "./entity.ts";
+import { EntityManager, Serializable, serializableEntityMixin, SerializedEntity } from "./entity.ts";
 import { storage } from "../preload.ts";
+import { ConfigletContext, Schemer } from "./schemer.ts";
 
 const LS_ACTIVE_CONFIGLETS = "active_configlets";
 const LS_CONFIGLETS = "configlets";
@@ -36,11 +31,10 @@ export class Config implements Serializable<SerializedConfigData> {
 	}
 }
 
-class ConfigletContext extends EntityContext {}
 export interface Configlet {
 	Context: ConfigletContext;
 }
-export class Configlet extends serializableEntityMixin(Config, ConfigletContext) {}
+export class Configlet extends serializableEntityMixin(Config, ConfigletContext, Schemer) {}
 
 export class ConfigletManager extends EntityManager<Configlet> {
 	public static override Entity = Configlet;
@@ -69,7 +63,7 @@ export class ConfigletManager extends EntityManager<Configlet> {
 	}
 
 	public override async applyActive() {
-		const css = this.getActive().map((c) => c.data.getCSS()).join("\n");
+		const css = this.getAllActive().map((c) => c.data.getCSS()).join("\n");
 
 		await this.stylesheet.replace(css);
 

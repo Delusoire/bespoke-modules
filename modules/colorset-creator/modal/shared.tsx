@@ -1,24 +1,23 @@
-import { useSearchBar } from "/modules/stdlib/lib/components/index.tsx";
 import { Palette, PaletteManager } from "../src/palette.ts";
 import { createIconComponent } from "/modules/stdlib/lib/createIconComponent.tsx";
-import { startCase } from "/modules/stdlib/deps.ts";
 import { React } from "/modules/stdlib/src/expose/React.ts";
 import { Menu, MenuItem, RightClickMenu } from "/modules/stdlib/src/webpack/ReactComponents.ts";
-import { Color } from "/modules/stdlib/src/webpack/misc.ts";
-import { ColorSets } from "../src/webpack.ts";
 import { classnames } from "/modules/stdlib/src/webpack/ClassNames.ts";
 import { Schemer } from "../src/schemer.ts";
 import { MenuItemSubMenu } from "/modules/stdlib/src/webpack/ReactComponents.ts";
 import { CHECK_ICON_PATH } from "../static.ts";
-import { Entity, EntityContext, EntityManager, EntityOfManager } from "../src/entity.ts";
+import { Entity, EntityContext } from "../src/entity.ts";
 import { Configlet, ConfigletManager } from "../src/configlet.ts";
 
-export const useUpdater =
-	<S,>(dispatch: React.Dispatch<React.SetStateAction<S>>) => (updater: React.SetStateAction<S>) => {
-		const updateState = React.useCallback(() => dispatch(updater), [updater]);
-		React.useEffect(updateState, [updater]);
-		return updateState;
-	};
+export const useSyncedState = <S,>(externalState: S) => {
+	const externalStateRef = React.useRef(externalState);
+	const [internalState, setInternalState] = React.useState(externalStateRef.current);
+
+	const state = externalStateRef.current !== externalState ? externalState : internalState;
+	externalStateRef.current = externalState;
+
+	return [state, setInternalState] as const;
+};
 
 export const SchemerContextModuleMenuItem = <E extends Entity<any, any>>(
 	{ entity, schemer, entities }: {
@@ -132,8 +131,7 @@ export interface EntityInfoProps<E extends typeof PaletteManager | typeof Config
 export const EntityInfo = <E extends typeof PaletteManager | typeof ConfigletManager>(
 	{ entity, entitiesUpdated, enitityManager }: EntityInfoProps<E>,
 ) => {
-	const [name, setName] = React.useState(entity.name);
-	const updateName = useUpdater(setName)(entity.name);
+	const [name, setName] = useSyncedState(entity.name);
 
 	const deleteEntity = React.useCallback(() => {
 		enitityManager.delete(entity);
