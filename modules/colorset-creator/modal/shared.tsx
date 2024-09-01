@@ -1,7 +1,7 @@
 import { Palette, PaletteManager } from "../src/palette.ts";
 import { createIconComponent } from "/modules/stdlib/lib/createIconComponent.tsx";
 import { React } from "/modules/stdlib/src/expose/React.ts";
-import { Menu, MenuItem, RightClickMenu } from "/modules/stdlib/src/webpack/ReactComponents.ts";
+import { Menu, MenuItem, RightClickMenu, Toggle } from "/modules/stdlib/src/webpack/ReactComponents.ts";
 import { classnames } from "/modules/stdlib/src/webpack/ClassNames.ts";
 import { Schemer } from "../src/schemer.ts";
 import { MenuItemSubMenu } from "/modules/stdlib/src/webpack/ReactComponents.ts";
@@ -146,7 +146,12 @@ export const EntityInfo = <E extends typeof PaletteManager | typeof ConfigletMan
 	const renameEntity = React.useCallback((name: string) => {
 		enitityManager.rename(entity, name);
 		entitiesUpdated();
-	}, [name, entity]);
+	}, [enitityManager, name, entity]);
+
+	const toggleEntity = React.useCallback(() => {
+		enitityManager.toggleActive(entity, enitityManager instanceof PaletteManager);
+		entitiesUpdated();
+	}, [enitityManager, entity]);
 
 	// const copySerializedEntity = React.useCallback(async () => {
 	// 	const serializedEntity = JSON.stringify(entity);
@@ -172,6 +177,7 @@ export const EntityInfo = <E extends typeof PaletteManager | typeof ConfigletMan
 					renameEntity(name);
 				}}
 			/>
+			<Toggle value={enitityManager.isActive(entity)} onSelected={toggleEntity} />
 			<InfoButton
 				type="button"
 				key="rename"

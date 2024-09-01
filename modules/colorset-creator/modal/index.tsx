@@ -17,10 +17,6 @@ const useNext = <T,>(options: T[]) => {
 export default function ModalContent() {
 	const [entityManager, nextEntityManager] = useNext([PaletteManager.INSTANCE, ConfigletManager.INSTANCE]);
 
-	const toggleEntity = React.useCallback((entity: Palette | Configlet) => {
-		entityManager.toggleActive(entity, entityManager instanceof PaletteManager);
-	}, [entityManager]);
-
 	const getEntities = React.useCallback(() => entityManager.getAll(), [entityManager]);
 	const getDefaultEntity = React.useCallback(() => {
 		const allActive = entityManager.getAllActive();
@@ -36,7 +32,7 @@ export default function ModalContent() {
 
 	const [entities, updateEntities] = React.useReducer(getEntities, undefined, getEntities);
 	const [_selectedEntity, selectEntity] = React.useState(getDefaultEntity);
-	const selectedEntity = !entities.includes(_selectedEntity) ? _selectedEntity : getDefaultEntity();
+	const selectedEntity = entities.includes(_selectedEntity) ? _selectedEntity : getDefaultEntity();
 
 	return (
 		<div className="palette-manager-modal flex gap-[var(--gap-primary)]">
@@ -59,6 +55,37 @@ export default function ModalContent() {
 		</div>
 	);
 }
+
+interface EntityTypeSelectorProps {
+	entityManager: InstanceType<typeof PaletteManager | typeof ConfigletManager>;
+	nextEntityManager: () => void;
+}
+const EntityTypeSelector = ({ entityManager, nextEntityManager }: EntityTypeSelectorProps) => {
+	return (
+		<div className="palette-manager-modal__entity-type-selector flex items-center justify-center bg-black rounded-full p-1">
+			<button
+				className={`px-4 py-2 rounded-full transition-colors duration-200 ${
+					entityManager === PaletteManager.INSTANCE
+						? "bg-green-500 text-white"
+						: "bg-transparent text-gray-500"
+				}`}
+				onClick={nextEntityManager}
+			>
+				Palettes
+			</button>
+			<button
+				className={`px-4 py-2 rounded-full transition-colors duration-200 ${
+					entityManager === ConfigletManager.INSTANCE
+						? "bg-blue-500 text-white"
+						: "bg-transparent text-gray-500"
+				}`}
+				onClick={nextEntityManager}
+			>
+				Configlets
+			</button>
+		</div>
+	);
+};
 
 type ToArray<T> = T extends any ? T[] : never;
 
@@ -93,9 +120,7 @@ const ModalSidebar = <E extends typeof PaletteManager | typeof ConfigletManager>
 	return (
 		<div className="palette-manager-modal__sidebar w-48 bg-neutral-900">
 			<ul className="flex flex-col">
-				<div>
-					<button onClick={nextEntityManager}>TODO: TOGGLE</button>
-				</div>
+				<EntityTypeSelector entityManager={entityManager} nextEntityManager={nextEntityManager} />
 				{searchbar}
 				<div className="palette-manager-modal__btn-new mt-1">
 					<MenuItem
