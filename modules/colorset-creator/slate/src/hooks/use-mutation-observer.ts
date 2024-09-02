@@ -1,5 +1,6 @@
 import { React } from '/modules/stdlib/src/expose/React.ts'
-const  { RefObject, useEffect, useState } = React
+const { useEffect, useState } = React
+type RefObject<T> = React.RefObject<T>
 import { useIsomorphicLayoutEffect } from './use-isomorphic-layout-effect.ts'
 
 export function useMutationObserver(

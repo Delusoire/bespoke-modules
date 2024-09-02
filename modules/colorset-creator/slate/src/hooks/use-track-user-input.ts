@@ -1,4 +1,4 @@
-import { React } from 'modules/stdlib/src/expose/React.ts'
+import { React } from '/modules/stdlib/src/expose/React.ts'
 const { useCallback, useEffect, useRef } = React
 import { ReactEditor } from '../plugin/react-editor.ts'
 import { useSlateStatic } from './use-slate-static.tsx'
