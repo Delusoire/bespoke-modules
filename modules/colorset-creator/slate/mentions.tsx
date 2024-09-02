@@ -3,7 +3,7 @@ const { Fragment, useCallback, useEffect, useMemo, useRef, useState } = React;
 import { createEditor, Descendant, Editor, Range, Transforms } from "https://esm.sh/slate";
 import { withHistory } from "https://esm.sh/slate-history";
 import { Editable, ReactEditor, Slate, useFocused, useSelected, withReact } from "https://esm.sh/slate-react";
-import * as SlateReact from "./slate-react/index.ts";
+import * as SlateReact from "https://esm.sh/slate-react";
 
 import { Portal } from "./components.tsx";
 import { MentionElement, RenderCustomElementProps } from "./custom-types.d.ts";

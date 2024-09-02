@@ -1,5 +1,5 @@
 import { BaseEditor, BaseRange, Descendant, Element, Range } from "https://esm.sh/slate";
-import { ReactEditor } from "./slate-react/index.ts";
+import { ReactEditor } from "https://esm.sh/slate-react";
 import { HistoryEditor } from "https://esm.sh/slate-history";
 
 export type BlockQuoteElement = {

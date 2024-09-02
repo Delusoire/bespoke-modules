@@ -12,7 +12,7 @@ import {
 	useSlate,
 	useSlateStatic,
 	withReact,
-} from "./slate-react/index.ts";
+} from "https://esm.sh/slate-react";
 import { withHistory } from "https://esm.sh/slate-history";
 import isHotkey from "https://esm.sh/is-hotkey";
 import { css } from "https://esm.sh/@emotion/css";
@@ -70,10 +70,6 @@ const ElementWrapper = (props: RenderElementProps) => {
 				style={{ position: "relative" }}
 				spellCheck={false}
 			>
-				<LanguageSelect
-					value={element.language}
-					onChange={(e) => setLanguage(e.target.value)}
-				/>
 				{children}
 			</div>
 		);
@@ -243,34 +239,6 @@ const useOnKeydown = (editor: Editor) => {
 	return onKeyDown;
 };
 
-const LanguageSelect = (props: JSX.IntrinsicElements["select"]) => {
-	return (
-		<select
-			data-test-id="language-select"
-			contentEditable={false}
-			className={css`
-        position: absolute;
-        right: 5px;
-        top: 5px;
-        z-index: 1;
-      `}
-			{...props}
-		>
-			<option value="css">CSS</option>
-			<option value="html">HTML</option>
-			<option value="java">Java</option>
-			<option value="javascript">JavaScript</option>
-			<option value="jsx">JSX</option>
-			<option value="markdown">Markdown</option>
-			<option value="php">PHP</option>
-			<option value="python">Python</option>
-			<option value="sql">SQL</option>
-			<option value="tsx">TSX</option>
-			<option value="typescript">TypeScript</option>
-		</select>
-	);
-};
-
 const mergeMaps = <K, V>(...maps: Map<K, V>[]) => {
 	const map = new Map<K, V>();
 
@@ -298,48 +266,40 @@ const initialValue: Element[] = [
 	},
 	{
 		type: CodeBlockType,
-		language: "jsx",
-		children: toCodeLines(`// Add the initial value.
-const initialValue = [
-  {
-    type: 'paragraph',
-    children: [{ text: 'A line of text in a paragraph.' }]
-  }
-]
+		language: "css",
+		children: toCodeLines(`
+/* Modal Styles */
 
-const App = () => {
-  const [editor] = useState(() => withReact(createEditor()))
+.MAP__modal__widget-generator__container {
+	overflow: auto !important;
+}
 
-  return (
-    <Slate editor={editor} initialValue={initialValue}>
-      <Editable />
-    </Slate>
-  )
-}`),
-	},
-	{
-		type: ParagraphType,
-		children: toChildren(
-			"If you are using TypeScript, you will also need to extend the Editor with ReactEditor and add annotations as per the documentation on TypeScript. The example below also includes the custom types required for the rest of this example.",
-		),
-	},
-	{
-		type: CodeBlockType,
-		language: "typescript",
-		children: toCodeLines(`// TypeScript users only add this code
-import { BaseEditor, Descendant } from 'slate'
-import { ReactEditor } from 'slate-react'
+.palette-manager-modal {
+	--input-bg: #202020;
+	--color-input-bg: #121212;
+	--secondary-bg: #202020;
+	--border-radius: 4px;
+	--gap-primary: 8px;
+	--gap-secondary: 12px;
+}
 
-type CustomElement = { type: 'paragraph'; children: CustomText[] }
-type CustomText = { text: string }
+.palette-manager-modal__sidebar {
+	.QZhV0hWVKlExlKr266jo {
+		width: 100%;
+	}
+}
 
-declare module 'slate' {
-  interface CustomTypes {
-    Editor: BaseEditor & ReactEditor
-    Element: CustomElement
-    Text: CustomText
-  }
-}`),
+.palette-manager-modal__entity .palette__color-set .color-set__color-input .color-input__picker {
+	&::-webkit-color-swatch-wrapper {
+		padding: 0;
+	}
+
+	&::-webkit-color-swatch {
+		border: none;
+		border-radius: 50%;
+	}
+}
+`),
 	},
 	{
 		type: ParagraphType,
