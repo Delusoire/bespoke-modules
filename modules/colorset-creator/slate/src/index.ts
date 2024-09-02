@@ -1,3 +1,5 @@
+// from https://github.com/ianstormtaylor/slate/commit/f9e83b807f4b2ae717814af5943f53f366a48fd2
+
 // Components
 export {
   Editable,
