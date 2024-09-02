@@ -1,6 +1,7 @@
+import { webpackRequire } from "/modules/stdlib/src/wpunpk.mix.ts";
 import { mapValues } from "/hooks/std/collections.ts";
 
-import { modules, require } from "/modules/stdlib/src/webpack/index.ts";
+import { modules } from "/modules/stdlib/src/webpack/index.ts";
 
 export type ColorSet = {
 	background: {
@@ -63,7 +64,7 @@ export type ColorTheme = {
 };
 
 const [PaletteModuleID] = modules.find(([, m]) => m.toString().includes('"Invalid hexadecimal color input"'))!;
-const PaletteModule = require(PaletteModuleID);
+const PaletteModule = webpackRequire(PaletteModuleID);
 const PaletteExports = Object.values(PaletteModule);
 
 export const appliedColorTheme = PaletteExports.find((e) => e?.base?.background?.base) as ColorTheme;
