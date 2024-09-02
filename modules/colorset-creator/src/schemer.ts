@@ -23,7 +23,7 @@ export class Schemer {
 
 	static get(context: PaletteContext): Palette | null;
 	static get(context: ConfigletContext): Configlet | null;
-	static get(context: EntityContext): unknown | null {
+	static get(context: EntityContext): unknown {
 		const module = context.getModuleInstance();
 		if (!module) {
 			return null;
