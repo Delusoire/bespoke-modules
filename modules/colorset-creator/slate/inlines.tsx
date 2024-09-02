@@ -2,7 +2,7 @@ import { React } from "/modules/stdlib/src/expose/React.ts";
 const { useMemo } = React;
 import { isKeyHotkey } from "https://esm.sh/is-hotkey";
 import { css } from "https://esm.sh/@emotion/css";
-import { Editable, useSelected, useSlate, withReact } from "https://esm.sh/slate-react";
+import { Editable, useSelected, useSlate, withReact } from "./slate-react/index.ts";
 import * as SlateReact from "https://esm.sh/slate-react";
 import {
 	createEditor,

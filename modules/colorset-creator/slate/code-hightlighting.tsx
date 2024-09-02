@@ -12,7 +12,7 @@ import {
 	useSlate,
 	useSlateStatic,
 	withReact,
-} from "https://esm.sh/slate-react";
+} from "./slate-react/index.ts";
 import { withHistory } from "https://esm.sh/slate-history";
 import isHotkey from "https://esm.sh/is-hotkey";
 import { css } from "https://esm.sh/@emotion/css";
