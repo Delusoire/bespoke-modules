@@ -35,7 +35,7 @@ export default function ModalContent() {
 	const selectedEntity = entities.includes(_selectedEntity) ? _selectedEntity : getDefaultEntity();
 
 	return (
-		<div className="palette-manager-modal flex gap-[var(--gap-primary)]">
+		<div className="palette-manager-modal flex gap-[var(--gap-primary)] h-[66vh]">
 			<ModalSidebar
 				entities={entities}
 				updatePalettes={updateEntities}
@@ -119,7 +119,7 @@ const ModalSidebar = <E extends typeof PaletteManager | typeof ConfigletManager>
 
 	return (
 		<div className="palette-manager-modal__sidebar w-48 bg-neutral-900">
-			<ul className="flex flex-col">
+			<ul className="flex flex-col h-full">
 				<EntityTypeSelector entityManager={entityManager} nextEntityManager={nextEntityManager} />
 				{searchbar}
 				<div className="palette-manager-modal__btn-new mt-1">
@@ -157,18 +157,20 @@ export const EntityComponent = <E extends typeof PaletteManager | typeof Configl
 	{ entity, entitiesUpdated, enitityManager }: EntityComponentProps<E>,
 ) => {
 	return (
-		<div className="palette-manager-modal__entity flex-grow h-[45vh] gap-[var(--gap-primary)] flex flex-col text-sm bg-neutral-900 rounded-[var(--border-radius)]">
+		<div className="palette-manager-modal__entity flex-grow gap-[var(--gap-primary)] flex flex-col text-sm bg-neutral-900 rounded-[var(--border-radius)]">
 			<EntityInfo
 				entity={entity}
 				entitiesUpdated={entitiesUpdated}
 				enitityManager={enitityManager}
 			/>
-			{enitityManager instanceof PaletteManager && (
-				<PaletteColorSets palette={entity as Palette} paletteManager={enitityManager} />
-			)}
-			{enitityManager instanceof ConfigletManager && (
-				<ConfigletSlateDocument configlet={entity as Configlet} configletManager={enitityManager} />
-			)}
+			<div className="overflow-y-auto h-full">
+				{enitityManager instanceof PaletteManager && (
+					<PaletteColorSets palette={entity as Palette} paletteManager={enitityManager} />
+				)}
+				{enitityManager instanceof ConfigletManager && (
+					<ConfigletSlateDocument configlet={entity as Configlet} configletManager={enitityManager} />
+				)}
+			</div>
 		</div>
 	);
 };

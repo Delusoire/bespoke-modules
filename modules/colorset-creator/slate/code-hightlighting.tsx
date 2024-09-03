@@ -33,7 +33,6 @@ const CodeHighlightingExample = () => {
 
 	return (
 		<Slate editor={editor} initialValue={initialValue}>
-			<ExampleToolbar />
 			<SetNodeToDecorations />
 			<Editable
 				decorate={decorate}
@@ -88,46 +87,6 @@ const ElementWrapper = (props: RenderElementProps) => {
 		<Tag {...attributes} style={{ position: "relative" }}>
 			{children}
 		</Tag>
-	);
-};
-
-const ExampleToolbar = () => {
-	return (
-		<Toolbar>
-			<CodeBlockButton />
-		</Toolbar>
-	);
-};
-
-const CodeBlockButton = () => {
-	const editor = useSlateStatic();
-	const handleClick = () => {
-		Transforms.wrapNodes(
-			editor,
-			{ type: CodeBlockType, language: "html", children: [] },
-			{
-				match: (n) => Element.isElement(n) && n.type === ParagraphType,
-				split: true,
-			},
-		);
-		Transforms.setNodes<CodeLineElement>(
-			editor,
-			{ type: CodeLineType },
-			{ match: (n) => Element.isElement(n) && n.type === ParagraphType },
-		);
-	};
-
-	return (
-		<Button
-			data-test-id="code-block-button"
-			active
-			onMouseDown={(event: React.MouseEvent) => {
-				event.preventDefault();
-				handleClick();
-			}}
-		>
-			<Icon>code</Icon>
-		</Button>
 	);
 };
 

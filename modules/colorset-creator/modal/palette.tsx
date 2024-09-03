@@ -11,7 +11,7 @@ export interface PaletteColorSetsProps {
 }
 export const PaletteColorSets = ({ palette, paletteManager }: PaletteColorSetsProps) => {
 	return (
-		<div className="palette__color-sets bg-[var(--secondary-bg)] p-[var(--gap-primary)] rounded-[var(--border-radius)] flex flex-col flex-nowrap overflow-y-auto h-[calc(100%-40px)] gap-y-1 gap-x-[var(--gap-secondary)]">
+		<div className="palette__color-sets bg-[var(--secondary-bg)] p-[var(--gap-primary)] rounded-[var(--border-radius)] flex flex-col flex-nowrap overflow-y-auto gap-y-1 gap-x-[var(--gap-secondary)]">
 			{Object.entries(palette.data.getColors()).map(([set, colors]) => (
 				<PaletteColorSet
 					key={set}
