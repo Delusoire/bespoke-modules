@@ -1,15 +1,18 @@
-import { mapValues } from "/hooks/std/collections.ts";
+import { deepMerge, mapValues } from "/hooks/std/collections.ts";
 
 import { Color } from "/modules/stdlib/src/webpack/misc.xpui.ts";
 
 import {
 	appliedColorTheme,
-	type ColorSets,
+	type ColorSet,
+	colorSetSchemeToCss,
 	type ColorTheme,
-	defaultColorTheme,
-	generateColorSet,
-	toCssAttributes,
-	toCssClassName,
+	defaultThemes,
+	FlatColorScheme,
+	FlatColorTheme,
+	flattenColorScheme,
+	nestColorScheme,
+	ThemeType,
 } from "./webpack.ts";
 import { EntityManager, Serializable, serializableEntityMixin, SerializedEntity } from "./entity.ts";
 import { storage } from "../preload.ts";
@@ -18,63 +21,76 @@ import { PaletteContext, Schemer } from "./schemer.ts";
 const LS_ACTIVE_PALETTE = "active_palette";
 const LS_PALETTES = "palettes";
 
-type TwoUplet<T> = [T, T];
-
-type SerializedThemeData = Record<ColorSets, TwoUplet<{}>>;
+export type DarkLightPair<T> = { dark: T; light: T };
+type SerializedColor = {};
+type SerializedThemeData = ColorTheme<DarkLightPair<SerializedColor>>;
 export class Theme implements Serializable<SerializedThemeData> {
-	constructor(private theme: { [key in ColorSets]: TwoUplet<Color> }) {}
+	constructor(private theme: FlatColorTheme<DarkLightPair<Color>>) {}
 
 	getColors() {
 		return this.theme;
 	}
 
-	setColor(set: ColorSets, index: number, color: Color) {
-		this.theme[set] = this.theme[set].toSpliced(index, 1, color) as TwoUplet<Color>;
+	setColor(type: ThemeType, set: ColorSet, attribute: keyof FlatColorScheme, color: Color) {
+		this.theme[set][attribute][type] = color;
 	}
 
-	getColorTheme(): ColorTheme {
-		return mapValues(this.theme, (colors) => {
-			const colorsHex = colors.map((c) => c.toCSS(Color.Format.HEX)) as TwoUplet<string>;
-			const paletteObj = generateColorSet(...colorsHex);
-			return paletteObj;
-		});
+	getColorTheme(): DarkLightPair<ColorTheme> {
+		const themes = {
+			dark: {} as ColorTheme,
+			light: {} as ColorTheme,
+		};
+
+		for (const [set, scheme] of Object.entries(this.theme)) {
+			const flatColorSchemes = {
+				dark: {} as FlatColorScheme<Color>,
+				light: {} as FlatColorScheme<Color>,
+			};
+
+			for (const [attribute, colorPair] of Object.entries(scheme)) {
+				for (const [type, color] of Object.entries(colorPair)) {
+					flatColorSchemes[type as ThemeType][attribute as keyof FlatColorScheme] = color.toCSS(
+						Color.Format.HEXA,
+					);
+				}
+			}
+
+			for (const [type, colorTheme] of Object.entries(themes)) {
+				colorTheme[set as ColorSet] = nestColorScheme<Color>(flatColorSchemes[type as ThemeType]);
+			}
+		}
+
+		return themes;
 	}
 
 	getCSS() {
-		const encoreDarkThemeSelector = ".encore-dark-theme";
-		return Object.entries(this.getColorTheme()).map(([set, paletteObj]) => {
-			const setClassName = toCssClassName(set);
-			const setSelector = `${encoreDarkThemeSelector} .${setClassName}`;
-			const selectors = [setSelector];
-			if (set === "base") {
-				selectors.unshift(encoreDarkThemeSelector);
-			}
+		const themes = this.getColorTheme();
 
-			const attributes = toCssAttributes(paletteObj);
-
-			return selectors.join(", ") + " {\n" +
-				attributes.join("") +
-				"\n}\n" +
-				"\n" +
-				selectors.map((s) => s + ">*").join(", ") + " {\n" +
-				"\n      --parents-essential-base: " + paletteObj.essential.base + ";\n    " +
-				"\n}\n" +
-				"\n";
+		return Object.entries(themes).map(([type, theme]) => {
+			return Object.entries(theme).map(([set, scheme]) =>
+				colorSetSchemeToCss(type as ThemeType, set as ColorSet, scheme)
+			);
 		}).join("\n");
 	}
 
 	toJSON(): SerializedThemeData {
-		const theme = mapValues(
+		return mapValues(
 			this.theme,
-			(colors) => colors.map((color) => Object.assign({}, color)) as TwoUplet<string>,
+			(scheme) =>
+				nestColorScheme(
+					mapValues(scheme, (colorPair) => mapValues(colorPair, (color) => Object.assign({}, color))),
+				),
 		);
-		return theme;
 	}
 
 	static fromJSON(json: SerializedThemeData) {
 		const theme = mapValues(
 			json,
-			(colors) => colors.map((color) => Color.parse(JSON.stringify(color))) as TwoUplet<Color>,
+			(scheme) =>
+				mapValues(
+					flattenColorScheme(scheme),
+					(colorPair) => mapValues(colorPair, (color) => Color.parse(JSON.stringify(color)) as Color),
+				),
 		);
 		return new Theme(theme);
 	}
@@ -84,9 +100,21 @@ export class Theme implements Serializable<SerializedThemeData> {
 	}
 
 	static createDefault() {
-		const colors = ["#000000", "#ffffff"].map((c) => Color.fromHex(c)) as TwoUplet<string>;
-		const theme = mapValues(defaultColorTheme, () => colors);
-		return new Theme(theme);
+		const themes = {
+			dark: {} as FlatColorTheme<{ dark: Color }>,
+			light: {} as FlatColorTheme<{ light: Color }>,
+		};
+
+		for (const [type, theme] of Object.entries(defaultThemes)) {
+			for (const [set, scheme] of Object.entries(theme)) {
+				themes[type as ThemeType][set as ColorSet] = mapValues(
+					scheme,
+					(color) => ({ [type]: Color.fromCSS(color) as Color }),
+				) as FlatColorScheme<DarkLightPair<Color>>;
+			}
+		}
+
+		return new Theme(deepMerge(themes.dark, themes.light));
 	}
 }
 
@@ -125,15 +153,15 @@ export class PaletteManager extends EntityManager<Palette> {
 
 		if (active && active.data) {
 			css = active.data.getCSS();
-			colorTheme = active.data.getColorTheme();
+			colorTheme = active.data.getColorTheme().light;
 		} else {
 			css = "";
-			colorTheme = defaultColorTheme;
+			colorTheme = mapValues(defaultThemes.light, (scheme) => nestColorScheme(scheme));
 		}
 
 		await this.stylesheet.replace(css);
 		for (const [set, paletteObj] of Object.entries(colorTheme)) {
-			Object.assign(appliedColorTheme[set as ColorSets], paletteObj);
+			Object.assign(appliedColorTheme[set as ColorSet], paletteObj);
 		}
 
 		this.saveActive();

@@ -10,6 +10,9 @@
 }
 
 .palette-manager-modal {
+	--sidebar-width: 12rem;
+	--sidebar-gap: 12px;
+
 	--input-bg: #202020;
 	--color-input-bg: #121212;
 	--secondary-bg: #202020;
@@ -24,7 +27,7 @@
 	}
 }
 
-.palette-manager-modal__entity .palette__color-set .color-set__color-input .color-input__picker {
+.palette-manager-modal__entity .palette__color-attribute .color-set__color-input .color-input__picker {
 	&::-webkit-color-swatch-wrapper {
 		padding: 0;
 	}

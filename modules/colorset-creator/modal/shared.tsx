@@ -9,14 +9,26 @@ import { CHECK_ICON_PATH } from "../static.ts";
 import { Entity, EntityContext } from "../src/entity.ts";
 import { Configlet, ConfigletManager } from "../src/configlet.ts";
 
-export const useSyncedState = <S,>(externalState: S) => {
+export const useSyncedState = <S,>(externalState: S, onExternalOverride?: (newState: S) => void) => {
+	const [, rerender] = React.useReducer((n) => n + 1, 0);
+
 	const externalStateRef = React.useRef(externalState);
-	const [internalState, setInternalState] = React.useState(externalStateRef.current);
+	const internalStateRef = React.useRef(externalStateRef.current);
 
-	const state = externalStateRef.current !== externalState ? externalState : internalState;
-	externalStateRef.current = externalState;
+	const setInternalState = React.useCallback((newInternalState: S) => {
+		if (internalStateRef.current === newInternalState) {
+			return;
+		}
+		internalStateRef.current = newInternalState;
+		rerender();
+	}, []);
 
-	return [state, setInternalState] as const;
+	if (externalStateRef.current !== externalState) {
+		externalStateRef.current = internalStateRef.current = externalState;
+		onExternalOverride?.(externalState);
+	}
+
+	return [internalStateRef.current, setInternalState] as const;
 };
 
 export const SchemerContextModuleMenuItem = <E extends Entity<any, any>>(
@@ -72,10 +84,11 @@ export const SchemerContextIdMenuItem = (
 
 export interface SchemerContextMenuProps {
 	isSelected: boolean;
+	isActive: boolean;
 	entity: Palette | Configlet;
 	selectEntity: (entity: Palette | Configlet) => void;
 }
-export const SchemerContextMenu = ({ entity, isSelected, selectEntity }: SchemerContextMenuProps) => {
+export const SchemerContextMenu = ({ entity, isActive, isSelected, selectEntity }: SchemerContextMenuProps) => {
 	const onSelect = React.useCallback(() => {
 		selectEntity(entity);
 	}, [entity]);
@@ -103,7 +116,11 @@ export const SchemerContextMenu = ({ entity, isSelected, selectEntity }: Schemer
 	return (
 		<RightClickMenu menu={menu}>
 			<MenuItem
-				trailingIcon={isSelected && createIconComponent({ icon: CHECK_ICON_PATH })}
+				className={classnames(
+					"mWj8N7D_OlsbDgtQx5GW",
+					isSelected && "bg-[var(--background-tinted-highlight)]",
+				)}
+				trailingIcon={isActive && createIconComponent({ icon: CHECK_ICON_PATH })}
 				onClick={onSelect}
 			>
 				{entity.name}
@@ -127,7 +144,6 @@ export interface EntityInfoProps<E extends typeof PaletteManager | typeof Config
 	entitiesUpdated: () => void;
 	enitityManager: InstanceType<E>;
 }
-
 export const EntityInfo = <E extends typeof PaletteManager | typeof ConfigletManager>(
 	{ entity, entitiesUpdated, enitityManager }: EntityInfoProps<E>,
 ) => {
@@ -163,10 +179,10 @@ export const EntityInfo = <E extends typeof PaletteManager | typeof ConfigletMan
 		const copy = entityCtor.create(name, entity.data.copy(), entity.context);
 		enitityManager.add(copy);
 		entitiesUpdated();
-	}, [name, entity.data, entity.context]);
+	}, [name, entity.constructor, entity.data, entity.context]);
 
 	return (
-		<div className="palette__info flex gap-[var(--gap-primary)]">
+		<div className="palette__info flex gap-[var(--gap-primary)] text-sm">
 			<input
 				className="palette__name bg-[var(--input-bg)] p-2 border-none rounded-[var(--border-radius)] h-8 flex-grow text-base text-white"
 				placeholder="Custom Palette"

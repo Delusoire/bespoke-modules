@@ -18,8 +18,6 @@ import isHotkey from "https://esm.sh/is-hotkey";
 import { css } from "https://esm.sh/@emotion/css";
 import { CodeBlockElement } from "./custom-types.d.ts";
 import { normalizeTokens } from "./normalize-tokens.ts";
-import { Button, Icon, Toolbar } from "./components.tsx";
-import { CodeLineElement } from "./custom-types.d.ts";
 
 const ParagraphType = "paragraph";
 const CodeBlockType = "code-block";

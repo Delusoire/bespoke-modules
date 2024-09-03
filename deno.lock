@@ -4,9 +4,11 @@
     "specifiers": {
       "jsr:@delu/postcss-plugin-remapper@0.1.1": "jsr:@delu/postcss-plugin-remapper@0.1.1",
       "jsr:@delu/tailor": "jsr:@delu/tailor@1.1.0",
+      "jsr:@std/assert@1.0.3": "jsr:@std/assert@1.0.3",
       "jsr:@std/collections@1.0.5": "jsr:@std/collections@1.0.5",
       "jsr:@std/fs": "jsr:@std/fs@1.0.0",
       "jsr:@std/fs@1.0.0-rc.2": "jsr:@std/fs@1.0.0-rc.2",
+      "jsr:@std/internal@^1.0.2": "jsr:@std/internal@1.0.2",
       "jsr:@std/path@1.0.0-rc.2": "jsr:@std/path@1.0.0-rc.2",
       "jsr:@std/semver@1.0.2": "jsr:@std/semver@1.0.2",
       "jsr:@std/text@1.0.4": "jsr:@std/text@1.0.4",
@@ -19,6 +21,8 @@
       "npm:@types/node": "npm:@types/node@18.16.19",
       "npm:@types/react": "npm:@types/react@18.3.3",
       "npm:@types/react-dom": "npm:@types/react-dom@18.3.0",
+      "npm:@types/react-dom@18.3.0": "npm:@types/react-dom@18.3.0",
+      "npm:@types/react@18.3.1": "npm:@types/react@18.3.1",
       "npm:@types/redux": "npm:@types/redux@3.6.0",
       "npm:autoprefixer@10.4.19": "npm:autoprefixer@10.4.19_postcss@8.4.38",
       "npm:notistack": "npm:notistack@3.0.1_react@18.3.1_react-dom@18.3.1__react@18.3.1",
@@ -27,6 +31,7 @@
       "npm:postcss-import@16.1.0": "npm:postcss-import@16.1.0_postcss@8.4.38",
       "npm:postcss-selector-parser@6.1.0": "npm:postcss-selector-parser@6.1.0",
       "npm:postcss@8.4.38": "npm:postcss@8.4.38",
+      "npm:react-colorful": "npm:react-colorful@5.6.1_react@18.3.1_react-dom@18.3.1__react@18.3.1",
       "npm:react-flip-toolkit": "npm:react-flip-toolkit@7.2.4_react@18.3.1_react-dom@18.3.1__react@18.3.1",
       "npm:tailwindcss@3.4.3": "npm:tailwindcss@3.4.3_postcss@8.4.38",
       "npm:tippy.js": "npm:tippy.js@6.3.7",
@@ -56,6 +61,12 @@
           "npm:tailwindcss@3.4.3"
         ]
       },
+      "@std/assert@1.0.3": {
+        "integrity": "b0d03ce1ced880df67132eea140623010d415848df66f6aa5df76507ca7c26d8",
+        "dependencies": [
+          "jsr:@std/internal@^1.0.2"
+        ]
+      },
       "@std/collections@1.0.5": {
         "integrity": "ab9eac23b57a0c0b89ba45134e61561f69f3d001f37235a248ed40be260c0c10"
       },
@@ -67,6 +78,9 @@
         "dependencies": [
           "jsr:@std/path@1.0.0-rc.2"
         ]
+      },
+      "@std/internal@1.0.2": {
+        "integrity": "f4cabe2021352e8bfc24e6569700df87bf070914fc38d4b23eddd20108ac4495"
       },
       "@std/path@1.0.0-rc.2": {
         "integrity": "39f20d37a44d1867abac8d91c169359ea6e942237a45a99ee1e091b32b921c7d"
@@ -455,6 +469,13 @@
         "integrity": "sha512-EhwApuTmMBmXuFOikhQLIBUn6uFg81SwLMOAUgodJF14SOBOCMdU04gDoYi0WOJJHD144TL32z4yDqCW3dnkQg==",
         "dependencies": {
           "@types/react": "@types/react@18.3.3"
+        }
+      },
+      "@types/react@18.3.1": {
+        "integrity": "sha512-V0kuGBX3+prX+DQ/7r2qsv1NsdfnCLnTgnRJ1pYnxykBhGMz+qj+box5lq7XsO5mtZsBqpjwwTu/7wszPfMBcw==",
+        "dependencies": {
+          "@types/prop-types": "@types/prop-types@15.7.12",
+          "csstype": "csstype@3.1.3"
         }
       },
       "@types/react@18.3.3": {
@@ -1028,6 +1049,13 @@
         "integrity": "sha512-NuaNSa6flKT5JaSYQzJok04JzTL1CA6aGhv5rfLW3PgqA+M2ChpZQnAC8h8i4ZFkBS8X5RqkDBHA7r4hej3K9A==",
         "dependencies": {}
       },
+      "react-colorful@5.6.1_react@18.3.1_react-dom@18.3.1__react@18.3.1": {
+        "integrity": "sha512-1exovf0uGTGyq5mXQT0zgQ80uvj2PCwvF8zY1RN9/vbJVSjSo3fsB/4L3ObbF7u70NduSiK4xu4Y6q1MHoUGEw==",
+        "dependencies": {
+          "react": "react@18.3.1",
+          "react-dom": "react-dom@18.3.1_react@18.3.1"
+        }
+      },
       "react-dom@18.3.1_react@18.3.1": {
         "integrity": "sha512-5m4nQKp+rZRb09LNH59GM4BxTh9251/ylbKIbpe7TpGxfJ+9kv6BLkLBXIjjspbgbnIBNqlI23tRnTWT0snUIw==",
         "dependencies": {
@@ -1287,13 +1315,23 @@
     "https://esm.sh/lit/directives/map.js": "https://esm.sh/lit@3.2.0/directives/map.js",
     "https://esm.sh/lit/directives/when.js": "https://esm.sh/lit@3.2.0/directives/when.js",
     "https://esm.sh/lodash": "https://esm.sh/lodash@4.17.21",
+    "https://esm.sh/lodash/clamp": "https://esm.sh/lodash@4.17.21/clamp",
     "https://esm.sh/lodash/fp": "https://esm.sh/lodash@4.17.21/fp",
     "https://esm.sh/lodash/fp/capitalize": "https://esm.sh/lodash@4.17.21/fp/capitalize",
+    "https://esm.sh/lodash/fp/mean": "https://esm.sh/lodash@4.17.21/fp/mean",
     "https://esm.sh/lodash/fp/shuffle": "https://esm.sh/lodash@4.17.21/fp/shuffle",
+    "https://esm.sh/lodash/get": "https://esm.sh/lodash@4.17.21/get",
     "https://esm.sh/lodash/kebabCase": "https://esm.sh/lodash@4.17.21/kebabCase",
+    "https://esm.sh/lodash/range": "https://esm.sh/lodash@4.17.21/range",
+    "https://esm.sh/lodash/sortedLastIndex": "https://esm.sh/lodash@4.17.21/sortedLastIndex",
+    "https://esm.sh/lodash/sortedLastIndexBy": "https://esm.sh/lodash@4.17.21/sortedLastIndexBy",
     "https://esm.sh/lodash/startCase": "https://esm.sh/lodash@4.17.21/startCase",
+    "https://esm.sh/lodash/uniq": "https://esm.sh/lodash@4.17.21/uniq",
     "https://esm.sh/octokit": "https://esm.sh/octokit@4.0.2",
     "https://esm.sh/prismjs/components/prism-css": "https://esm.sh/prismjs@1.29.0/components/prism-css",
+    "https://esm.sh/react-color-palette?deps=react@18.3.1,react-dom@18.3.1": "https://esm.sh/react-color-palette@7.2.2?deps=react@18.3.1,react-dom@18.3.1",
+    "https://esm.sh/react-colorful": "https://esm.sh/react-colorful@5.6.1",
+    "https://esm.sh/react-colorful?deps=react@18.3.1,react-dom@18.3.1": "https://esm.sh/react-colorful@5.6.1?deps=react@18.3.1,react-dom@18.3.1",
     "https://esm.sh/react-i18next": "https://esm.sh/react-i18next@15.0.0",
     "https://esm.sh/react-icons/fa": "https://esm.sh/react-icons@5.2.1/fa",
     "https://esm.sh/react-icons/md": "https://esm.sh/react-icons@5.2.1/md",
@@ -1301,15 +1339,25 @@
     "https://esm.sh/slate": "https://esm.sh/slate@0.103.0",
     "https://esm.sh/slate-history": "https://esm.sh/slate-history@0.109.0",
     "https://esm.sh/slate-react": "https://esm.sh/slate-react@0.109.0",
+    "https://esm.sh/v128/@types/react@~18.3/index.d.ts": "https://esm.sh/v128/@types/react@18.2.38/index.d.ts",
     "https://esm.sh/v135/@adaskothebeast/splines/es2022/splines.mjs": "https://esm.sh/v135/@adaskothebeast/splines@4.0.0/es2022/splines.mjs",
     "https://esm.sh/v135/@types/lodash@4.17.7/index": "https://esm.sh/v135/@types/lodash@4.17.7/index~.d.ts",
+    "https://esm.sh/v135/@types/lodash@~4.17/clamp~.d.ts": "https://esm.sh/v135/@types/lodash@4.17.7/clamp~.d.ts",
     "https://esm.sh/v135/@types/lodash@~4.17/fp/capitalize~.d.ts": "https://esm.sh/v135/@types/lodash@4.17.7/fp/capitalize~.d.ts",
+    "https://esm.sh/v135/@types/lodash@~4.17/fp/mean~.d.ts": "https://esm.sh/v135/@types/lodash@4.17.7/fp/mean~.d.ts",
     "https://esm.sh/v135/@types/lodash@~4.17/fp/shuffle~.d.ts": "https://esm.sh/v135/@types/lodash@4.17.7/fp/shuffle~.d.ts",
     "https://esm.sh/v135/@types/lodash@~4.17/fp~.d.ts": "https://esm.sh/v135/@types/lodash@4.17.7/fp~.d.ts",
+    "https://esm.sh/v135/@types/lodash@~4.17/get~.d.ts": "https://esm.sh/v135/@types/lodash@4.17.7/get~.d.ts",
     "https://esm.sh/v135/@types/lodash@~4.17/index.d.ts": "https://esm.sh/v135/@types/lodash@4.17.7/index.d.ts",
     "https://esm.sh/v135/@types/lodash@~4.17/kebabCase~.d.ts": "https://esm.sh/v135/@types/lodash@4.17.7/kebabCase~.d.ts",
+    "https://esm.sh/v135/@types/lodash@~4.17/range~.d.ts": "https://esm.sh/v135/@types/lodash@4.17.7/range~.d.ts",
+    "https://esm.sh/v135/@types/lodash@~4.17/sortedLastIndexBy~.d.ts": "https://esm.sh/v135/@types/lodash@4.17.7/sortedLastIndexBy~.d.ts",
+    "https://esm.sh/v135/@types/lodash@~4.17/sortedLastIndex~.d.ts": "https://esm.sh/v135/@types/lodash@4.17.7/sortedLastIndex~.d.ts",
     "https://esm.sh/v135/@types/lodash@~4.17/startCase~.d.ts": "https://esm.sh/v135/@types/lodash@4.17.7/startCase~.d.ts",
+    "https://esm.sh/v135/@types/lodash@~4.17/uniq~.d.ts": "https://esm.sh/v135/@types/lodash@4.17.7/uniq~.d.ts",
     "https://esm.sh/v135/@types/prismjs@~1/components/prism-css~.d.ts": "https://esm.sh/v135/@types/prismjs@1.26.4/components/prism-css~.d.ts",
+    "https://esm.sh/v135/@types/react-dom@~18.3/index.d.ts": "https://esm.sh/v135/@types/react-dom@18.3.0/index.d.ts",
+    "https://esm.sh/v135/@types/react-dom@~18.3/server~.d.ts": "https://esm.sh/v135/@types/react-dom@18.3.0/server~.d.ts",
     "https://esm.sh/v135/i18next": "https://esm.sh/v135/i18next@23.12.2",
     "https://esm.sh/youtubei.js/web.bundle.min": "https://esm.sh/youtubei.js@10.3.0/web.bundle.min"
   },
@@ -1328,20 +1376,34 @@
     "https://esm.sh/lit@3.2.0/directives/map.js": "e5fa605b64d05c8d2fd52ec7a77f17c5c4396e031b843fc12cb62fea1e99eebb",
     "https://esm.sh/lit@3.2.0/directives/when.js": "49998048ec6d7718ed6f14bb056bb67ff046efb532bd5638347489dde8f1705a",
     "https://esm.sh/lodash@4.17.21": "cf3544d5159a7648b25ad21fcf8dbf08a1fbfb1415b70b4163da646ef83eec4a",
+    "https://esm.sh/lodash@4.17.21/clamp": "3915570246dba4c8f0c8ddc5b26c01d8f65c19a2832073d9807031102e179c57",
     "https://esm.sh/lodash@4.17.21/fp": "90fdb9e2b87c1d4969ef38eebbfbb827b8d6d81d2ef6f2d3290623f044ca1bef",
     "https://esm.sh/lodash@4.17.21/fp/capitalize": "89a0c6c621ede68de355d2b5ad7968ba2f5ceb4f5e9f0c8adbef56e65d241f0d",
+    "https://esm.sh/lodash@4.17.21/fp/mean": "5417eb75764fc0995f82722142730dd909f0b95cab61529888a4b3028350b332",
     "https://esm.sh/lodash@4.17.21/fp/shuffle": "b70aac380a1af1eb664f541b144ed920a133bc12256a99a8483cd1303c1b6c3a",
+    "https://esm.sh/lodash@4.17.21/get": "fc7fd6c6794aec55b195450ede6331c06b791ea1672180dc3e50c5a637120fa2",
     "https://esm.sh/lodash@4.17.21/kebabCase": "96a29a90995f3a2fda0c8d8e7f54181df306709e04f376d29244bb4cc1ed6372",
+    "https://esm.sh/lodash@4.17.21/range": "b1b92d46a74240e74975349acda350c2e385c111f4a07b952eebe5109bda6dec",
+    "https://esm.sh/lodash@4.17.21/sortedLastIndex": "d166f1190aa74aa1635a7b3446ff07bf63c1335ee6e89063e4e9de17ec3c9c90",
+    "https://esm.sh/lodash@4.17.21/sortedLastIndexBy": "50bc043440ce2009907943777343f060504ee2a9809de267573a363f142ba994",
     "https://esm.sh/lodash@4.17.21/startCase": "87777677fc334fac373c669600d587ed60c5421d225f100aa01c82a1c967967e",
+    "https://esm.sh/lodash@4.17.21/uniq": "4644cafb068f1d6512dfa2bd2b8b581eff84f9b04c284590660a665e33b8f13e",
     "https://esm.sh/octokit@4.0.2": "62b38bff6663e273c6fd6b2fac4eac95343aec045ee89c94b07db8ad9f71baba",
     "https://esm.sh/prismjs@1.29.0/components/prism-css": "8dece69fd3672eb3ff412a003ccc6402822f2fe4fc8ca015a85d3b6e82ad8369",
+    "https://esm.sh/react-color-palette@7.2.2?deps=react@18.3.1,react-dom@18.3.1": "86c84e5b9ccd0cb29a0ce929ef8f1ffc0ad75cad565c93f6d921bafa1404d390",
+    "https://esm.sh/react-colorful@5.6.1": "44b5d30996953860fb75be08bbf49283fd976e439b646a46f58b15c3d7719e7f",
+    "https://esm.sh/react-colorful@5.6.1?deps=react@18.3.1,react-dom@18.3.1": "2dc4b00dd6dbedadc66c0915365b1b277ab602f7b97788da7d6150d733a21208",
+    "https://esm.sh/react-dom@18.3.1": "8ce1b3c896918d0e6ccbe49775ca04866aba2fe0e8d2728bdbeb91faf60779b7",
+    "https://esm.sh/react-dom@18.3.1/server": "90e374c5323303d5315c780b19e5d6297ec5a569f9cee1df28ee1030dd23af9c",
     "https://esm.sh/react-i18next@15.0.0": "eeac47d3e5ba2185961d8a8783680d8efca71c69d10de5595e94019a825af179",
     "https://esm.sh/react-icons@5.2.1/fa": "33b3066f3268e892bb8e8e73974441d5092f666e4c6def693315081d798f9158",
     "https://esm.sh/react-icons@5.2.1/md": "7f6b6efd63b70ec3958137a3fe45ade34db3f2d7c2a6786c4bbc248308ad3b0e",
+    "https://esm.sh/react@18.3.1": "52480d4c00855e4f76843caa4f2818eb001671523740cbf064cbd108721c29c8",
     "https://esm.sh/rxjs@7.8.1": "68e394db3f3b90054f22fe3f20c4d7359c989b282246a66ea0372d652912e244",
     "https://esm.sh/slate-history@0.109.0": "04dcaaeacc8911add41da2f941d133f370d156a4c46367523c924adad65d26d2",
     "https://esm.sh/slate-react@0.109.0": "354a35bbd231a9ec406a137f6d1fac5a8b7c6cf64010d87807979d97487ffe2c",
     "https://esm.sh/slate@0.103.0": "f800c48fefccf775c9ee925ce2491e12702240d1a0f61b3ebd246b22d13b7045",
+    "https://esm.sh/stable/react@18.2.0/denonext/react.mjs": "3c4f23bcfc53b256fcfaf6f834fa9f584c3bb7be667b2682c6cb6ba8ef88f8e6",
     "https://esm.sh/stable/react@18.3.1/denonext/react.mjs": "fc048ffc55366baf7669519127d186761db72046e2bebf35fe8d0de3964defa3",
     "https://esm.sh/v135/@adaskothebeast/splines@4.0.0/es2022/splines.mjs": "535a1f76770a6e7ac5b760b4d689cd339fe4050b98ade0a36b5d0df451bee5f1",
     "https://esm.sh/v135/@babel/runtime@7.23.4/denonext/helpers/esm/arrayLikeToArray.js": "b40680b69c363126cc39d30325da513f5a53afcac305bcabf80babb4cc5cc2b1",
@@ -1459,18 +1521,29 @@
     "https://esm.sh/v135/lit@3.2.0/denonext/directives/map.js": "b1b9f0cc220c19f3eac5aad674b3c86eb67c25b7313b5590c8e441b6fb963975",
     "https://esm.sh/v135/lit@3.2.0/denonext/directives/when.js": "c964069b4a42ee99f63b2babae2cafb2f8df60987362d47fcf3462ed919bfe4b",
     "https://esm.sh/v135/lit@3.2.0/denonext/lit.mjs": "0f9ffd0e0241e2b9f760b2054314192236903a2669c5832c207ec4b7d005040b",
+    "https://esm.sh/v135/lodash@4.17.21/denonext/clamp.js": "8e971d294849fb45b989d3ce791a917ef3219ea91658388005aed043950415e2",
     "https://esm.sh/v135/lodash@4.17.21/denonext/debounce.js": "167486a3b0fd36312c55cdbcc76f88fbad7510771ad9df817192f9188559d506",
     "https://esm.sh/v135/lodash@4.17.21/denonext/fp.js": "39df55598ef55ae77ceb55776a372f102565783f8d6e5e329030c4d332c11a5f",
     "https://esm.sh/v135/lodash@4.17.21/denonext/fp/capitalize.js": "3e560c87c4b8fd836a6fb548829730322da83786f34ff2fab6d27ab43faec85d",
+    "https://esm.sh/v135/lodash@4.17.21/denonext/fp/mean.js": "d09b6d88e3a07a6c1301cc020c9aa6109160ce04278e8b7d7795946a3d572d67",
     "https://esm.sh/v135/lodash@4.17.21/denonext/fp/shuffle.js": "75eed3452343e8249d1fec23dc6ea8a917857ba94edd92f97fc41d3225deff9c",
+    "https://esm.sh/v135/lodash@4.17.21/denonext/get.js": "4f79a0f011051cc6a0625674c23ebb07e50d4a17172006efbecf256764c1f9e0",
     "https://esm.sh/v135/lodash@4.17.21/denonext/kebabCase.js": "dab012263b4e0922e3eafd9ef503d4ecd71d6a17c4a631a64c322dd14c498dbe",
     "https://esm.sh/v135/lodash@4.17.21/denonext/lodash.mjs": "f04a5db09228738fd8cd06b6d1eaf3463b1b639d1529cf11673c3ac7bda1b1a8",
+    "https://esm.sh/v135/lodash@4.17.21/denonext/range.js": "a6c750f1bf2715070e8024009ecb87f7d812f3df123041e4436151dbb509b99b",
+    "https://esm.sh/v135/lodash@4.17.21/denonext/sortedLastIndex.js": "645a4012c1ded59bec7900b57e9b17e749a54beb437451d81f9dab6ce0017a1b",
+    "https://esm.sh/v135/lodash@4.17.21/denonext/sortedLastIndexBy.js": "02014870efb050c1a75dde090798cfeddba6b39f778e54ca87dccbd9b42c6fc3",
     "https://esm.sh/v135/lodash@4.17.21/denonext/startCase.js": "d417601663acf67fd0a74b2527a576c1192151974ed290d49690a6b1bd62c155",
     "https://esm.sh/v135/lodash@4.17.21/denonext/throttle.js": "993df2fa69259552f350bdeef46906b63a351aa4fa3a036574bb5375b08d9dd3",
+    "https://esm.sh/v135/lodash@4.17.21/denonext/uniq.js": "8142821933fe2d3b868a0e8f241fdb71d9f524ddedf4936c6adefb8233a32b44",
     "https://esm.sh/v135/lru-cache@10.2.2/denonext/lru-cache.mjs": "f7234fd467daefbdde676c26248bc381b91aa1d78274790f757ed2983e7793de",
     "https://esm.sh/v135/octokit@4.0.2/denonext/octokit.mjs": "7b615515660d3d1b3024e07e51ef0d5625c4a3f6de04b0e1756796d6fe5914c4",
     "https://esm.sh/v135/prismjs@1.29.0/denonext/components/prism-css.js": "fbb062e039cebd5ab24408cc471d6134ef68c29d1d542be95aecadb60d992d11",
+    "https://esm.sh/v135/react-color-palette@7.2.2/X-ZC9yZWFjdC1kb21AMTguMy4xLHJlYWN0QDE4LjMuMQ/denonext/react-color-palette.mjs": "19f284ad4a067237aeb0dace09bc0b1d2cca8c4c9a77bb272f75045af8529636",
+    "https://esm.sh/v135/react-colorful@5.6.1/X-ZC9yZWFjdC1kb21AMTguMy4xLHJlYWN0QDE4LjMuMQ/denonext/react-colorful.mjs": "3c98dcb81b6dfe55debfa0c05c6f6be17b80f084caa90573d52fa74e767f22e0",
+    "https://esm.sh/v135/react-colorful@5.6.1/denonext/react-colorful.mjs": "d0da3613e2c6762ff389b7dc12ea2a1a9dfc1122417b11ad9114e1e13f013673",
     "https://esm.sh/v135/react-dom@18.3.1/denonext/react-dom.mjs": "0c4ad76e514ad1c9d8987d49679c5f2a6299b34c1b7fbf10a5da056ae4a0963f",
+    "https://esm.sh/v135/react-dom@18.3.1/denonext/server.js": "b4db56f16b45002b5e9b127a9938ab45b12f39825161dffe875920510c524878",
     "https://esm.sh/v135/react-i18next@15.0.0/denonext/TransWithoutContext.js": "175d07c61189947844867f3dd214f6dc9017d6a55dd6ca3d002cdd8c3b437a25",
     "https://esm.sh/v135/react-i18next@15.0.0/denonext/initReactI18next.js": "b95574dade395837a834a8cd50beb66efd6a9ffff39eee54773ac2c3d277d020",
     "https://esm.sh/v135/react-i18next@15.0.0/denonext/react-i18next.mjs": "e38c31eeac36d4732174f19e741345d7fb83aa9bea839051ca8bc2b3a1c47b73",

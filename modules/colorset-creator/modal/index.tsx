@@ -18,40 +18,41 @@ export default function ModalContent() {
 	const [entityManager, nextEntityManager] = useNext([PaletteManager.INSTANCE, ConfigletManager.INSTANCE]);
 
 	const getEntities = React.useCallback(() => entityManager.getAll(), [entityManager]);
+	const activeEntities = entityManager.getAllActive();
 	const getDefaultEntity = React.useCallback(() => {
-		const allActive = entityManager.getAllActive();
-		if (allActive.length) {
-			return allActive[0];
+		if (activeEntities.length) {
+			return activeEntities[0];
 		}
-		const all = entityManager.getAll();
-		if (all.length) {
-			return all[0];
-		}
-		return null;
-	}, [entityManager]);
+		return entityManager.getAll()[0] ?? null;
+	}, [activeEntities, entityManager]);
 
 	const [entities, updateEntities] = React.useReducer(getEntities, undefined, getEntities);
 	const [_selectedEntity, selectEntity] = React.useState(getDefaultEntity);
 	const selectedEntity = entities.includes(_selectedEntity) ? _selectedEntity : getDefaultEntity();
 
 	return (
-		<div className="palette-manager-modal flex gap-[var(--gap-primary)] h-[66vh]">
-			<ModalSidebar
-				entities={entities}
-				updatePalettes={updateEntities}
-				selectedEntity={selectedEntity}
-				selectEntity={selectEntity}
-				entityManager={entityManager}
-				nextEntityManager={nextEntityManager}
-			/>
-			{selectedEntity &&
-				(
-					<EntityComponent
-						entity={selectedEntity}
-						entitiesUpdated={updateEntities}
-						enitityManager={entityManager}
-					/>
-				)}
+		<div className="palette-manager-modal flex gap-[var(--sidebar-gap)] h-[66vh]">
+			<div className="w-[var(--sidebar-width)]">
+				<ModalSidebar
+					activeEntities={activeEntities}
+					entities={entities}
+					updatePalettes={updateEntities}
+					selectedEntity={selectedEntity}
+					selectEntity={selectEntity}
+					entityManager={entityManager}
+					nextEntityManager={nextEntityManager}
+				/>
+			</div>
+			<div className="flex-grow min-w-0">
+				{selectedEntity &&
+					(
+						<EntityComponent
+							entity={selectedEntity}
+							entitiesUpdated={updateEntities}
+							enitityManager={entityManager}
+						/>
+					)}
+			</div>
 		</div>
 	);
 }
@@ -90,6 +91,7 @@ const EntityTypeSelector = ({ entityManager, nextEntityManager }: EntityTypeSele
 type ToArray<T> = T extends any ? T[] : never;
 
 interface ModalSidebarProps<E extends typeof PaletteManager | typeof ConfigletManager> {
+	activeEntities: ToArray<InstanceType<E["Entity"]>>;
 	entities: ToArray<InstanceType<E["Entity"]>>;
 	updatePalettes: () => void;
 	selectedEntity: InstanceType<E["Entity"]> | null;
@@ -98,11 +100,11 @@ interface ModalSidebarProps<E extends typeof PaletteManager | typeof ConfigletMa
 	nextEntityManager: () => void;
 }
 const ModalSidebar = <E extends typeof PaletteManager | typeof ConfigletManager>(
-	{ entities, updatePalettes, selectedEntity, selectEntity, entityManager, nextEntityManager }:
+	{ entities, activeEntities, updatePalettes, selectedEntity, selectEntity, entityManager, nextEntityManager }:
 		ModalSidebarProps<E>,
 ) => {
 	const [searchbar, search] = useSearchBar({
-		placeholder: "Search Palettes",
+		placeholder: "Search",
 		expanded: true,
 	});
 
@@ -118,7 +120,7 @@ const ModalSidebar = <E extends typeof PaletteManager | typeof ConfigletManager>
 	);
 
 	return (
-		<div className="palette-manager-modal__sidebar w-48 bg-neutral-900">
+		<div className="palette-manager-modal__sidebar bg-neutral-900">
 			<ul className="flex flex-col h-full">
 				<EntityTypeSelector entityManager={entityManager} nextEntityManager={nextEntityManager} />
 				{searchbar}
@@ -139,6 +141,7 @@ const ModalSidebar = <E extends typeof PaletteManager | typeof ConfigletManager>
 							key={entity.id}
 							entity={entity}
 							isSelected={entity === selectedEntity}
+							isActive={activeEntities.includes(entity)}
 							selectEntity={selectEntity}
 						/>
 					))}
@@ -157,13 +160,13 @@ export const EntityComponent = <E extends typeof PaletteManager | typeof Configl
 	{ entity, entitiesUpdated, enitityManager }: EntityComponentProps<E>,
 ) => {
 	return (
-		<div className="palette-manager-modal__entity flex-grow gap-[var(--gap-primary)] flex flex-col text-sm bg-neutral-900 rounded-[var(--border-radius)]">
+		<div className="palette-manager-modal__entity gap-[var(--gap-primary)] flex flex-col bg-neutral-900 rounded-[var(--border-radius)] h-full">
 			<EntityInfo
 				entity={entity}
 				entitiesUpdated={entitiesUpdated}
 				enitityManager={enitityManager}
 			/>
-			<div className="overflow-y-auto h-full">
+			<div className="min-h-0 overflow-y-auto">
 				{enitityManager instanceof PaletteManager && (
 					<PaletteColorSets palette={entity as Palette} paletteManager={enitityManager} />
 				)}
