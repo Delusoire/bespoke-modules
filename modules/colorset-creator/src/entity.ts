@@ -176,7 +176,8 @@ export abstract class EntityManager<E extends Entity<any, any>> {
 		return Array.from(this.entities.values());
 	}
 
-	public abstract save(): void;
+	public abstract save(entity: E): void;
+	public abstract unsave(entity: E): void;
 
 	public getAllActive(): E[] {
 		return Array.from(this.active);
@@ -201,7 +202,7 @@ export abstract class EntityManager<E extends Entity<any, any>> {
 
 	public add(entity: E) {
 		this.entities.set(entity.id, entity);
-		this.save();
+		this.save(entity);
 	}
 
 	public delete(entity: E) {
@@ -209,12 +210,12 @@ export abstract class EntityManager<E extends Entity<any, any>> {
 		if (this.isActive(entity)) {
 			this.toggleActive(entity);
 		}
-		this.save();
+		this.unsave(entity);
 	}
 
 	public rename(entity: E, name: string) {
 		entity.name = name;
-		this.save();
+		this.save(entity);
 	}
 
 	public isActive(entity: E) {

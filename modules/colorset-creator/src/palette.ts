@@ -128,7 +128,10 @@ export class PaletteManager extends EntityManager<Palette> {
 	public static INSTANCE = new PaletteManager();
 
 	_init() {
-		const serializedPalettes: SerializedEntity<Palette>[] = JSON.parse(storage.getItem(LS_PALETTES) ?? "[]");
+		const paletteIds: string[] = JSON.parse(storage.getItem(LS_PALETTES) ?? "[]");
+		const serializedPalettes: SerializedEntity<Palette>[] = paletteIds
+			.map((id) => JSON.parse(storage.getItem(LS_PALETTES + ":" + id) ?? "null"))
+			.filter(Boolean);
 		const palettes = serializedPalettes.map((json) => Palette.fromJSON(json));
 		for (const palette of palettes) {
 			this.entities.set(palette.id, palette);
@@ -141,8 +144,12 @@ export class PaletteManager extends EntityManager<Palette> {
 		}
 	}
 
-	public override save(): void {
-		storage.setItem(LS_PALETTES, JSON.stringify(this.getAll()));
+	public override save(palette: Palette): void {
+		storage.setItem(LS_PALETTES + ":" + palette.id, JSON.stringify(palette));
+	}
+
+	public override unsave(palette: Palette): void {
+		storage.removeItem(LS_PALETTES + ":" + palette.id);
 	}
 
 	public override async applyActive() {

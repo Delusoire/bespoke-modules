@@ -41,16 +41,17 @@ export class ConfigletManager extends EntityManager<Configlet> {
 	public static INSTANCE = new ConfigletManager();
 
 	_init() {
-		const serializedPalettes: SerializedEntity<Configlet>[] = JSON.parse(
-			storage.getItem(LS_CONFIGLETS) ?? "[]",
-		);
-		const palettes = serializedPalettes.map((json) => Configlet.fromJSON(json));
-		for (const palette of palettes) {
-			this.entities.set(palette.id, palette);
+		const configletIds: string[] = JSON.parse(storage.getItem(LS_CONFIGLETS) ?? "[]");
+		const serializedConfiglets: SerializedEntity<Configlet>[] = configletIds
+			.map((id) => JSON.parse(storage.getItem(LS_CONFIGLETS + ":" + id) ?? "null"))
+			.filter(Boolean);
+		const configlets = serializedConfiglets.map((json) => Configlet.fromJSON(json));
+		for (const configlet of configlets) {
+			this.entities.set(configlet.id, configlet);
 		}
 
-		const paletteId: string[] | null = JSON.parse(storage.getItem(LS_ACTIVE_CONFIGLETS) ?? "[]");
-		for (const id of paletteId ?? []) {
+		const activeConfigletIds: string[] = JSON.parse(storage.getItem(LS_ACTIVE_CONFIGLETS) ?? "[]");
+		for (const id of activeConfigletIds) {
 			const configlet = this.entities.get(id) ?? null;
 			if (configlet) {
 				this.toggleActive(configlet);
@@ -58,8 +59,12 @@ export class ConfigletManager extends EntityManager<Configlet> {
 		}
 	}
 
-	public override save(): void {
-		storage.setItem(LS_CONFIGLETS, JSON.stringify(this.getAll()));
+	public override save(configlet: Configlet): void {
+		storage.setItem(LS_CONFIGLETS + ":" + configlet.id, JSON.stringify(configlet));
+	}
+
+	public override unsave(configlet: Configlet): void {
+		storage.removeItem(LS_CONFIGLETS + ":" + configlet.id);
 	}
 
 	public override async applyActive() {
