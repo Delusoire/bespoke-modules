@@ -2,10 +2,9 @@ import Prism from "https://esm.sh/prismjs";
 import "https://esm.sh/prismjs/components/prism-css";
 import { React } from "/modules/stdlib/src/expose/React.ts";
 const { useCallback, useState } = React;
-import { createEditor, Editor, Element, Node, NodeEntry, Range, Transforms } from "https://esm.sh/slate";
+import { createEditor, Editor, Element, Node, NodeEntry, Range } from "https://esm.sh/slate";
 import {
 	Editable,
-	ReactEditor,
 	RenderElementProps,
 	RenderLeafProps,
 	Slate,
@@ -19,7 +18,6 @@ import { css } from "https://esm.sh/@emotion/css";
 import { CodeBlockElement } from "./custom-types.d.ts";
 import { normalizeTokens } from "./normalize-tokens.ts";
 import { Configlet, ConfigletManager } from "../src/configlet.ts";
-import { deepMerge } from "/hooks/std/collections.ts";
 
 const ParagraphType = "paragraph";
 const CodeBlockType = "code-block";
@@ -54,11 +52,6 @@ const ElementWrapper = (props: RenderElementProps) => {
 	const editor = useSlateStatic();
 
 	if (element.type === CodeBlockType) {
-		const setLanguage = (language: string) => {
-			const path = ReactEditor.findPath(editor, element);
-			Transforms.setNodes(editor, { language }, { at: path });
-		};
-
 		return (
 			<div
 				{...attributes}
