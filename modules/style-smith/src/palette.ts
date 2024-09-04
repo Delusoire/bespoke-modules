@@ -69,8 +69,8 @@ export class Theme implements Serializable<SerializedThemeData> {
 		return Object.entries(themes).map(([type, theme]) => {
 			return Object.entries(theme).map(([set, scheme]) =>
 				colorSetSchemeToCss(type as ThemeType, set as ColorSet, scheme)
-			);
-		}).join("\n");
+			).join("\n\n").replaceAll(/\n[^\S\n]+\n/g, "\n\n");
+		}).join("\n\n\n\n").replaceAll("\n\n", "\n").trim();
 	}
 
 	toJSON(): SerializedThemeData {

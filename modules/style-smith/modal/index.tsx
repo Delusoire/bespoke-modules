@@ -52,6 +52,9 @@ export default function ModalContent() {
 							entity={selectedEntity}
 							entitiesUpdated={updateEntities}
 							enitityManager={entityManager}
+							// @ts-ignore
+							data={selectedEntity.data}
+							context={selectedEntity.context}
 						/>
 					)}
 			</div>
@@ -170,10 +173,22 @@ export const EntityComponent = <E extends typeof PaletteManager | typeof Configl
 			/>
 			<div className="min-h-0 overflow-y-auto">
 				{enitityManager instanceof PaletteManager && (
-					<PaletteColorSets palette={entity as Palette} paletteManager={enitityManager} />
+					<PaletteColorSets
+						palette={entity as Palette}
+						paletteManager={enitityManager}
+						// @ts-ignore
+						data={entity.data}
+						context={entity.context}
+					/>
 				)}
 				{enitityManager instanceof ConfigletManager && (
-					<ConfigletSlateDocument configlet={entity as Configlet} configletManager={enitityManager} />
+					<ConfigletSlateDocument
+						configlet={entity as Configlet}
+						configletManager={enitityManager}
+						// @ts-ignore
+						data={entity.data}
+						context={entity.context}
+					/>
 				)}
 			</div>
 		</div>

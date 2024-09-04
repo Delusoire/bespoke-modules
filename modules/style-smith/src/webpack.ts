@@ -137,14 +137,17 @@ export const colorSetSchemeToCss = (
 
 	const attributes = colorSchemeToCssAttributes(scheme);
 
-	return selectors.join(", ") + " {\n" +
+	return [
+		"",
+		"\n" + selectors.join(", ") + " {\n" +
 		attributes.join("") +
-		"\n}\n" +
-		"\n" +
-		selectors.map((s) => s + ">*").join(", ") + " {\n" +
+		"\n}\n",
+		"",
+		"\n" + selectors.map((s) => s + ">*").join(", ") + " {\n" +
 		"\n      --parents-essential-base: " + scheme.essential.base + ";\n    " +
-		"\n}\n" +
-		"\n";
+		"\n}\n",
+		"",
+	].join("\n");
 };
 
 export const flattenColorScheme = <T>(scheme: ColorScheme<T>): FlatColorScheme<T> => {
