@@ -29,12 +29,14 @@ export default function (mod: ModuleInstance) {
 	const eventBus = createEventBus(mod);
 	const registrar = createRegistrar(mod);
 
-	let setPlaylistEditHidden: React.Dispatch<React.SetStateAction<boolean>> | undefined = undefined;
+	let rerenderPlaylistEdit: React.DispatchWithoutAction | null = null;
+	let isPlaylistEditHidden = true;
 
 	const PlaylistEdit = () => {
-		const [hidden, setHidden] = React.useState(true);
-		setPlaylistEditHidden = setHidden;
-		if (hidden) return;
+		const [, rerender] = React.useReducer((n) => n + 1, 0);
+		rerenderPlaylistEdit = rerender;
+
+		if (isPlaylistEditHidden) return;
 
 		return (
 			<TopbarLeftButton
@@ -49,8 +51,8 @@ export default function (mod: ModuleInstance) {
 	};
 
 	eventBus.History.updated.subscribe(({ pathname }) => {
-		const isPlaylistPage = is.PlaylistV1OrV2(pathname);
-		setPlaylistEditHidden?.(!isPlaylistPage);
+		isPlaylistEditHidden = !is.PlaylistV1OrV2(pathname);
+		rerenderPlaylistEdit?.();
 	});
 
 	registrar.register("topbarLeftButton", <PlaylistEdit />);

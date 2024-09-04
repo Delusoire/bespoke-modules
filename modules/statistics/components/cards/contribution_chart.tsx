@@ -1,5 +1,3 @@
-import { fp } from "/modules/stdlib/deps.js";
-
 import { React } from "/modules/stdlib/src/expose/React.ts";
 
 const ContributionLine = (name: string, value: number, limit: number, total: number) => {
@@ -19,7 +17,7 @@ const ContributionLine = (name: string, value: number, limit: number, total: num
 };
 
 const ContributionChart = ({ contributions }: { contributions: Record<string, number> }) => {
-	const genresTotal = Object.values(contributions).reduce(fp.add);
+	const genresTotal = Object.values(contributions).reduce((a, b) => a + b, 0);
 	const sortedTopGenres = Object.entries(contributions)
 		.sort((a, b) => b[1] - a[1])
 		.slice(0, 10);

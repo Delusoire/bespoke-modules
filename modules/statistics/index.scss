@@ -1,112 +1,112 @@
 @import "./components/shared/shared.scss";
 
 #stats-app {
-    .stats-gridInline {
-        --grid-gap: 24px;
-        grid-template-columns: repeat(10, 180px) !important;
-        overflow-x: hidden;
-        scroll-behavior: smooth;
-        margin-top: 5px;
-    }
+	.stats-gridInline {
+		--grid-gap: 24px;
+		grid-template-columns: repeat(10, 180px) !important;
+		overflow-x: hidden;
+		scroll-behavior: smooth;
+		margin-top: 5px;
+	}
 
-    [data-scroll="both"] {
-        mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
-    }
+	[data-scroll="both"] {
+		mask-image: linear-gradient(to right, transparent, black 10%, black 90%, transparent);
+	}
 
-    [data-scroll="end"] {
-        mask-image: linear-gradient(to right, transparent, black 10%);
-    }
+	[data-scroll="end"] {
+		mask-image: linear-gradient(to right, transparent, black 10%);
+	}
 
-    [data-scroll="start"] {
-        mask-image: linear-gradient(to right, black 90%, transparent);
-    }
+	[data-scroll="start"] {
+		mask-image: linear-gradient(to right, black 90%, transparent);
+	}
 
-    .stats-libraryOverview {
-        display: flex;
-        gap: 24px;
-        align-items: center;
-    }
+	.stats-libraryOverview {
+		display: flex;
+		gap: 24px;
+		align-items: center;
+	}
 
-    .stats-trackPageTitle {
-        display: flex;
-        gap: 24px;
-        align-items: center;
-    }
+	.stats-trackPageTitle {
+		display: flex;
+		gap: 24px;
+		align-items: center;
+	}
 
-    .stats-scrollButton {
-        width: 40px;
-        border-radius: 8px;
-        border: none;
-        padding: 0;
-        margin-right: 5px;
-        background-color: var(--spice-player);
-        color: var(--spice-subtext);
+	.stats-scrollButton {
+		width: 40px;
+		border-radius: 8px;
+		border: none;
+		padding: 0;
+		margin-right: 5px;
+		background-color: var(--background-elevated-base);
+		color: var(--text-subdued);
 
-        &:hover {
-            background-color: var(--spice-card);
-            color: var(--spice-text);
-        }
-    }
+		&:hover {
+			background-color: var(--decorative-subdued);
+			color: var(--text-base);
+		}
+	}
 
-    .stats-tracklistHeader>div {
-        display: flex;
-        -webkit-app-region: no-drag;
-        gap: 20px;
-        align-items: center;
-    }
+	.stats-tracklistHeader>div {
+		display: flex;
+		-webkit-app-region: no-drag;
+		gap: 20px;
+		align-items: center;
+	}
 
-    .stats-make-playlist-button {
-        margin-inline-start: 12px;
-    }
+	.stats-make-playlist-button {
+		margin-inline-start: 12px;
+	}
 
-    .stats-genreCard {
-        display: flex;
-        flex-direction: column;
-        gap: 10px;
-        padding: 16px;
-        border-radius: 8px;
-        background: var(--spice-player);
-        position: relative;
-    }
+	.stats-genreCard {
+		display: flex;
+		flex-direction: column;
+		gap: 10px;
+		padding: 16px;
+		border-radius: 8px;
+		background: var(--background-elevated-base);
+		position: relative;
+	}
 
-    .stats-genreRow {
-        width: 100%;
-        height: 20px;
-        display: flex;
-        gap: 10px;
-    }
+	.stats-genreRow {
+		width: 100%;
+		height: 20px;
+		display: flex;
+		gap: 10px;
+	}
 
-    .stats-genreRowFill {
-        background: var(--spice-button);
-        height: 100%;
-        border-radius: 8px;
-        display: flex;
-        align-items: center;
-    }
+	.stats-genreRowFill {
+		background: var(--essential-base);
+		height: 100%;
+		border-radius: 8px;
+		display: flex;
+		align-items: center;
+	}
 
-    .stats-genreText {
-        color: var(--spice-player);
-        font-size: 0.875rem;
-        margin-left: 7px;
-        font-weight: bold;
-    }
+	.stats-genreText {
+		color: var(--background-elevated-base);
+		font-size: 0.875rem;
+		margin-left: 7px;
+		font-weight: bold;
+	}
 
-    .stats-genreValue {
-        color: var(--spice-text);
-        font-size: 0.875rem;
-    }
+	.stats-genreValue {
+		color: var(--text-base);
+		font-size: 0.875rem;
+	}
 
-    .GenericModal[aria-label="Playlist Stats"] .main-embedWidgetGenerator-container {
-        width: 80vw;
-        height: 80vh;
-        background-color: var(--spice-main);
-    }
+	.GenericModal[aria-label="Playlist Stats"] .main-embedWidgetGenerator-container {
+		width: 80vw;
+		height: 80vh;
+		background-color: var(--background-base);
+	}
 
-    .GenericModal[aria-label="Playlist Stats"] .main-shelf-title {
-        color: var(--spice-text);
-    }
+	.GenericModal[aria-label="Playlist Stats"] .main-shelf-title {
+		color: var(--text-base);
+	}
 
-    .stats-genreCard+.stats-gridInlineSection {
-        margin-top: 3px;
-    }
+	.stats-genreCard+.stats-gridInlineSection {
+		margin-top: 3px;
+	}
 }

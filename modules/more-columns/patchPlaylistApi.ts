@@ -111,7 +111,7 @@ export async function patchPlaylistContents(contents: any, opts: any) {
 
 	const offset = opts?.offset ?? 0;
 	const limit = opts?.limit ??
-		(opts?.offset == null ? 0 : contents.items.length);
+		(opts?.offset === undefined ? 0 : contents.items.length);
 
 	contents.items = contents.items.slice(offset, offset + limit);
 	contents.limit = contents.items.length;

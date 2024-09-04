@@ -44,7 +44,7 @@ export const fetchAudioFeaturesMeta = async (ids: string[]) => {
 		}
 	}
 
-	return _.mapValues(audioFeaturesLists, fp.mean);
+	return mapValues(audioFeaturesLists, fp.mean);
 };
 
 export const calculateGenresFromArtists = (
@@ -78,10 +78,7 @@ export const fetchArtistsMeta = async (ids: string[]) => {
 };
 
 export const fetchAlbumsMeta = async (ids: string[]) => {
-	const idToMult = _(ids)
-		.groupBy((x) => x)
-		.mapValues((ids) => ids.length)
-		.value();
+	const idToMult = mapValues(Object.groupBy(ids, (x) => x), (ids) => ids!.length);
 	const uniqIds = uniq(ids);
 	const albumsRes = await chunkify(uniqIds, (x) => spotifyApi.albums.get(x), 20);
 	const releaseYears = {} as Record<string, number>;
@@ -109,7 +106,10 @@ const PlaylistPage = ({ uri }: { uri: string }) => {
 	const { status, error, data } = useQuery({
 		queryKey: ["playlistAnalysis"],
 		queryFn: async () => {
-			const playlist = await PlaylistAPI.getPlaylist(uri);
+			const playlist = await PlaylistAPI.getPlaylist(uri, {}, {
+				offset: 0,
+				limit: 1e9,
+			});
 			const { metadata, contents } = playlist;
 
 			const tracks = contents.items as any[];
