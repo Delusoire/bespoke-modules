@@ -1,9 +1,10 @@
 {
-	"name": "colorset-creator",
+	"name": "style-smith",
 	"tags": [
 		"extension",
 		"color",
-		"set"
+		"palette",
+		"configlet"
 	],
 	"preview": "./assets/PREVIEW.png",
 	"version": "0.2.1",
@@ -11,7 +12,7 @@
 		"Delusoire",
 		"harbassan"
 	],
-	"description": "Create custom color sets for any theme.",
+	"description": "Create custom color palettes and configlets for any theme.",
 	"readme": "./assets/README.md",
 	"entries": {
 		"js": "index.js",

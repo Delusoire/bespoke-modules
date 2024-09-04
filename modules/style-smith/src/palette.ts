@@ -140,8 +140,9 @@ export class PaletteManager extends EntityManager<Palette> {
 		const paletteId: string | null = JSON.parse(storage.getItem(LS_ACTIVE_PALETTE) ?? "null");
 		const palette = this.entities.get(paletteId!) ?? null;
 		if (palette) {
-			this.toggleActive(palette);
+			this.active.add(palette);
 		}
+		this.applyActiveSync();
 	}
 
 	public override save(palette: Palette): void {
@@ -169,6 +170,28 @@ export class PaletteManager extends EntityManager<Palette> {
 		}
 
 		await this.stylesheet.replace(css);
+		for (const [set, paletteObj] of Object.entries(colorTheme)) {
+			Object.assign(appliedColorTheme[set as ColorSet], paletteObj);
+		}
+
+		this.saveActive();
+	}
+
+	public override applyActiveSync(): void {
+		let css: string;
+		let colorTheme: ColorTheme;
+
+		const [active] = this.getAllActive();
+
+		if (active && active.data) {
+			css = active.data.getCSS();
+			colorTheme = active.data.getColorTheme().light;
+		} else {
+			css = "";
+			colorTheme = mapValues(defaultThemes.light, (scheme) => nestColorScheme(scheme));
+		}
+
+		this.stylesheet.replaceSync(css);
 		for (const [set, paletteObj] of Object.entries(colorTheme)) {
 			Object.assign(appliedColorTheme[set as ColorSet], paletteObj);
 		}

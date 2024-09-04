@@ -2,11 +2,8 @@ import type { ModuleInstance } from "/hooks/module.ts";
 
 import { Schemer } from "./schemer.ts";
 
-import { type Config, Configlet, ConfigletManager } from "./configlet.ts";
-import { Palette, PaletteManager, type Theme } from "./palette.ts";
-
-PaletteManager.INSTANCE._init();
-ConfigletManager.INSTANCE._init();
+import { type Config, Configlet } from "./configlet.ts";
+import { Palette, type Theme } from "./palette.ts";
 
 export function createSchemer(mod: ModuleInstance) {
 	const schemer = new Schemer(mod);

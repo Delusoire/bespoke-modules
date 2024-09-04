@@ -197,6 +197,7 @@ export abstract class EntityManager<E extends Entity<any, any>> {
 	}
 
 	public abstract applyActive(): Promise<void>;
+	public abstract applyActiveSync(): void;
 
 	public abstract saveActive(): Promise<void>;
 
@@ -226,5 +227,3 @@ export abstract class EntityManager<E extends Entity<any, any>> {
 		document.adoptedStyleSheets = document.adoptedStyleSheets.filter((sheet) => sheet !== this.stylesheet);
 	}
 }
-
-console.timeEnd("palette-manager");

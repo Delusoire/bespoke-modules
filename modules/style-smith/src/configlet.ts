@@ -54,9 +54,10 @@ export class ConfigletManager extends EntityManager<Configlet> {
 		for (const id of activeConfigletIds) {
 			const configlet = this.entities.get(id) ?? null;
 			if (configlet) {
-				this.toggleActive(configlet);
+				this.active.add(configlet);
 			}
 		}
+		this.applyActiveSync();
 	}
 
 	public override save(configlet: Configlet): void {
@@ -73,6 +74,14 @@ export class ConfigletManager extends EntityManager<Configlet> {
 		const css = this.getAllActive().map((c) => c.data.getCSS()).join("\n");
 
 		await this.stylesheet.replace(css);
+
+		this.saveActive();
+	}
+
+	public override applyActiveSync(): void {
+		const css = this.getAllActive().map((c) => c.data.getCSS()).join("\n");
+
+		this.stylesheet.replaceSync(css);
 
 		this.saveActive();
 	}
