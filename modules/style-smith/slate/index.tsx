@@ -19,6 +19,7 @@ import { css } from "https://esm.sh/@emotion/css";
 import { CodeBlockElement } from "./custom-types.d.ts";
 import { normalizeTokens } from "./normalize-tokens.ts";
 import { Configlet, ConfigletManager } from "../src/configlet.ts";
+import { deepMerge } from "/hooks/std/collections.ts";
 
 const ParagraphType = "paragraph";
 const CodeBlockType = "code-block";
@@ -176,8 +177,8 @@ const SetNodeToDecorations = () => {
 		}),
 	);
 
-	const nodeToDecorations = mergeMaps(
-		...blockEntries.map(getChildNodeToDecorations),
+	const nodeToDecorations = new Map(
+		blockEntries.flatMap((blockEntry) => Array.from(getChildNodeToDecorations(blockEntry))),
 	);
 
 	editor.nodeToDecorations = nodeToDecorations;
@@ -199,18 +200,6 @@ const useOnKeydown = (editor: Editor) => {
 	);
 
 	return onKeyDown;
-};
-
-const mergeMaps = <K, V>(...maps: Map<K, V>[]) => {
-	const map = new Map<K, V>();
-
-	for (const m of maps) {
-		for (const item of m) {
-			map.set(...item);
-		}
-	}
-
-	return map;
 };
 
 const toChildren = (content: string) => [{ text: content }];
