@@ -135,6 +135,7 @@ export const EntityInfo = <E extends typeof PaletteManager | typeof ConfigletMan
 
 	const resetEntity = React.useCallback(() => {
 		entity.reset();
+		enitityManager.save(entity);
 		entitiesUpdated();
 	}, [entity]);
 
