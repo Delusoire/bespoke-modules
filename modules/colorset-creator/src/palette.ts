@@ -146,10 +146,12 @@ export class PaletteManager extends EntityManager<Palette> {
 
 	public override save(palette: Palette): void {
 		storage.setItem(LS_PALETTES + ":" + palette.id, JSON.stringify(palette));
+		storage.setItem(LS_PALETTES, JSON.stringify(Array.from(this.entities.keys())));
 	}
 
 	public override unsave(palette: Palette): void {
 		storage.removeItem(LS_PALETTES + ":" + palette.id);
+		storage.setItem(LS_PALETTES, JSON.stringify(Array.from(this.entities.keys())));
 	}
 
 	public override async applyActive() {

@@ -61,10 +61,12 @@ export class ConfigletManager extends EntityManager<Configlet> {
 
 	public override save(configlet: Configlet): void {
 		storage.setItem(LS_CONFIGLETS + ":" + configlet.id, JSON.stringify(configlet));
+		storage.setItem(LS_CONFIGLETS, JSON.stringify(Array.from(this.entities.keys())));
 	}
 
 	public override unsave(configlet: Configlet): void {
 		storage.removeItem(LS_CONFIGLETS + ":" + configlet.id);
+		storage.setItem(LS_CONFIGLETS, JSON.stringify(Array.from(this.entities.keys())));
 	}
 
 	public override async applyActive() {

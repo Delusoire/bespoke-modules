@@ -226,3 +226,5 @@ export abstract class EntityManager<E extends Entity<any, any>> {
 		document.adoptedStyleSheets = document.adoptedStyleSheets.filter((sheet) => sheet !== this.stylesheet);
 	}
 }
+
+console.timeEnd("palette-manager");

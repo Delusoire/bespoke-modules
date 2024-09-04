@@ -52,12 +52,10 @@ export class PermanentMutationObserver extends MutationObserver {
 			childList: true,
 			subtree: true,
 		});
-		const unloadJs = mod._unloadJs;
-		mod._unloadJs = () => {
+		mod._jsIndex!.disposableStack.defer(() => {
 			metaObserver.disconnect();
 			this.disconnect();
-			return unloadJs();
-		};
+		});
 	}
 }
 

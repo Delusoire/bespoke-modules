@@ -1,27 +1,28 @@
-import { DarkLightPair, Palette, type PaletteManager } from "../src/palette.ts";
 import { startCase } from "/modules/stdlib/deps.ts";
 import { React } from "/modules/stdlib/src/expose/React.ts";
 import { Color } from "/modules/stdlib/src/webpack/misc.ts";
-import { ColorSet, FlatColorScheme, ThemeType } from "../src/webpack.ts";
-import { useSyncedState } from "./shared.tsx";
-// // @deno-types="npm:react-colorful"
-// import { HexAlphaColorPicker } from "https://esm.sh/react-colorful?deps=react@18.3.1,react-dom@18.3.1";
 import { ContextMenu } from "/modules/stdlib/src/webpack/ReactComponents.xpui.ts";
 
-import { HexAlphaColorPicker } from "https://esm.sh/vanilla-colorful/hex-alpha-color-picker.js";
+// @deno-types="npm:react-colorful"
+import { HexAlphaColorPicker } from "https://esm.sh/react-colorful?deps=react@18.3.1,react-dom@18.3.1";
+import { DarkLightPair, Palette, type PaletteManager } from "../src/palette.ts";
+import { ColorSet, FlatColorScheme, ThemeType } from "../src/webpack.ts";
+import { useSyncedState } from "./hooks.ts";
 
-import { createComponent } from "https://esm.sh/@lit/react";
+// import { HexAlphaColorPicker } from "https://esm.sh/vanilla-colorful/hex-alpha-color-picker.js";
 
-const ColorPicker = createComponent({
-	react: React,
-	tagName: "hex-alpha-color-picker",
-	elementClass: HexAlphaColorPicker,
-	events: {
-		onEventColorChanged: "color-changed" as EventName<
-			CustomEvent<{ value: string }>
-		>,
-	},
-});
+// import { createComponent } from "https://esm.sh/@lit/react";
+
+// const ColorPicker = createComponent({
+// 	react: React,
+// 	tagName: "hex-alpha-color-picker",
+// 	elementClass: HexAlphaColorPicker,
+// 	events: {
+// 		onEventColorChanged: "color-changed" as EventName<
+// 			CustomEvent<{ value: string }>
+// 		>,
+// 	},
+// });
 
 export interface PaletteColorSetsProps {
 	palette: Palette;
@@ -137,14 +138,14 @@ export const PaletteColorInput = (props: PaletteColorInputProps) => {
 		<div className="color-set__color-input flex items-center bg-[var(--color-input-bg)] rounded-[var(--border-radius)] h-8 w-28">
 			<ContextMenu
 				menu={
-					<ColorPicker color={color} onEventColorChanged={(e) => onChange(e.detail.value)} />
-					// <HexAlphaColorPicker color={initialColor.current} onChange={onChange} />
+					// <ColorPicker color={color} onEventColorChanged={(e) => onChange(e.detail.value)} />
+					<HexAlphaColorPicker color={passedColor} onChange={onChange} />
 				}
 			>
 				<input
 					className="color-input__picker bg-transparent border-none h-8 w-8 p-2 cursor-pointer"
 					type="color"
-					value={color.slice(0, -2)}
+					value={color.slice(0, 7)}
 				/>
 			</ContextMenu>
 			<input

@@ -8,28 +8,7 @@ import { MenuItemSubMenu } from "/modules/stdlib/src/webpack/ReactComponents.ts"
 import { CHECK_ICON_PATH } from "../static.ts";
 import { Entity, EntityContext } from "../src/entity.ts";
 import { Configlet, ConfigletManager } from "../src/configlet.ts";
-
-export const useSyncedState = <S,>(externalState: S, onExternalOverride?: (newState: S) => void) => {
-	const [, rerender] = React.useReducer((n) => n + 1, 0);
-
-	const externalStateRef = React.useRef(externalState);
-	const internalStateRef = React.useRef(externalStateRef.current);
-
-	const setInternalState = React.useCallback((newInternalState: S) => {
-		if (internalStateRef.current === newInternalState) {
-			return;
-		}
-		internalStateRef.current = newInternalState;
-		rerender();
-	}, []);
-
-	if (externalStateRef.current !== externalState) {
-		externalStateRef.current = internalStateRef.current = externalState;
-		onExternalOverride?.(externalState);
-	}
-
-	return [internalStateRef.current, setInternalState] as const;
-};
+import { useSyncedState } from "./hooks.ts";
 
 export const SchemerContextModuleMenuItem = <E extends Entity<any, any>>(
 	{ entity, schemer, entities }: {

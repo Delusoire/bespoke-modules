@@ -7,17 +7,20 @@ import { EntityInfo, SchemerContextMenu } from "./shared.tsx";
 import { Configlet, ConfigletManager } from "../src/configlet.ts";
 import { PaletteColorSets } from "./palette.tsx";
 import { ConfigletSlateDocument } from "./configlet.tsx";
-
-const useNext = <T,>(options: T[]) => {
-	const [active, setActive] = React.useState(0);
-	const next = React.useCallback(() => setActive((active) => (active + 1) % options.length), [options.length]);
-	return [options[active], next] as const;
-};
+import { useDynamicReducer, useNext } from "./hooks.ts";
 
 export default function ModalContent() {
-	const [entityManager, nextEntityManager] = useNext([PaletteManager.INSTANCE, ConfigletManager.INSTANCE]);
+	const [entityManager, _nextEntityManager] = useNext([PaletteManager.INSTANCE, ConfigletManager.INSTANCE]);
 
 	const getEntities = React.useCallback(() => entityManager.getAll(), [entityManager]);
+
+	const [entities, updateEntities] = useDynamicReducer(getEntities, undefined, getEntities);
+
+	const nextEntityManager = React.useCallback(() => {
+		_nextEntityManager();
+		updateEntities();
+	}, []);
+
 	const activeEntities = entityManager.getAllActive();
 	const getDefaultEntity = React.useCallback(() => {
 		if (activeEntities.length) {
@@ -26,7 +29,6 @@ export default function ModalContent() {
 		return entityManager.getAll()[0] ?? null;
 	}, [activeEntities, entityManager]);
 
-	const [entities, updateEntities] = React.useReducer(getEntities, undefined, getEntities);
 	const [_selectedEntity, selectEntity] = React.useState(getDefaultEntity);
 	const selectedEntity = entities.includes(_selectedEntity) ? _selectedEntity : getDefaultEntity();
 
@@ -113,9 +115,9 @@ const ModalSidebar = <E extends typeof PaletteManager | typeof ConfigletManager>
 		const entityCtor = entityManagerCtor.Entity;
 		entityManager.add(entityCtor.createDefault());
 		updatePalettes();
-	}, []);
+	}, [entityManager]);
 
-	const filteredPalettes = entities.filter((entity) =>
+	const filteredEntities = entities.filter((entity) =>
 		entity.name.toLowerCase().includes(search.toLowerCase())
 	);
 
@@ -136,7 +138,7 @@ const ModalSidebar = <E extends typeof PaletteManager | typeof ConfigletManager>
 					</MenuItem>
 				</div>
 				<ul className="palette-manager-modal__entity-list overflow-y-auto">
-					{filteredPalettes.map((entity) => (
+					{filteredEntities.map((entity) => (
 						<SchemerContextMenu
 							key={entity.id}
 							entity={entity}
