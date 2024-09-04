@@ -46,8 +46,9 @@ export default async function () {
 		}
 	});
 
-	return () => {
+	return async () => {
 		prefsSubscription.cancel();
+		await revertProductState();
 		productStateSubscription.cancel();
 		for (const slotSubscription of slotSubscriptions) {
 			slotSubscription.cancel();
@@ -127,6 +128,10 @@ async function overrideProductState(pairs?: Partial<PairOverrides>) {
 
 	// AdManagers.audio.isNewAdsNpvEnabled = false;
 	// AdManagers.vto.manager.isNewAdsNpvEnabled = false;
+}
+
+async function revertProductState() {
+	await ProductStateAPI.productStateApi.delOverridesValues({ keys: Object.keys(pairOverrides) });
 }
 
 /* */
