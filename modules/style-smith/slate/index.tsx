@@ -18,6 +18,7 @@ import { css } from "https://esm.sh/@emotion/css";
 import { CodeBlockElement } from "./custom-types.d.ts";
 import { normalizeTokens } from "./normalize-tokens.ts";
 import { Configlet, ConfigletManager } from "../src/configlet.ts";
+import { Button, Icon, Toolbar } from "./components.tsx";
 
 const ParagraphType = "paragraph";
 const CodeBlockType = "code-block";
@@ -35,6 +36,7 @@ const ConfigletEditor = ({ configlet, configletManager }: ConfigletEditorProps) 
 
 	return (
 		<Slate editor={editor} initialValue={initialValue}>
+			<ExampleToolbar />
 			<SetNodeToDecorations />
 			<Editable
 				decorate={decorate}
@@ -84,6 +86,28 @@ const ElementWrapper = (props: RenderElementProps) => {
 		<Tag {...attributes} style={{ position: "relative" }}>
 			{children}
 		</Tag>
+	);
+};
+
+const ExampleToolbar = () => {
+	return (
+		<Toolbar>
+			<SaveButton />
+		</Toolbar>
+	);
+};
+
+const SaveButton = () => {
+	return (
+		<Button
+			data-test-id="save-button"
+			active
+			onMouseDown={(event) => {
+				event.preventDefault();
+			}}
+		>
+			<Icon>code</Icon>
+		</Button>
 	);
 };
 
