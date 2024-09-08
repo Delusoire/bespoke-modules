@@ -18,7 +18,7 @@ import { classnames } from "/modules/stdlib/src/webpack/ClassNames.ts";
 import { UI } from "/modules/stdlib/src/webpack/ComponentLibrary.ts";
 import { usePanelAPI } from "/modules/stdlib/src/webpack/CustomHooks.ts";
 import { ScrollableText } from "/modules/stdlib/src/webpack/ReactComponents.js";
-import { PanelContent, PanelHeader, PanelSkeleton } from "/modules/stdlib/src/webpack/ReactComponents.ts";
+import { PanelContainer, PanelContent, PanelHeader } from "/modules/stdlib/src/webpack/ReactComponents.ts";
 import { useQuery } from "/modules/stdlib/src/webpack/ReactQuery.ts";
 import { useLocation } from "/modules/stdlib/src/webpack/ReactRouter.xpui.ts";
 
@@ -30,11 +30,11 @@ export default function () {
 	}
 
 	return (
-		<PanelSkeleton label="Marketplace">
+		<PanelContainer label="Marketplace">
 			<PanelContent>
 				<VersionListPanelContent />
 			</PanelContent>
-		</PanelSkeleton>
+		</PanelContainer>
 	);
 }
 

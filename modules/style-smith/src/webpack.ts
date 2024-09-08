@@ -1,6 +1,9 @@
-import { webpackRequire } from "/modules/stdlib/src/wpunpk.mix.ts";
+import { toCamelCase, toKebabCase } from "/hooks/std/text.ts";
 
+import { webpackRequire } from "/modules/stdlib/src/wpunpk.mix.ts";
 import { modules } from "/modules/stdlib/src/webpack/index.ts";
+
+import type { DarkLightPair } from "./palette.ts";
 
 export type ColorScheme<T = string> = {
 	background: {
@@ -112,9 +115,7 @@ export const colorSchemeToCssAttributes = PaletteExports.find((e: any) =>
 	scheme: ColorScheme,
 ) => string[];
 
-export const colorSetToCssClassName = PaletteExports.find((e: any) =>
-	e.toString().includes('"encore-"') && e.toString().includes('"-set"')
-) as (set: ColorSet) => string;
+export const colorSetToCssClassName = (set: ColorSet) => `encore-${toKebabCase(set)}-set`;
 
 const encoreThemeSelectors = {
 	dark: ".encore-dark-theme",
@@ -221,9 +222,6 @@ export const nestColorScheme = <T>(scheme: FlatColorScheme<T>): ColorScheme<T> =
 		},
 	};
 };
-
-import { toCamelCase } from "/hooks/std/text.ts";
-import type { DarkLightPair } from "./palette.ts";
 
 async function getDefaultColorThemes() {
 	const themes = {
