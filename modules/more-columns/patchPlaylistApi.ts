@@ -59,7 +59,7 @@ export async function patchPlaylistContents(contents: any, opts: any) {
 		const albums = await getAlbumsFromURIs(albumUris);
 		items.forEach((track, i) => {
 			const album = albums[i];
-			const albumTracks = album.tracks.items.map((w) => w.track);
+			const albumTracks = album.tracksV2.items.map((w) => w.track);
 			const albumTrack = albumTracks.find((albumTrack) => albumTrack.uri === track.uri);
 			track.albumAlbum = album;
 			track.albumTrack = albumTrack;
@@ -68,7 +68,7 @@ export async function patchPlaylistContents(contents: any, opts: any) {
 			const p = (track) => Number(track.albumTrack.playcount ?? -1);
 			order = (a, b) => p(a) - p(b);
 		} else if (isReleaseDateSort) {
-			const p = (track) => new Date(track.albumTrack.date.isoString);
+			const p = (track) => new Date(track.albumAlbum.date.isoString);
 			order = (a, b) => p(a) - p(b);
 		}
 	}

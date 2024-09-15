@@ -16,7 +16,7 @@ import { parse, parseRange, satisfies } from "/hooks/std/semver.ts";
 import { React } from "/modules/stdlib/src/expose/React.ts";
 import { classnames } from "/modules/stdlib/src/webpack/ClassNames.ts";
 import { UI } from "/modules/stdlib/src/webpack/ComponentLibrary.ts";
-import { usePanelAPI } from "/modules/stdlib/src/webpack/CustomHooks.ts";
+import { usePanelAPI } from "/modules/stdlib/src/webpack/ReactHooks.ts";
 import { ScrollableText } from "/modules/stdlib/src/webpack/ReactComponents.js";
 import { PanelContainer, PanelContent, PanelHeader } from "/modules/stdlib/src/webpack/ReactComponents.ts";
 import { useQuery } from "/modules/stdlib/src/webpack/ReactQuery.ts";

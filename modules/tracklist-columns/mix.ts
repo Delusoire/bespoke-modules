@@ -58,14 +58,11 @@ globalThis.__patchColumnTypeToColumnLabelMap = (x) => {
 
 function tracklistColumn(transformer: Transformer) {
 	transformer((emit) => (str) => {
+		emit();
+
 		str = str.replace(
 			/(\(0,([a-zA-Z_\$][\w\$]*)\.jsx\)\([a-zA-Z_\$][\w\$]*\.[a-zA-Z_\$][\w\$]*,{resolveItem:[a-zA-Z_\$][\w\$]*,getItems:[a-zA-Z_\$][\w\$]*,nrTracks:[a-zA-Z_\$][\w\$]*),children:\(0,\2\.jsx\)/,
 			"$1,children:((type,props)=>($2.jsx(type,__patchTracklistWrapperProps(props))))",
-		);
-
-		str = str.replaceAll(
-			/(switch\(([a-zA-Z_\$][\w\$]*)\){case [a-zA-Z_\$][\w\$]*\.[a-zA-Z_\$][\w\$]*\.INDEX:.*?default):/g,
-			"$1:return __patchRenderTracklistRowColumn($2);",
 		);
 
 		str = str.replace(
@@ -83,11 +80,22 @@ function tracklistColumn(transformer: Transformer) {
 			"globalThis.__patchColumnTypeToColumnLabelMap({$1})",
 		);
 
-		emit();
-
 		return str;
 	}, {
 		glob: /^\/xpui\.js$/,
+	});
+
+	transformer((emit) => (str) => {
+		emit();
+
+		str = str.replaceAll(
+			/(switch\(([a-zA-Z_\$][\w\$]*)\){case [a-zA-Z_\$][\w\$]*\.[a-zA-Z_\$][\w\$]*\.INDEX:.*?default):/g,
+			"$1:return __patchRenderTracklistRowColumn($2);",
+		);
+
+		return str;
+	}, {
+		glob: /\.js$/,
 	});
 }
 

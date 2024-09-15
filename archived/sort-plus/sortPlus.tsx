@@ -56,20 +56,20 @@ const setQueue = (tracks: TrackData[]) => {
 
 const sortTracksBy =
 	(sortAction: typeof lastSortAction, sortFn: AsyncTracksOperation, descending: boolean) =>
-		async (uri: string) => {
-			lastSortAction = sortAction;
-			lastFetchedUri = uri;
-			const tracks = await getTracksFromUri(uri);
-			let sortedTracks = await sortFn(tracks);
-			if (CONFIG.preventDuplicates) {
-				sortedTracks = _.uniqBy(sortedTracks, "name");
-			}
-			descending && sortedTracks.reverse();
-			return await setQueue(sortedTracks);
-		};
+	async (uri: string) => {
+		lastSortAction = sortAction;
+		lastFetchedUri = uri;
+		const tracks = await getTracksFromUri(uri);
+		let sortedTracks = await sortFn(tracks);
+		if (CONFIG.preventDuplicates) {
+			sortedTracks = _.uniqBy(sortedTracks, "name");
+		}
+		descending && sortedTracks.reverse();
+		return await setQueue(sortedTracks);
+	};
 
-type SortBySubMenuItemProps = { descending: boolean; };
-type GenericSortBySubMenuItemProps = SortBySubMenuItemProps & { sortAction: SortAction; };
+type SortBySubMenuItemProps = { descending: boolean };
+type GenericSortBySubMenuItemProps = SortBySubMenuItemProps & { sortAction: SortAction };
 const GenericSortBySubMenuItem = ({ descending, sortAction }: GenericSortBySubMenuItemProps) => {
 	const { props } = useMenuItem();
 	const uri = props.uri;
@@ -104,7 +104,7 @@ import { useMenuItem } from "/modules/stdlib/src/registers/menu.js";
 import { is } from "/modules/stdlib/src/webpack/URI.ts";
 import { Platform } from "/modules/stdlib/src/expose/Platform.ts";
 import { MenuItem, MenuItemSubMenu } from "/modules/stdlib/src/webpack/ReactComponents.ts";
-import { useContextMenuState } from "/modules/stdlib/src/webpack/CustomHooks.ts";
+import { useContextMenuState } from "/modules/stdlib/src/webpack/ReactHooks.ts";
 import { Snackbar } from "/modules/stdlib/src/expose/Snackbar.ts";
 
 const SortByShuffleSubMenuItem = ({ descending }: SortBySubMenuItemProps) => {

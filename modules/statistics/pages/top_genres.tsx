@@ -18,7 +18,7 @@ import { useStatus } from "../components/status/useStatus.tsx";
 import { logger, settingsButton, storage } from "../mod.tsx";
 import { useDropdown } from "/modules/stdlib/lib/components/index.tsx";
 import { useQuery } from "/modules/stdlib/src/webpack/ReactQuery.ts";
-import { getPlayContext } from "/modules/stdlib/src/webpack/CustomHooks.ts";
+import { getPlayContext } from "/modules/stdlib/src/webpack/ReactHooks.ts";
 import {
 	Tracklist,
 	TracklistColumnsContextProvider,
@@ -61,7 +61,7 @@ export const calculateTracksMeta = (tracks: Track[]) => {
 	};
 };
 
-const GenresTrackRow = ({ track, index }: { track: Track; index: number; }) => {
+const GenresTrackRow = ({ track, index }: { track: Track; index: number }) => {
 	const { usePlayContextItem } = getPlayContext({ uri: "" }, { featureIdentifier: "queue" });
 
 	return (

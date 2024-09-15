@@ -16,7 +16,7 @@ import {
 	TracklistColumnsContextProvider,
 	TracklistRow,
 } from "/modules/stdlib/src/webpack/ReactComponents.ts";
-import { getPlayContext, useTrackListColumns } from "/modules/stdlib/src/webpack/CustomHooks.ts";
+import { getPlayContext, useTrackListColumns } from "/modules/stdlib/src/webpack/ReactHooks.ts";
 import { SCROBBLES_COLUMN_TYPE } from "/modules/Delusoire.more-columns/columns.ts";
 import { getLFMTracks } from "/modules/Delusoire.more-columns/patchPlaylistApi.ts";
 import { exportedFunctions } from "/modules/stdlib/src/webpack/index.ts";

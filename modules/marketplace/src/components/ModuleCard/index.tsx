@@ -4,7 +4,7 @@ import AuthorsDiv from "./AuthorsDiv.tsx";
 import TagsDiv from "./TagsDiv.tsx";
 import { type Metadata, type Module, type ModuleIdentifier, type ModuleInstance } from "/hooks/module.ts";
 import { useUpdate } from "../../util/index.ts";
-import { Cards, SettingsToggle } from "/modules/stdlib/src/webpack/ReactComponents.ts";
+import { Cards, Toggle } from "/modules/stdlib/src/webpack/ReactComponents.ts";
 import { classnames } from "/modules/stdlib/src/webpack/ClassNames.ts";
 import { useQuery } from "/modules/stdlib/src/webpack/ReactQuery.ts";
 import { display } from "/modules/stdlib/lib/modal.tsx";
@@ -308,8 +308,8 @@ const ModuleCard = (props: ModuleCardProps) => {
 			>
 				{fastInstallDeleteButton}
 			</button>
-			{showLoaded && SettingsToggle && (
-				<SettingsToggle
+			{showLoaded && Toggle && (
+				<Toggle
 					className="x-settings-button justify-end"
 					value={loaded}
 					onSelected={onToggleLoaded}

@@ -12,7 +12,7 @@ import {
 	useDropdown,
 	useSearchBar,
 } from "/modules/stdlib/lib/components/index.tsx";
-import { usePanelAPI } from "/modules/stdlib/src/webpack/CustomHooks.ts";
+import { usePanelAPI } from "/modules/stdlib/src/webpack/ReactHooks.ts";
 import { useModules } from "../components/ModulesProvider/index.tsx";
 
 const SortOptions = {
